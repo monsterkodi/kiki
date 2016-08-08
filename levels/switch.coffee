@@ -29,8 +29,8 @@ module.exports =
         position:     [0,-1,0]
     ]
     create: ->
-        # 
-        s = world.getSize ()
+
+        s = world.getSize()
         h = 0
         # bomb and stones
         
@@ -65,23 +65,22 @@ module.exports =
         
         world.switch_counter = 0
         
-        switched = (switch) ->
-            world.switch_counter += switch.isActive() and 1 or -1
+        switched = (swtch) ->
+            world.switch_counter += swtch.isActive() and 1 or -1
             exit = kikiObjectToGate(world.getObjectWithName("exit"))
             exit.setActive(world.switch_counter == 4)
         
         switch1 = KikiSwitch()
-        switch1.getEventWithName("switched").addAction (continuous (()-> s=switch1: switched(s)))
+        switch1.getEventWithName("switched").addAction(continuous((s=switch1) -> switched(s)))
         switch2 = KikiSwitch()
-        switch2.getEventWithName("switched").addAction (continuous (()-> s=switch2: switched(s)))
+        switch2.getEventWithName("switched").addAction(continuous((s=switch2) -> switched(s)))
         switch3 = KikiSwitch()
-        switch3.getEventWithName("switched").addAction (continuous (()-> s=switch3: switched(s)))
+        switch3.getEventWithName("switched").addAction(continuous((s=switch3) -> switched(s)))
         switch4 = KikiSwitch()
-        switch4.getEventWithName("switched").addAction (continuous (()-> s=switch4: switched(s)))
+        switch4.getEventWithName("switched").addAction(continuous((s=switch4) -> switched(s)))
         
         world.addObjectAtPos(switch1, world.decenter(-s.x/2+1, 0, 0))
         world.addObjectAtPos(switch2, world.decenter( s.x/2, 0, 0))
         world.addObjectAtPos(switch3, world.decenter(0, 0, -s.z/2+1))
-
         world.addObjectAtPos(switch4, world.decenter(0, 0,  s.z/2))
         

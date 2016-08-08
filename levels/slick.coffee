@@ -4,7 +4,7 @@ module.exports =
 
     name:       "slick"
     scheme:     "tron_scheme"
-    size:       (9,11,15)
+    size:       [9,11,15]
     intro:      "slick"
     help:       """
                 $scale(1.5)mission:
@@ -20,11 +20,13 @@ module.exports =
         active:       1
         position:     [0,0,4]
     ]
-    create: 
+    create: ->
         s=world.getSize()
-        for b in range(1,4)
-            for (k,l) in [ (i,j) for i in range(b+1,s.x-b-1) for j in range(b+1,s.y-b-1) ]
-                world.addObjectAtPos(KikiStone(KColor(0,1,0,0.5), true), KikiPos(k,l,b*3))
+        for b in [1..3]
+            # for (k,l) in [ (i,j) for i in range(b+1,s.x-b-1) for j in range(b+1,s.y-b-1) ]
+            for k in [b+1..s.x-b]
+                for j in [b+1..s.y-b]
+                    world.addObjectAtPos(KikiStone(KColor(0,1,0,0.5), true), KikiPos(k,l,b*3))
     
         world.addObjectAtPos(KikiWall(), KikiPos(s.x/2,s.y/2,0))
         world.addObjectAtPos(KikiStone(KColor(0,1,0,0.5), true), KikiPos(s.x/2,s.y/2,2))

@@ -14,7 +14,7 @@ module.exports =
         active:       0
         coordinates:  [1,2,8]
     ]
-    create: 
+    create: ->
         s = world.getSize()
         world.addObjectAtPos(KikiMotorGear(KikiFace.X), KikiPos(0,2,4))
         world.addObjectAtPos(KikiWall(), KikiPos(0,2,3))

@@ -4,7 +4,7 @@ module.exports =
     size:       [7,7,13]
     intro:      "jump"
     help:       """  
-                $scale"""1.5)mission:
+                $scale(1.5)mission:
                 get to the exit!
                 
                 jump on the stones to reach it

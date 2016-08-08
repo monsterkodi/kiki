@@ -1,8 +1,8 @@
 module.exports =
     name:       "stones"
-    scheme:     "blue_scheme",
-    size:       (11,11,12),
-    intro:      "stones",
+    scheme:     "blue_scheme"
+    size:       [11,11,12]
+    intro:      "stones"
     help:       """
                 $scale(1.5)mission:
                 get to the exit!
@@ -25,11 +25,11 @@ module.exports =
         s = world.getSize()
         
         num = 4
-        for i in range(1,num+1):
-            world.addObjectPoly (KikiWall, [(s.x/2-i, s.y/2-i, i-1),
-                                            (s.x/2+i, s.y/2-i, i-1),
-                                            (s.x/2+i, s.y/2+i, i-1),
-                                            (s.x/2-i, s.y/2+i, i-1)])
+        for i in [1..num]
+            world.addObjectPoly(KikiWall, [[s.x/2-i, s.y/2-i, i-1],
+                                           [s.x/2+i, s.y/2-i, i-1],
+                                           [s.x/2+i, s.y/2+i, i-1],
+                                           [s.x/2-i, s.y/2+i, i-1]])
         
         world.addObjectAtPos(KikiStone(), KikiPos(s.x/2-2, s.y/2, 3))
         world.addObjectAtPos(KikiStone(), KikiPos(s.x/2+2, s.y/2, 3))

@@ -12,7 +12,7 @@ module.exports =
     ]
     create: ->
 
-        sx, sy, sz = 7,3,9
+        [sx, sy, sz] = [7,3,9]
                     
         for z in range(-sz/2+1, sz/2+1)
             
@@ -22,9 +22,9 @@ module.exports =
             if z
                 world.addObjectAtPos(KikiWall(), world.decenter(-sx/2+2, 0, z))
                 world.addObjectAtPos(KikiWall(), world.decenter( sx/2-1, 0, z))
-                if z <> 4 and z <> -4
+                if z != 4 and z != -4
                     world.addObjectAtPos(KikiWall(), world.decenter(0, -sy/2+1, z))
-                if z <> 1 and z <> -1
+                if z != 1 and z != -1
                     world.addObjectAtPos(KikiWall(), world.decenter(0,  sy/2, z))
             
             

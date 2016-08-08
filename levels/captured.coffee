@@ -23,12 +23,9 @@ module.exports =
         s = world.getSize()
         
         for i in [-2, 2]
-            world.addObjectPoly (KikiStone, [world.decenter(1, 1, i), world.decenter(1, -1, i),
-                                             world.decenter(-1, -1, i), world.decenter(-1, 1, i)])
-            world.addObjectPoly (KikiStone, [world.decenter(1, i, 1), world.decenter(1, i, -1),\
-                                             world.decenter(-1, i, -1), world.decenter(-1, i, 1)])
-            world.addObjectPoly (KikiStone, [world.decenter(i, 1, 1), world.decenter(i, 1, -1),\
-                                             world.decenter(i, -1, -1), world.decenter(i, -1, 1)])
+            world.addObjectPoly(KikiStone, [world.decenter(1, 1, i), world.decenter(1, -1, i), world.decenter(-1, -1, i), world.decenter(-1, 1, i)])
+            world.addObjectPoly(KikiStone, [world.decenter(1, i, 1), world.decenter(1, i, -1), world.decenter(-1, i, -1), world.decenter(-1, i, 1)])
+            world.addObjectPoly(KikiStone, [world.decenter(i, 1, 1), world.decenter(i, 1, -1), world.decenter(i, -1, -1), world.decenter(i, -1, 1)])
         
         for i in [-4, -2, 2, 4]
             world.addObjectAtPos(KikiStone(), world.decenter(i, 0, 0))

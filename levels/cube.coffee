@@ -18,7 +18,13 @@ module.exports =
     ],
     create: ->
         #startblock
-        x=range(5)
-        for (i,j,l) in [(i,j,l) for i in x for j in x for l in x]
-            if (-1)**(i+j+l) == -1
-                world.addObjectAtPos(KikiStone(), KikiPos(i,j,l))
+        # x=range(5)
+        # for (i,j,l) in [(i,j,l) for i in x for j in x for l in x]
+            # if (-1)**(i+j+l) == -1
+                # world.addObjectAtPos(KikiStone(), KikiPos(i,j,l))
+                
+        for i in [0...5]
+            for j in [0...5]
+                for l in [0...5]
+                    if Math.pow(-1, i+j+l) == -1
+                        world.addObjectAtPos(KikiStone(), KikiPos(i,j,l))

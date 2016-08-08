@@ -21,11 +21,9 @@ module.exports =
         
         for y in [-1, 1]
             x = 3
-            world.addObjectPoly (KikiStone, [world.decenter(-x, y, -x), world.decenter(-x, y, x), \
-                                             world.decenter(x, y, x), world.decenter(x, y, -x)])
+            world.addObjectPoly(KikiStone, [world.decenter(-x, y, -x), world.decenter(-x, y, x), world.decenter(x, y, x), world.decenter(x, y, -x)])
         
         for y in [-3, 3]
             for x in [-3, -1, 1, 3]
-                world.addObjectPoly (KikiStone, [world.decenter(-x, y, -x), world.decenter(-x, y, x), \
-                                                 world.decenter(x, y, x), world.decenter(x, y, -x)])
+                world.addObjectPoly(KikiStone, [world.decenter(-x, y, -x), world.decenter(-x, y, x), world.decenter(x, y, x), world.decenter(x, y, -x)])
                                                  

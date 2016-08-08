@@ -16,7 +16,7 @@ module.exports =
     player:   
         coordinates:     [3,0,6]
         nostatus:         0
-    exits:
+    exits:      [
         name:         "exit"
         active:       1
         position:     [0,1,3]

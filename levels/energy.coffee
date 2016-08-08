@@ -66,8 +66,8 @@ module.exports =
         
         world.switch_counter = 0
         
-        switched = (switch) ->
-            world.switch_counter += switch.isActive() and 1 or -1
+        switched = (swtch) ->
+            world.switch_counter += swtch.isActive() and 1 or -1
             exit = kikiObjectToGate (world.getObjectWithName("exit"))
             exit.setActive(world.switch_counter == 4)
         

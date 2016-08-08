@@ -16,18 +16,19 @@ module.exports =
     player:
         coordinates:     [3,0,1]
         nostatus:         0
-         orientation:    roty0
+        orientation:     roty0
     exits:    [
         name:         "exit"
         active:       1
         position:     [0,0,0]
     ]
-     create: ->
-        s=world.getSize()
-        for m in [ [1,KikiWall], [2,KikiStone] ]
-            for (k,l) in [[i,j] for i in [-1*m[0],1*m[0]] for j in [-1*m[0],1*m[0]]]
-                world.addObjectLine(m[1], KikiPos(s.x/2+k, s.y/2+l ,0), KikiPos(s.x/2+k, s.y/2+l ,3))    
-                world.addObjectLine(m[1], KikiPos(s.x/2+k, s.y/2+l ,8), KikiPos(s.x/2+k, s.y/2+l ,s.z))    
+    create: ->
+        s = world.getSize()
+        for m in [[1,KikiWall], [2,KikiStone]]
+            for k in [-1*m[0],1*m[0]] 
+                for l in [-1*m[0],1*m[0]]
+                    world.addObjectLine(m[1], KikiPos(s.x/2+k, s.y/2+l ,0), KikiPos(s.x/2+k, s.y/2+l ,3))    
+                    world.addObjectLine(m[1], KikiPos(s.x/2+k, s.y/2+l ,8), KikiPos(s.x/2+k, s.y/2+l ,s.z))    
                             
         world.addObjectAtPos(KikiStone(KColor(0,1,0,0.5), true), world.decenter(1,0,0))
         world.addObjectAtPos(KikiStone(KColor(0,1,0,0.5), true), world.decenter(-1,0,0))

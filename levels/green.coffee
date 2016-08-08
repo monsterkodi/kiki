@@ -24,7 +24,7 @@ module.exports =
     ]
     create: ->
 # 
-        sx, sy, sz = 13,5,13
+        [sx, sy, sz] = [13,5,13]
                     
         for z in range(-sz/2+2, sz/2)
             

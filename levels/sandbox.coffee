@@ -25,17 +25,18 @@ module.exports =
         
         switched = ->
             unoccupied = false
-            for (i,j) in [ (i,j) for i in range(3,6) for j in range(3,6) ]
-              if world.isUnoccupiedPos(KikiPos(i,j,0))
-                  unoccupied=True
+            # for (i,j) in [ (i,j) for i in range(3,6) for j in range(3,6) ]
+            for i in [3...6]
+                for j in [3...6]
+                    if world.isUnoccupiedPos(KikiPos(i,j,0))
+                        unoccupied=true
                 
-            if not unoccupied:
-                world.toggle("exit")
+            world.toggle("exit") if not unoccupied
             
-        switch = KikiSwitch()
-        switch.getEventWithName("switched").addAction ( continuous ( switched ))
+        swtch = KikiSwitch()
+        swtch.getEventWithName("switched").addAction(continuous(switched))
            
-        world.addObjectAtPos(switch , KikiPos  (0,5,0))
+        world.addObjectAtPos(swtch , KikiPos(0,5,0))
         world.addObjectPoly(KikiWall, [ KikiPos(2,2,0),KikiPos(2,6,0),KikiPos(6,6,0),KikiPos(6,2,0)], 1)
         
         #inside    

@@ -16,27 +16,44 @@ class KikiWorld
         # execfile (kikipy_path + "highscore.py")
         # execfile (kikipy_path + "intro.py")
                 
-        globals().rot0    = KQuaternion()
-        globals().rotz180 = KQuaternion.rotationAroundVector(180, KVector(0,0,1))
-        globals().rotz90  = KQuaternion.rotationAroundVector(90,  KVector(0,0,1))
-        globals().roty270 = KQuaternion.rotationAroundVector(270, KVector(0,1,0))
-        globals().roty180 = KQuaternion.rotationAroundVector(180, KVector(0,1,0))
-        globals().roty90  = KQuaternion.rotationAroundVector(90,  KVector(0,1,0))
-        globals().roty0   = KQuaternion.rotationAroundVector(0,   KVector(0,1,0))
-        globals().rotx180 = KQuaternion.rotationAroundVector(180, KVector(1,0,0))
-        globals().rotx90  = KQuaternion.rotationAroundVector(90,  KVector(1,0,0))
+        global.rot0    = new KQuaternion()
+        global.rotz180 = KQuaternion.rotationAroundVector(180, KVector(0,0,1))
+        global.rotz90  = KQuaternion.rotationAroundVector(90,  KVector(0,0,1))
+        global.roty270 = KQuaternion.rotationAroundVector(270, KVector(0,1,0))
+        global.roty180 = KQuaternion.rotationAroundVector(180, KVector(0,1,0))
+        global.roty90  = KQuaternion.rotationAroundVector(90,  KVector(0,1,0))
+        global.roty0   = KQuaternion.rotationAroundVector(0,   KVector(0,1,0))
+        global.rotx180 = KQuaternion.rotationAroundVector(180, KVector(1,0,0))
+        global.rotx90  = KQuaternion.rotationAroundVector(90,  KVector(1,0,0))
         
         @levelList = [
-              "start", "steps", "move", "electro", "elevate", "throw", # intro
-              "gold", "jump", "escape", "gears", "gamma", "cube", "switch", "borg", # easy
-              "mini", "blocks", "bombs", "sandbox", "energy", "maze", "love", 
-              "towers", "edge", "random", "plate", "nice", "entropy", # medium
-              "grasp", "fallen", "cheese", "invisimaze", "spiral", # owen hay's levels (TODO: sort in)
-              "slick", "bridge", "flower", "stones", "walls", "grid", # difficult
-              "rings", "core", "bronze", "pool", # difficult
-              "hidden", "church", "strange", "mesh", "columns", "machine", # tough
-              "neutron", "captured", "circuit", "regal", "conductor", "evil", # very hard
-              "mutants", # outro
+              # intro
+              "start", "steps", "move", "electro", "elevate", "throw", 
+              # easy
+              "gold", "jump", "escape", "gears", 
+              # "gamma", 
+              "cube", "switch", "borg", 
+              "mini", 
+              # "blocks", 
+              "bombs", "sandbox", "energy", "maze", "love", 
+              # medium
+              "towers", "edge", "random", "plate", "nice", "entropy", 
+              # owen hay's levels (TODO: sort in)
+              "grasp", "fallen", "cheese", "invisimaze", "spiral", 
+              # difficult
+              "slick", "bridge", "flower", "stones", "walls", "grid", 
+              "rings", 
+              # "core", 
+              "bronze", "pool", 
+              # tough
+              "hidden", "church", 
+              # "strange", 
+              "mesh", "columns", "machine", 
+              # very hard
+              # "neutron", 
+              "captured", "circuit", "regal", "conductor", "evil", 
+              # outro
+              "mutants", 
              ]
                    
         @levelDict = {}

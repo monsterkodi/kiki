@@ -15,10 +15,7 @@ class Kiki extends Stage
     constructor: (@view) -> super @view
     
     start: -> 
-        
-        world = new KikiWorld()
-        log 'hello world'
-        
+                
         @elem = document.createElement 'div'
         @elem.style.position = 'absolute'
         @elem.style.top = '0'
@@ -85,6 +82,9 @@ class Kiki extends Stage
 #         
         # @mesh = new THREE.Mesh @geom, @material
         # @scene.add @mesh
+        
+        world = new KikiWorld()
+        log 'hello world'
 
         @animate()
 
@@ -115,7 +115,7 @@ class Kiki extends Stage
     resized: (w,h) -> 
         @aspect = w/h
         @camera?.aspect = @aspect
-        @camera.updateProjectionMatrix()
+        @camera?.updateProjectionMatrix()
         @renderer?.setSize w,h
 
 module.exports = Kiki

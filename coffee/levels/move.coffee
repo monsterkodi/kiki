@@ -21,7 +21,7 @@ module.exports =
         position:     [0,0,0]
     ]
     create: ->
-# 
+
         s = world.getSize()
         
         world.addObjectAtPos(KikiStone(), KikiPos(s.x/2-1, s.y/2+1, 0))

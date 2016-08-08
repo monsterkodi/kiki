@@ -1,20 +1,69 @@
 
+#   000   000   0000000   00000000   000      0000000  
+#   000 0 000  000   000  000   000  000      000   000
+#   000000000  000   000  0000000    000      000   000
+#   000   000  000   000  000   000  000      000   000
+#   00     00   0000000   000   000  0000000  0000000  
+{
+first,
+last
+}           = require "/Users/kodi/s/ko/js/tools/tools"
 log         = require "/Users/kodi/s/ko/js/tools/log"
 KQuaternion = require './lib/quaternion'
 KVector     = require './lib/vector'
+Pos         = require './lib/pos'
+_           = require 'lodash'
+
+world       = null
 
 class KikiWorld
+
+    @CAMERA_INSIDE = 0 
+    @CAMERA_BEHIND = 1 
+    @CAMERA_FOLLOW = 2
+    
+    @levelList = []
+    @levelDict = []
     
     constructor: -> 
+        @preview = false
         
-        # execfile(kikipy_path + "colors.py")
-        # execfile(kikipy_path + "action.py")
-        # execfile(kikipy_path + "lang.py")
-        # execfile (kikipy_path + "config.py")
-        # execfile (kikipy_path + "setup.py")
-        # execfile (kikipy_path + "levelselection.py")
-        # execfile (kikipy_path + "highscore.py")
-        # execfile (kikipy_path + "intro.py")
+        @display_list    = 0
+        @objects         = []
+        @lights          = []
+        @moved_objects   = []
+        @cells           = [] 
+        @size            = new Pos()
+        @depth           = -Number.MAX_SAFE_INTEGER
+        @camera_mode     = KikiWorld.CAMERA_BEHIND
+        @edit_projection = null
+        @edit_mode       = false
+        @debug_camera    = false
+        @debug_cells     = false
+    
+        # flags[KDL_PICKHANDLER_FLAG_MOVING_ENABLED]     = true
+        # flags[KDL_PICKHANDLER_FLAG_PROJECTION_ENABLED] = true
+        
+        # flags.resize(WORLD_END)
+        # flags[DISPLAY_BORDER]    = true
+        # flags[DISPLAY_DOTS]        = false
+        # flags[DISPLAY_RASTER]    = true 
+        # flags[DISPLAY_SHADOWS]    = false
+        
+        @raster_size            = 0.1
+    
+        # KEventHandler::notification_center.addReceiverCallback((KPickHandler*)this, 
+                                                            # (KCallbackPtr)&KikiWorld::reinit,
+                                                            # KDL_NOTIFICATION_TYPE_VIDEO_MODE_CHANGED)    
+#     
+        # KEventHandler::notification_center.addReceiverCallback((KPickHandler*)this, 
+                                                            # (KCallbackPtr)&KikiWorld::reinit,
+                                                            # KDL_NOTIFICATION_TYPE_WINDOW_SIZE_CHANGED)
+                                                            
+        # initializeTextures ()
+    
+    @init: ->
+        return if world?
                 
         global.rot0    = new KQuaternion()
         global.rotz180 = KQuaternion.rotationAroundVector(180, KVector(0,0,1))
@@ -63,7 +112,10 @@ class KikiWorld
             @levelDict[levelName] = require "./levels/#{levelName}"
             
         log 'levelDict', @levelDict
-        @preview = false
+        
+        world = new KikiWorld()
+        world.create first @levelList
+        world
 
     #  0000000  00000000   00000000   0000000   000000000  00000000
     # 000       000   000  000       000   000     000     000     
@@ -77,27 +129,27 @@ class KikiWorld
         
         if worldDict
             if _.isString worldDict
-                world.level_index = levelList.index worldDict
+                world.level_index = KikiWorld.levelList.indexOf worldDict
                 world.level_name = worldDict
-                @dict = levelDict[worldDict]
+                @dict = KikiWorld.levelDict[worldDict]
             else
                 @dict = worldDict
             
         # ............................................................ appearance
         
-        world.setSize @dict["size"]
+        @setSize @dict["size"]
         
         if "scheme" in @dict
-            applyColorScheme eval(@dict["scheme"])
+            @applyColorScheme eval(@dict["scheme"])
         else
-            applyColorScheme default_scheme
+            @applyColorScheme default_scheme
 
         if "border" in @dict
             border = @dict["border"]
         else
             border = 1
 
-        world.setDisplayBorder border
+        @setDisplayBorder border
 
         # ............................................................ intro text   
         if "intro" in @dict
@@ -105,19 +157,19 @@ class KikiWorld
                 intro_text = KikiScreenText()
                 intro_text.addText @dict["intro"]
                 intro_text.show()
-            world.setName @dict["intro"]
+            @setName @dict["intro"]
         else
-            world.setName "noname"
+            @setName "noname"
         
         if @preview
-            world.getProjection().setViewport(0.0, 0.4, 1.0, 0.6)
+            @getProjection().setViewport(0.0, 0.4, 1.0, 0.6)
         else
-            world.getProjection().setViewport(0.0, 0.0, 1.0, 1.0)
+            @getProjection().setViewport(0.0, 0.0, 1.0, 1.0)
         
         # ............................................................ escape
-        escape_event = Controller.getEventWithName ("escape")
-        escape_event.removeAllActions()
-        escape_event.addAction(continuous(@escape, "escape"))
+        # escape_event = Controller.getEventWithName ("escape")
+        # escape_event.removeAllActions()
+        # escape_event.addAction(continuous(@escape, "escape"))
 
         # ............................................................ exits
 
@@ -136,10 +188,10 @@ class KikiWorld
                 delay_action = once (lambda a = exit_action: Controller.timer_event.addAction (a))
                 exit_gate.getEventWithName ("enter").addAction (delay_action)
                 if "position" in entry
-                    pos = world.decenter (entry["position"])
+                    pos = @decenter (entry["position"])
                 else if "coordinates" in entry
-                    pos = KikiPos entry["coordinates"]
-                world.addObjectAtPos exit_gate, pos
+                    pos = new Pos entry["coordinates"]
+                @addObjectAtPos exit_gate, pos
                 exit_id += 1
 
         # ............................................................ creation
@@ -162,10 +214,10 @@ class KikiWorld
             player.setOrientation (roty90)
             
         if "position" in player_dict
-            world.addObjectAtPos player, world.decenter(player_dict["position"])
+            @addObjectAtPos player, @decenter(player_dict["position"])
         else if "coordinates" in player_dict
             pos = player_dict["coordinates"]
-            world.addObjectAtPos player, KikiPos(pos[0], pos[1], pos[2])
+            @addObjectAtPos player, Pos(pos[0], pos[1], pos[2])
 
         if "nostatus" in player_dict
             if player_dict["nostatus"] or @preview
@@ -178,13 +230,13 @@ class KikiWorld
             else
                 Controller.player_status.show()
         
-        world.getProjection().setPosition (KVector())
+        @getProjection().setPosition(KVector())
 
-        Controller.player.getStatus().setMinMoves (highscore.levelParMoves (world.level_name))
+        Controller.player.getStatus().setMinMoves (highscore.levelParMoves (@level_name))
         Controller.player.getStatus().setMoves (0)
 
         # ............................................................ init
-        world.init() # tell the world that we are finished
+        @init() # tell the world that we are finished
 
     restart: (self) ->
         # restores the player status and restarts the current level
@@ -245,14 +297,14 @@ class KikiWorld
         else if len(args) == 1
             [x, y, z] = args[0]
     
-        return KikiPos(x+s.x/2, y+s.y/2, z+s.z/2)
+        new Pos x+s.x/2, y+s.y/2, z+s.z/2 
     
     addObjectLine: (object, start, end) ->
-        # adds a line of objects of type to the world. start and end should be 3-tuples or KikiPos objects
-        if start instanceof KikiPos
+        # adds a line of objects of type to the world. start and end should be 3-tuples or Pos objects
+        if start instanceof Pos
             start = [start.x, start.y, start.z]
         [sx, sy, sz] = start
-        if end isinstance KikiPos
+        if end instanceof Pos
             end = [end.x, end.y, end.z]
         [ex, ey, ez] = end
         
@@ -260,8 +312,8 @@ class KikiWorld
         maxdiff = _.max diff.map Math.abs
         deltas = diff.map (a) -> a/maxdiff
         for i in [0...maxdiff]
-            # pos = apply(KikiPos, (map (lambda a, b: int(a+i*b), start, deltas)))
-            pos = KikiPos (start[j]+i*deltas[j] for j in [0..2])
+            # pos = apply(Pos, (map (lambda a, b: int(a+i*b), start, deltas)))
+            pos = new Pos (start[j]+i*deltas[j] for j in [0..2])
             if @isUnoccupiedPos pos
                 if type(object) == types.StringType
                     @addObjectAtPos eval(object), pos
@@ -269,7 +321,7 @@ class KikiWorld
                     @addObjectAtPos object(), pos
        
     addObjectPoly: (object, points, close=1) ->
-        # adds a polygon of objects of type to the world. points should be 3-tuples or KikiPos objects
+        # adds a polygon of objects of type to the world. points should be 3-tuples or Pos objects
         if close
             points.append (points[0])
         for index in range(1, len(points))
@@ -288,7 +340,7 @@ class KikiWorld
         size = @getSize()
         object_set = 0
         while not object_set                                   # hack alert!
-            random_pos = KikiPos random.randrange(size.x),
+            random_pos = Pos random.randrange(size.x),
                                  random.randrange(size.y),
                                  random.randrange(size.z)
             if not object.isSpaceEgoistic() or @isUnoccupiedPos(random_pos)
@@ -375,5 +427,262 @@ class KikiWorld
         menu.addItem(Controller.getLocalizedString("setup"), once(quickSetup))        
         menu.addItem(Controller.getLocalizedString("about"), once(display_about))
         menu.addItem(Controller.getLocalizedString("quit"), once(Controller.quit))
-     
+
+    setSize: (x, y, z) ->
+        @deleteAllObjects()
+        @deleteDisplayList()
+        @cells = []
+    
+        @size.x = x 
+        @size.y = y 
+        @size.z = z
+        
+        @cells.resize x*y*z, 0
+            
+        # .......................................... calcuate max distance (for position relative sound)
+        @max_distance = Math.Max(x, Math.Max(y, z))  # ............................. heuristic of a heuristic :-)
+
+    getCellAtPos: (pos) -> return @cells[@posToIndex(pos)] if @isValidPos pos
+    getBotAtPos:  (pos) -> @getObjectOfTypeAtPos KikiBot, pos
+
+    getObjectsOfType:      (clss) -> @objects.filter (o) -> o instanceof clss
+    getObjectsOfTypeAtPos: (clss, pos) -> @getCellAtPos(pos)?.getObjectsOfType clss
+    getObjectOfTypeAtPos:  (clss, pos) -> @getCellAtPos(pos)?.getRealObjectOfType clss
+    getOccupantAtPos:            (pos) -> @getCellAtPos(pos)?.getOccupant()
+    getRealOccupantAtPos: (pos) ->
+        occupant = @getOccupantAtPos pos
+        if occupant and occupant instanceof KikiTmpObject
+            occupant.object
+        else
+            occupant
+
+    setObjectAtPos: (object, pos) ->
+        if @isInvalidPos pos
+            log "KikiWorld.setObjectAtPos invalid pos:", pos
+            return
+    
+        cell = @getCellAtPos pos
+    
+        if object.isSpaceEgoistic() and cell and cell.getOccupant()
+            objectAtNewPos = cell.getOccupant()
+            if objectAtNewPos instanceof KikiTmpObject
+                if objectAtNewPos.time > 0
+                    log "WARNING KikiWorld.setObject already occupied pos:", pos
+                    # "already occupied by %s with time %d!",
+                    # object.getClassName(), pos.x, pos.y, pos.z, 
+                    # cell.getOccupant().getClassName(),
+                    # ((KikiTmpObject*)objectAtNewPos).time)
+            objectAtNewPos.del() # temporary object at new pos will vanish anyway . delete it
+        
+        cell = @getCellAtPos pos
+        
+        if not cell?
+            cell = new KikiCell()
+            @cells[@posToIndex(pos)] = cell
+        
+        object.setPosition pos
+        cell.addObject object
+
+    unsetObject: (object) ->
+        pos = object.getPos()
+        if cell = @getCellAtPos pos 
+            cell.removeObject object
+            if cell.isEmpty()
+                # delete cell
+                @cells[posToIndex(pos)] = null
+
+    addObject: (object) ->
+        if object instanceof KikiLight
+            lights.push object # if lights.indexOf(object) < 0
+        else
+            objects.push object # if objects.indexOf(object) < 0 
+
+    addObjectAtPos: (object, pos) ->
+        @setObjectAtPos object, pos
+        @addObject object
+
+    removeObject: (object) ->
+        @unsetObject object
+        _.pull lights, object
+        _.pull objects, object
+    
+    moveObjectToPos: (object, pos) ->
+        return false if @isInvalidPos(pos) or @isOccupiedPos(pos)
+    
+        @unsetObject    object
+        @setObjectAtPos object, pos
+    
+        # Controller.sound.playSound(KikiSound::BOT_LAND)
+    
+        true
+
+    deleteObject: (object) ->
+        if not object?
+            log "WARNING: KikiWorld.deleteObject null"
+            return
+        @removeObject object
+        object.del()
+    
+    deleteAllObjects: () ->
+        @picked_pickable = null
+        @moved_objects = []
+    
+        # if Controller.player
+            # Controller.player.finishRotateAction()
+            # @removeObject (Controller.player) # remove the player first, to keep it's state
+            # Controller.timer_event.removeAllActions ()
+            # Controller.removeKeyHandler (Controller.player) # prevent keyboard input while building world
+            # Controller.player.reset ()
+    
+        while @lights.length
+            oldSize = @lights.length
+            last(@lights).del() # destructor will call remove object
+            if oldSize == @lights.length
+                log "WARNING KikiWorld.deleteAllObjects light no auto remove"
+                @lights.pop()
+    
+        while @objects.length
+            oldSize = @objects.length
+            last(@objects).del() # destructor will call remove object
+            if oldSize == @objects.length
+                log "WARNING KikiWorld.deleteAllObjects object no auto remove"
+                @objects.pop()
+    
+    deleteObjectsWithClassName: (className) ->
+        for o in _.clone @objects
+            if className == o.getClassName()
+                o.del()
+    
+    getObjectWithName: (objectName) ->
+        for o in @objects
+            if objectName == o.getName()
+                return o
+        log "KikiWorld.getObjectWithName :: no object found with name #{objectName}"
+        null
+    
+    setEditMode: (editMode) ->
+        @edit_mode = editMode
+        
+        if @edit_mode and @edit_projection == null
+            edit_projection = new KLightingProjection()
+            
+        @edit_projection.focusOn KVector(@size).mul 2.0
+        @edit_projection.setEyeDistance @max_distance*1.5
+    
+    # focusOnPickedPickable: ( bool zoom ) ->
+       # if (edit_mode and picked_pickable)
+            # projection.focusOn (((KikiObject*)picked_pickable).getPosition())
+    
+    setCameraMode: (mode) -> @camera_mode = clamp CAMERA_INSIDE, CAMERA_FOLLOW, mode
+    
+    changeCameraMode: () -> @camera_mode = (@camera_mode+1) % (CAMERA_FOLLOW+1)
+    
+    # shouldPick: () -> @edit_mode 
+#     
+    # picked: () -> # reset drag deltas and start pos
+        # @deltas.x = @deltas.y = 0
+        # if @picked_pickable
+            # @drag_start_pos = ((KikiObject*)picked_pickable).position
+#     
+    # moved: ( const KMouseEvent & mouseEvent ) ->
+        # object = (KikiObject*)picked_pickable
+#              
+        # if (object == null) return
+#              
+        # KVector newPosition = drag_start_pos
+#         
+        # deltas = deltas + mouseEvent.delta
+#         
+        # getProjection().moveObjectRelativeToWindow(deltas, newPosition)    
+#     
+        # # round to next integer positions and make a valid pos
+        # Pos newPos = getNearestValidPos(newPosition)
+#                 
+        # if (getOccupantAtPos(newPos) == null and (newPos != object.getPos()))
+            # empty position != old position . move object
+            # moveObjectToPos(object, newPos)
+    
+    objectMovedFromPos: (object, pos) ->
+    
+        if cell = @getCellAtPos(pos)
+            if tmpObject = cell.getObjectOfType KikiTmpObject 
+                if tmpObject.object == object
+                    tmpObject.del()
+        @moved_objects.push object 
+    
+    objectWillMoveToPos: (object, pos, duration) ->
+        cell = @getCellAtPos pos
+    
+        if @isInvalidPos pos
+            log "KikiWorld::objectWillMoveToPos invalid pos:", pos
+        
+        if object.getPos() == pos
+            log "WARNING KikiWorld::objectWillMoveToPos equal pos:", pos
+            return
+    
+        if cell
+            if objectAtNewPos = cell.getOccupant()
+                if objectAtNewPos instanceof KikiTmpObject
+                    tmpObject = objectAtNewPos
+                    
+                    if (objectAtNewPos.time < 0 and -objectAtNewPos.time <= duration)
+                        # temporary object at new pos will vanish before object will arrive . delete it
+                        objectAtNewPos.del()
+                    else
+                        log "KikiWorld.objectWillMoveToPos timing conflict at pos:", pos
+                else
+                    log "KikiWorld.objectWillMoveToPos already occupied:", pos 
+    
+        @unsetObject object # remove object from cell grid
+        
+        tmpObject = new KikiTmpObject object  # insert temporary objects at new pos
+        tmpObject.setPosition pos 
+        tmpObject.time = duration
+        @addObjectAtPos tmpObject, pos 
+        
+        tmpObject = new KikiTmpObject object  # insert temporary objects at old pos
+        tmpObject.setPosition object.getPosition() 
+        tmpObject.time = -duration
+        @addObjectAtPos tmpObject, object.getPos() 
+    
+    # --------------------------------------------------------------------------------------------------------
+    updateStatus: () ->
+        # glClearColor(colors[KikiWorld_base_color][R], colors[KikiWorld_base_color][G], 
+                     # colors[KikiWorld_base_color][B], colors[KikiWorld_base_color][A])
+    
+        while @moved_objects.length
+            movedObject = last @moved_objects
+            pos = new Pos movedObject.position
+    
+            if @isInvalidPos pos
+                 log "KikiWorld.updateStatus invalid new pos"
+                 return
+    
+            if tmpObject = @getObjectOfTypeAtPos KikiTmpObject, pos 
+                if tmpObject.object == movedObject
+                    tmpObject.del()
+                else
+                    log "KikiWorld.updateStatus wrong tmp object at pos:", pos
+            else if @isOccupiedPos pos
+                log "KikiWorld.updateStatus object moved to occupied pos:", pos
+                    
+            @setObjectAtPos movedObject, pos 
+            @moved_objects.pop()
+    
+    deleteDisplayList: () ->
+        if @display_list
+            glDeleteLists(@display_list, 1)
+            @display_list = 0
+    
+    setObjectColor: (color_name, color) ->
+        if color_name == 'base'
+            # KikiWall::setObjectColor "base", color 
+            @colors[0] = color
+        else if color_name == 'plate'
+            # KikiWall::setObjectColor "plate", color 
+            @colors[1] = color
+        
+        # Controller.world.deleteDisplayList ()
+
+
 module.exports = KikiWorld

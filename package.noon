@@ -1,0 +1,9 @@
+name          kiki
+main          js/main.js
+dependencies
+              coffee-script   ^1.10.0
+              lodash          ^4.13.1
+              noon            >=1.0.12
+              performance-now  ^0.2.0
+              sprintf-js      ^1.0.3
+              underscore.string  ^3.3.4

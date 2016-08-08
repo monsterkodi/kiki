@@ -83,7 +83,7 @@ class Kiki extends Stage
         # @mesh = new THREE.Mesh @geom, @material
         # @scene.add @mesh
         
-        world = new KikiWorld()
+        world = KikiWorld.init()
         log 'hello world'
 
         @animate()

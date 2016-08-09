@@ -26,7 +26,7 @@ module.exports =
         position:  [0,0,0]
     ]
     create: ->
-        world.addObjectAtPos( KikiWall(),  world.decenter(-2,0,2))
-        world.addObjectAtPos( KikiStone(), world.decenter(0,1,3))
-        world.addObjectAtPos( KikiStone(), world.decenter(0,-1,3))
+        world.addObjectAtPos('KikiWall',  world.decenter(-2,0,2))
+        world.addObjectAtPos('KikiStone', world.decenter(0,1,3))
+        world.addObjectAtPos('KikiStone', world.decenter(0,-1,3))
         

@@ -18,7 +18,7 @@ module.exports =
     ]
     create: ->
         s = world.size
-        for y in range(-s.y/2+3, s.y/2, 2)
-                for x in range(-s.x/2+1, s.x/2+1)
-                    for z in range(-s.z/2+1, s.z/2+1)
-                        world.addObjectAtPos(KikiStone(), world.decenter(x, y, z))
+        for y in [2,4,6,8]
+            for x in [0...3]
+                for z in [0...3]
+                    world.addObjectAtPos('KikiStone', x, y, z)

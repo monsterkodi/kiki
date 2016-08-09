@@ -1,3 +1,10 @@
+
+#    0000000  000000000  00000000  00000000    0000000
+#   000          000     000       000   000  000     
+#   0000000      000     0000000   00000000   0000000 
+#        000     000     000       000             000
+#   0000000      000     00000000  000        0000000 
+
 module.exports =
     name:       "steps"
     scheme:     "blue_scheme"
@@ -23,8 +30,8 @@ module.exports =
     ]
     create: ->
 
-        world.addObjectAtPos(KikiWall(), world.decenter(0,0,3))
-        world.addObjectAtPos(KikiWall(), world.decenter(0,-1,1))
-        world.addObjectAtPos(KikiWall(), world.decenter(0,-2,-1))
-        world.addObjectAtPos(KikiWall(), world.decenter(0,-3,-3))
+        world.addObjectAtPos('KikiWall', world.decenter(0,0,3))
+        world.addObjectAtPos('KikiWall', world.decenter(0,-1,1))
+        world.addObjectAtPos('KikiWall', world.decenter(0,-2,-1))
+        world.addObjectAtPos('KikiWall', world.decenter(0,-3,-3))
         

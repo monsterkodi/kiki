@@ -9,6 +9,9 @@ first,
 last
 }           = require "/Users/kodi/s/ko/js/tools/tools"
 log         = require "/Users/kodi/s/ko/js/tools/log"
+Pos         = require './lib/pos'
+KikiCell    = require './cell'
+KikiLight   = require './light'
 KQuaternion = require './lib/quaternion'
 KVector     = require './lib/vector'
 Pos         = require './lib/pos'
@@ -42,10 +45,10 @@ class KikiWorld
         #    0000000  000   000  000   000  00000000  000   000  000   000
         
         @fov    = 60
-        @near   = 10
+        @near   = 0.1
         @far    = 1000
         @aspect = @view.offsetWidth / @view.offsetHeight
-        @dist   = 20
+        @dist   = 10
         
         @camera = new THREE.PerspectiveCamera @fov, @aspect, @near, @far
         @camera.position.z = @dist
@@ -132,9 +135,18 @@ class KikiWorld
         global.rotx180 = KQuaternion.rotationAroundVector(180, KVector(1,0,0))
         global.rotx90  = KQuaternion.rotationAroundVector(90,  KVector(1,0,0))
         
+        # 000      00000000  000   000  00000000  000       0000000
+        # 000      000       000   000  000       000      000     
+        # 000      0000000    000 000   0000000   000      0000000 
+        # 000      000          000     000       000           000
+        # 0000000  00000000      0      00000000  0000000  0000000 
+        
         @levelList = [
               # intro
-              "start", "steps", "move", "electro", "elevate", "throw", 
+              # "start", 
+              #"steps", 
+              #"move", "electro", "elevate", 
+              # "throw", 
               # easy
               "gold", "jump", "escape", "gears", 
               # "gamma", 
@@ -355,7 +367,13 @@ class KikiWorld
     isValidPos: (pos) -> pos.x >= 0 and pos.x < @size.x and pos.y >= 0 and pos.y < @size.y and pos.z >= 0 and pos.z < @size.z
     isInvalidPos: (pos) -> not @isValidPos pos
 
-    addObjectLine: (object, start, end) ->
+    addObjectLine: (object, sx,sy,sz, ex,ey,ez) ->
+        if sx instanceof Pos
+            start = sx
+            end   = sy
+        else
+            start = new Pos sx,sy,sz
+            end   = new Pos ex,ey,ez
         # adds a line of objects of type to the world. start and end should be 3-tuples or Pos objects
         if start instanceof Pos
             start = [start.x, start.y, start.z]
@@ -519,6 +537,7 @@ class KikiWorld
             return
     
         cell = @getCellAtPos pos
+        log "world.setObjectAtPos", cell
     
         if object.isSpaceEgoistic() and cell and cell.getOccupant()
             objectAtNewPos = cell.getOccupant()
@@ -532,10 +551,10 @@ class KikiWorld
             objectAtNewPos.del() # temporary object at new pos will vanish anyway . delete it
         
         cell = @getCellAtPos pos
-        
         if not cell?
             cell = new KikiCell()
             @cells[@posToIndex(pos)] = cell
+            log "world.setObjectAtPos new cell", cell
         
         object.setPosition pos
         cell.addObject object
@@ -549,8 +568,8 @@ class KikiWorld
                 @cells[posToIndex(pos)] = null
 
     newObject: (object) ->
-        log "newObject:", object
         if _.isString object
+            log "newObject:", object
             if object.startsWith 'Kiki'
                 return new (require "./#{object.slice(4).toLowerCase()}")()
         object
@@ -558,19 +577,21 @@ class KikiWorld
     addObject: (object) ->
         object = @newObject object
         if object instanceof KikiLight
-            lights.push object # if lights.indexOf(object) < 0
+            @lights.push object # if lights.indexOf(object) < 0
         else
-            objects.push object # if objects.indexOf(object) < 0 
+            @objects.push object # if objects.indexOf(object) < 0 
 
-    addObjectAtPos: (object, pos) ->
+    addObjectAtPos: (object, x, y, z) ->
+        pos = new Pos x, y, z
+        log "world.addObjectAtPos", pos
         object = @newObject object
         @setObjectAtPos object, pos
         @addObject object
 
     removeObject: (object) ->
         @unsetObject object
-        _.pull lights, object
-        _.pull objects, object
+        _.pull @lights, object
+        _.pull @objects, object
     
     moveObjectToPos: (object, pos) ->
         return false if @isInvalidPos(pos) or @isOccupiedPos(pos)
@@ -757,12 +778,22 @@ class KikiWorld
     # 0000000      000     00000000  000          
     
     step: (step) ->
-        quat = @camera.quaternion.clone()
-        quat.multiply (new THREE.Quaternion).setFromAxisAngle(new THREE.Vector3(1,0,0), step.dsecs*0.2)
-        quat.multiply (new THREE.Quaternion).setFromAxisAngle(new THREE.Vector3(0,1,0), step.dsecs*0.1)
-        @camera.position.set(0,0,@dist).applyQuaternion quat
-        @camera.quaternion.copy quat
+        if true
+            quat = @camera.quaternion.clone()
+            quat.multiply (new THREE.Quaternion).setFromAxisAngle(new THREE.Vector3(1,0,0), step.dsecs*0.2)
+            quat.multiply (new THREE.Quaternion).setFromAxisAngle(new THREE.Vector3(0,1,0), step.dsecs*0.1)
+            center = @decenter 0,0,0
+            @camera.position.set(center.x,center.y,center.z+@dist).applyQuaternion quat
+            @camera.quaternion.copy quat
+
         @sun.position.copy @camera.position
         @renderer.render @scene, @camera
+
+    resized: (w,h) ->
+        # log "world.resized w:#{w} h:#{h}"
+        @aspect = w/h
+        @camera?.aspect = @aspect
+        @camera?.updateProjectionMatrix()
+        @renderer?.setSize w,h
 
 module.exports = KikiWorld

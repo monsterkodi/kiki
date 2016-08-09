@@ -22,18 +22,18 @@ module.exports =
 
         s = world.size
         
-        world.addObjectLine(KikiWall, [0, s.y/2, s.z/2], [s.x, s.y/2, s.z/2])
-        world.addObjectLine(KikiWall, [s.x/2, s.y/2, 0], [s.x/2, s.y/2, s.z])
+        world.addObjectLine('KikiWall', [0, s.y/2, s.z/2], [s.x, s.y/2, s.z/2])
+        world.addObjectLine('KikiWall', [s.x/2, s.y/2, 0], [s.x/2, s.y/2, s.z])
         world.deleteObject(world.getOccupantAtPos(world.decenter(0,0,0)))
         
-        world.addObjectAtPos(KikiWall(), world.decenter(0, 3, 0))
-        world.addObjectAtPos(KikiWall(), world.decenter(0, 6, 0))
+        world.addObjectAtPos('KikiWall', world.decenter(0, 3, 0))
+        world.addObjectAtPos('KikiWall', world.decenter(0, 6, 0))
         
-        world.addObjectAtPos(KikiWall(), world.decenter(0, -4, 0))
-        world.addObjectAtPos(KikiWall(), world.decenter( 2,-5, 1))
-        world.addObjectAtPos(KikiWall(), world.decenter(-1,-5, 2))
-        world.addObjectAtPos(KikiWall(), world.decenter(-2,-5,-1))
-        world.addObjectAtPos(KikiWall(), world.decenter( 1,-5,-2))
+        world.addObjectAtPos('KikiWall', world.decenter(0, -4, 0))
+        world.addObjectAtPos('KikiWall', world.decenter( 2,-5, 1))
+        world.addObjectAtPos('KikiWall', world.decenter(-1,-5, 2))
+        world.addObjectAtPos('KikiWall', world.decenter(-2,-5,-1))
+        world.addObjectAtPos('KikiWall', world.decenter( 1,-5,-2))
         
         world.addObjectAtPos(KikiMutant(), world.decenter( 2,-5, 2))
         world.addObjectAtPos(KikiMutant(), world.decenter(-2,-5,-2))

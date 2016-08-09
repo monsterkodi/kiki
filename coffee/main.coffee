@@ -49,10 +49,6 @@ class Kiki extends Stage
         @elem.style.display = 'none'
         @pause()
         
-    resized: (w,h) -> 
-        @aspect = w/h
-        @camera?.aspect = @aspect
-        @camera?.updateProjectionMatrix()
-        @renderer?.setSize w,h
+    resized: (w,h) -> @world.resized w, h
 
 module.exports = Kiki

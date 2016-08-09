@@ -40,9 +40,9 @@ module.exports =
         world.addObjectLine  "KikiWire (KikiFace.PZ, KikiWire.VERTICAL)", KikiPos(s.x/2, 0, 0),     KikiPos s.x/2, s.y, 0
         world.addObjectLine  "KikiWire (KikiFace.NZ, KikiWire.VERTICAL)", KikiPos(s.x/2, 0, s.z-1), KikiPos s.x/2, s.y, s.z-1
         
-        world.addObjectAtPos KikiWireStone(), KikiPos s.x/2+3, 0, s.z/2
-        world.addObjectAtPos KikiWireStone(), KikiPos s.x/2-3, 0, s.z/2
-        world.addObjectAtPos KikiWireStone(), KikiPos s.x/2+2, 1, s.z/2
-        world.addObjectAtPos KikiWireStone(), KikiPos s.x/2-2, 1, s.z/2
-        world.addObjectAtPos KikiWireStone(), KikiPos s.x/2+1, 2, s.z/2
-        world.addObjectAtPos KikiWireStone(), KikiPos s.x/2-1, 2, s.z/2
+        world.addObjectAtPos 'KikiWireStone', KikiPos s.x/2+3, 0, s.z/2
+        world.addObjectAtPos 'KikiWireStone', KikiPos s.x/2-3, 0, s.z/2
+        world.addObjectAtPos 'KikiWireStone', KikiPos s.x/2+2, 1, s.z/2
+        world.addObjectAtPos 'KikiWireStone', KikiPos s.x/2-2, 1, s.z/2
+        world.addObjectAtPos 'KikiWireStone', KikiPos s.x/2+1, 2, s.z/2
+        world.addObjectAtPos 'KikiWireStone', KikiPos s.x/2-1, 2, s.z/2

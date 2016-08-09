@@ -7,7 +7,7 @@
 
 class Cell
     
-    constructor: () ->
+    constructor: () -> @objects = []
         
     getObjectsOfType: (clss) -> @objects.filter (o) -> o instanceof clss
     getObjectOfType: (clss) -> _.find @objects, (o) -> o instanceof clss

@@ -12,12 +12,15 @@ class Wall extends Item
     constructor: ->
         
         @geom = new THREE.BoxGeometry 1,1,1
-        @mat  = new THREE.MeshBasicMaterial color: 0x00ff00
+        @mat  = new THREE.MeshBasicMaterial color: 0xff0000
         @mesh = new THREE.Mesh @geom, @mat
         world.scene.add @mesh
+        @mesh.matrixAutoUpdate = true
         
         s = 0.45
         d = 0.5
+        
+        super
     
     # glDisable(GL_LIGHTING);
     # colors[KikiWall_base_color].glColor();
@@ -29,42 +32,6 @@ class Wall extends Item
     # glEnable(GL_LIGHTING);
     # glBegin(GL_QUADS);
 #     
-        # glNormal3f (0.0, 0.0, 1.0);
-        # glVertex3f ( s, -s, d);
-        # glVertex3f ( s,  s, d);
-        # glVertex3f (-s,  s, d);
-        # glVertex3f (-s, -s, d);
-
-        # glNormal3f (0.0, 0.0, -1.0);
-        # glVertex3f (-s, -s, -d);
-        # glVertex3f (-s,  s, -d);
-        # glVertex3f ( s,  s, -d);
-        # glVertex3f ( s, -s, -d);
-#         
-        # glNormal3f (0.0, 1.0, 0.0);
-        # glVertex3f (-s, d, -s);
-        # glVertex3f (-s, d,  s);
-        # glVertex3f ( s, d,  s);
-        # glVertex3f ( s, d, -s);
-
-        # glNormal3f (0.0, -1.0, 0.0);
-        # glVertex3f ( s, -d, -s);
-        # glVertex3f ( s, -d,  s);
-        # glVertex3f (-s, -d,  s);
-        # glVertex3f (-s, -d, -s);
-
-        # glNormal3f (1.0, 0.0, 0.0);
-        # glVertex3f (d,  s, -s);
-        # glVertex3f (d,  s,  s);
-        # glVertex3f (d, -s,  s);
-        # glVertex3f (d, -s, -s);
-
-        # glNormal3f (-1.0, 0.0, 0.0);
-        # glVertex3f (-d, -s, -s);
-        # glVertex3f (-d, -s,  s);
-        # glVertex3f (-d,  s,  s);
-        # glVertex3f (-d,  s, -s);
-
     # glEnd();       
 
 module.exports = Wall

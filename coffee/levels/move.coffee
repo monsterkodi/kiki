@@ -1,3 +1,10 @@
+
+#   00     00   0000000   000   000  00000000
+#   000   000  000   000  000   000  000     
+#   000000000  000   000   000 000   0000000 
+#   000 0 000  000   000     000     000     
+#   000   000   0000000       0      00000000
+
 module.exports =
     name:       "move"
     scheme:     "red_scheme"
@@ -24,17 +31,17 @@ module.exports =
 
         s = world.size
         
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2-1, s.y/2+1, 0))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2+1, s.y/2+1, 0))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2+1, s.y/2-1, 0))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2-1, s.y/2-1, 0))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2-1, s.y/2,   0))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2+1, s.y/2,   0))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2,   s.y/2-1, 0))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2,   s.y/2+1, 0))
+        world.addObjectAtPos('KikiStone', s.x/2-1, s.y/2+1, 0)
+        world.addObjectAtPos('KikiStone', s.x/2+1, s.y/2+1, 0)
+        world.addObjectAtPos('KikiStone', s.x/2+1, s.y/2-1, 0)
+        world.addObjectAtPos('KikiStone', s.x/2-1, s.y/2-1, 0)
+        world.addObjectAtPos('KikiStone', s.x/2-1, s.y/2,   0)
+        world.addObjectAtPos('KikiStone', s.x/2+1, s.y/2,   0)
+        world.addObjectAtPos('KikiStone', s.x/2,   s.y/2-1, 0)
+        world.addObjectAtPos('KikiStone', s.x/2,   s.y/2+1, 0)
         
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2,   s.y/2,   1))
+        world.addObjectAtPos('KikiStone', s.x/2,   s.y/2,   1)
         
-        exit_switch = KikiSwitch()
-        exit_switch.getEventWithName("switched").addAction(continuous(()-> world.toggle("exit")))
-        world.addObjectAtPos(exit_switch, KikiPos(s.x/2,  s.y/2, 0))
+        # exit_switch = KikiSwitch()
+        # exit_switch.getEventWithName("switched").addAction(continuous(()-> world.toggle("exit")))
+        # world.addObjectAtPos(exit_switch, KikiPos(s.x/2,  s.y/2, 0))

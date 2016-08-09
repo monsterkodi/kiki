@@ -23,7 +23,7 @@ module.exports =
         position: [0,-1,0]
     ]
     create: ->
-        s = world.getSize()
+        s = world.size
         
         world.addObjectLine("KikiWireStone()", KikiPos(0, 0, 0), KikiPos(0, s.y-2, 0))
         world.addObjectLine("KikiWireStone()", KikiPos(s.x-1, 0, 0), KikiPos(s.x-1, s.y-2, 0))

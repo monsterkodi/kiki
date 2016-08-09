@@ -16,7 +16,7 @@ module.exports =
     ]
     create: ->
 
-        s = world.getSize()
+        s = world.size
         
         for y in [ -7, -3, 1, 5]
             x = 1

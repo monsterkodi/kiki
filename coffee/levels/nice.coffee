@@ -31,7 +31,7 @@ module.exports =
                             KikiPos(p[0],p[1]-s,p[2]-s),
                             KikiPos(p[0],p[1]-s,p[2]+s) ])
                 
-        s = world.getSize()
+        s = world.size
         world.addObjectLine(KikiWall, KikiPos(1,1,1), KikiPos(9,9,9))
         world.addObjectLine(KikiWall, KikiPos(1,1,9), KikiPos(9,9,1))
         world.addObjectLine(KikiWall, KikiPos(1,9,1), KikiPos(9,1,9))

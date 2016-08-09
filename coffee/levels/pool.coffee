@@ -16,7 +16,7 @@ module.exports =
         position:     [0,0,-1]
     ]
     create: ->
-        s=world.getSize()
+        s=world.size
         d=1
         # for (i,j,l) in [ (m,n,o) for m in range(s.x) for n in range(s.y) for o in range( s.z/2-1)]
         for i in [0...s.x]

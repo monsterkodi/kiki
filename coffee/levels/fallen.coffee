@@ -31,7 +31,7 @@ module.exports =
     ]
     create: ->
 
-        s = world.getSize()
+        s = world.size
         
         #hop back on
         world.addObjectAtPos(KikiWall(), KikiPos(2, 12, 12))

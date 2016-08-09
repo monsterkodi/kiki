@@ -30,7 +30,7 @@ module.exports =
     ]
     create: ->
 
-        s = world.getSize()
+        s = world.size
         h = 0
         # bomb and stones
         

@@ -30,7 +30,7 @@ module.exports =
     ]
     create: ->
 
-        s = world.getSize()
+        s = world.size
         
         world.addObjectAtPos KikiMotorGear(KikiFace.NY),     KikiPos s.x/2-1, s.y-1, s.z/2
         world.addObjectAtPos KikiMotorCylinder(KikiFace.NY), KikiPos s.x/2-1, s.y-2, s.z/2

@@ -22,7 +22,7 @@ module.exports =
         position:     [0,4,0]
     ]
     create: ->
-        s = world.getSize()
+        s = world.size
         
         world.addObjectAtPos(KikiWireStone(), world.decenter(-1, 0, 0))
         world.addObjectAtPos(KikiWireStone(), world.decenter( 1, 0, 0))

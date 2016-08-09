@@ -27,7 +27,7 @@ module.exports =
     ]
     create: ->
 # 
-        s = world.getSize()
+        s = world.size
         
         exit_switch = KikiSwitch()
         exit_switch.getEventWithName("switched").addAction(continuous(() -> world.toggle("exit")))

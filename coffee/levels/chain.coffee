@@ -24,7 +24,7 @@ module.exports =
         position:   [0,-1,0]
     ],
     create: ->
-        s = world.getSize()
+        s = world.size
         d = s.z/2
         
         world.addObjectAtPos(KikiWall(), KikiPos(0, 0, d))

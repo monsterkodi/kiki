@@ -23,7 +23,7 @@ module.exports =
         position:     [0,0,0]
     ],
     create: ->
-        s = world.getSize()
+        s = world.size
         d = 2
         
         world.addObjectLine(KikiWireStone, world.decenter(-d, s.y/2, 0), world.decenter(-d, 0, 0))

@@ -20,7 +20,7 @@ module.exports =
     ]
     create: ->
 
-        s = world.getSize()
+        s = world.size
         
         world.addObjectAtPos(KikiWall(), world.decenter(0,0,1 - s.z/2))
         world.addObjectAtPos(KikiWall(), world.decenter(0,0,3 - s.z/2))

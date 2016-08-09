@@ -23,7 +23,7 @@ module.exports =
         position:     [0,0,0]
     ]
     create: ->
-        s = world.getSize()
+        s = world.size
         for m in [[1,KikiWall], [2,KikiStone]]
             for k in [-1*m[0],1*m[0]] 
                 for l in [-1*m[0],1*m[0]]

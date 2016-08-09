@@ -25,7 +25,64 @@ class KikiWorld
     @levelList = []
     @levelDict = []
     
-    constructor: -> 
+    constructor: (@view) -> 
+        
+        @renderer = new THREE.WebGLRenderer 
+            antialias:              true
+            logarithmicDepthBuffer: true
+            autoClear:              true
+                    
+        @renderer.setClearColor 0x008800        
+        @renderer.setSize @view.offsetWidth, @view.offsetHeight
+        
+        #    0000000   0000000   00     00  00000000  00000000    0000000 
+        #   000       000   000  000   000  000       000   000  000   000
+        #   000       000000000  000000000  0000000   0000000    000000000
+        #   000       000   000  000 0 000  000       000   000  000   000
+        #    0000000  000   000  000   000  00000000  000   000  000   000
+        
+        @fov    = 60
+        @near   = 10
+        @far    = 1000
+        @aspect = @view.offsetWidth / @view.offsetHeight
+        @dist   = 20
+        
+        @camera = new THREE.PerspectiveCamera @fov, @aspect, @near, @far
+        @camera.position.z = @dist
+        
+        #    0000000   0000000  00000000  000   000  00000000
+        #   000       000       000       0000  000  000     
+        #   0000000   000       0000000   000 0 000  0000000 
+        #        000  000       000       000  0000  000     
+        #   0000000    0000000  00000000  000   000  00000000
+        
+        @scene = new THREE.Scene()
+        @geom = new THREE.BoxGeometry 10, 10, 10
+        
+        #   000      000   0000000   000   000  000000000
+        #   000      000  000        000   000     000   
+        #   000      000  000  0000  000000000     000   
+        #   000      000  000   000  000   000     000   
+        #   0000000  000   0000000   000   000     000   
+
+        @sun = new THREE.PointLight 0xffff00
+        @sun.position.copy @camera.position
+        @scene.add @sun
+        
+        @ambient = new THREE.AmbientLight 0x444444
+        @scene.add @ambient
+                
+        # @material = new THREE.MeshPhongMaterial 
+            # color:     0xff0000
+            # side:      THREE.FrontSide
+            # shading:   THREE.SmoothShading
+            # transparent: true
+            # opacity: 0.85
+            # shininess: 0
+#         
+        # @mesh = new THREE.Mesh @geom, @material
+        # @scene.add @mesh        
+        
         @preview = false
         
         @display_list    = 0
@@ -62,7 +119,7 @@ class KikiWorld
                                                             
         # initializeTextures ()
     
-    @init: ->
+    @init: (view) ->
         return if world?
                 
         global.rot0    = new KQuaternion()
@@ -111,9 +168,10 @@ class KikiWorld
         for levelName in @levelList
             @levelDict[levelName] = require "./levels/#{levelName}"
             
-        log 'levelDict', @levelDict
+        # log 'levelDict', @levelDict
         
-        world = new KikiWorld()
+        world = new KikiWorld view
+        global.world = world
         world.create first @levelList
         world
 
@@ -129,8 +187,8 @@ class KikiWorld
         
         if worldDict
             if _.isString worldDict
-                world.level_index = KikiWorld.levelList.indexOf worldDict
-                world.level_name = worldDict
+                @level_index = KikiWorld.levelList.indexOf worldDict
+                @level_name = worldDict
                 @dict = KikiWorld.levelDict[worldDict]
             else
                 @dict = worldDict
@@ -138,33 +196,33 @@ class KikiWorld
         # ............................................................ appearance
         
         @setSize @dict["size"]
-        
-        if "scheme" in @dict
-            @applyColorScheme eval(@dict["scheme"])
-        else
-            @applyColorScheme default_scheme
+        log "world size set", @size
+        # if "scheme" in @dict
+            # @applyColorScheme eval(@dict["scheme"])
+        # else
+            # @applyColorScheme default_scheme
 
-        if "border" in @dict
-            border = @dict["border"]
-        else
-            border = 1
+        # if "border" in @dict
+            # border = @dict["border"]
+        # else
+            # border = 1
 
-        @setDisplayBorder border
+        # @setDisplayBorder border
 
         # ............................................................ intro text   
-        if "intro" in @dict
-            if not @preview
-                intro_text = KikiScreenText()
-                intro_text.addText @dict["intro"]
-                intro_text.show()
-            @setName @dict["intro"]
-        else
-            @setName "noname"
+        # if "intro" in @dict
+            # if not @preview
+                # intro_text = KikiScreenText()
+                # intro_text.addText @dict["intro"]
+                # intro_text.show()
+            # @setName @dict["intro"]
+        # else
+            # @setName "noname"
         
-        if @preview
-            @getProjection().setViewport(0.0, 0.4, 1.0, 0.6)
-        else
-            @getProjection().setViewport(0.0, 0.0, 1.0, 1.0)
+        # if @preview
+            # @getProjection().setViewport(0.0, 0.4, 1.0, 0.6)
+        # else
+            # @getProjection().setViewport(0.0, 0.0, 1.0, 1.0)
         
         # ............................................................ escape
         # escape_event = Controller.getEventWithName ("escape")
@@ -173,70 +231,72 @@ class KikiWorld
 
         # ............................................................ exits
 
-        if "exits" in @dict
+        if @dict.exits? and false
+            log "exits"
             exit_id = 0
-            for entry in @dict["exits"]
-                exit_gate = KikiGate (entry["active"])
+            for entry in @dict.exits
+                exit_gate = new KikiGate entry["active"]
                 
                 if "name" in entry
                     name = entry["name"]
                 else
                     name = "exit "+str(exit_id)
-                exit_gate.setName(name)
+                exit_gate.setName name 
 
-                exit_action  = once ("exit " + str(exit_id))
-                delay_action = once (lambda a = exit_action: Controller.timer_event.addAction (a))
-                exit_gate.getEventWithName ("enter").addAction (delay_action)
-                if "position" in entry
-                    pos = @decenter (entry["position"])
+                exit_action  = once "exit " + str(exit_id) 
+                delay_action = once (a=exit_action) -> Controller.timer_event.addAction(a) 
+                # exit_gate.getEventWithName("enter").addAction(delay_action)
+                if entry.position?
+                    pos = @decenter entry.position
                 else if "coordinates" in entry
-                    pos = new Pos entry["coordinates"]
+                    pos = new Pos entry.coordinates
                 @addObjectAtPos exit_gate, pos
                 exit_id += 1
 
         # ............................................................ creation
 
-        if "create" in @dict
-            if _.isFunction @dict["create"]
-                @dict["create"]()
-            else
-                exec @dict["create"] in globals()
+        if @dict.create?
+            log "create"
+            if _.isFunction @dict.create
+                @dict.create()
+            # else
+                # exec @dict["create"] in globals()
 
         # ............................................................ player
 
-        player = Controller.player
-        
-        player_dict = @dict["player"]
-        
-        if "orientation" in player_dict
-            player.setOrientation (player_dict["orientation"])
-        else
-            player.setOrientation (roty90)
-            
-        if "position" in player_dict
-            @addObjectAtPos player, @decenter(player_dict["position"])
-        else if "coordinates" in player_dict
-            pos = player_dict["coordinates"]
-            @addObjectAtPos player, Pos(pos[0], pos[1], pos[2])
+        # player = Controller.player
+#         
+        # player_dict = @dict["player"]
+#         
+        # if "orientation" in player_dict
+            # player.setOrientation (player_dict["orientation"])
+        # else
+            # player.setOrientation (roty90)
+#             
+        # if "position" in player_dict
+            # @addObjectAtPos player, @decenter(player_dict["position"])
+        # else if "coordinates" in player_dict
+            # pos = player_dict["coordinates"]
+            # @addObjectAtPos player, Pos(pos[0], pos[1], pos[2])
 
-        if "nostatus" in player_dict
-            if player_dict["nostatus"] or @preview
-                Controller.player_status.hide()
-            else
-                Controller.player_status.show()
-        else
-            if @preview
-                Controller.player_status.hide()
-            else
-                Controller.player_status.show()
-        
-        @getProjection().setPosition(KVector())
+        # if "nostatus" in player_dict
+            # if player_dict["nostatus"] or @preview
+                # Controller.player_status.hide()
+            # else
+                # Controller.player_status.show()
+        # else
+            # if @preview
+                # Controller.player_status.hide()
+            # else
+                # Controller.player_status.show()
+#         
+        # @getProjection().setPosition(KVector())
 
-        Controller.player.getStatus().setMinMoves (highscore.levelParMoves (@level_name))
-        Controller.player.getStatus().setMoves (0)
+        # Controller.player.getStatus().setMinMoves (highscore.levelParMoves (@level_name))
+        # Controller.player.getStatus().setMoves (0)
 
         # ............................................................ init
-        @init() # tell the world that we are finished
+        # @init() # tell the world that we are finished
 
     restart: (self) ->
         # restores the player status and restarts the current level
@@ -290,15 +350,11 @@ class KikiWorld
         else if object.getClassName() == "KikiGate"
             kikiObjectToGate(object).setActive(1)
     
-    decenter: () ->
-        s = @getSize()
-        if len(args) == 3
-            [x, y, z] = args
-        else if len(args) == 1
-            [x, y, z] = args[0]
-    
-        new Pos x+s.x/2, y+s.y/2, z+s.z/2 
-    
+    decenter: (x,y,z) -> new Pos(x,y,z).plus @size.div 2
+
+    isValidPos: (pos) -> pos.x >= 0 and pos.x < @size.x and pos.y >= 0 and pos.y < @size.y and pos.z >= 0 and pos.z < @size.z
+    isInvalidPos: (pos) -> not @isValidPos pos
+
     addObjectLine: (object, start, end) ->
         # adds a line of objects of type to the world. start and end should be 3-tuples or Pos objects
         if start instanceof Pos
@@ -337,12 +393,11 @@ class KikiWorld
         
     setObjectRandom: (object) ->
         # adds number objects of type at random positions to the world
-        size = @getSize()
         object_set = 0
         while not object_set                                   # hack alert!
-            random_pos = Pos random.randrange(size.x),
-                                 random.randrange(size.y),
-                                 random.randrange(size.z)
+            random_pos = Pos random.randrange(@size.x),
+                             random.randrange(@size.y),
+                             random.randrange(@size.z)
             if not object.isSpaceEgoistic() or @isUnoccupiedPos(random_pos)
                 @addObjectAtPos object, random_pos
                 object_set = 1
@@ -428,23 +483,25 @@ class KikiWorld
         menu.addItem(Controller.getLocalizedString("about"), once(display_about))
         menu.addItem(Controller.getLocalizedString("quit"), once(Controller.quit))
 
-    setSize: (x, y, z) ->
+    setSize: (size) ->
         @deleteAllObjects()
         @deleteDisplayList()
         @cells = []
     
-        @size.x = x 
-        @size.y = y 
-        @size.z = z
+        @size = new Pos size
         
-        @cells.resize x*y*z, 0
-            
-        # .......................................... calcuate max distance (for position relative sound)
-        @max_distance = Math.Max(x, Math.Max(y, z))  # ............................. heuristic of a heuristic :-)
+        # calcuate max distance (for position relative sound)
+        @max_distance = Math.max(@size.x, Math.max(@size.y, @size.z))  # heuristic of a heuristic :-)
 
     getCellAtPos: (pos) -> return @cells[@posToIndex(pos)] if @isValidPos pos
     getBotAtPos:  (pos) -> @getObjectOfTypeAtPos KikiBot, pos
 
+    posToIndex:   (pos) -> pos.x * @size.z * @size.y + pos.y * @size.z + pos.z
+    indexToPos:   (index) -> 
+        lsize = @size.z * @size.y
+        lrest = index % lsize
+        new Pos index/lsize, lrest/@size.z, lrest%@size.z
+    
     getObjectsOfType:      (clss) -> @objects.filter (o) -> o instanceof clss
     getObjectsOfTypeAtPos: (clss, pos) -> @getCellAtPos(pos)?.getObjectsOfType clss
     getObjectOfTypeAtPos:  (clss, pos) -> @getCellAtPos(pos)?.getRealObjectOfType clss
@@ -491,13 +548,22 @@ class KikiWorld
                 # delete cell
                 @cells[posToIndex(pos)] = null
 
+    newObject: (object) ->
+        log "newObject:", object
+        if _.isString object
+            if object.startsWith 'Kiki'
+                return new (require "./#{object.slice(4).toLowerCase()}")()
+        object
+        
     addObject: (object) ->
+        object = @newObject object
         if object instanceof KikiLight
             lights.push object # if lights.indexOf(object) < 0
         else
             objects.push object # if objects.indexOf(object) < 0 
 
     addObjectAtPos: (object, pos) ->
+        object = @newObject object
         @setObjectAtPos object, pos
         @addObject object
 
@@ -683,6 +749,20 @@ class KikiWorld
             @colors[1] = color
         
         # Controller.world.deleteDisplayList ()
-
+        
+    #  0000000  000000000  00000000  00000000       
+    # 000          000     000       000   000      
+    # 0000000      000     0000000   00000000       
+    #      000     000     000       000            
+    # 0000000      000     00000000  000          
+    
+    step: (step) ->
+        quat = @camera.quaternion.clone()
+        quat.multiply (new THREE.Quaternion).setFromAxisAngle(new THREE.Vector3(1,0,0), step.dsecs*0.2)
+        quat.multiply (new THREE.Quaternion).setFromAxisAngle(new THREE.Vector3(0,1,0), step.dsecs*0.1)
+        @camera.position.set(0,0,@dist).applyQuaternion quat
+        @camera.quaternion.copy quat
+        @sun.position.copy @camera.position
+        @renderer.render @scene, @camera
 
 module.exports = KikiWorld

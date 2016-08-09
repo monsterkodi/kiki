@@ -24,7 +24,7 @@ module.exports =
     ]
     create: ->
 
-        s = world.getSize()
+        s = world.size
         
         switched = (swtch) ->
             world.switch_counter += swtch.isActive() and 1 or -1

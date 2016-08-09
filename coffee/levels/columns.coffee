@@ -19,7 +19,7 @@ module.exports =
     ]
     create: ->
 
-        s = world.getSize()
+        s = world.size
         
         for y in range(-s.y/2+1, s.y/2+1)
             for x in range(-s.x/2+1, s.x/2+1, 2)

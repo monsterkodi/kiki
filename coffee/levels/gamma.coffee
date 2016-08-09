@@ -23,7 +23,7 @@ module.exports =
         coordinates:  [2,7,4] #absolute coord
     ]
     create: ->
-        s = world.getSize()
+        s = world.size
         world.switch_countera = 0
         world.switch_counter = 0
         

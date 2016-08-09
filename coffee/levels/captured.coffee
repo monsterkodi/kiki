@@ -20,7 +20,7 @@ module.exports =
         position:     [0,0,0]
     ]
     create: ->
-        s = world.getSize()
+        s = world.size
         
         for i in [-2, 2]
             world.addObjectPoly(KikiStone, [world.decenter(1, 1, i), world.decenter(1, -1, i), world.decenter(-1, -1, i), world.decenter(-1, 1, i)])

@@ -20,7 +20,7 @@ module.exports =
     ],
     create: ->
 
-        s = world.getSize()
+        s = world.size
         
         world.addObjectLine(KikiWall, [0, s.y/2, s.z/2], [s.x, s.y/2, s.z/2])
         world.addObjectLine(KikiWall, [s.x/2, s.y/2, 0], [s.x/2, s.y/2, s.z])

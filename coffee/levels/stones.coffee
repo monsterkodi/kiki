@@ -22,7 +22,7 @@ module.exports =
     ]
     create: ->
 
-        s = world.getSize()
+        s = world.size
         
         num = 4
         for i in [1..num]

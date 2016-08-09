@@ -15,15 +15,15 @@ module.exports =
     ]
     create: ->
         
-        s=world.getSize()
+        s=world.size
     
         middlemax = (u,v,w) ->
-            s=world.getSize()
+            s=world.size
             d= 3.0/( (u-s.x/2.0)**2+ (v-s.y/2.0)**2 + (w-s.z/2.0)**2 + 1 )
             return min(1.0 ,max(0.2,d))
             
         middlemin = (u,v,w) ->
-            s=world.getSize()
+            s=world.size
             d= ( (u-s.x/2.0)**2+ (v-s.y/2.0)**2 + (w-s.z/2.0)**2  )/25
             return min(1.0 ,max(0.4,d))
             

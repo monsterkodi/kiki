@@ -24,7 +24,7 @@ module.exports =
         position:     [0,0,0]
     ]
     create: ->
-        s = world.getSize()
+        s = world.size
         d = 2
         
         world.addObjectAtPos(KikiMotorCylinder(KikiFace.PY),    KikiPos(s.x/2, 1,      s.z/2))

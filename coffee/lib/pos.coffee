@@ -22,9 +22,11 @@ class Pos
             @y = parseInt y
             @z = parseInt z
 
-    vector: () -> new Vector(x, y, z)
-    minus: (p) -> new Pos @x-px, @y-py, @z-p.z
-    plus:  (p) -> new Pos @x+px, @y+py, @z+p.z
+    vector: () -> new Vector x, y, z 
+    minus: (p) -> new Pos @x-p.x, @y-p.y, @z-p.z
+    plus:  (p) -> new Pos @x+p.x, @y+p.y, @z+p.z
+    mul:   (f) -> new Pos @x*f, @y*f, @z*f
+    div:   (d) -> new Pos @x/d, @y/d, @z/d
     eql:   (p) -> @x==p.x and @y==p.y and @z==p.z
     
     add: (p) -> 

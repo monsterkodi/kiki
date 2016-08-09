@@ -23,7 +23,7 @@ module.exports =
         coordinates:  [8,8,8]
     ]
     create: ->
-        s=world.getSize()
+        s=world.size
         mx=s.x/2
         my=s.y/2
         mz=s.z/2

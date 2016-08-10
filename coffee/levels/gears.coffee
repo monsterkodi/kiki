@@ -24,12 +24,12 @@ module.exports =
     create: ->
         s = world.size
         
-        world.addObjectAtPos(KikiWireStone(), world.decenter(-1, 0, 0))
-        world.addObjectAtPos(KikiWireStone(), world.decenter( 1, 0, 0))
-        world.addObjectAtPos(KikiWireStone(), world.decenter( 0,-1, 0))
-        world.addObjectAtPos(KikiWireStone(), world.decenter( 0, 1, 0))
-        world.addObjectAtPos(KikiWireStone(), world.decenter( 0, 0,-1))
-        world.addObjectAtPos(KikiWireStone(), world.decenter( 0, 0, 1))
+        world.addObjectAtPos('KikiWireStone', world.decenter(-1, 0, 0))
+        world.addObjectAtPos('KikiWireStone', world.decenter( 1, 0, 0))
+        world.addObjectAtPos('KikiWireStone', world.decenter( 0,-1, 0))
+        world.addObjectAtPos('KikiWireStone', world.decenter( 0, 1, 0))
+        world.addObjectAtPos('KikiWireStone', world.decenter( 0, 0,-1))
+        world.addObjectAtPos('KikiWireStone', world.decenter( 0, 0, 1))
         
         world.addObjectAtPos(KikiGear(KikiFace.PY), KikiPos(s.x/2-1, 0, s.z/2-1))
         world.addObjectAtPos(KikiGear(KikiFace.PY), KikiPos(s.x/2+1, 0, s.z/2-1))

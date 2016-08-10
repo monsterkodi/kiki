@@ -68,61 +68,61 @@ module.exports =
         
         # Invisimaze
         for y in [0, 1]
-             world.addObjectLine(KikiStone, KikiPos(4, y, 2), KikiPos(4, y, 5))
-             world.addObjectLine(KikiStone, KikiPos(5, y, 2), KikiPos(7, y, 2))
+             world.addObjectLine('KikiStone', KikiPos(4, y, 2), KikiPos(4, y, 5))
+             world.addObjectLine('KikiStone', KikiPos(5, y, 2), KikiPos(7, y, 2))
         
         # for y in [0]
             # for x in [2] 
-        world.addObjectPoly(KikiStone, [world.decenter(-2, 0, -2), world.decenter(-2, 0, 2), world.decenter(2, 0, 2), world.decenter(2, 0, -2)])
+        world.addObjectPoly('KikiStone', [world.decenter(-2, 0, -2), world.decenter(-2, 0, 2), world.decenter(2, 0, 2), world.decenter(2, 0, -2)])
         
-        world.addObjectPoly(KikiStone, [KikiPos(2, 4, 2), KikiPos(2, 4, 4), KikiPos(4, 4, 4), KikiPos(4, 4, 2)])
+        world.addObjectPoly('KikiStone', [KikiPos(2, 4, 2), KikiPos(2, 4, 4), KikiPos(4, 4, 4), KikiPos(4, 4, 2)])
         
-        world.addObjectAtPos(KikiStone(), KikiPos(2, 3, 2))
-        world.addObjectAtPos(KikiStone(), KikiPos(6, 3, 1))
-        world.addObjectAtPos(KikiStone(), KikiPos(6, 3, 3))
-        world.addObjectAtPos(KikiStone(), KikiPos(2, 1, 1))
-        world.addObjectAtPos(KikiStone(), KikiPos(3, 0, 1))
-        world.addObjectAtPos(KikiStone(), KikiPos(2, 1, 2))
-        world.addObjectAtPos(KikiStone(), KikiPos(2, 0, 2))
-        world.addObjectAtPos(KikiStone(), KikiPos(4, 2, 3))
-        world.addObjectAtPos(KikiStone(), KikiPos(5, 2, 2))
-        world.addObjectAtPos(KikiStone(), KikiPos(5, 2, 1))
-        world.addObjectAtPos(KikiStone(), KikiPos(4, 2, 1))
-        world.addObjectAtPos(KikiStone(), KikiPos(3, 2, 2))
-        world.addObjectAtPos(KikiStone(), KikiPos(3, 2, 3))
-        world.addObjectAtPos(KikiStone(), KikiPos(5, 3, 0))
+        world.addObjectAtPos('KikiStone', KikiPos(2, 3, 2))
+        world.addObjectAtPos('KikiStone', KikiPos(6, 3, 1))
+        world.addObjectAtPos('KikiStone', KikiPos(6, 3, 3))
+        world.addObjectAtPos('KikiStone', KikiPos(2, 1, 1))
+        world.addObjectAtPos('KikiStone', KikiPos(3, 0, 1))
+        world.addObjectAtPos('KikiStone', KikiPos(2, 1, 2))
+        world.addObjectAtPos('KikiStone', KikiPos(2, 0, 2))
+        world.addObjectAtPos('KikiStone', KikiPos(4, 2, 3))
+        world.addObjectAtPos('KikiStone', KikiPos(5, 2, 2))
+        world.addObjectAtPos('KikiStone', KikiPos(5, 2, 1))
+        world.addObjectAtPos('KikiStone', KikiPos(4, 2, 1))
+        world.addObjectAtPos('KikiStone', KikiPos(3, 2, 2))
+        world.addObjectAtPos('KikiStone', KikiPos(3, 2, 3))
+        world.addObjectAtPos('KikiStone', KikiPos(5, 3, 0))
         
-        world.addObjectAtPos(KikiStone(), KikiPos(6, 4, 0))
+        world.addObjectAtPos('KikiStone', KikiPos(6, 4, 0))
         
         #the bombLock
-        world.addObjectAtPos(KikiStone(), KikiPos(7, 1, 2))
-        world.addObjectAtPos(KikiStone(), KikiPos(7, 1, 3))
-        world.addObjectAtPos(KikiStone(), KikiPos(7, 3, 2))
-        world.addObjectAtPos(KikiStone(), KikiPos(7, 2, 1))
-        world.addObjectAtPos(KikiStone(), KikiPos(7, 2, 2))
-        world.addObjectAtPos(KikiBomb(), KikiPos(7, 2, 2))
+        world.addObjectAtPos('KikiStone', KikiPos(7, 1, 2))
+        world.addObjectAtPos('KikiStone', KikiPos(7, 1, 3))
+        world.addObjectAtPos('KikiStone', KikiPos(7, 3, 2))
+        world.addObjectAtPos('KikiStone', KikiPos(7, 2, 1))
+        world.addObjectAtPos('KikiStone', KikiPos(7, 2, 2))
+        world.addObjectAtPos('KikiBomb', KikiPos(7, 2, 2))
         
         # Exit 1 is blocked!!!
-        world.addObjectAtPos(KikiMotorCylinder(), KikiPos(1, 2, 2))        
+        world.addObjectAtPos('KikiMotorCylinder', KikiPos(1, 2, 2))        
         
         # Walls
         # for y in [-4,]
         y = -4
         for x in [1, -1]
-            world.addObjectPoly(KikiWall, [world.decenter(y, -x, -x), world.decenter(y, -x, x), world.decenter(y, x, x), world.decenter(y, x, -x)])        
+            world.addObjectPoly('KikiWall', [world.decenter(y, -x, -x), world.decenter(y, -x, x), world.decenter(y, x, x), world.decenter(y, x, -x)])        
         # for y in [-3]
         y = -3
         for x in [2, -2]
-            world.addObjectPoly(KikiWall, [world.decenter(y, -x, -x), world.decenter(y, -x, x), world.decenter(y, x, x), world.decenter(y, x, -x)])
+            world.addObjectPoly('KikiWall', [world.decenter(y, -x, -x), world.decenter(y, -x, x), world.decenter(y, x, x), world.decenter(y, x, -x)])
         
         # for y in [4,]
         y = 4
         for x in [1, -1]
-            world.addObjectPoly(KikiWall, [world.decenter(y, -x, -x), world.decenter(y, -x, x), world.decenter(y, x, x), world.decenter(y, x, -x)])
+            world.addObjectPoly('KikiWall', [world.decenter(y, -x, -x), world.decenter(y, -x, x), world.decenter(y, x, x), world.decenter(y, x, -x)])
             
         # for y in [3]
         y = 3
         for x in [2, -2]
-            world.addObjectPoly(KikiWall, [world.decenter(y, -x, -x), world.decenter(y, -x, x), world.decenter(y, x, x), world.decenter(y, x, -x)])
+            world.addObjectPoly('KikiWall', [world.decenter(y, -x, -x), world.decenter(y, -x, x), world.decenter(y, x, x), world.decenter(y, x, -x)])
         
         

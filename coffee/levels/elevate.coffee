@@ -41,9 +41,9 @@ module.exports =
         world.addObjectLine(KikiWire(KikiFace.PZ, KikiWire.VERTICAL), s.x/2+2, 0, 0,     s.x/2+2, s.y, 0)
         world.addObjectLine(KikiWire(KikiFace.NZ, KikiWire.VERTICAL), s.x/2+2, 0, s.z-1, s.x/2+2, s.y, s.z-1)
         
-        world.addObjectAtPos(KikiBomb(), s.x/2+2, 0, s.z/2-1)
-        world.addObjectAtPos(KikiBomb(), s.x/2+1, 0, s.z/2+1)
-        world.addObjectAtPos(KikiBomb(), s.x/2, 0, s.z/2-1)
-        world.addObjectAtPos(KikiBomb(), s.x/2-1, 0, s.z/2+1)
-        world.addObjectAtPos(KikiBomb(), s.x/2-2, 0, s.z/2-1)
+        world.addObjectAtPos('KikiBomb', s.x/2+2, 0, s.z/2-1)
+        world.addObjectAtPos('KikiBomb', s.x/2+1, 0, s.z/2+1)
+        world.addObjectAtPos('KikiBomb', s.x/2,   0, s.z/2-1)
+        world.addObjectAtPos('KikiBomb', s.x/2-1, 0, s.z/2+1)
+        world.addObjectAtPos('KikiBomb', s.x/2-2, 0, s.z/2-1)
         

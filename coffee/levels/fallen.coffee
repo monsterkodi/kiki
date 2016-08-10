@@ -34,29 +34,29 @@ module.exports =
         s = world.size
         
         #hop back on
-        world.addObjectAtPos(KikiWall(), KikiPos(2, 12, 12))
+        world.addObjectAtPos('KikiWall', KikiPos(2, 12, 12))
         
         #orient world
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2, s.y/2+2, s.z/2))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2+2, s.y/2+2, s.z/2))
+        world.addObjectAtPos('KikiStone', KikiPos(s.x/2, s.y/2+2, s.z/2))
+        world.addObjectAtPos('KikiStone', KikiPos(s.x/2+2, s.y/2+2, s.z/2))
         
         #some Hops
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2+2, s.y/2-2, s.z/2+2))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2+2, s.y/2-2, s.z/2+4))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2, s.y/2-2, s.z/2+4))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2+2, s.y/2-2, s.z/2+4))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2, s.y/2-4, s.z/2+4))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2-2, s.y/2-4, s.z/2+4))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2-4, s.y/2-4, s.z/2+4))
+        world.addObjectAtPos('KikiStone', KikiPos(s.x/2+2, s.y/2-2, s.z/2+2))
+        world.addObjectAtPos('KikiStone', KikiPos(s.x/2+2, s.y/2-2, s.z/2+4))
+        world.addObjectAtPos('KikiStone', KikiPos(s.x/2, s.y/2-2, s.z/2+4))
+        world.addObjectAtPos('KikiStone', KikiPos(s.x/2+2, s.y/2-2, s.z/2+4))
+        world.addObjectAtPos('KikiStone', KikiPos(s.x/2, s.y/2-4, s.z/2+4))
+        world.addObjectAtPos('KikiStone', KikiPos(s.x/2-2, s.y/2-4, s.z/2+4))
+        world.addObjectAtPos('KikiStone', KikiPos(s.x/2-4, s.y/2-4, s.z/2+4))
         
         #long fall and strip1
         
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2-4, s.y/2+4, s.z/2+2))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2-3, s.y/2+4, s.z/2+2))
+        world.addObjectAtPos('KikiStone', KikiPos(s.x/2-4, s.y/2+4, s.z/2+2))
+        world.addObjectAtPos('KikiStone', KikiPos(s.x/2-3, s.y/2+4, s.z/2+2))
         
         #short fall and strip2
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2-4, s.y/2+1, s.z/2-2))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2-4, s.y/2+1, s.z/2-1))
+        world.addObjectAtPos('KikiStone', KikiPos(s.x/2-4, s.y/2+1, s.z/2-2))
+        world.addObjectAtPos('KikiStone', KikiPos(s.x/2-4, s.y/2+1, s.z/2-1))
         
-        world.addObjectAtPos(KikiStone(), KikiPos(0, 0, 0))
+        world.addObjectAtPos('KikiStone', KikiPos(0, 0, 0))
         

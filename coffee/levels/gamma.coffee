@@ -50,27 +50,27 @@ module.exports =
         dswitch.getEventWithName("switched").addAction(continuous((s=dswitch) -> switched(s)))
         eswitch.getEventWithName("switched").addAction(continuous((s=eswitch) -> switched(s)))
  
-        world.addObjectAtPos(aswitch , KikiPos(s.x-1,0,0))
-        world.addObjectAtPos(bswitch , KikiPos(0,0,0))
+        world.addObjectAtPos(aswitch ,      KikiPos(s.x-1,0,0))
+        world.addObjectAtPos(bswitch ,      KikiPos(0,0,0))
            
-        world.addObjectAtPos(KikiMutant(), KikiPos(s.x/2,0,0))
-        world.addObjectLine(KikiWall, KikiPos(0,0,1), KikiPos(s.x,0,1))
-        world.addObjectLine(KikiWall, KikiPos(0,1,0), KikiPos(s.x,1,0))
+        world.addObjectAtPos('KikiMutant',  KikiPos(s.x/2,0,0))
+        world.addObjectLine('KikiWall',     KikiPos(0,0,1), KikiPos(s.x,0,1))
+        world.addObjectLine('KikiWall',     KikiPos(0,1,0), KikiPos(s.x,1,0))
         
-        world.addObjectLine(KikiWall,       KikiPos(0,2,2), KikiPos(s.x-3,2,2))
-        world.addObjectAtPos(KikiSwitch(),  KikiPos(s.x-3,2,2))
-        world.addObjectLine(KikiWall,       KikiPos(2,2,2), KikiPos(2,2,s.z-3))
-        world.addObjectAtPos(KikiSwitch(),  KikiPos(2,2,s.z-3))
-        world.addObjectLine(KikiWall,       KikiPos(2,2,4), KikiPos(2,s.y-3,4))
+        world.addObjectLine('KikiWall',     KikiPos(0,2,2), KikiPos(s.x-3,2,2))
+        world.addObjectAtPos('KikiSwitch',  KikiPos(s.x-3,2,2))
+        world.addObjectLine('KikiWall',     KikiPos(2,2,2), KikiPos(2,2,s.z-3))
+        world.addObjectAtPos('KikiSwitch',  KikiPos(2,2,s.z-3))
+        world.addObjectLine('KikiWall',     KikiPos(2,2,4), KikiPos(2,s.y-3,4))
         #exit 
-        world.addObjectAtPos(KikiSwitch() , KikiPos(2,s.y-3,4))
+        world.addObjectAtPos('KikiSwitch' , KikiPos(2,s.y-3,4))
            
-        world.addObjectLine(KikiWall,  KikiPos(2,4,4), KikiPos(s.x-4,4,4))
-        world.addObjectAtPos(cswitch , KikiPos(s.x-3,4,4))
+        world.addObjectLine('KikiWall',     KikiPos(2,4,4), KikiPos(s.x-4,4,4))
+        world.addObjectAtPos(cswitch ,      KikiPos(s.x-3,4,4))
            
-        world.addObjectLine(KikiWall,  KikiPos(4,4,4), KikiPos(4,4,s.z-4))
-        world.addObjectAtPos(dswitch , KikiPos(4,4,s.z-3))
+        world.addObjectLine('KikiWall',     KikiPos(4,4,4), KikiPos(4,4,s.z-4))
+        world.addObjectAtPos(dswitch ,      KikiPos(4,4,s.z-3))
            
-        world.addObjectLine(KikiWall,  KikiPos(4,4,6), KikiPos(4,s.y-4,6))
-        world.addObjectAtPos(eswitch , KikiPos(4,s.y-3,6))
+        world.addObjectLine('KikiWall',     KikiPos(4,4,6), KikiPos(4,s.y-4,6))
+        world.addObjectAtPos(eswitch ,      KikiPos(4,s.y-3,6))
         

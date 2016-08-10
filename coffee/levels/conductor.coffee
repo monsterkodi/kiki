@@ -30,7 +30,7 @@ module.exports =
         
         KikiWireWall = (c , p) ->
             if world.isUnoccupiedPos(KikiPos(p.x,p.y,p.z))
-                world.addObjectAtPos(KikiWall(), KikiPos(p.x,p.y,p.z))
+                world.addObjectAtPos('KikiWall', KikiPos(p.x,p.y,p.z))
                 world.addObjectAtPos(KikiWire(KikiFace.X,  c), KikiPos(p.x+1,p.y  ,p.z  ))
                 world.addObjectAtPos(KikiWire(KikiFace.NX, c), KikiPos(p.x-1,p.y  ,p.z  ))
                 world.addObjectAtPos(KikiWire(KikiFace.Y,  c), KikiPos(p.x  ,p.y+1,p.z  ))
@@ -69,10 +69,10 @@ module.exports =
         
         KikiWireWall(15, KikiPos(5,4,8))    
     
-        world.addObjectAtPos(KikiWall(), KikiPos(0,0,0))
-        world.addObjectAtPos(KikiWall(), KikiPos(10,0,0))
-        world.addObjectAtPos(KikiWall(), KikiPos(10,8,0))
-        world.addObjectAtPos(KikiWall(), KikiPos(0,8,0))
+        world.addObjectAtPos('KikiWall', KikiPos(0,0,0))
+        world.addObjectAtPos('KikiWall', KikiPos(10,0,0))
+        world.addObjectAtPos('KikiWall', KikiPos(10,8,0))
+        world.addObjectAtPos('KikiWall', KikiPos(0,8,0))
         
         g.setActive(True)
             

@@ -26,7 +26,7 @@ module.exports =
         position: [0,0,0]
     ]
     create: ->
-        world.addObjectAtPos 'KikiLight', KikiPos 7,7,7
+        world.addObjectAtPos 'KikiLight', 7,7,7
         for i in [0...150] 
             world.setObjectRandom KikiMutant()
             

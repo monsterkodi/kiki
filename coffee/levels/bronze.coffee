@@ -33,11 +33,11 @@ module.exports =
         world.addObjectAtPos(KikiGear(KikiFace.PY),             KikiPos(s.x/2-1, s.y-1,  s.z/2-1))
         world.addObjectAtPos(KikiGenerator(KikiFace.PY),        KikiPos(s.x/2+1, s.y-1,  s.z/2-1))
                                        
-        world.addObjectAtPos(KikiBomb(),                        KikiPos(s.x/2-1, s.y-1,  s.z/2+1))
+        world.addObjectAtPos('KikiBomb',                        KikiPos(s.x/2-1, s.y-1,  s.z/2+1))
         
-        world.addObjectAtPos(KikiWireStone(),                   KikiPos(s.x/2,   s.y-1,  s.z/2))
-        world.addObjectAtPos(KikiWireStone(),                   KikiPos(s.x/2+1, s.y-2,  s.z/2))
-        world.addObjectAtPos(KikiWireStone(),                   KikiPos(s.x/2-1, s.y-2,  s.z/2))
+        world.addObjectAtPos('KikiWireStone',                   KikiPos(s.x/2,   s.y-1,  s.z/2))
+        world.addObjectAtPos('KikiWireStone',                   KikiPos(s.x/2+1, s.y-2,  s.z/2))
+        world.addObjectAtPos('KikiWireStone',                   KikiPos(s.x/2-1, s.y-2,  s.z/2))
         
         # floor wire square
         world.addObjectLine("KikiWire(KikiFace.PY, 10)", KikiPos(s.x/2-d+1, 0, s.z/2-d), KikiPos(s.x/2+d, 0, s.z/2-d))

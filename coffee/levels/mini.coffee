@@ -16,20 +16,20 @@ module.exports =
         position:     [0,0,1]
     ]
     create: ->
-        world.addObjectAtPos( KikiWall(), KikiPos(1,1,0))
-        world.addObjectAtPos( KikiWall(), KikiPos(3,1,0))
-        world.addObjectAtPos( KikiWall(), KikiPos(1,3,0))
-        world.addObjectAtPos( KikiWall(), KikiPos(3,3,0))
+        world.addObjectAtPos( 'KikiWall', KikiPos(1,1,0))
+        world.addObjectAtPos( 'KikiWall', KikiPos(3,1,0))
+        world.addObjectAtPos( 'KikiWall', KikiPos(1,3,0))
+        world.addObjectAtPos( 'KikiWall', KikiPos(3,3,0))
         
-        world.addObjectAtPos( KikiWall(), KikiPos(1,1,6))
-        world.addObjectAtPos( KikiWall(), KikiPos(3,1,6))
-        world.addObjectAtPos( KikiWall(), KikiPos(1,3,6))
-        world.addObjectAtPos( KikiWall(), KikiPos(3,3,6))
+        world.addObjectAtPos( 'KikiWall', KikiPos(1,1,6))
+        world.addObjectAtPos( 'KikiWall', KikiPos(3,1,6))
+        world.addObjectAtPos( 'KikiWall', KikiPos(1,3,6))
+        world.addObjectAtPos( 'KikiWall', KikiPos(3,3,6))
     
-        world.addObjectAtPos( KikiStone(), KikiPos(1,1,1))
-        world.addObjectAtPos( KikiStone(), KikiPos(3,1,1))
-        world.addObjectAtPos( KikiStone(), KikiPos(1,3,1))
-        world.addObjectAtPos( KikiStone(), KikiPos(3,3,1))
+        world.addObjectAtPos( 'KikiStone', KikiPos(1,1,1))
+        world.addObjectAtPos( 'KikiStone', KikiPos(3,1,1))
+        world.addObjectAtPos( 'KikiStone', KikiPos(1,3,1))
+        world.addObjectAtPos( 'KikiStone', KikiPos(3,3,1))
         
-        world.addObjectAtPos(  KikiStone(), KikiPos(2,4,0))
+        world.addObjectAtPos(  'KikiStone', KikiPos(2,4,0))
             

@@ -17,17 +17,17 @@ module.exports =
     create: ->
         s = world.size
         world.addObjectAtPos(KikiMotorGear(KikiFace.X), KikiPos(0,2,4))
-        world.addObjectAtPos(KikiWall(), KikiPos(0,2,3))
-        world.addObjectAtPos(KikiWall(), KikiPos(0,2,5))
+        world.addObjectAtPos('KikiWall', KikiPos(0,2,3))
+        world.addObjectAtPos('KikiWall', KikiPos(0,2,5))
         world.addObjectAtPos(KikiMotorCylinder(KikiFace.X), KikiPos(1,2,4))
            
         world.addObjectAtPos(KikiWireStone(), KikiPos(0,2,6))
    
         for i in range(1,9,2)
-            world.addObjectAtPos(KikiWall(), KikiPos(4,0,i))
-            world.addObjectAtPos(KikiWall(), KikiPos(4,4,i))
-            world.addObjectAtPos(KikiWall(), KikiPos(0,0,i))
-            world.addObjectAtPos(KikiWall(), KikiPos(0,4,i))
+            world.addObjectAtPos('KikiWall', KikiPos(4,0,i))
+            world.addObjectAtPos('KikiWall', KikiPos(4,4,i))
+            world.addObjectAtPos('KikiWall', KikiPos(0,0,i))
+            world.addObjectAtPos('KikiWall', KikiPos(0,4,i))
         for i in range(2,8,2)
             gear = KikiGear(KikiFace.X)
             world.addObjectAtPos(gear, KikiPos(0,1,i))

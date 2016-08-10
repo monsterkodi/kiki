@@ -27,11 +27,12 @@ module.exports =
         s = world.size
         d = s.z/2
         
-        world.addObjectAtPos(KikiWall(), KikiPos(0, 0, d))
-        world.addObjectAtPos(KikiBomb(), KikiPos(0, 1, d))
-        world.addObjectAtPos(KikiBomb(), KikiPos(1, 0, d))
-        world.addObjectAtPos(KikiBomb(), KikiPos(0, 7, d))
-        world.addObjectAtPos(KikiBomb(), KikiPos(5, 7, d))
-        world.addObjectAtPos(KikiBomb(), KikiPos(1, 3, d))
-        world.addObjectAtPos(KikiBomb(), KikiPos(5, 3, d))
-        world.addObjectAtPos(KikiWireStone(), KikiPos(1,5,d))
+        world.addObjectAtPos 'KikiWall', 0, 0, d
+        world.addObjectAtPos 'KikiBomb', 0, 1, d
+        world.addObjectAtPos 'KikiBomb', 1, 0, d
+        world.addObjectAtPos 'KikiBomb', 0, 7, d
+        world.addObjectAtPos 'KikiBomb', 5, 7, d
+        world.addObjectAtPos 'KikiBomb', 1, 3, d
+        world.addObjectAtPos 'KikiBomb', 5, 3, d
+        world.addObjectAtPos 'KikiWireStone', 1, 5, d
+        

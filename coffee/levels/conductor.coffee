@@ -40,8 +40,8 @@ module.exports =
             
         for h in [2,4,6]
             world.addObjectLine(KikiWall, KikiPos(5,2,h), KikiPos(5,6,h) )
-            world.addObjectAtPos(KikiWireStone(), KikiPos(5,1,h))
-            world.addObjectAtPos(KikiWireStone(), KikiPos(5,6,h))
+            world.addObjectAtPos('KikiWireStone', KikiPos(5,1,h))
+            world.addObjectAtPos('KikiWireStone', KikiPos(5,6,h))
     
         wire_u= -> KikiWire(KikiFace.Z, 4+1 )
         wire_d= -> KikiWire(KikiFace.NZ, 4+1 )
@@ -61,11 +61,11 @@ module.exports =
         g = KikiGenerator(KikiFace.Z) #set to Active as last command in LevelS
         world.addObjectAtPos(g, KikiPos(5,1,0))
     
-        world.addObjectAtPos(KikiWireStone(), KikiPos(5,2,0))
-        world.addObjectAtPos(KikiWireStone(), KikiPos(5,2,1))
+        world.addObjectAtPos('KikiWireStone', KikiPos(5,2,0))
+        world.addObjectAtPos('KikiWireStone', KikiPos(5,2,1))
          
-        world.addObjectAtPos(KikiWireStone(), KikiPos(5,5,3))
-        world.addObjectAtPos(KikiWireStone(), KikiPos(5,5,5))
+        world.addObjectAtPos('KikiWireStone', KikiPos(5,5,3))
+        world.addObjectAtPos('KikiWireStone', KikiPos(5,5,5))
         
         KikiWireWall(15, KikiPos(5,4,8))    
     

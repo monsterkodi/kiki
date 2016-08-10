@@ -35,34 +35,34 @@ module.exports =
         world.addObjectAtPos('KikiWall', world.decenter(-2,-5,-1))
         world.addObjectAtPos('KikiWall', world.decenter( 1,-5,-2))
         
-        world.addObjectAtPos(KikiMutant(), world.decenter( 2,-5, 2))
-        world.addObjectAtPos(KikiMutant(), world.decenter(-2,-5,-2))
-        world.addObjectAtPos(KikiMutant(), world.decenter( 1,-5, 1))
-        world.addObjectAtPos(KikiMutant(), world.decenter(-1,-5,-1))
-        world.addObjectAtPos(KikiMutant(), world.decenter( 2,-5,-2))
-        world.addObjectAtPos(KikiMutant(), world.decenter(-2,-5, 2))
-        world.addObjectAtPos(KikiMutant(), world.decenter( 1,-5,-1))
-        world.addObjectAtPos(KikiMutant(), world.decenter(-1,-5, 1))
-        
-        world.addObjectAtPos(KikiWall(), world.decenter( 0,  3, s.z/2))
-        world.addObjectAtPos(KikiWall(), world.decenter( 0,  5, s.z/2))
-        world.addObjectAtPos(KikiWall(), world.decenter( 1,  4, s.z/2))
-        world.addObjectAtPos(KikiWall(), world.decenter(-1,  4, s.z/2))
-        
-        world.addObjectAtPos(KikiWall(), world.decenter(s.x/2, 3,  0))
-        world.addObjectAtPos(KikiWall(), world.decenter(s.x/2, 5,  0))
-        world.addObjectAtPos(KikiWall(), world.decenter(s.x/2, 4,  1))
-        world.addObjectAtPos(KikiWall(), world.decenter(s.x/2, 4, -1))
-        
-        world.addObjectAtPos(KikiWall(), world.decenter( 0,  3, -s.z/2+1))
-        world.addObjectAtPos(KikiWall(), world.decenter( 0,  5, -s.z/2+1))
-        world.addObjectAtPos(KikiWall(), world.decenter( 1,  4, -s.z/2+1))
-        world.addObjectAtPos(KikiWall(), world.decenter(-1,  4, -s.z/2+1))
-        
-        world.addObjectAtPos(KikiWall(), world.decenter(-s.x/2+1, 3,  0))
-        world.addObjectAtPos(KikiWall(), world.decenter(-s.x/2+1, 5,  0))
-        world.addObjectAtPos(KikiWall(), world.decenter(-s.x/2+1, 4,  1))
-        world.addObjectAtPos(KikiWall(), world.decenter(-s.x/2+1, 4, -1))
+        world.addObjectAtPos('KikiMutant', world.decenter( 2,-5, 2))
+        world.addObjectAtPos('KikiMutant', world.decenter(-2,-5,-2))
+        world.addObjectAtPos('KikiMutant', world.decenter( 1,-5, 1))
+        world.addObjectAtPos('KikiMutant', world.decenter(-1,-5,-1))
+        world.addObjectAtPos('KikiMutant', world.decenter( 2,-5,-2))
+        world.addObjectAtPos('KikiMutant', world.decenter(-2,-5, 2))
+        world.addObjectAtPos('KikiMutant', world.decenter( 1,-5,-1))
+        world.addObjectAtPos('KikiMutant', world.decenter(-1,-5, 1))
+                             
+        world.addObjectAtPos('KikiWall', world.decenter( 0,  3, s.z/2))
+        world.addObjectAtPos('KikiWall', world.decenter( 0,  5, s.z/2))
+        world.addObjectAtPos('KikiWall', world.decenter( 1,  4, s.z/2))
+        world.addObjectAtPos('KikiWall', world.decenter(-1,  4, s.z/2))
+                             
+        world.addObjectAtPos('KikiWall', world.decenter(s.x/2, 3,  0))
+        world.addObjectAtPos('KikiWall', world.decenter(s.x/2, 5,  0))
+        world.addObjectAtPos('KikiWall', world.decenter(s.x/2, 4,  1))
+        world.addObjectAtPos('KikiWall', world.decenter(s.x/2, 4, -1))
+                             
+        world.addObjectAtPos('KikiWall', world.decenter( 0,  3, -s.z/2+1))
+        world.addObjectAtPos('KikiWall', world.decenter( 0,  5, -s.z/2+1))
+        world.addObjectAtPos('KikiWall', world.decenter( 1,  4, -s.z/2+1))
+        world.addObjectAtPos('KikiWall', world.decenter(-1,  4, -s.z/2+1))
+
+        world.addObjectAtPos('KikiWall', world.decenter(-s.x/2+1, 3,  0))
+        world.addObjectAtPos('KikiWall', world.decenter(-s.x/2+1, 5,  0))
+        world.addObjectAtPos('KikiWall', world.decenter(-s.x/2+1, 4,  1))
+        world.addObjectAtPos('KikiWall', world.decenter(-s.x/2+1, 4, -1))
         
         world.switch_counter = 0
         

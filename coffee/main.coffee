@@ -5,10 +5,9 @@
 # 000  000   000  000  000   000
 # 000   000  000  000   000  000
 
-Stage     = require '/Users/kodi/s/ko/js/area/stage'
-log       = require '/Users/kodi/s/ko/js/tools/log'
-
-KikiWorld = require './world'
+Stage = require '/Users/kodi/s/ko/js/area/stage'
+log   = require '/Users/kodi/s/ko/js/tools/log'
+World = require './world'
 
 class Kiki extends Stage
     
@@ -24,8 +23,8 @@ class Kiki extends Stage
         @elem.style.bottom = '0'
         @elem.style.background = "#004"
         @view.appendChild @elem
-        
-        @world = KikiWorld.init @view
+        log 'init KikiWorld', @view
+        @world = World.init @view
         
         @elem.appendChild @world.renderer.domElement
         

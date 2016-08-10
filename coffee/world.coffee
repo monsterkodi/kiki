@@ -35,7 +35,7 @@ class KikiWorld
             logarithmicDepthBuffer: true
             autoClear:              true
                     
-        @renderer.setClearColor 0x008800        
+        @renderer.setClearColor 0x000000        
         @renderer.setSize @view.offsetWidth, @view.offsetHeight
         
         #    0000000   0000000   00     00  00000000  00000000    0000000 
@@ -60,7 +60,7 @@ class KikiWorld
         #   0000000    0000000  00000000  000   000  00000000
         
         @scene = new THREE.Scene()
-        @geom = new THREE.BoxGeometry 10, 10, 10
+        @geom  = new THREE.BoxGeometry 10, 10, 10
         
         #   000      000   0000000   000   000  000000000
         #   000      000  000        000   000     000   
@@ -68,24 +68,13 @@ class KikiWorld
         #   000      000  000   000  000   000     000   
         #   0000000  000   0000000   000   000     000   
 
-        @sun = new THREE.PointLight 0xffff00
+        @sun = new THREE.PointLight 0xffffff
         @sun.position.copy @camera.position
         @scene.add @sun
         
         @ambient = new THREE.AmbientLight 0x444444
         @scene.add @ambient
-                
-        # @material = new THREE.MeshPhongMaterial 
-            # color:     0xff0000
-            # side:      THREE.FrontSide
-            # shading:   THREE.SmoothShading
-            # transparent: true
-            # opacity: 0.85
-            # shininess: 0
-#         
-        # @mesh = new THREE.Mesh @geom, @material
-        # @scene.add @mesh        
-        
+                #         
         @preview = false
         
         @display_list    = 0
@@ -101,26 +90,7 @@ class KikiWorld
         @debug_camera    = false
         @debug_cells     = false
     
-        # flags[KDL_PICKHANDLER_FLAG_MOVING_ENABLED]     = true
-        # flags[KDL_PICKHANDLER_FLAG_PROJECTION_ENABLED] = true
-        
-        # flags.resize(WORLD_END)
-        # flags[DISPLAY_BORDER]    = true
-        # flags[DISPLAY_DOTS]        = false
-        # flags[DISPLAY_RASTER]    = true 
-        # flags[DISPLAY_SHADOWS]    = false
-        
-        @raster_size            = 0.1
-    
-        # KEventHandler::notification_center.addReceiverCallback((KPickHandler*)this, 
-                                                            # (KCallbackPtr)&KikiWorld::reinit,
-                                                            # KDL_NOTIFICATION_TYPE_VIDEO_MODE_CHANGED)    
-#     
-        # KEventHandler::notification_center.addReceiverCallback((KPickHandler*)this, 
-                                                            # (KCallbackPtr)&KikiWorld::reinit,
-                                                            # KDL_NOTIFICATION_TYPE_WINDOW_SIZE_CHANGED)
-                                                            
-        # initializeTextures ()
+        @raster_size = 0.1
     
     @init: (view) ->
         return if world?
@@ -144,7 +114,7 @@ class KikiWorld
         @levelList = [
               # intro
               # "start", 
-              #"steps", 
+              "steps", 
               #"move", "electro", "elevate", 
               # "throw", 
               # easy
@@ -181,7 +151,7 @@ class KikiWorld
             @levelDict[levelName] = require "./levels/#{levelName}"
             
         # log 'levelDict', @levelDict
-        
+        log "create world in view:", view
         world = new KikiWorld view
         global.world = world
         world.create first @levelList
@@ -503,7 +473,6 @@ class KikiWorld
 
     setSize: (size) ->
         @deleteAllObjects()
-        @deleteDisplayList()
         @cells = []
     
         @size = new Pos size
@@ -647,47 +616,9 @@ class KikiWorld
         log "KikiWorld.getObjectWithName :: no object found with name #{objectName}"
         null
     
-    setEditMode: (editMode) ->
-        @edit_mode = editMode
-        
-        if @edit_mode and @edit_projection == null
-            edit_projection = new KLightingProjection()
-            
-        @edit_projection.focusOn KVector(@size).mul 2.0
-        @edit_projection.setEyeDistance @max_distance*1.5
-    
-    # focusOnPickedPickable: ( bool zoom ) ->
-       # if (edit_mode and picked_pickable)
-            # projection.focusOn (((KikiObject*)picked_pickable).getPosition())
-    
     setCameraMode: (mode) -> @camera_mode = clamp CAMERA_INSIDE, CAMERA_FOLLOW, mode
     
     changeCameraMode: () -> @camera_mode = (@camera_mode+1) % (CAMERA_FOLLOW+1)
-    
-    # shouldPick: () -> @edit_mode 
-#     
-    # picked: () -> # reset drag deltas and start pos
-        # @deltas.x = @deltas.y = 0
-        # if @picked_pickable
-            # @drag_start_pos = ((KikiObject*)picked_pickable).position
-#     
-    # moved: ( const KMouseEvent & mouseEvent ) ->
-        # object = (KikiObject*)picked_pickable
-#              
-        # if (object == null) return
-#              
-        # KVector newPosition = drag_start_pos
-#         
-        # deltas = deltas + mouseEvent.delta
-#         
-        # getProjection().moveObjectRelativeToWindow(deltas, newPosition)    
-#     
-        # # round to next integer positions and make a valid pos
-        # Pos newPos = getNearestValidPos(newPosition)
-#                 
-        # if (getOccupantAtPos(newPos) == null and (newPos != object.getPos()))
-            # empty position != old position . move object
-            # moveObjectToPos(object, newPos)
     
     objectMovedFromPos: (object, pos) ->
     
@@ -732,11 +663,8 @@ class KikiWorld
         tmpObject.time = -duration
         @addObjectAtPos tmpObject, object.getPos() 
     
-    # --------------------------------------------------------------------------------------------------------
     updateStatus: () ->
-        # glClearColor(colors[KikiWorld_base_color][R], colors[KikiWorld_base_color][G], 
-                     # colors[KikiWorld_base_color][B], colors[KikiWorld_base_color][A])
-    
+
         while @moved_objects.length
             movedObject = last @moved_objects
             pos = new Pos movedObject.position
@@ -756,11 +684,6 @@ class KikiWorld
             @setObjectAtPos movedObject, pos 
             @moved_objects.pop()
     
-    deleteDisplayList: () ->
-        if @display_list
-            glDeleteLists(@display_list, 1)
-            @display_list = 0
-    
     setObjectColor: (color_name, color) ->
         if color_name == 'base'
             # KikiWall::setObjectColor "base", color 
@@ -768,8 +691,6 @@ class KikiWorld
         else if color_name == 'plate'
             # KikiWall::setObjectColor "plate", color 
             @colors[1] = color
-        
-        # Controller.world.deleteDisplayList ()
         
     #  0000000  000000000  00000000  00000000       
     # 000          000     000       000   000      

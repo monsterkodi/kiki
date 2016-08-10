@@ -12,7 +12,14 @@ class Wall extends Item
     constructor: ->
         
         @geom = new THREE.BoxGeometry 1,1,1
-        @mat  = new THREE.MeshBasicMaterial color: 0xff0000
+        @mat  = new THREE.MeshPhongMaterial 
+            color:          0x0000ff
+            side:           THREE.FrontSide
+            shading:        THREE.SmoothShading
+            transparent:    true
+            opacity:        0.9
+            shininess:      0.99
+        
         @mesh = new THREE.Mesh @geom, @mat
         world.scene.add @mesh
         @mesh.matrixAutoUpdate = true

@@ -9,6 +9,19 @@ Pushable = require './pushable'
 class Bot extends Pushable
     
     constructor: () ->
+
+        @geom = new THREE.SphereGeometry 1, 32, 32 
+        @mat  = new THREE.MeshPhongMaterial 
+            color:          0x0000ff
+            side:           THREE.FrontSide
+            shading:        THREE.SmoothShading
+            transparent:    true
+            opacity:        0.9
+            shininess:      0.99
+        
+        @mesh = new THREE.Mesh @geom, @mat
+        world.scene.add @mesh
+        # @mesh.matrixAutoUpdate = true
         
         @left_tire_rot   = 0.0
         @right_tire_rot  = 0.0

@@ -5,12 +5,33 @@
 #   000     000     000       000 0 000
 #   000     000     00000000  000   000
 
-log       = require '/Users/kodi/s/ko/js/tools/log'
+log    = require '/Users/kodi/s/ko/js/tools/log'
+Vector = require './lib/vector'
+Pos    = require './lib/pos'
+event  = require 'events'
 
-class Item
+class Item extends event
 
     constructor: ->
+        @move_action = null
+        @direction   = new Vector
+
+    del: -> 
+        world.removeObject @
+        @emit 'deleted'
+        
+    initAction: ->
+    performAction: ->
+    finishAction: ->
+    actionFinished: ->
+    newCellMate: ->
+    cellMateLeft: ->
+    bulletImpact: ->
+    render: ->
+        
     isSpaceEgoistic: -> true
+    isSlippery: -> false
+    
     setPosition: (p) -> 
         @position = @current_position = p
         if @mesh?
@@ -24,4 +45,14 @@ class Item
             @mesh.translateZ @position.z
             log 'setPosition', p, @mesh.position
 
+    getPos: -> new Pos @current_position
+    
+    getPosition: -> @position
+    getOrientation: -> @orientation
+    getCurrentPosition: -> @current_position
+    getCurrentOrientation: -> @current_orientation
+    setOrientation: (q) -> @current_orientation = @orientation = q
+    setCurrentPosition: (p) -> @current_position = p
+    setCurrentOrientation: (q) -> @current_orientation = q
+    
 module.exports = Item

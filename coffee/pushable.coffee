@@ -4,15 +4,17 @@
 # 000        000   000       000  000   000  000   000  000   000  000      000     
 # 000         0000000   0000000   000   000  000   000  0000000    0000000  00000000
 
-class Pushable
+Item = require './item'
+
+class Pushable extends Item
     
     constructor: () ->
-        
+        super
         @pusher     = null
         @direction  = new KVector()
         
-        # addAction (new KikiAction (this, ACTION_PUSH, "push"));
-        # addAction (new KikiAction (this, ACTION_FALL, "fall", 40));
+        @addAction new KikiAction @, ACTION_PUSH, "push"
+        @addAction new KikiAction @, ACTION_FALL, "fall", 40
 
     pushedByObjectInDirection: (object, dir, duration) ->
 
@@ -25,7 +27,7 @@ class Pushable
         # pushAction->setDuration Controller.unmapMsTime duration
         # Controller.timer_event->addAction (pushAction);
 
-    initAction (action) ->
+    initAction: (action) ->
         # switch action->getId()
             # when ACTION_FALL
                 # Controller.world->objectWillMoveToPos @, @position + @direction, action->getDuration()

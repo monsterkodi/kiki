@@ -5,11 +5,14 @@
 # 0000000     0000000      000   
 
 Pushable = require './pushable'
+Action   = require './action'
 
 class Bot extends Pushable
     
     constructor: () ->
-
+        
+        super 
+        
         @geom = new THREE.SphereGeometry 1, 32, 32 
         @mat  = new THREE.MeshPhongMaterial 
             color:          0x0000ff
@@ -45,16 +48,16 @@ class Bot extends Pushable
         
         @dir_sgn         = 1.0
         
-        @addAction new KikiAction @, Action.NOOP,         "noop",           0
-        @addAction new KikiAction @, Action.FORWARD,      "move forward",   200
-        @addAction new KikiAction @, Action.CLIMB_UP,     "climb up",       200
-        @addAction new KikiAction @, Action.CLIMB_DOWN,   "climb down",     500
-        @addAction new KikiAction @, Action.TURN_LEFT,    "turn left",      200
-        @addAction new KikiAction @, Action.TURN_RIGHT,   "turn right",     200
-        @addAction new KikiAction @, Action.JUMP,         "jump",           120
-        @addAction new KikiAction @, Action.JUMP_FORWARD, "jump forward",   200
-        @addAction new KikiAction @, Action.FALL_FORWARD, "fall forward",   200
-        @addAction new KikiAction @, Action.SHOOT,        "shoot",          200, KikiAction.REPEAT
+        @addAction new Action @, Action.NOOP,         "noop",           0
+        @addAction new Action @, Action.FORWARD,      "move forward",   200
+        @addAction new Action @, Action.CLIMB_UP,     "climb up",       200
+        @addAction new Action @, Action.CLIMB_DOWN,   "climb down",     500
+        @addAction new Action @, Action.TURN_LEFT,    "turn left",      200
+        @addAction new Action @, Action.TURN_RIGHT,   "turn right",     200
+        @addAction new Action @, Action.JUMP,         "jump",           120
+        @addAction new Action @, Action.JUMP_FORWARD, "jump forward",   200
+        @addAction new Action @, Action.FALL_FORWARD, "fall forward",   200
+        @addAction new Action @, Action.SHOOT,        "shoot",          200, Action.REPEAT
     
         @getActionWithId(Action.FALL).setDuration 120
         @addEventWithName "died"
@@ -97,12 +100,12 @@ class Bot extends Pushable
         @spiked      = false
         @died        = false
     
-    isFalling: -> @move_action and @move_action.getId() == Action.FALL
+    isFalling: -> @move_action and @move_action.id == Action.FALL
     
     initAction: (action) ->
         newPos = new KikiPos @position 
     
-        switch action.getId()
+        switch action.id
             when Action.NOOP         then return
             
             when Action.FORWARD      then newPos += @getDir()
@@ -125,7 +128,7 @@ class Bot extends Pushable
             # world.objectWillMoveToPos (@, newPos, action.getDuration())
     
     performAction: (action) ->
-        actionId = action.getId()
+        actionId = action.id
         relTime  = action.getRelativeTime()
         dltTime  = action.getRelativeDelta()
     
@@ -221,7 +224,7 @@ class Bot extends Pushable
     
     
     finishAction: (action) ->
-        actionId = action.getId()
+        actionId = action.id
     
         return if actionId == Action.NOOP or actionId == Action.SHOOT
         
@@ -247,7 +250,7 @@ class Bot extends Pushable
     
             if @rotate_action and actionId != Action.JUMP_FORWARD # bot is currently performing a rotation ->
                 # take over result of rotation to prevent sliding
-                if @rotate_action.getId() == Action.TURN_LEFT
+                if @rotate_action.id == Action.TURN_LEFT
                     @orientation *= KQuaternion.rotationAroundVector(90.0, KVector(0,1,0)) * @rest_orientation
                     @rest_orientation = KQuaternion.rotationAroundVector(-90.0, KVector(0,1,0))
                 else
@@ -263,7 +266,7 @@ class Bot extends Pushable
                 @rest_orientation.reset()
     
     actionFinished: (action) ->
-        actionId = action.getId()
+        actionId = action.id
     
         if @isDead()
             die() if not @died 

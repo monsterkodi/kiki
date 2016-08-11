@@ -718,6 +718,18 @@ class KikiWorld
     getRelativeTime: -> @frame_time % (10000/@speed)/(10000.0/@speed)
     getRelativeDelta: -> (@frame_time - @last_time)/(10000.0/@speed)
 
+    continuous: (cb) ->
+        new Action 
+            func: cb
+            name: "continuous"
+            mode: Action.CONTINUOUS
+
+    once: (cb) ->
+        new Action 
+            func: cb
+            name: "once"
+            mode: Action.ONCE
+
     resized: (w,h) ->
         # log "world.resized w:#{w} h:#{h}"
         @aspect = w/h

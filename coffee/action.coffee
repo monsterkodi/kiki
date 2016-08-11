@@ -4,6 +4,8 @@
 # 000   000  000          000     000  000   000  000  0000
 # 000   000   0000000     000     000   0000000   000   000
 
+_ = require 'lodash'
+
 class Action
     
     @NOOP         = 0
@@ -20,8 +22,17 @@ class Action
     @SHOOT        = 11
     @END          = 12
     
-    constructor: (o, i, n, d, m) ->
+    @ONCE       = 0
+    @CONTINUOUS = 1
+    @REPEAT     = 2
 
+    constructor: (o, i, n, d, m) ->
+        if _.isPlainObject o 
+            i = o.id ? 0
+            n = o.name
+            d = o.duration ? 0
+            m = o.mode ? Action.ONCE
+            o = o.func
         @action_object = o
         @action_name   = n
         @action_id     = i
@@ -90,14 +101,14 @@ class Action
             @current = 0
             @rest    = 0
             @last    = 0
-            if @duration == 0 and @mode == ONCE
+            if @duration == 0 and @mode == Action.ONCE
                 event.removeAction @
     
             @perform()
             
             @last = @current
             
-            if @duration == 0 and @mode == ONCE
+            if @duration == 0 and @mode == Action.ONCE
                 @finished()
         else
             currentDiff = eventTime - @start
@@ -109,15 +120,15 @@ class Action
                 @perform()
                 @last    = 0
                 
-                if @mode == CONTINUOUS
+                if @mode == Action.CONTINUOUS
                     @current = @rest
                     return
-                if @mode == ONCE
+                if @mode == Action.ONCE
                     event.removeAction @
                 
                 @finish()
     
-                if @mode == REPEAT
+                if @mode == Action.REPEAT
                     if @current == @getDuration() # if keepRest wasn't called -> reset start and current values
                         @reset()
                     return

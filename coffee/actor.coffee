@@ -17,6 +17,7 @@ class Actor extends event
     constructor: -> 
         @actions = []
         @events  = []
+        super
 
     addAction: (action) ->   
         @actions.push action if not _.find @actions, action
@@ -48,13 +49,13 @@ class Actor extends event
         _.pull @actions, action
  
     getActionWithId: (actionId) ->
-        if actionId < @actions.size() and @actions[actionId].getId() == actionId 
+        if actionId < @actions.length and @actions[actionId].id == actionId
             return @actions[actionId]
     
         # to be deleted...
         log "[WARNING] Actor.getActionWithId #{actionId} [#{@actions.length}]"
         for a in @actions
-            return a if a.getId() == actionId
+            return a if a.id == actionId
 
     getActionWithName: (name) ->
         for a in @actions
@@ -62,7 +63,7 @@ class Actor extends event
 
     addEventWithName: (eventName) ->
         if @getEventWithName eventName # to be removed
-            log "KikiActionObject::addEventWithName '#{eventName}' already in use!"
+            log "Actor.addEventWithName '#{eventName}' already in use!"
             return -1; # shouldn't happen anyway :-)
         @events.push new Event @, eventName
         @events.length-1

@@ -37,9 +37,9 @@ class Player extends Bot
         
         # @flags[KDL_KEYHANDLER_FLAG_HANDLES_RELEASE] = true
         
-        @addAction new KikiAction @, Action.LOOK_UP,    "look up",    220
-        @addAction new KikiAction @, Action.LOOK_DOWN,  "look down",  220
-        @addAction new KikiAction @, Action.LOOK_RESET, "look reset", 60
+        @addAction new Action @, Action.LOOK_UP,    "look up",    220
+        @addAction new Action @, Action.LOOK_DOWN,  "look down",  220
+        @addAction new Action @, Action.LOOK_RESET, "look reset", 60
     
         @addEventWithName "keyset"
         @addEventWithName "keyset failed"
@@ -94,7 +94,7 @@ class Player extends Bot
         if (move_action)
             relTime = (Controller.getTime() - move_action.getStart()) / move_action.getDuration()
             if relTime <= 1.0
-                switch move_action.getId()
+                switch move_action.id
                     when Action.FORWARD
                         current_position = position + relTime * getDir()
                     when Action.FALL
@@ -258,7 +258,7 @@ class Player extends Bot
         return projection
     
     initAction: (action) ->
-        actionId = action.getId()
+        actionId = action.id
         switch actionId
             when Action.CLIMB_DOWN, Action.FORWARD
                 @status.addMoves 1 
@@ -273,7 +273,7 @@ class Player extends Bot
     performAction: (action) ->
         relTime = action.getRelativeTime()
     
-        switch action.getId()
+        switch action.id
             when Action.NOOP then return
         
             when Action.LOOK_UP
@@ -291,7 +291,7 @@ class Player extends Bot
                 KikiBot.performAction action 
     
     finishAction: (action) ->
-        actionId = action.getId()
+        actionId = action.id
     
         if actionId == Action.LOOK_RESET
             @look_action = null
@@ -433,7 +433,7 @@ class Player extends Bot
             return releaseHandled()
         
         if keyName == look_down_key or keyName == look_up_key
-            if @look_action and @look_action.getId() != Action.LOOK_RESET
+            if @look_action and @look_action.id != Action.LOOK_RESET
                 Controller.timer_event.removeAction @look_action
             @look_action = getActionWithId Action.LOOK_RESET
             Controller.timer_event.addAction @look_action

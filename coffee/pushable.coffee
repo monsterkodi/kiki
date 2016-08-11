@@ -35,19 +35,19 @@ class Pushable extends Item
                 # Controller.world->objectWillMoveToPos @, @position + @direction, action->getDuration()
 
     performAction: (action) ->
-        switch action.getId()
+        switch action.id
             when Action.PUSH, Action.FALL
                 @setCurrentPosition @position + action.getRelativeTime() * @direction
 
     finishAction: (action) ->
-        switch action.getId()
+        switch action.id
             when Action.PUSH, Action.FALL
                 @move_action = null
                 world.objectMovedFromPos @, @position
                 @setPosition @current_position
 
     actionFinished: (action) ->
-        actionId = action.getId()
+        actionId = action.id
         
         if actionId == Action.PUSH or actionId == Action.FALL
             gravityDir = @direction

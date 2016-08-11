@@ -6,13 +6,14 @@
 #   000     000     00000000  000   000
 
 log    = require '/Users/kodi/s/ko/js/tools/log'
+Actor  = require './actor'
 Vector = require './lib/vector'
 Pos    = require './lib/pos'
-event  = require 'events'
 
-class Item extends event
+class Item extends Actor
 
     constructor: ->
+        super
         @move_action = null
         @direction   = new Vector
 
@@ -20,10 +21,6 @@ class Item extends event
         world.removeObject @
         @emit 'deleted'
         
-    initAction: ->
-    performAction: ->
-    finishAction: ->
-    actionFinished: ->
     newCellMate: ->
     cellMateLeft: ->
     bulletImpact: ->

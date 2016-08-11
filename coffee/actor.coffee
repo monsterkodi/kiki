@@ -6,13 +6,14 @@
 #   000   000   0000000     000      0000000   000   000
 {
 last
-}      = require '/Users/kodi/s/ko/js/tools/tools'
-log    = require '/Users/kodi/s/ko/js/tools/log'
-Action = require './action'
-event  = require 'events'
-_      = require 'lodash'
+}       = require '/Users/kodi/s/ko/js/tools/tools'
+log     = require '/Users/kodi/s/ko/js/tools/log'
+Action  = require './action'
+Event   = require './event'
+Emitter = require 'events'
+_       = require 'lodash'
 
-class Actor extends event
+class Actor extends Emitter
     
     constructor: -> 
         @actions = []

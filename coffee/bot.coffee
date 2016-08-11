@@ -59,10 +59,10 @@ class Bot extends Pushable
         @addAction new Action @, Action.FALL_FORWARD, "fall forward",   200
         @addAction new Action @, Action.SHOOT,        "shoot",          200, Action.REPEAT
     
-        @getActionWithId(Action.FALL).setDuration 120
+        @getActionWithId(Action.FALL).duration = 120
         @addEventWithName "died"
     
-        @startTimedAction @getActionWithId Action.NOOP, 500
+        @startTimedAction @getActionWithId(Action.NOOP), 500
 
     addMoves:  (m) -> @moves += m
     addHealth: (h) -> @health = Math.max @health+h

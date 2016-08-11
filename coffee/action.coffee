@@ -33,12 +33,12 @@ class Action
             d = o.duration ? 0
             m = o.mode ? Action.ONCE
             o = o.func
-        @action_object = o
-        @action_name   = n
-        @action_id     = i
-        @mode          = m
-        @duration      = d
-        @event         = null
+        @object     = o
+        @name       = n
+        @id         = i
+        @mode       = m
+        @duration   = d
+        @event      = null
         @delete_flag_ptr = false
         @reset()
 
@@ -57,14 +57,14 @@ class Action
 
     del: ->
         if @event           then @event.removeAction @
-        if @action_object   then @action_object.removeAction @
+        if @object          then @object.removeAction @
         if @delete_flag_ptr then @delete_flag_ptr = true
 
-    init: () ->    @action_object.initAction @
-    perform: () -> @action_object.performAction @
-    finish: () ->  @action_object.finishAction @
+    init: () ->    @object.initAction @
+    perform: () -> @object.performAction @
+    finish: () ->  @object.finishAction @
     finished: () -> 
-        @action_object.actionFinished @
+        @object.actionFinished @
         return if @delete_flag_ptr
     
         if @current == @getDuration() # if keepRest wasn't called -> reset start and current values

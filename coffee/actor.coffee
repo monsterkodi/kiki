@@ -41,8 +41,7 @@ class Actor extends event
         # Controller.timer_event.addAction action
         
     startTimedAction: (action, duration) ->
-        if duration >= 0
-            action.setDuration duration
+        action.duration = duration if duration >= 0
         # Controller.timer_event.addAction action
         
     removeAction: (action) ->

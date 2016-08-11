@@ -5,7 +5,8 @@
 #   000        000      000   000     000     000       000   000
 #   000        0000000  000   000     000     00000000  000   000
 
-Bot = require './bot'
+Bot    = require './bot'
+Action = require './action'
 
 forward_key    = "UP"
 backward_key   = "DOWN"
@@ -36,9 +37,9 @@ class Player extends Bot
         
         # @flags[KDL_KEYHANDLER_FLAG_HANDLES_RELEASE] = true
         
-        @addAction new KikiAction @, ACTION_LOOK_UP,    "look up",    220
-        @addAction new KikiAction @, ACTION_LOOK_DOWN,  "look down",  220
-        @addAction new KikiAction @, ACTION_LOOK_RESET, "look reset", 60
+        @addAction new KikiAction @, Action.LOOK_UP,    "look up",    220
+        @addAction new KikiAction @, Action.LOOK_DOWN,  "look down",  220
+        @addAction new KikiAction @, Action.LOOK_RESET, "look reset", 60
     
         @addEventWithName "keyset"
         @addEventWithName "keyset failed"
@@ -94,13 +95,13 @@ class Player extends Bot
             relTime = (Controller.getTime() - move_action.getStart()) / move_action.getDuration()
             if relTime <= 1.0
                 switch move_action.getId()
-                    when ACTION_FORWARD
+                    when Action.FORWARD
                         current_position = position + relTime * getDir()
-                    when ACTION_FALL
+                    when Action.FALL
                         current_position = position - relTime * getUp() 
-                    when ACTION_JUMP_FORWARD
+                    when Action.JUMP_FORWARD
                         current_position = position  + (1.0 - Math.cos(Math.PI/2 * relTime)) * getDir() + Math.cos(Math.PI/2 - Math.PI/2 * relTime) * getUp()
-                    when ACTION_FALL_FORWARD
+                    when Action.FALL_FORWARD
                         current_position = position + Math.cos(Math.PI/2 - Math.PI/2 * relTime) * getDir() + (1.0 - Math.cos(Math.PI/2 * relTime)) * -getUp()
     
     getProjection: () ->
@@ -259,12 +260,12 @@ class Player extends Bot
     initAction: (action) ->
         actionId = action.getId()
         switch actionId
-            when ACTION_CLIMB_DOWN, ACTION_FORWARD
-                status.addMoves 1 
-            when ACTION_TURN_LEFT, ACTION_TURN_RIGHT
+            when Action.CLIMB_DOWN, Action.FORWARD
+                @status.addMoves 1 
+            when Action.TURN_LEFT, Action.TURN_RIGHT
                 Controller.sound.playSound KikiSound.BOT_MOVE 
-            when ACTION_JUMP, ACTION_JUMP_FORWARD
-                status.addMoves actionId == ACTION_JUMP and 1 or 2 
+            when Action.JUMP, Action.JUMP_FORWARD
+                @status.addMoves actionId == Action.JUMP and 1 or 2
                 Controller.sound.playSound KikiSound.BOT_JUMP 
         
         KikiBot.initAction(action)
@@ -273,15 +274,15 @@ class Player extends Bot
         relTime = action.getRelativeTime()
     
         switch action.getId()
-            when ACTION_NOOP then return
+            when Action.NOOP then return
         
-            when ACTION_LOOK_UP
+            when Action.LOOK_UP
                 @look_angle = relTime * -90.0
         
-            when ACTION_LOOK_DOWN
+            when Action.LOOK_DOWN
                 @look_angle = relTime * 90.0
                 
-            when ACTION_LOOK_RESET
+            when Action.LOOK_RESET
                 if @look_angle > 0 
                     @look_angle = Math.min @look_angle, (1.0-relTime) * 90.0
                 else 
@@ -292,17 +293,17 @@ class Player extends Bot
     finishAction: (action) ->
         actionId = action.getId()
     
-        if actionId == ACTION_LOOK_RESET
+        if actionId == Action.LOOK_RESET
             @look_action = null
             @look_angle  = 0.0
         else
             if action == move_action # move finished, update direction
                 dir_sgn = new_dir_sgn
             
-            if actionId != ACTION_LOOK_UP and actionId != ACTION_LOOK_DOWN
+            if actionId != Action.LOOK_UP and actionId != Action.LOOK_DOWN
                 KikiBot.finishAction(action)
             
-            if actionId == ACTION_TURN_LEFT or actionId == ACTION_TURN_RIGHT
+            if actionId == Action.TURN_LEFT or actionId == Action.TURN_RIGHT
                 if rotate
                     rotate_action = getActionWithId rotate
                     rotate_action.reset()
@@ -313,7 +314,7 @@ class Player extends Bot
         KikiBot.die()
         Controller.displayText("game over")
         Controller.sound.playSound (KikiSound.BOT_DEATH)
-        world.setCameraMode (KikiWorld.CAMERA_FOLLOW)
+        world.setCameraMode (world.CAMERA_FOLLOW)
     
     reborn: () ->
         Controller.addKeyHandler (this)
@@ -361,7 +362,7 @@ class Player extends Bot
             return keyHandled()
         
         if keyName == turn_left_key or keyName == turn_right_key
-            rotate = (keyName == turn_left_key) ? ACTION_TURN_LEFT : ACTION_TURN_RIGHT
+            rotate = (keyName == turn_left_key) and Action.TURN_LEFT or Action.TURN_RIGHT
             
             if (rotate_action == null and spiked == false) # player is not performing a rotation and unspiked
                 rotate_action = getActionWithId rotate
@@ -381,15 +382,15 @@ class Player extends Bot
         if keyName == shoot_key
             if not shoot
                 shoot = true
-                Controller.timer_event.addAction (getActionWithId (ACTION_SHOOT))
+                Controller.timer_event.addAction @getActionWithId Action.SHOOT
             
             return keyHandled()
         
         if keyName == look_up_key or keyName == look_down_key
             if not @look_action
-                @look_action =  getActionWithId ((key.name == look_up_key) ? ACTION_LOOK_UP : ACTION_LOOK_DOWN)
+                @look_action = @getActionWithId (key.name == look_up_key) and Action.LOOK_UP or Action.LOOK_DOWN
                 @look_action.reset()
-                Controller.timer_event.addAction (@look_action)
+                Controller.timer_event.addAction @look_action
             return keyHandled()
         
         if keyName == view_key
@@ -405,7 +406,7 @@ class Player extends Bot
             true
             
         if keyName == shoot_key
-            Controller.timer_event.removeAction getActionWithId ACTION_SHOOT 
+            Controller.timer_event.removeAction getActionWithId Action.SHOOT
             shoot = false
             return releaseHandled()
         
@@ -418,8 +419,8 @@ class Player extends Bot
             if jump_once
                 if move_action == null and world.isUnoccupiedPos position.plus getUp()
                     jump_once = false
-                    move_action = getActionWithId ACTION_JUMP 
-                    Controller.sound.playSound (KikiSound.BOT_JUMP)
+                    move_action = getActionWithId Action.JUMP
+                    Controller.sound.playSound KikiSound.BOT_JUMP
                     Controller.timer_event.addAction (move_action)
             return releaseHandled()
         
@@ -432,9 +433,9 @@ class Player extends Bot
             return releaseHandled()
         
         if keyName == look_down_key or keyName == look_up_key
-            if @look_action and @look_action.getId() != ACTION_LOOK_RESET
+            if @look_action and @look_action.getId() != Action.LOOK_RESET
                 Controller.timer_event.removeAction @look_action
-            @look_action = getActionWithId ACTION_LOOK_RESET
+            @look_action = getActionWithId Action.LOOK_RESET
             Controller.timer_event.addAction @look_action
             return releaseHandled()
         
@@ -444,14 +445,11 @@ class Player extends Bot
         return false
     
     display: () ->
-        if world.getCameraMode() != KikiWorld.CAMERA_INSIDE or world.getEditMode()
-            # glPushMatrix()
-            # current_position.glTranslate()
+        if world.getCameraMode() != world.CAMERA_INSIDE or world.getEditMode()
             render()
-            # glPopMatrix()
     
     getBodyColor: () ->
-        if world.getCameraMode() == KikiWorld.CAMERA_BEHIND
+        if world.getCameraMode() == world.CAMERA_BEHIND
             # static bodyColor
             bodyColor = colors[KikiPlayer_base_color]
             bodyColor.setAlpha(kMin(0.7, (projection.getPosition()-current_position).length()-0.4))
@@ -460,7 +458,7 @@ class Player extends Bot
         return colors[KikiPlayer_base_color]
     
     getTireColor: () ->
-        if world.getCameraMode() == KikiWorld.CAMERA_BEHIND
+        if world.getCameraMode() == world.CAMERA_BEHIND
             # static tireColor
             tireColor = colors[KikiPlayer_tire_color]
             tireColor.setAlpha(kMin(1.0, (projection.getPosition()-current_position).length()-0.4))
@@ -473,3 +471,4 @@ class Player extends Bot
         rotate = false
         finishAction(rotate_action)
     
+module.exports = Player

@@ -6,10 +6,11 @@
 #   000   000   0000000     000      0000000   000   000
 {
 last
-}     = require '/Users/kodi/s/ko/js/tools/tools'
-log   = require '/Users/kodi/s/ko/js/tools/log'
-event = require 'events'
-_     = require 'lodash'
+}      = require '/Users/kodi/s/ko/js/tools/tools'
+log    = require '/Users/kodi/s/ko/js/tools/log'
+Action = require './action'
+event  = require 'events'
+_      = require 'lodash'
 
 class Actor extends event
     
@@ -72,4 +73,5 @@ class Actor extends event
 
     getEventWithId: (eventId) ->
         return @events[eventId]
-        
+  
+module.exports = Actor

@@ -12,6 +12,7 @@ log         = require "/Users/kodi/s/ko/js/tools/log"
 Pos         = require './lib/pos'
 KikiCell    = require './cell'
 KikiLight   = require './light'
+Player      = require './player'
 KQuaternion = require './lib/quaternion'
 KVector     = require './lib/vector'
 Pos         = require './lib/pos'
@@ -246,7 +247,7 @@ class KikiWorld
 
         # ............................................................ player
 
-        # player = Controller.player
+        player = new Player
 #         
         # player_dict = @dict["player"]
 #         
@@ -282,8 +283,8 @@ class KikiWorld
 
     restart: (self) ->
         # restores the player status and restarts the current level
-        Controller.player.getStatus().setMoves (0)
-        Controller.player.reborn()
+        @player.status.setMoves 0
+        @player.reborn()
         @create()
 
     finish: (self) ->
@@ -312,7 +313,7 @@ class KikiWorld
         # action callback. used to exit current world
         if name.find ("exit") == 0
             @finish()
-            Controller.player.getStatus().setMoves (0)
+            @player.status.setMoves 0
             if "world" in @dict["exits"][parseInt name.slice 5]
                 w = @dict["exits"][parseInt name.slice 5]["world"]
                 if w instanceof KikiWorld
@@ -709,6 +710,13 @@ class KikiWorld
 
         @sun.position.copy @camera.position
         @renderer.render @scene, @camera
+
+    setSpeed: (s) -> @speed = s
+    getSpeed: -> @speed
+    mapMsTime:  (unmapped) -> parseInt 10.0 * unmapped/speed
+    unmapMsTime: (mapped) -> parseInt mapped * speed/10.0
+    getRelativeTime: -> @frame_time % (10000/@speed)/(10000.0/@speed)
+    getRelativeDelta: -> (@frame_time - @last_time)/(10000.0/@speed)
 
     resized: (w,h) ->
         # log "world.resized w:#{w} h:#{h}"

@@ -6,6 +6,20 @@
 
 class Action
     
+    @NOOP         = 0
+    @PUSH         = 1
+    @FALL         = 2
+    @FORWARD      = 3
+    @CLIMB_UP     = 4
+    @CLIMB_DOWN   = 5
+    @TURN_LEFT    = 6
+    @TURN_RIGHT   = 7
+    @JUMP         = 8
+    @JUMP_FORWARD = 9
+    @FALL_FORWARD = 10
+    @SHOOT        = 11
+    @END          = 12
+    
     constructor: (o, i, n, d, m) ->
 
         @action_object = o
@@ -66,7 +80,7 @@ class Action
         return @current / @getDuration() 
  
     getDuration: ()  ->
-        return Controller.mapMsTime @duration 
+        return world.mapMsTime @duration 
 
     performWithEvent: (event) ->
         eventTime = event.getTime()

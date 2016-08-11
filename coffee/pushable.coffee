@@ -4,21 +4,23 @@
 # 000        000   000       000  000   000  000   000  000   000  000      000     
 # 000         0000000   0000000   000   000  000   000  0000000    0000000  00000000
 
-Item = require './item'
+Item   = require './item'
+Action = require './action'
+Vector = require './lib/vector'
 
 class Pushable extends Item
     
     constructor: () ->
         super
         @pusher     = null
-        @direction  = new KVector()
+        @direction  = new Vector()
         
-        @addAction new KikiAction @, ACTION_PUSH, "push"
-        @addAction new KikiAction @, ACTION_FALL, "fall", 40
+        @addAction new Action @, Action.PUSH, "push"
+        @addAction new Action @, Action.FALL, "fall", 40
 
     pushedByObjectInDirection: (object, dir, duration) ->
 
-        pushAction = @getActionWithId ACTION_PUSH
+        pushAction = @getActionWithId Action.PUSH
         
         @pusher      = object
         @move_action = pushAction
@@ -29,28 +31,28 @@ class Pushable extends Item
 
     initAction: (action) ->
         # switch action->getId()
-            # when ACTION_FALL
+            # when Action.FALL
                 # Controller.world->objectWillMoveToPos @, @position + @direction, action->getDuration()
 
     performAction: (action) ->
         switch action.getId()
-            when ACTION_PUSH, ACTION_FALL
+            when Action.PUSH, Action.FALL
                 @setCurrentPosition @position + action.getRelativeTime() * @direction
 
     finishAction: (action) ->
         switch action.getId()
-            when ACTION_PUSH, ACTION_FALL
+            when Action.PUSH, Action.FALL
                 @move_action = null
                 world.objectMovedFromPos @, @position
                 @setPosition @current_position
 
-    actionFinished (action) ->
+    actionFinished: (action) ->
         actionId = action.getId()
         
-        if actionId == ACTION_PUSH or actionId == ACTION_FALL
+        if actionId == Action.PUSH or actionId == Action.FALL
             gravityDir = @direction
             
-            if actionId == ACTION_PUSH
+            if actionId == Action.PUSH
                 if @pusher instanceof KikiBot
                     gravityDir = pusher.getDown()
                 else if pusher instanceof KikiBomb
@@ -67,7 +69,7 @@ class Pushable extends Item
             
             if world.isUnoccupiedPos @position + gravityDir
                 @direction = gravityDir
-                @move_action = @getActionWithId ACTION_FALL
+                @move_action = @getActionWithId Action.FALL
                 # Controller.timer_event->addAction (move_action)
             else
                 @direction.reset()

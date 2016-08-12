@@ -106,21 +106,21 @@ class Player extends Bot
     
     getProjection: () ->
         # smooth camera movement a little bit
-        posDelta = Controller.getSpeed() / 10.0
-        projection.setPosition ((1.0 - posDelta) * projection.getPosition() + posDelta * current_position)
+        posDelta = world.getSpeed() / 10.0
+        @projection.setPosition ((1.0 - posDelta) * @projection.getPosition() + posDelta * @current_position)
     
-        KVector playerDir   = getCurrentDir()
-        KVector playerUp    = current_orientation.rotate (KVector(0,1,0)).normal()
+        playerDir = @getCurrentDir()
+        playerUp  = @current_orientation.rotate(new KVector(0,1,0)).normal()
             
-        if (@look_angle) # player is looking up or down
-            projection.setXVector playerUp.cross (playerDir).normal()
-            look_rot = KQuaternion.rotationAroundVector @look_angle, projection.getXVector()
-            projection.setYVector look_rot.rotate (playerUp)
-            projection.setZVector look_rot.rotate (-playerDir)
+        if @look_angle # player is looking up or down
+            projection.setXVector playerUp.cross(@playerDir).normal()
+            @look_rot = KQuaternion.rotationAroundVector @look_angle, projection.getXVector()
+            projection.setYVector @look_rot.rotate @playerUp 
+            projection.setZVector @look_rot.rotate -@playerDir 
         else
             # smooth camera rotation a little bit
-            lookDelta = (2.0 - projection.getZVector() * playerDir) * Controller.getSpeed() / 50.0
-            KVector newLookVector  = (1.0 - lookDelta) * projection.getZVector() - lookDelta * playerDir
+            lookDelta = (2.0 - projection.getZVector() * @playerDir) * world.getSpeed() / 50.0
+            newLookVector  = (1.0 - lookDelta) * projection.getZVector() - lookDelta * @playerDir
             newLookVector.normalize()
     
             projection.setXVector playerUp.cross(newLookVector).normal()
@@ -310,19 +310,19 @@ class Player extends Bot
                     Controller.timer_event.addAction rotate_action
     
     die: () ->
-        Controller.removeKeyHandler (this)
-        KikiBot.die()
-        Controller.displayText("game over")
-        Controller.sound.playSound (KikiSound.BOT_DEATH)
-        world.setCameraMode (world.CAMERA_FOLLOW)
+        # Controller.removeKeyHandler @
+        super
+        # Controller.displayText "game over" 
+        # Controller.sound.playSound KikiSound.BOT_DEATH
+        world.setCameraMode world.CAMERA_FOLLOW
     
     reborn: () ->
-        Controller.addKeyHandler (this)
+        Controller.addKeyHandler @
         died = false
     
     reset: () ->
         KikiBot.reset()
-        Controller.timer_event.removeActionsOfObject *
+        Controller.timer_event.removeActionsOfObject @
         
         @look_action = null
         @look_angle  = 0.0

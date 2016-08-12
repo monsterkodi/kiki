@@ -6,21 +6,20 @@
 #   00     00   0000000   000   000  0000000  0000000  
 {
 first,
-last
-}           = require "/Users/kodi/s/ko/js/tools/tools"
+last}       = require "/Users/kodi/s/ko/js/tools/tools"
 log         = require "/Users/kodi/s/ko/js/tools/log"
 Pos         = require './lib/pos'
-KikiCell    = require './cell'
-KikiLight   = require './light'
+Cell        = require './cell'
+Light       = require './light'
 Player      = require './player'
-KQuaternion = require './lib/quaternion'
-KVector     = require './lib/vector'
+Quaternion  = require './lib/quaternion'
+Vector      = require './lib/vector'
 Pos         = require './lib/pos'
 _           = require 'lodash'
 
 world       = null
 
-class KikiWorld
+class World
 
     @CAMERA_INSIDE = 0 
     @CAMERA_BEHIND = 1 
@@ -85,26 +84,26 @@ class KikiWorld
         @cells           = [] 
         @size            = new Pos()
         @depth           = -Number.MAX_SAFE_INTEGER
-        @camera_mode     = KikiWorld.CAMERA_BEHIND
+        @camera_mode     = World.CAMERA_BEHIND
         @edit_projection = null
         @edit_mode       = false
         @debug_camera    = false
         @debug_cells     = false
     
-        @raster_size = 0.1
+        @raster_size     = 0.1
     
     @init: (view) ->
         return if world?
                 
-        global.rot0    = new KQuaternion()
-        global.rotz180 = KQuaternion.rotationAroundVector(180, KVector(0,0,1))
-        global.rotz90  = KQuaternion.rotationAroundVector(90,  KVector(0,0,1))
-        global.roty270 = KQuaternion.rotationAroundVector(270, KVector(0,1,0))
-        global.roty180 = KQuaternion.rotationAroundVector(180, KVector(0,1,0))
-        global.roty90  = KQuaternion.rotationAroundVector(90,  KVector(0,1,0))
-        global.roty0   = KQuaternion.rotationAroundVector(0,   KVector(0,1,0))
-        global.rotx180 = KQuaternion.rotationAroundVector(180, KVector(1,0,0))
-        global.rotx90  = KQuaternion.rotationAroundVector(90,  KVector(1,0,0))
+        global.rot0    = new Quaternion()
+        global.rotz180 = Quaternion.rotationAroundVector(180, Vector(0,0,1))
+        global.rotz90  = Quaternion.rotationAroundVector(90,  Vector(0,0,1))
+        global.roty270 = Quaternion.rotationAroundVector(270, Vector(0,1,0))
+        global.roty180 = Quaternion.rotationAroundVector(180, Vector(0,1,0))
+        global.roty90  = Quaternion.rotationAroundVector(90,  Vector(0,1,0))
+        global.roty0   = Quaternion.rotationAroundVector(0,   Vector(0,1,0))
+        global.rotx180 = Quaternion.rotationAroundVector(180, Vector(1,0,0))
+        global.rotx90  = Quaternion.rotationAroundVector(90,  Vector(1,0,0))
         
         # 000      00000000  000   000  00000000  000       0000000
         # 000      000       000   000  000       000      000     
@@ -145,7 +144,6 @@ class KikiWorld
               "mutants", 
              ]
                    
-        @levelDict = {}
                
         # import the levels
         for levelName in @levelList
@@ -153,7 +151,7 @@ class KikiWorld
             
         # log 'levelDict', @levelDict
         log "create world in view:", view
-        world = new KikiWorld view
+        world = new World view
         global.world = world
         world.create first @levelList
         world
@@ -170,9 +168,9 @@ class KikiWorld
         
         if worldDict
             if _.isString worldDict
-                @level_index = KikiWorld.levelList.indexOf worldDict
+                @level_index = World.levelList.indexOf worldDict
                 @level_name = worldDict
-                @dict = KikiWorld.levelDict[worldDict]
+                @dict = World.levelDict[worldDict]
             else
                 @dict = worldDict
             
@@ -316,12 +314,12 @@ class KikiWorld
             @player.status.setMoves 0
             if "world" in @dict["exits"][parseInt name.slice 5]
                 w = @dict["exits"][parseInt name.slice 5]["world"]
-                if w instanceof KikiWorld
+                if w instanceof World
                     w.create()
                 else if _.isFunction w
                     w()
                 else
-                    exec "KikiWorld().create(" + world + ")"
+                    exec "World().create(" + world + ")"
             else
                 KikiPyWorld().create (levelList[world.level_index+1])
 
@@ -503,7 +501,7 @@ class KikiWorld
 
     setObjectAtPos: (object, pos) ->
         if @isInvalidPos pos
-            log "KikiWorld.setObjectAtPos invalid pos:", pos
+            log "World.setObjectAtPos invalid pos:", pos
             return
     
         cell = @getCellAtPos pos
@@ -513,7 +511,7 @@ class KikiWorld
             objectAtNewPos = cell.getOccupant()
             if objectAtNewPos instanceof KikiTmpObject
                 if objectAtNewPos.time > 0
-                    log "WARNING KikiWorld.setObject already occupied pos:", pos
+                    log "WARNING World.setObject already occupied pos:", pos
                     # "already occupied by %s with time %d!",
                     # object.getClassName(), pos.x, pos.y, pos.z, 
                     # cell.getOccupant().getClassName(),
@@ -522,7 +520,7 @@ class KikiWorld
         
         cell = @getCellAtPos pos
         if not cell?
-            cell = new KikiCell()
+            cell = new Cell()
             @cells[@posToIndex(pos)] = cell
             log "world.setObjectAtPos new cell", cell
         
@@ -546,7 +544,7 @@ class KikiWorld
         
     addObject: (object) ->
         object = @newObject object
-        if object instanceof KikiLight
+        if object instanceof Light
             @lights.push object # if lights.indexOf(object) < 0
         else
             @objects.push object # if objects.indexOf(object) < 0 
@@ -575,7 +573,7 @@ class KikiWorld
 
     deleteObject: (object) ->
         if not object?
-            log "WARNING: KikiWorld.deleteObject null"
+            log "WARNING: World.deleteObject null"
             return
         @removeObject object
         object.del()
@@ -595,14 +593,14 @@ class KikiWorld
             oldSize = @lights.length
             last(@lights).del() # destructor will call remove object
             if oldSize == @lights.length
-                log "WARNING KikiWorld.deleteAllObjects light no auto remove"
+                log "WARNING World.deleteAllObjects light no auto remove"
                 @lights.pop()
     
         while @objects.length
             oldSize = @objects.length
             last(@objects).del() # destructor will call remove object
             if oldSize == @objects.length
-                log "WARNING KikiWorld.deleteAllObjects object no auto remove"
+                log "WARNING World.deleteAllObjects object no auto remove"
                 @objects.pop()
     
     deleteObjectsWithClassName: (className) ->
@@ -614,7 +612,7 @@ class KikiWorld
         for o in @objects
             if objectName == o.getName()
                 return o
-        log "KikiWorld.getObjectWithName :: no object found with name #{objectName}"
+        log "World.getObjectWithName :: no object found with name #{objectName}"
         null
     
     setCameraMode: (mode) -> @camera_mode = clamp CAMERA_INSIDE, CAMERA_FOLLOW, mode
@@ -633,10 +631,10 @@ class KikiWorld
         cell = @getCellAtPos pos
     
         if @isInvalidPos pos
-            log "KikiWorld::objectWillMoveToPos invalid pos:", pos
+            log "objectWillMoveToPos invalid pos:", pos
         
         if object.getPos() == pos
-            log "WARNING KikiWorld::objectWillMoveToPos equal pos:", pos
+            log "WARNING objectWillMoveToPos equal pos:", pos
             return
     
         if cell
@@ -648,9 +646,9 @@ class KikiWorld
                         # temporary object at new pos will vanish before object will arrive . delete it
                         objectAtNewPos.del()
                     else
-                        log "KikiWorld.objectWillMoveToPos timing conflict at pos:", pos
+                        log "World.objectWillMoveToPos timing conflict at pos:", pos
                 else
-                    log "KikiWorld.objectWillMoveToPos already occupied:", pos 
+                    log "World.objectWillMoveToPos already occupied:", pos 
     
         @unsetObject object # remove object from cell grid
         
@@ -671,16 +669,16 @@ class KikiWorld
             pos = new Pos movedObject.position
     
             if @isInvalidPos pos
-                 log "KikiWorld.updateStatus invalid new pos"
+                 log "World.updateStatus invalid new pos"
                  return
     
             if tmpObject = @getObjectOfTypeAtPos KikiTmpObject, pos 
                 if tmpObject.object == movedObject
                     tmpObject.del()
                 else
-                    log "KikiWorld.updateStatus wrong tmp object at pos:", pos
+                    log "World.updateStatus wrong tmp object at pos:", pos
             else if @isOccupiedPos pos
-                log "KikiWorld.updateStatus object moved to occupied pos:", pos
+                log "World.updateStatus object moved to occupied pos:", pos
                     
             @setObjectAtPos movedObject, pos 
             @moved_objects.pop()
@@ -731,10 +729,157 @@ class KikiWorld
             mode: Action.ONCE
 
     resized: (w,h) ->
-        # log "world.resized w:#{w} h:#{h}"
         @aspect = w/h
         @camera?.aspect = @aspect
         @camera?.updateProjectionMatrix()
         @renderer?.setSize w,h
 
-module.exports = KikiWorld
+    getNearestValidPos: (pos) ->
+        new KikiPos Math.min(size.x-1, Math.max(pos.x, 0)), 
+                    Math.min(size.y-1, Math.max(pos.y, 0)), 
+                    Math.min(size.z-1, Math.max(pos.z, 0))
+    
+    isUnoccupiedPos: (pos) ->
+        return false if @isInvalidPos pos
+        not @getOccupantAtPos pos
+    
+    isOccupiedPos: (pos) -> not @isUnoccupiedPos pos
+    
+    # returns true, if a pushable object is at pos and may be pushed
+    mayObjectPushToPos: (object, pos, duration) ->
+        return false if @isInvalidPos pos
+        
+        direction = pos.minus object.getPos() # direction from object to pushable object
+        
+        return false if @isInvalidPos pos.plus @direction
+        
+        objectAtNewPos = @getOccupantAtPos pos.plus direction
+        if objectAtNewPos
+            if objectAtNewPos instanceof TmpObject
+                tmpObject = objectAtNewPos
+                
+                if tmpObject.time < 0 and -tmpObject.time <= duration
+                    # temporary object at new pos will vanish before object will arrive -> delete it
+                    tmpObject.del()
+                else return false
+            else return false
+    
+        pushableObject = @getOccupantAtPos pos
+    
+        if pushableObject? and pushableObject instanceof Pushable and
+                                pushableObject instanceof MotorGear # bad
+            pushableObject.pushedByObjectInDirection object, direction, duration
+            return true
+    
+        false
+    
+    reinit: () ->
+        for o in @objects
+            if o instanceof Light
+                o.initialize()
+        
+        # Spikes::initialize()
+        # Text::reinit()
+    
+    getInsideWallPosWithDelta: (pos, delta) ->
+        insidePos = new Vector pos
+        for w in [0..5]
+            planePos = new Vector -0.5, -0.5, -0.5
+            if w >= 3 then planePos.add size
+        
+            f = kRayPlaneIntersectionFactor pos, -@normals[w], planePos, @normals[w]
+            
+            if f < delta
+                insidePos.add new Vector (delta-f)*@normals[w]
+        
+        insidePos
+    
+    # returns the distance to the next wall (positive or negative)
+    getWallDistanceForPos: (pos) ->
+        
+        min_f = 10000
+        for w in [0..5] 
+            planePos = new Vector -0.5, -0.5, -0.5
+            if w >= 3 then planePos.add size
+        
+            f = kRayPlaneIntersectionFactor pos, -@normals[w], planePos, @normals[w]
+            
+            min_f = kAbsMin min_f, f 
+        min_f
+    
+    # returns the distace to the next wall in direction rayDirection from rayPos (positive values only)
+    getWallDistanceForRay: (rayPos, rayDirection) ->
+        
+        min_f = 10000
+        for w in [0..5]
+            planePos -0.5, -0.5, -0.5
+            if w >= 3 then planePos.add size
+        
+            f = kRayPlaneIntersectionFactor rayPos, rayDirection, planePos, @normals[w]
+            
+            min_f = f if f >= 0.0 and f < min_f
+        min_f
+    
+    displayLights: () ->
+        for light in @lights
+            lignt.display()
+    
+    displayWall: (width, height) ->
+        l = @raster_size/2.0
+        t = 1.0 - l
+    
+        # if flags[DISPLAY_RASTER] == false
+            # l = 0.0; t = 1.0
+        
+        glNormal3f 0.0, 0.0, 1.0 
+        for w in [0..width]
+            for h in [0..height]
+                glRectf w+l, h+l, w+t, h+t
+    
+    getProjection: () ->
+        if @projection == NULL
+            switch @camera_mode 
+                when CAMERA_INSIDE then @projection = @player.getProjection()     
+                when CAMERA_BEHIND then @projection = @player.getBehindProjection()
+                when CAMERA_FOLLOW then @projection = @player.getFollowProjection()
+        @projection
+    
+    display: (mode) ->
+        switch @camera_mode 
+            when CAMERA_INSIDE then @projection = @player.getProjection()
+            when CAMERA_BEHIND then @projection = @player.getBehindProjection()
+            when CAMERA_FOLLOW then @projection = @player.getFollowProjection()
+    
+        @player_projection = @projection
+        
+        @projection.initProjection()
+    
+        # glDisable(GL_BLEND);
+        # glDisable(GL_DEPTH_TEST);
+        # glDisable(GL_ALPHA_TEST);
+        # glDisable(GL_NORMALIZE);
+#         
+        # # colors[World_plate_color].glColor();
+#         
+        # glTranslatef(-0.5, -0.5, -0.5);
+#         
+        # displayWall(size.x, size.y); # xy+z
+        # glRotatef(180.0, 0.0, 1.0, 0.0);
+        # glTranslatef(-size.x, 0.0, -size.z);
+        # displayWall(size.x, size.y); # xy-z
+#         
+        # glRotatef(90.0, 1.0, 0.0, 0.0); # xz-y
+        # glTranslatef(0.0, 0.0, -size.y);
+        # displayWall(size.x, size.z);
+        # glRotatef(180.0, 0.0, 1.0, 0.0); # xz+y
+        # glTranslatef(-size.x, 0.0, -size.y);
+        # displayWall(size.x, size.z);
+#         
+        # glRotatef(-90.0, 0.0, 1.0, 0.0); # yz+x
+        # glTranslatef(0.0, 0.0, -size.x);
+        # displayWall(size.y, size.z);
+        # glRotatef(180.0, 1.0, 0.0, 0.0); # yz-x          
+        # glTranslatef(0.0, -size.z, -size.x); 
+        # displayWall(size.y, size.z);
+
+module.exports = World

@@ -4,9 +4,13 @@
 # 000 0 000  000   000     000     000   000  000   000 000 
 # 000   000  000   000     000     000   000  000  000   000
 
+Quaternion = require './quaternion'
+Vector     = require './vector'
+
 class Matrix
     
     constructor: (o) ->
+        
         @matrix = []
     
         if o instanceof Matrix
@@ -123,7 +127,7 @@ class Matrix
         @matrix[14] += @matrix[2]*v.x+@matrix[6]*v.y+@matrix[10]*v.z
         @matrix[15] += @matrix[3]*v.x+@matrix[7]*v.y+@matrix[11]*v.z
     
-    @rotation (x,y,z) -> new Matrix().rotate x,y,z
+    @rotation: (x,y,z) -> new Matrix().rotate x,y,z
     rotate: (x,y,z) ->
         
         rx = Vector.DEG2RAD x
@@ -201,12 +205,9 @@ class Matrix
         for k in [0...3] 
             jj[k] = k+1
                                     
-        fac  = m[ii[0]][jj[0]] * (m[ii[1]][jj[1]]*m[ii[2]][jj[2]]     
-                                - m[ii[1]][jj[2]]*m[ii[2]][jj[1]]) 
-        fac -= m[ii[0]][jj[1]] * (m[ii[1]][jj[0]]*m[ii[2]][jj[2]]    
-                                - m[ii[1]][jj[2]]*m[ii[2]][jj[0]])
-        fac += m[ii[0]][jj[2]] * (m[ii[1]][jj[0]]*m[ii[2]][jj[1]]    
-                                - m[ii[1]][jj[1]]*m[ii[2]][jj[0]])
+        fac  = m[ii[0]][jj[0]] * (m[ii[1]][jj[1]]*m[ii[2]][jj[2]] - m[ii[1]][jj[2]]*m[ii[2]][jj[1]]) 
+        fac -= m[ii[0]][jj[1]] * (m[ii[1]][jj[0]]*m[ii[2]][jj[2]] - m[ii[1]][jj[2]]*m[ii[2]][jj[0]])
+        fac += m[ii[0]][jj[2]] * (m[ii[1]][jj[0]]*m[ii[2]][jj[1]] - m[ii[1]][jj[1]]*m[ii[2]][jj[0]])
                                     
         k = i+j                           
         if k != (k/2)*2 # compute sign

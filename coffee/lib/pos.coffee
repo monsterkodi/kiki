@@ -16,7 +16,9 @@ class Pos
             @y = parseInt x.y
             @z = parseInt x.z
         else if Array.isArray x
-            [@x, @y, @z] = x
+            @x = parseInt x[0]
+            @y = parseInt x[1]
+            @z = parseInt x[2]
         else
             @x = parseInt x
             @y = parseInt y

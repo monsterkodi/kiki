@@ -6,12 +6,22 @@
 
 Pushable = require './pushable'
 Action   = require './action'
+Timer    = require './timer'
+Vector   = require './lib/vector'
+Quaternion = require './lib/quaternion'
 
 class Bot extends Pushable
     
     constructor: () ->
         
         super 
+        
+        @direction           = new Quaternion
+        @orientation         = new Quaternion
+        @current_orientation = new Quaternion
+        @rotate_orientation  = new Quaternion
+        @climb_orientation   = new Quaternion
+        @rest_orientation    = new Quaternion
         
         @geom = new THREE.SphereGeometry 1, 32, 32 
         @mat  = new THREE.MeshPhongMaterial 
@@ -39,14 +49,13 @@ class Bot extends Pushable
         @jump       = false
         @shoot      = false
         @jump_once  = false
-        
         @spiked     = false
         @died       = false
         
-        @move_action     = null
-        @rotate_action   = null
+        @move_action   = null
+        @rotate_action = null
         
-        @dir_sgn         = 1.0
+        @dir_sgn       = 1.0
         
         @addAction new Action @, Action.NOOP,         "noop",           0
         @addAction new Action @, Action.FORWARD,      "move forward",   200
@@ -68,7 +77,7 @@ class Bot extends Pushable
     addHealth: (h) -> @health = Math.max @health+h
     
     die: () ->
-        # timer_event.removeActionsOfObject (@)
+        Timer.removeActionsOfObject @
         
         @move  = false
         @jump  = false
@@ -377,6 +386,8 @@ class Bot extends Pushable
         if move_action
             @move_action.keepRest() # try to make subsequent actions smooth
             timer_event.addAction @move_action
+
+    getCurrentDir: -> @current_orientation.rotate(new Vector(0,0,1)).normal()
 
     render: () ->
         radius     = 0.5

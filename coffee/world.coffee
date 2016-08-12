@@ -9,6 +9,7 @@ first,
 last}       = require "/Users/kodi/s/ko/js/tools/tools"
 log         = require "/Users/kodi/s/ko/js/tools/log"
 Pos         = require './lib/pos'
+Size        = require './lib/size'
 Cell        = require './cell'
 Light       = require './light'
 Player      = require './player'
@@ -29,6 +30,9 @@ class World
     @levelDict = []
     
     constructor: (@view) -> 
+        
+        @screenSize = new Size @view.clientWidth, @view.clientHeight
+        log "view @screenSize #{@screenSize}"
         
         @renderer = new THREE.WebGLRenderer 
             antialias:              true
@@ -60,7 +64,6 @@ class World
         #   0000000    0000000  00000000  000   000  00000000
         
         @scene = new THREE.Scene()
-        @geom  = new THREE.BoxGeometry 10, 10, 10
         
         #   000      000   0000000   000   000  000000000
         #   000      000  000        000   000     000   
@@ -74,10 +77,8 @@ class World
         
         @ambient = new THREE.AmbientLight 0x444444
         @scene.add @ambient
-                #         
-        @preview = false
-        
-        @display_list    = 0
+         
+        @preview         = false
         @objects         = []
         @lights          = []
         @moved_objects   = []
@@ -86,12 +87,36 @@ class World
         @depth           = -Number.MAX_SAFE_INTEGER
         @camera_mode     = World.CAMERA_BEHIND
         @edit_projection = null
-        @edit_mode       = false
-        @debug_camera    = false
-        @debug_cells     = false
-    
         @raster_size     = 0.1
+            
+    #    0000000   0000000    0000000   00000000
+    #   000       000   000  000        000     
+    #   000       000000000  000  0000  0000000 
+    #   000       000   000  000   000  000     
+    #    0000000  000   000   0000000   00000000
     
+    initCage: ->
+        log "initCage size:", @size
+        mat  = new THREE.MeshPhongMaterial 
+            color:          0x440000
+            side:           THREE.BackSide
+            shading:        THREE.SmoothShading
+            transparent:    true
+            opacity:        0.5
+            shininess:      0.99
+        geom = new THREE.BoxGeometry @size.x, @size.y, @size.z
+        @cage = new THREE.Mesh geom, mat
+        @cage.translateX @size.x/2-0.5
+        @cage.translateY @size.y/2-0.5 
+        @cage.translateZ @size.z/2-0.5
+        @scene.add @cage
+        # glDisable(GL_BLEND);
+        # glDisable(GL_DEPTH_TEST);
+        # glDisable(GL_ALPHA_TEST);
+        # glDisable(GL_NORMALIZE);
+#         
+        # # colors[World_plate_color].glColor();
+#         
     @init: (view) ->
         return if world?
                 
@@ -245,26 +270,24 @@ class World
 
         # ............................................................ player
 
-        player = new Player
-#         
-        # player_dict = @dict["player"]
-#         
-        # if "orientation" in player_dict
-            # player.setOrientation (player_dict["orientation"])
-        # else
-            # player.setOrientation (roty90)
-#             
-        # if "position" in player_dict
-            # @addObjectAtPos player, @decenter(player_dict["position"])
-        # else if "coordinates" in player_dict
-            # pos = player_dict["coordinates"]
-            # @addObjectAtPos player, Pos(pos[0], pos[1], pos[2])
+        @player = new Player
+        player_dict = @dict.player
+        log "player_dict", player_dict
+        if player_dict.orientation?
+            @player.setOrientation player_dict.orientation
+        else
+            @player.setOrientation roty90
 
-        # if "nostatus" in player_dict
-            # if player_dict["nostatus"] or @preview
-                # Controller.player_status.hide()
+        if player_dict.position?
+            @addObjectAtPos @player, @decenter player_dict.position
+        else if player_dict.coordinates?
+            @addObjectAtPos @player, new Pos player_dict.coordinates
+
+        # if player_dict.nostatus?
+            # if player_dict.nostatus or @preview
+                # @player_status.hide()
             # else
-                # Controller.player_status.show()
+                # @player_status.show()
         # else
             # if @preview
                 # Controller.player_status.hide()
@@ -273,8 +296,8 @@ class World
 #         
         # @getProjection().setPosition(KVector())
 
-        # Controller.player.getStatus().setMinMoves (highscore.levelParMoves (@level_name))
-        # Controller.player.getStatus().setMoves (0)
+        # @player.getStatus().setMinMoves (highscore.levelParMoves (@level_name))
+        # @player.getStatus().setMoves (0)
 
         # ............................................................ init
         # @init() # tell the world that we are finished
@@ -471,13 +494,13 @@ class World
         menu.addItem(Controller.getLocalizedString("quit"), once(Controller.quit))
 
     setSize: (size) ->
+        log 'World.setSize!', size
         @deleteAllObjects()
         @cells = []
-    
         @size = new Pos size
-        
         # calcuate max distance (for position relative sound)
         @max_distance = Math.max(@size.x, Math.max(@size.y, @size.z))  # heuristic of a heuristic :-)
+        @initCage()
 
     getCellAtPos: (pos) -> return @cells[@posToIndex(pos)] if @isValidPos pos
     getBotAtPos:  (pos) -> @getObjectOfTypeAtPos KikiBot, pos
@@ -698,14 +721,17 @@ class World
     # 0000000      000     00000000  000          
     
     step: (step) ->
-        if true
+        if false
             quat = @camera.quaternion.clone()
             quat.multiply (new THREE.Quaternion).setFromAxisAngle(new THREE.Vector3(1,0,0), step.dsecs*0.2)
             quat.multiply (new THREE.Quaternion).setFromAxisAngle(new THREE.Vector3(0,1,0), step.dsecs*0.1)
-            center = @decenter 0,0,0
+            # center = @decenter 0,0,0
+            center = @size.div 2
+            log center
             @camera.position.set(center.x,center.y,center.z+@dist).applyQuaternion quat
             @camera.quaternion.copy quat
 
+        @player.getProjection().apply @camera
         @sun.position.copy @camera.position
         @renderer.render @scene, @camera
 
@@ -733,6 +759,7 @@ class World
         @camera?.aspect = @aspect
         @camera?.updateProjectionMatrix()
         @renderer?.setSize w,h
+        @screenSize = new Size w,h
 
     getNearestValidPos: (pos) ->
         new KikiPos Math.min(size.x-1, Math.max(pos.x, 0)), 
@@ -854,32 +881,4 @@ class World
         
         @projection.initProjection()
     
-        # glDisable(GL_BLEND);
-        # glDisable(GL_DEPTH_TEST);
-        # glDisable(GL_ALPHA_TEST);
-        # glDisable(GL_NORMALIZE);
-#         
-        # # colors[World_plate_color].glColor();
-#         
-        # glTranslatef(-0.5, -0.5, -0.5);
-#         
-        # displayWall(size.x, size.y); # xy+z
-        # glRotatef(180.0, 0.0, 1.0, 0.0);
-        # glTranslatef(-size.x, 0.0, -size.z);
-        # displayWall(size.x, size.y); # xy-z
-#         
-        # glRotatef(90.0, 1.0, 0.0, 0.0); # xz-y
-        # glTranslatef(0.0, 0.0, -size.y);
-        # displayWall(size.x, size.z);
-        # glRotatef(180.0, 0.0, 1.0, 0.0); # xz+y
-        # glTranslatef(-size.x, 0.0, -size.y);
-        # displayWall(size.x, size.z);
-#         
-        # glRotatef(-90.0, 0.0, 1.0, 0.0); # yz+x
-        # glTranslatef(0.0, 0.0, -size.x);
-        # displayWall(size.y, size.z);
-        # glRotatef(180.0, 1.0, 0.0, 0.0); # yz-x          
-        # glTranslatef(0.0, -size.z, -size.x); 
-        # displayWall(size.y, size.z);
-
 module.exports = World

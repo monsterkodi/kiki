@@ -4,7 +4,8 @@
 # 000        000       000   000       000  000        000       000          000     000     000     000     
 # 000        00000000  000   000  0000000   000        00000000   0000000     000     000      0      00000000
 
-Matrix = require './matrix'
+log    = require '/Users/kodi/s/ko/js/tools/log'
+Matrix = require './lib/matrix'
 
 class Perspective extends Matrix
     
@@ -58,15 +59,18 @@ class Perspective extends Matrix
 
     initProjection: -> @apply()
 
-    apply: ->
-        # glViewport(vp[0], vp[1], vp[2], vp[3]);
-        # gluPerspective (fov, getCurrentAspectRatio(), znear, zfar);
-        # glMatrixMode(GL_MODELVIEW);
-        # glLoadIdentity();
-        # KVector lookAt = getLookAtPosition();
-        # gluLookAt(    matrix[TX], matrix[TY], matrix[TZ],
-                    # lookAt[X], lookAt[Y], lookAt[Z],
-                    # matrix[4], matrix[5], matrix[6]);
+    apply: (camera) ->
+            
+        camPos = @getPosition()
+        up     = @getYVector()
+        lookAt = @getLookAtPosition()
+        
+        log "Perspective.apply", camPos, up, lookAt
+        
+        camera.position.clone camPos #set camPos.x, camPos.y, camPos.z 
+        camera.up.clone up #new THREE.Vector3 up.x, up.y, up.z
+        camera.lookAt new THREE.Vector3 lookAt.x, lookAt.y, lookAt.z
+
         if @light?
             pos = @getPosition().plus @light_offset
             @light.setDirection -@getZVector()
@@ -94,11 +98,12 @@ class Perspective extends Matrix
     getLookAtPosition: -> @getZVector().mul(-@eye_distance).plus @getPosition()
             
     updateViewport: ->
-        ss = @world.screenSize()
+        ss = world.screenSize
+        vp = []
         vp[0] = @viewport[0] * ss.w + @border[0]
         vp[1] = @viewport[1] * ss.h + @border[1]
-        vp[2] = @viewport[2] * ss.w - (@border[0]+@border[2])
-        vp[3] = @viewport[3] * ss.h - (@border[1]+@border[3])
+        vp[2] = @viewport[2] * ss.w - @border[0] - @border[2]
+        vp[3] = @viewport[3] * ss.h - @border[1] - @border[3]
     
     getCurrentAspectRatio: ->
         vps = @getViewportSize()
@@ -111,7 +116,7 @@ class Perspective extends Matrix
         @updateViewport();
     
     setViewport: (l, b, w, h) ->
-        @viewport[0] = [l,b,w,h] 
+        @viewport = [l,b,w,h] 
         @updateViewport()
     
     setFov: (fov) -> @fov = Math.max(2.0, Math.min fov, 175.0)

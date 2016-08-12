@@ -7,6 +7,9 @@
 
 Bot    = require './bot'
 Action = require './action'
+Timer  = require './timer'
+Vector = require './lib/vector'
+Perspective = require './perspective'
 
 forward_key    = "UP"
 backward_key   = "DOWN"
@@ -19,8 +22,6 @@ look_up_key    = "HOME"
 look_down_key  = "END"
 view_key       = "PAGEDOWN"
  
-# KikiActionKey actionKeyMapping[] = 
-
 class Player extends Bot
     
     constructor: ->
@@ -35,8 +36,6 @@ class Player extends Bot
         @recorder    = null
         @playback    = null
         
-        # @flags[KDL_KEYHANDLER_FLAG_HANDLES_RELEASE] = true
-        
         @addAction new Action @, Action.LOOK_UP,    "look up",    220
         @addAction new Action @, Action.LOOK_DOWN,  "look down",  220
         @addAction new Action @, Action.LOOK_RESET, "look reset", 60
@@ -45,13 +44,11 @@ class Player extends Bot
         @addEventWithName "keyset failed"
         @addEventWithName "landed"
     
-        # @projection = new KLightingProjection (90.0)
-        # @projection.updateViewport()
-        # @projection.getLight().setCutoff (90.0)
-        # @projection.getLight().setAttenuation (1.0, 0.0, 0.05)
+        @projection = new Perspective 90.0
+        @projection.updateViewport()
+        # @projection.getLight().setCutoff 90.0
+        # @projection.getLight().setAttenuation 1.0, 0.0, 0.05
     
-        # Controller.player_status->setStatus status
-
     getActionForKey: (keyName) ->
         index = 0
         while actionKeyMapping[index].actionName
@@ -92,7 +89,7 @@ class Player extends Bot
     
     updatePosition: () ->
         if @move_action
-            relTime = (Controller.getTime() - @move_action.getStart()) / @move_action.getDuration()
+            relTime = (world.getTime() - @move_action.getStart()) / @move_action.getDuration()
             if relTime <= 1.0
                 switch @move_action.id
                     when Action.FORWARD
@@ -110,30 +107,30 @@ class Player extends Bot
         @projection.setPosition ((1.0 - posDelta) * @projection.getPosition() + posDelta * @current_position)
     
         playerDir = @getCurrentDir()
-        playerUp  = @current_orientation.rotate(new KVector(0,1,0)).normal()
+        playerUp  = @current_orientation.rotate(new Vector(0,1,0)).normal()
             
         if @look_angle # player is looking up or down
-            projection.setXVector playerUp.cross(@playerDir).normal()
-            @look_rot = KQuaternion.rotationAroundVector @look_angle, projection.getXVector()
-            projection.setYVector @look_rot.rotate @playerUp 
-            projection.setZVector @look_rot.rotate -@playerDir 
+            @projection.setXVector playerUp.cross(playerDir).normal()
+            @look_rot = Quaternion.rotationAroundVector @look_angle, @projection.getXVector()
+            @projection.setYVector @look_rot.rotate playerUp 
+            @projection.setZVector @look_rot.rotate -playerDir 
         else
             # smooth camera rotation a little bit
-            lookDelta = (2.0 - projection.getZVector() * @playerDir) * world.getSpeed() / 50.0
-            newLookVector  = (1.0 - lookDelta) * projection.getZVector() - lookDelta * @playerDir
+            lookDelta = (2.0 - @projection.getZVector().dot playerDir) * world.getSpeed() / 50.0
+            newLookVector  = @projection.getZVector().mul(1.0 - lookDelta).minus playerDir.mul lookDelta
             newLookVector.normalize()
     
-            projection.setXVector playerUp.cross(newLookVector).normal()
-            projection.setYVector playerUp
-            projection.setZVector newLookVector
+            @projection.setXVector playerUp.cross(newLookVector).normal()
+            @projection.setYVector playerUp
+            @projection.setZVector newLookVector
             
-        return projection
+        @projection
     
     getBehindProjection: () ->
         @updatePosition()
     
         @playerDir = getCurrentDir()
-        @playerUp  = current_orientation.rotate(KVector(0,1,0)).normal()
+        @playerUp  = @current_orientation.rotate(new Vector(0,1,0)).normal()
         
         # find a valid camera position
         botToCamera = (playerUp - 2 * playerDir)
@@ -156,7 +153,7 @@ class Player extends Bot
         else
             # smooth camera rotation a little bit
             lookDelta = 0.3
-            KVector newLookVector  =(1.0 - lookDelta) * @projection.getZVector() - lookDelta * playerDir
+            newLookVector = @projection.getZVector().mul((1.0 - lookDelta)).minus @playerDir.mul lookDelta
             newLookVector.normalize()
             
             @projection.setZVector(newLookVector) 
@@ -169,86 +166,85 @@ class Player extends Bot
         cameraPos = @projection.getPosition()    # current camera position
         desiredDistance = 2.0            # desired distance from camera to bot
     
-        updatePosition()
+        @updatePosition()
     
         playerPos   = @current_position        # desired look pos
-        playerDir   = getCurrentDir()
-        playerUp    = current_orientation.rotate(KVector(0,1,0)).normal()
+        playerDir   = @getCurrentDir()
+        playerUp    = current_orientation.rotate(new Vector(0,1,0)).normal()
         playerRight = playerDir.cross(playerUp).normal()
     
-        # .................................................................. camera follows bot
+        # ____________________________________________________ camera follows bot
         # first, adjust distance from camera to bot
          
-        botToCamera = cameraPos - playerPos      # vector from bot to current pos
+        botToCamera = cameraPos.minus playerPos  # vector from bot to current pos
         cameraBotDistance = botToCamera.length() # distance from camera to bot
         
         if cameraBotDistance >= desiredDistance
             difference = cameraBotDistance - desiredDistance
-            delta = (difference*difference)/400.0        # weight for following speed
-            cameraPos = (1.0 - delta) * cameraPos + delta * playerPos
+            delta = difference*difference/400.0        # weight for following speed
+            cameraPos = cameraPos.mul(1.0 - delta).plus playerPos.mul delta
         else
             difference = desiredDistance - cameraBotDistance
             delta = difference/20.0                # weight for negative following speed
-            cameraPos = (1.0 - delta) * cameraPos + delta * (playerPos + desiredDistance * botToCamera.normal())
+            cameraPos = cameraPos.mul(1.0 - delta).plus (playerPos.plus botToCamera.normal().mul desiredDistance).mul delta
     
-        # .................................................................. refining camera position
+        # ____________________________________________________ refining camera position
         # second, rotate around bot
     
-        botToCamera = cameraPos - playerPos
-        KVector botToCameraNormal = botToCamera.normal()
+        botToCamera = cameraPos.minus playerPos
+        botToCameraNormal = botToCamera.normal()
     
-        # .................................................................. try view bot from above
+        # ____________________________________________________ try view bot from above
         # if camera below bot, rotate up
-        if (botToCameraNormal * playerUp < 0)
+        if botToCameraNormal.dot(playerUp) < 0
             # calculate angle between player to camera vector and player up vector
-            verticalAngle = RAD2DEG (Math.acos(kMinMax(-1.0, 1.0, botToCameraNormal * playerUp))) - 90.0
-            cameraPos = playerPos + KQuaternion.rotationAroundVector(verticalAngle/40.0, botToCameraNormal.cross(playerUp)).rotate(botToCamera)
+            verticalAngle = Vector.RAD2DEG Math.acos(kMinMax(-1.0, 1.0, botToCameraNormal.dot playerUp)) - 90.0
+            cameraPos = playerPos.plus Quaternion.rotationAroundVector(verticalAngle/40.0, botToCameraNormal.cross(playerUp)).rotate botToCamera 
             
-            botToCamera = cameraPos - playerPos
-            botToCameraNormal = (cameraPos - playerPos).normal()
+            botToCamera = cameraPos.minus playerPos
+            botToCameraNormal = botToCamera.normal()
     
         rot_factor = 1.0
         wall_distance = world.getWallDistanceForPos (playerPos + botToCamera)
         if wall_distance < 0.5
-            # .................................................................. apiercing walls
-            
+            # ____________________________________________________ apiercing walls
             if (wall_distance < 0.2)
                 cameraPos = world.getInsideWallPosWithDelta cameraPos, 0.2
-                botToCamera = cameraPos - playerPos
-                botToCameraNormal = (cameraPos - playerPos).normal()
+                botToCamera = cameraPos.minus playerPos
+                botToCameraNormal = botToCamera.normal()
             
             rot_factor = 0.5 / (wall_distance-0.2)
     
-        # .................................................................. try view bot from behind
+        # ____________________________________________________ try view bot from behind
         # calculate horizontal angle between bot orientation and vector to camera
-        mappedToXZ ((botToCamera - playerUp * (botToCamera * playerUp)).normal())
-        horizontalAngle = RAD2DEG (Math.acos(kMinMax(-1.0, 1.0, -playerDir * mappedToXZ)))
-        if botToCameraNormal * playerRight > 0
+        mappedToXZ = (botToCamera.minus playerUp.mul(botToCamera.dot playerUp)).normal()
+        horizontalAngle = Vector.RAD2DEG Math.acos(kMinMax(-1.0, 1.0, -playerDir.dot mappedToXZ))
+        if botToCameraNormal.dot(playerRight) > 0
             horizontalAngle = -horizontalAngle
     
-        cameraPos = playerPos + KQuaternion.rotationAroundVector(horizontalAngle / (rot_factor * 400.0), playerUp).rotate botToCamera
+        cameraPos = playerPos.plus Quaternion.rotationAroundVector(horizontalAngle / (rot_factor * 400.0), playerUp).rotate botToCamera
     
-        botToCamera = cameraPos - playerPos
+        botToCamera = cameraPos.minus playerPos
         botToCameraNormal = botToCamera.normal()
     
-        # .................................................................. finally, set the position
+        # ____________________________________________________ finally, set the position
         
         @projection.setPosition cameraPos 
         
-        # .................................................................. refining camera orientation
+        # ____________________________________________________ refining camera orientation
         
         # slowly adjust look direction by interpolating current and desired directions
-        lookDelta = 2.0 - @projection.getZVector() * botToCameraNormal
+        lookDelta = 2.0 - @projection.getZVector().dot botToCameraNormal
         lookDelta *= lookDelta / 30.0    
-        KVector newLookVector = (1.0 - lookDelta) * @projection.getZVector() + lookDelta * botToCameraNormal
+        newLookVector = @projection.getZVector().mul(1.0 - lookDelta).plus botToCameraNormal.mul(lookDelta)
         newLookVector.normalize()
         
         # slowly adjust up vector by interpolating current and desired up vectors
-        upDelta = 2.0 - @projection.getYVector() * playerUp
+        upDelta = 2.0 - @projection.getYVector().dot playerUp
         upDelta *= upDelta / 100.0    
-        KVector newRightVector = ((1.0 - upDelta) * @projection.getYVector() + upDelta * playerUp).cross(newLookVector)
+        KVector newRightVector = (@projection.getYVector().mul(1.0 - upDelta).plus playerUp.mul(upDelta)).cross newLookVector 
         newRightVector.normalize()
-        KVector newUpVector = newLookVector.cross(newRightVector).normal()
+        newUpVector = newLookVector.cross(newRightVector).normal()
     
         # finished interpolations, update camera matrix
         @projection.setZVector newLookVector
@@ -263,12 +259,12 @@ class Player extends Bot
             when Action.CLIMB_DOWN, Action.FORWARD
                 @status.addMoves 1 
             when Action.TURN_LEFT, Action.TURN_RIGHT
-                Controller.sound.playSound KikiSound.BOT_MOVE 
+                sound.playSound KikiSound.BOT_MOVE 
             when Action.JUMP, Action.JUMP_FORWARD
                 @status.addMoves actionId == Action.JUMP and 1 or 2
-                Controller.sound.playSound KikiSound.BOT_JUMP 
+                sound.playSound KikiSound.BOT_JUMP 
         
-        KikiBot.initAction(action)
+        super action
     
     performAction: (action) ->
         relTime = action.getRelativeTime()
@@ -288,7 +284,7 @@ class Player extends Bot
                 else 
                     @look_angle = Math.max @look_angle, (1.0-relTime) * -90.0
             else
-                KikiBot.performAction action 
+                super action 
     
     finishAction: (action) ->
         actionId = action.id
@@ -307,22 +303,22 @@ class Player extends Bot
                 if rotate
                     rotate_action = getActionWithId rotate
                     rotate_action.reset()
-                    Controller.timer_event.addAction rotate_action
+                    Timer.addAction rotate_action
     
     die: () ->
         # Controller.removeKeyHandler @
         super
         # Controller.displayText "game over" 
-        # Controller.sound.playSound KikiSound.BOT_DEATH
+        # sound.playSound KikiSound.BOT_DEATH
         world.setCameraMode world.CAMERA_FOLLOW
     
     reborn: () ->
-        Controller.addKeyHandler @
+        # Controller.addKeyHandler @
         died = false
     
     reset: () ->
         KikiBot.reset()
-        Controller.timer_event.removeActionsOfObject @
+        Timer.removeActionsOfObject @
         
         @look_action = null
         @look_angle  = 0.0
@@ -364,9 +360,9 @@ class Player extends Bot
         if keyName == turn_left_key or keyName == turn_right_key
             rotate = (keyName == turn_left_key) and Action.TURN_LEFT or Action.TURN_RIGHT
             
-            if (rotate_action == null and spiked == false) # player is not performing a rotation and unspiked
-                rotate_action = getActionWithId rotate
-                Controller.timer_event.addAction rotate_action
+            if (@rotate_action == null and spiked == false) # player is not performing a rotation and unspiked
+                @rotate_action = getActionWithId rotate
+                Timer.addAction @rotate_action
             
             return keyHandled()
         
@@ -382,7 +378,7 @@ class Player extends Bot
         if keyName == shoot_key
             if not shoot
                 shoot = true
-                Controller.timer_event.addAction @getActionWithId Action.SHOOT
+                Timer.addAction @getActionWithId Action.SHOOT
             
             return keyHandled()
         
@@ -390,7 +386,7 @@ class Player extends Bot
             if not @look_action
                 @look_action = @getActionWithId (key.name == look_up_key) and Action.LOOK_UP or Action.LOOK_DOWN
                 @look_action.reset()
-                Controller.timer_event.addAction @look_action
+                Timer.addAction @look_action
             return keyHandled()
         
         if keyName == view_key
@@ -406,7 +402,7 @@ class Player extends Bot
             true
             
         if keyName == shoot_key
-            Controller.timer_event.removeAction getActionWithId Action.SHOOT
+            Timer.removeAction @getActionWithId Action.SHOOT
             shoot = false
             return releaseHandled()
         
@@ -420,8 +416,8 @@ class Player extends Bot
                 if @move_action == null and world.isUnoccupiedPos position.plus @getUp()
                     jump_once = false
                     @move_action = getActionWithId Action.JUMP
-                    Controller.sound.playSound KikiSound.BOT_JUMP
-                    Controller.timer_event.addAction @move_action
+                    sound.playSound KikiSound.BOT_JUMP
+                    Timer.addAction @move_action
             return releaseHandled()
         
         if keyName ==  turn_left_key or keyName == turn_right_key
@@ -434,9 +430,9 @@ class Player extends Bot
         
         if keyName == look_down_key or keyName == look_up_key
             if @look_action and @look_action.id != Action.LOOK_RESET
-                Controller.timer_event.removeAction @look_action
+                Timer.removeAction @look_action
             @look_action = getActionWithId Action.LOOK_RESET
-            Controller.timer_event.addAction @look_action
+            Timer.addAction @look_action
             return releaseHandled()
         
         if keyName == view_key 
@@ -467,8 +463,8 @@ class Player extends Bot
         return colors[KikiPlayer_tire_color]
      
     finishRotateAction: () ->
-      if rotate_action
-        rotate = false
-        finishAction(rotate_action)
+        if rotate_action
+            @rotate = false
+            @finishAction rotate_action 
     
 module.exports = Player

@@ -78,8 +78,6 @@ class Quaternion
     length:        -> Math.sqrt @w*@w + @x*@x + @y*@y + @z*@z
     eql:       (q) -> @w==q.w and @x=q.x and @y==q.y and @z==q.z
     
-    # glRotate    () const    { KMatrix(*this).glMultMatrix(); }
-
     # Quaternion &     operator +=     ( float f )    { w += f; return(*this); }
     # Quaternion &     operator -=     ( float f )    { w -= f; return(*this); }
     # Quaternion &     operator *=     ( float f )    { w *= f; x *= f; y *= f; z *= f; return(*this); }
@@ -88,18 +86,18 @@ class Quaternion
     mul: (quatOrScalar) ->
         if quatOrScalar instanceof Quaternion
             quat = quatOrScalar
-            A = (@w + @x)*(quat.w + quat.x)
-            B = (@z - @y)*(quat.y - quat.z)
-            C = (@w - @x)*(quat.y + quat.z) 
-            D = (@y + @z)*(quat.w - quat.x)
-            E = (@x + @z)*(quat.x + quat.y)
-            F = (@x - @z)*(quat.x - quat.y)
-            G = (@w + @y)*(quat.w - quat.z)
-            H = (@w - @y)*(quat.w + quat.z)
-            new Quaternion B +(-E - F + G + H)/2,
-                           A - (E + F + G + H)/2,
-                           C + (E - F + G - H)/2,
-                           D + (E - F - G + H)/2
+            A = (@w + @x) * (quat.w + quat.x)
+            B = (@z - @y) * (quat.y - quat.z)
+            C = (@w - @x) * (quat.y + quat.z) 
+            D = (@y + @z) * (quat.w - quat.x)
+            E = (@x + @z) * (quat.x + quat.y)
+            F = (@x - @z) * (quat.x - quat.y)
+            G = (@w + @y) * (quat.w - quat.z)
+            H = (@w - @y) * (quat.w + quat.z)
+            new Quaternion B + (-E - F + G + H)/2,
+                           A -  (E + F + G + H)/2,
+                           C +  (E - F + G - H)/2,
+                           D +  (E - F - G + H)/2
         else
             new Quaternion @w*f, @x*f, @y*f, z*f
 

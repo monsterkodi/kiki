@@ -91,18 +91,18 @@ class Player extends Bot
         getEventWithName("keyset").triggerActions()
     
     updatePosition: () ->
-        if (move_action)
-            relTime = (Controller.getTime() - move_action.getStart()) / move_action.getDuration()
+        if @move_action
+            relTime = (Controller.getTime() - @move_action.getStart()) / @move_action.getDuration()
             if relTime <= 1.0
-                switch move_action.id
+                switch @move_action.id
                     when Action.FORWARD
-                        current_position = position + relTime * getDir()
+                        @current_position = @position + relTime * @getDir()
                     when Action.FALL
-                        current_position = position - relTime * getUp() 
+                        @current_position = @position - relTime * @getUp() 
                     when Action.JUMP_FORWARD
-                        current_position = position  + (1.0 - Math.cos(Math.PI/2 * relTime)) * getDir() + Math.cos(Math.PI/2 - Math.PI/2 * relTime) * getUp()
+                        @current_position = @position  + (1.0 - Math.cos(Math.PI/2 * relTime)) * @getDir() + Math.cos(Math.PI/2 - Math.PI/2 * relTime) * @getUp()
                     when Action.FALL_FORWARD
-                        current_position = position + Math.cos(Math.PI/2 - Math.PI/2 * relTime) * getDir() + (1.0 - Math.cos(Math.PI/2 * relTime)) * -getUp()
+                        @current_position = @position + Math.cos(Math.PI/2 - Math.PI/2 * relTime) * @getDir() + (1.0 - Math.cos(Math.PI/2 * relTime)) * -@getUp()
     
     getProjection: () ->
         # smooth camera movement a little bit
@@ -130,48 +130,48 @@ class Player extends Bot
         return projection
     
     getBehindProjection: () ->
-        updatePosition()
+        @updatePosition()
     
-        playerDir   = getCurrentDir()
-        playerUp    = current_orientation.rotate(KVector(0,1,0)).normal()
+        @playerDir = getCurrentDir()
+        @playerUp  = current_orientation.rotate(KVector(0,1,0)).normal()
         
         # find a valid camera position
         botToCamera = (playerUp - 2 * playerDir)
         min_f = botToCamera.length()
         botToCamera.normalize()
         
-        min_f = Math.min world.getWallDistanceForRay(current_position, botToCamera), min_f
-        cameraPos = current_position + kMax(min_f, 0.72) * botToCamera
+        min_f = Math.min world.getWallDistanceForRay(@current_position, botToCamera), min_f
+        cameraPos = @current_position + kMax(min_f, 0.72) * botToCamera
         cameraPos = world.getInsideWallPosWithDelta cameraPos, 0.2
             
         # smooth camera movement a little bit
         posDelta = 0.2
-        projection.setPosition ((1.0 - posDelta) * projection.getPosition() + posDelta * cameraPos)
+        @projection.setPosition ((1.0 - posDelta) * @projection.getPosition() + posDelta * cameraPos)
                                                                                 
-        if (@look_angle)
-            projection.setXVector(playerUp.cross(playerDir).normal())
-            KQuaternion look_rot = KQuaternion.rotationAroundVector(@look_angle, projection.getXVector())
-            projection.setYVector(look_rot.rotate(playerUp))
-            projection.setZVector(look_rot.rotate(-playerDir))
+        if @look_angle
+            @projection.setXVector(playerUp.cross(playerDir).normal())
+            KQuaternion look_rot = KQuaternion.rotationAroundVector(@look_angle, @projection.getXVector())
+            @projection.setYVector(look_rot.rotate(playerUp))
+            @projection.setZVector(look_rot.rotate(-playerDir))
         else
             # smooth camera rotation a little bit
             lookDelta = 0.3
-            KVector newLookVector  =(1.0 - lookDelta) * projection.getZVector() - lookDelta * playerDir
+            KVector newLookVector  =(1.0 - lookDelta) * @projection.getZVector() - lookDelta * playerDir
             newLookVector.normalize()
             
-            projection.setZVector(newLookVector) 
-            projection.setXVector(playerUp.cross(newLookVector).normal())
-            projection.setYVector(newLookVector.cross(projection.getXVector()).normal())
+            @projection.setZVector(newLookVector) 
+            @projection.setXVector(playerUp.cross(newLookVector).normal())
+            @projection.setYVector(newLookVector.cross(@projection.getXVector()).normal())
         
-        return projection
+        @projection
     
      getFollowProjection: () ->
-        cameraPos = projection.getPosition()    # current camera position
+        cameraPos = @projection.getPosition()    # current camera position
         desiredDistance = 2.0            # desired distance from camera to bot
     
         updatePosition()
     
-        playerPos   = current_position        # desired look pos
+        playerPos   = @current_position        # desired look pos
         playerDir   = getCurrentDir()
         playerUp    = current_orientation.rotate(KVector(0,1,0)).normal()
         playerRight = playerDir.cross(playerUp).normal()
@@ -233,29 +233,29 @@ class Player extends Bot
     
         # .................................................................. finally, set the position
         
-        projection.setPosition cameraPos 
+        @projection.setPosition cameraPos 
         
         # .................................................................. refining camera orientation
         
         # slowly adjust look direction by interpolating current and desired directions
-        lookDelta = 2.0 - projection.getZVector() * botToCameraNormal
+        lookDelta = 2.0 - @projection.getZVector() * botToCameraNormal
         lookDelta *= lookDelta / 30.0    
-        KVector newLookVector = (1.0 - lookDelta) * projection.getZVector() + lookDelta * botToCameraNormal
+        KVector newLookVector = (1.0 - lookDelta) * @projection.getZVector() + lookDelta * botToCameraNormal
         newLookVector.normalize()
         
         # slowly adjust up vector by interpolating current and desired up vectors
-        upDelta = 2.0 - projection.getYVector() * playerUp
+        upDelta = 2.0 - @projection.getYVector() * playerUp
         upDelta *= upDelta / 100.0    
-        KVector newRightVector = ((1.0 - upDelta) * projection.getYVector() + upDelta * playerUp).cross(newLookVector)
+        KVector newRightVector = ((1.0 - upDelta) * @projection.getYVector() + upDelta * playerUp).cross(newLookVector)
         newRightVector.normalize()
         KVector newUpVector = newLookVector.cross(newRightVector).normal()
     
         # finished interpolations, update camera matrix
-        projection.setZVector newLookVector
-        projection.setXVector newRightVector
-        projection.setYVector newUpVector
+        @projection.setZVector newLookVector
+        @projection.setXVector newRightVector
+        @projection.setYVector newUpVector
         
-        return projection
+        @projection
     
     initAction: (action) ->
         actionId = action.id
@@ -297,7 +297,7 @@ class Player extends Bot
             @look_action = null
             @look_angle  = 0.0
         else
-            if action == move_action # move finished, update direction
+            if action == @move_action # move finished, update direction
                 dir_sgn = new_dir_sgn
             
             if actionId != Action.LOOK_UP and actionId != Action.LOOK_DOWN
@@ -351,7 +351,7 @@ class Player extends Bot
         if keyName == forward_key or keyName == backward_key
             move = true # try to move as long as the key is not released
             
-            if move_action == null # player is currently not performing a move action
+            if @move_action == null # player is currently not performing a move action
                 # forward or backward direction
                 new_dir_sgn = dir_sgn = (key.getUnmodifiedName() == backward_key) ? -1 : 1 
     
@@ -417,11 +417,11 @@ class Player extends Bot
         if key.name == jump_key
             jump = false
             if jump_once
-                if move_action == null and world.isUnoccupiedPos position.plus getUp()
+                if @move_action == null and world.isUnoccupiedPos position.plus @getUp()
                     jump_once = false
-                    move_action = getActionWithId Action.JUMP
+                    @move_action = getActionWithId Action.JUMP
                     Controller.sound.playSound KikiSound.BOT_JUMP
-                    Controller.timer_event.addAction (move_action)
+                    Controller.timer_event.addAction @move_action
             return releaseHandled()
         
         if keyName ==  turn_left_key or keyName == turn_right_key
@@ -452,7 +452,7 @@ class Player extends Bot
         if world.getCameraMode() == world.CAMERA_BEHIND
             # static bodyColor
             bodyColor = colors[KikiPlayer_base_color]
-            bodyColor.setAlpha(kMin(0.7, (projection.getPosition()-current_position).length()-0.4))
+            bodyColor.setAlpha(kMin(0.7, (@projection.getPosition()-@current_position).length()-0.4))
             return bodyColor
     
         return colors[KikiPlayer_base_color]
@@ -461,7 +461,7 @@ class Player extends Bot
         if world.getCameraMode() == world.CAMERA_BEHIND
             # static tireColor
             tireColor = colors[KikiPlayer_tire_color]
-            tireColor.setAlpha(kMin(1.0, (projection.getPosition()-current_position).length()-0.4))
+            tireColor.setAlpha(kMin(1.0, (@projection.getPosition()-@current_position).length()-0.4))
             return tireColor
     
         return colors[KikiPlayer_tire_color]

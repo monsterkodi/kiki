@@ -8,56 +8,78 @@ class Matrix
     
     constructor: (o) ->
         @matrix = []
-        @reset()
     
         if o instanceof Matrix
-            @matrix[0]  =o.matrix[0]; matrix[1] =o.matrix[1]; matrix[2] =o.matrix[2]; matrix[3] =o.matrix[3];
-            @matrix[4]  =o.matrix[4]; matrix[5] =o.matrix[5]; matrix[6] =o.matrix[6]; matrix[7] =o.matrix[7];
-            @matrix[8]  =o.matrix[8]; matrix[9] =o.matrix[9]; matrix[10]=o.matrix[10];matrix[11]=o.matrix[11];
-            @matrix[12] =o.matrix[12];matrix[13]=o.matrix[13];matrix[14]=o.matrix[14];matrix[15]=o.matrix[15];
+            @copy o
     
         else if o instanceof Array
-            matrix[0] =o[0]; matrix[1] =o[1]; matrix[2] =o[2]; matrix[3] =o[3];
-            matrix[4] =o[4]; matrix[5] =o[5]; matrix[6] =o[6]; matrix[7] =o[7];
-            matrix[8] =o[8]; matrix[9] =o[9]; matrix[10]=o[10];matrix[11]=o[11];
-            matrix[12]=o[12];matrix[13]=o[13];matrix[14]=o[14];matrix[15]=o[15];
+            if o.length == 16
+                for i in [0...16]
+                    @matrix[i] = o[i]
     
         else if o?.x? and o?.y? and o?.z?
-            matrix[0] = x.x; matrix[4] = y.x; matrix[8]  = z.x; matrix[12] = 0.0;
-            matrix[1] = x.y; matrix[5] = y.y; matrix[9]  = z.y; matrix[13] = 0.0; 
-            matrix[2] = x.z; matrix[6] = y.z; matrix[10] = z.z; matrix[14] = 0.0;
-            matrix[3] = x.w; matrix[7] = y.w; matrix[11] = z.w; matrix[15] = 1.0;
+            @initXYZ o.x, o.y, o.z
     
         else if o instanceof Quaternion
-            # calculate coefficients
-            x2 = o.x + o.x; y2 = o.y + o.y;
-            z2 = o.z + o.z;
-            xx = o.x * x2; xy = o.x * y2; xz = o.x * z2;
-            yy = o.y * y2; yz = o.y * z2; zz = o.z * z2;
-            wx = o.w * x2; wy = o.w * y2; wz = o.w * z2;
-             
-            matrix[0]  = 1.0 - (yy + zz)                        
-            matrix[1]  = xy + wz                       
-            matrix[2]  = xz - wy                        
-            matrix[3]  = 0.0                       
-            matrix[4]  = xy - wz                           
-            matrix[5]  = 1.0 - (xx + zz)                       
-            matrix[6]  = yz + wx                       
-            matrix[7]  = 0.0                       
-            matrix[8]  = xz + wy                        
-            matrix[9]  = yz - wx                        
-            matrix[10] = 1.0 - (xx + yy)                        
-            matrix[11] = 0.0                        
-            matrix[12] = 0.0                           
-            matrix[13] = 0.0                       
-            matrix[14] = 0.0                       
-            matrix[15] = 1.0                       
+            @initQuat o
+        else
+            @reset()
     
+    initXYZ: (x,y,z) ->  
+        @matrix[0]  = x.x
+        @matrix[1]  = x.y
+        @matrix[2]  = x.z
+        @matrix[3]  = x.w
+        @matrix[4]  = y.x
+        @matrix[5]  = y.y
+        @matrix[6]  = y.z
+        @matrix[7]  = y.w
+        @matrix[8]  = z.x
+        @matrix[9]  = z.y
+        @matrix[11] = z.w
+        @matrix[10] = z.z
+        @matrix[12] = 0.0
+        @matrix[13] = 0.0 
+        @matrix[14] = 0.0
+        @matrix[15] = 1.0
+        @
+
+    initQuat: (o) ->
+        # calculate coefficients
+        x2 = o.x + o.x
+        y2 = o.y + o.y
+        z2 = o.z + o.z
+        xx = o.x * x2 
+        xy = o.x * y2
+        xz = o.x * z2
+        yy = o.y * y2 
+        yz = o.y * z2
+        zz = o.z * z2
+        wx = o.w * x2 
+        wy = o.w * y2
+        wz = o.w * z2
+         
+        @matrix[0]  = 1.0 - (yy + zz)                        
+        @matrix[1]  = xy + wz                       
+        @matrix[2]  = xz - wy                        
+        @matrix[3]  = 0.0                       
+        @matrix[4]  = xy - wz                           
+        @matrix[5]  = 1.0 - (xx + zz)                       
+        @matrix[6]  = yz + wx                       
+        @matrix[7]  = 0.0                       
+        @matrix[8]  = xz + wy                        
+        @matrix[9]  = yz - wx                        
+        @matrix[10] = 1.0 - (xx + yy)                        
+        @matrix[11] = 0.0                        
+        @matrix[12] = 0.0                           
+        @matrix[13] = 0.0                       
+        @matrix[14] = 0.0                       
+        @matrix[15] = 1.0  
+        @
+
     copy: (m) ->
-        @matrix[0] =m.matrix[0];  @matrix[1] =m.matrix[1];  @matrix[2] =m.matrix[2];  @matrix[3] =m.matrix[3]
-        @matrix[4] =m.matrix[4];  @matrix[5] =m.matrix[5];  @matrix[6] =m.matrix[6];  @matrix[7] =m.matrix[7]
-        @matrix[8] =m.matrix[8];  @matrix[9] =m.matrix[9];  @matrix[10]=m.matrix[10]; @matrix[11]=m.matrix[11]
-        @matrix[12]=m.matrix[12]; @matrix[13]=m.matrix[13]; @matrix[14]=m.matrix[14]; @matrix[15]=m.matrix[15]
+        for i in [0...16]
+            @matrix[i] = m.matrix[i]
         @
         
     mul: (m) ->
@@ -101,6 +123,7 @@ class Matrix
         @matrix[14] += @matrix[2]*v.x+@matrix[6]*v.y+@matrix[10]*v.z
         @matrix[15] += @matrix[3]*v.x+@matrix[7]*v.y+@matrix[11]*v.z
     
+    @rotation (x,y,z) -> new Matrix().rotate x,y,z
     rotate: (x,y,z) ->
         
         rx = Vector.DEG2RAD x

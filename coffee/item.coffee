@@ -8,6 +8,7 @@
 log    = require '/Users/kodi/s/ko/js/tools/log'
 Actor  = require './actor'
 Vector = require './lib/vector'
+Quat   = require './lib/quaternion'
 Pos    = require './lib/pos'
 
 class Item extends Actor
@@ -29,26 +30,17 @@ class Item extends Actor
     isSpaceEgoistic: -> true
     isSlippery: -> false
     
-    setPosition: (p) -> 
-        @position = @current_position = p
-        if @mesh?
-            log 'setPosition', @mesh.position
-            # @mesh.position = new THREE.Vector3 @position.x, @position.y, @position.z 
-            # @mesh.matrixWorldNeedsUpdate = true
-            # @mesh.updateMatrix()
-            # @mesh.updateMatrixWorld true 
-            @mesh.translateX @position.x
-            @mesh.translateY @position.y
-            @mesh.translateZ @position.z
-            log 'setPosition', p, @mesh.position
+    setPosition: (x,y,z) -> 
+        @position = @current_position = new Vector x, y, z
+        @mesh?.position.copy @position
 
     getPos: -> new Pos @current_position
     
-    getPosition: -> @position
-    getOrientation: -> @orientation
-    getCurrentPosition: -> @current_position
-    getCurrentOrientation: -> @current_orientation
-    setOrientation: (q) -> @current_orientation = @orientation = q
+    # getPosition: -> @position
+    # getOrientation: -> @orientation
+    # getCurrentPosition: -> @current_position
+    # getCurrentOrientation: -> @current_orientation
+    setOrientation: (q) -> @current_orientation = @orientation = new Quat q
     setCurrentPosition: (p) -> @current_position = p
     setCurrentOrientation: (q) -> @current_orientation = q
     

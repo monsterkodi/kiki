@@ -5,6 +5,8 @@
 #   000       000       000      000    
 #    0000000  00000000  0000000  0000000
 
+TmpObject = require './tmpobject'
+
 class Cell
     
     constructor: () -> @objects = []
@@ -12,7 +14,7 @@ class Cell
     getObjectsOfType: (clss) -> @objects.filter (o) -> o instanceof clss
     getObjectOfType: (clss) -> _.find @objects, (o) -> o instanceof clss
 
-    getRealObjectOfType: (clss) -> _.find @objects, (o) -> o instanceof clss or o instanceof KikiTmpObject and o.object instanceof clss
+    getRealObjectOfType: (clss) -> _.find @objects, (o) -> o instanceof clss or o instanceof TmpObject and o.object instanceof clss
     getOccupant: -> _.find @objects, (o) -> o.isSpaceEgoistic()
 
     removeObject: (object) -> 

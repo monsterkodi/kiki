@@ -5,6 +5,7 @@
 #   000        000      000   000     000     000       000   000
 #   000        0000000  000   000     000     00000000  000   000
 
+log     = require '/Users/kodi/s/ko/js/tools/log'
 Bot    = require './bot'
 Action = require './action'
 Timer  = require './timer'
@@ -49,43 +50,41 @@ class Player extends Bot
         # @projection.getLight().setCutoff 90.0
         # @projection.getLight().setAttenuation 1.0, 0.0, 0.05
     
-    getActionForKey: (keyName) ->
-        index = 0
-        while actionKeyMapping[index].actionName
-            if keyName == actionKeyMapping[index].keyName
-                return actionKeyMapping[index].actionName
-            index++
-      
-        return ""
+    # getActionForKey: (keyName) ->
+        # index = 0
+        # while actionKeyMapping[index].actionName
+            # if keyName == actionKeyMapping[index].keyName
+                # return actionKeyMapping[index].actionName
+            # index += 1
+        # return ''
+#     
+    # getKeyForAction: (actionName) ->
+        # index = 0
+        # while actionKeyMapping[index].actionName
+            # if actionName == actionKeyMapping[index].actionName
+                # return actionKeyMapping[index].keyName
+            # index += 1
+        # return ''
+#     
+    # setKeyForAction: (keyName, actionName) ->
+        # index = 0
+        # while actionKeyMapping[index].actionName
+            # if actionName == actionKeyMapping[index].actionName
+                # actionKeyMapping[index].keyName = keyName
+            # index += 1
     
-    getKeyForAction: (actionName) ->
-        index = 0
-        while actionKeyMapping[index].actionName
-            if actionName == actionKeyMapping[index].actionName
-                return actionKeyMapping[index].keyName
-            index++
-      
-        return ""
-    
-    setKeyForAction: (keyName, actionName) ->
-        index = 0
-        while actionKeyMapping[index].actionName
-            if actionName == actionKeyMapping[index].actionName
-                actionKeyMapping[index].keyName = keyName
-            index++
-    
-    recordKeyForAction: (actionName) ->
-        RecordingActionName = actionName
-        KeyRecorder.startRecordingSequence @, @setRecordedKey, 1
-    
-    setRecordedKey: (keyName) ->
-        index = 0
-        while actionKeyMapping[index].actionName
-            if keyName == actionKeyMapping[index].keyName and actionKeyMapping[index].actionName != RecordingActionName
-                setKeyForAction "", actionKeyMapping[index].actionName
-            index += 1
-        setKeyForAction keyName, RecordingActionName
-        getEventWithName("keyset").triggerActions()
+    # recordKeyForAction: (actionName) ->
+        # RecordingActionName = actionName
+        # KeyRecorder.startRecordingSequence @, @setRecordedKey, 1
+#     
+    # setRecordedKey: (keyName) ->
+        # index = 0
+        # while actionKeyMapping[index].actionName
+            # if keyName == actionKeyMapping[index].keyName and actionKeyMapping[index].actionName != RecordingActionName
+                # setKeyForAction "", actionKeyMapping[index].actionName
+            # index += 1
+        # setKeyForAction keyName, RecordingActionName
+        # getEventWithName("keyset").triggerActions()
     
     updatePosition: () ->
         if @move_action
@@ -101,7 +100,14 @@ class Player extends Bot
                     when Action.FALL_FORWARD
                         @current_position = @position + Math.cos(Math.PI/2 - Math.PI/2 * relTime) * @getDir() + (1.0 - Math.cos(Math.PI/2 * relTime)) * -@getUp()
     
+    #   00000000   00000000    0000000         000  00000000   0000000  000000000  000   0000000   000   000
+    #   000   000  000   000  000   000        000  000       000          000     000  000   000  0000  000
+    #   00000000   0000000    000   000        000  0000000   000          000     000  000   000  000 0 000
+    #   000        000   000  000   000  000   000  000       000          000     000  000   000  000  0000
+    #   000        000   000   0000000    0000000   00000000   0000000     000     000   0000000   000   000
+    
     getProjection: () ->
+        log 'getProjection'
         # smooth camera movement a little bit
         posDelta = world.getSpeed() / 10.0
         @projection.setPosition ((1.0 - posDelta) * @projection.getPosition() + posDelta * @current_position)
@@ -126,7 +132,14 @@ class Player extends Bot
             
         @projection
     
+    #   0000000    00000000  000   000  000  000   000  0000000  
+    #   000   000  000       000   000  000  0000  000  000   000
+    #   0000000    0000000   000000000  000  000 0 000  000   000
+    #   000   000  000       000   000  000  000  0000  000   000
+    #   0000000    00000000  000   000  000  000   000  0000000  
+    
     getBehindProjection: () ->
+        log 'getBehindProjection'
         @updatePosition()
     
         @playerDir = getCurrentDir()
@@ -162,7 +175,15 @@ class Player extends Bot
         
         @projection
     
-     getFollowProjection: () ->
+    
+    #   00000000   0000000   000      000       0000000   000   000
+    #   000       000   000  000      000      000   000  000 0 000
+    #   000000    000   000  000      000      000   000  000000000
+    #   000       000   000  000      000      000   000  000   000
+    #   000        0000000   0000000  0000000   0000000   00     00
+
+    getFollowProjection: () ->
+        log 'getFollowProjection'
         cameraPos = @projection.getPosition()    # current camera position
         desiredDistance = 2.0            # desired distance from camera to bot
     
@@ -253,6 +274,13 @@ class Player extends Bot
         
         @projection
     
+    
+    #    0000000    0000000  000000000  000   0000000   000   000
+    #   000   000  000          000     000  000   000  0000  000
+    #   000000000  000          000     000  000   000  000 0 000
+    #   000   000  000          000     000  000   000  000  0000
+    #   000   000   0000000     000     000   0000000   000   000
+    
     initAction: (action) ->
         actionId = action.id
         switch actionId
@@ -266,6 +294,17 @@ class Player extends Bot
         
         super action
     
+    finishRotateAction: () ->
+        if rotate_action
+            @rotate = false
+            @finishAction rotate_action 
+    
+    #   00000000   00000000  00000000   00000000   0000000   00000000   00     00
+    #   000   000  000       000   000  000       000   000  000   000  000   000
+    #   00000000   0000000   0000000    000000    000   000  0000000    000000000
+    #   000        000       000   000  000       000   000  000   000  000 0 000
+    #   000        00000000  000   000  000        0000000   000   000  000   000
+
     performAction: (action) ->
         relTime = action.getRelativeTime()
     
@@ -286,6 +325,12 @@ class Player extends Bot
             else
                 super action 
     
+    #   00000000  000  000   000  000   0000000  000   000
+    #   000       000  0000  000  000  000       000   000
+    #   000000    000  000 0 000  000  0000000   000000000
+    #   000       000  000  0000  000       000  000   000
+    #   000       000  000   000  000  0000000   000   000
+    
     finishAction: (action) ->
         actionId = action.id
     
@@ -294,14 +339,14 @@ class Player extends Bot
             @look_angle  = 0.0
         else
             if action == @move_action # move finished, update direction
-                dir_sgn = new_dir_sgn
+                @dir_sgn = @new_dir_sgn
             
             if actionId != Action.LOOK_UP and actionId != Action.LOOK_DOWN
                 KikiBot.finishAction(action)
             
             if actionId == Action.TURN_LEFT or actionId == Action.TURN_RIGHT
                 if rotate
-                    rotate_action = getActionWithId rotate
+                    @rotate_action = getActionWithId rotate
                     rotate_action.reset()
                     Timer.addAction rotate_action
     
@@ -314,30 +359,37 @@ class Player extends Bot
     
     reborn: () ->
         # Controller.addKeyHandler @
-        died = false
+        @died = false
     
     reset: () ->
-        KikiBot.reset()
+        super
         Timer.removeActionsOfObject @
         
         @look_action = null
         @look_angle  = 0.0
-        new_dir_sgn = 1.0
-        rotate      = 0
+        @new_dir_sgn = 1.0
+        @rotate      = 0
         
-        recorder    = null
-        playback    = null
+        # @recorder    = null
+        # @playback    = null
     
-    saveRecorder: () ->
-        if @recorder
-            @recorder.save()
-            @recorder = null
+    # saveRecorder: () ->
+        # if @recorder
+            # @recorder.save()
+            # @recorder = null
+#     
+    # startRecorder: (file) ->
+        # if @recorder
+            # saveRecorder()
+        # @recorder = new KikiRecorder file 
+
     
-    startRecorder: (file) ->
-        if @recorder
-            saveRecorder()
-        @recorder = new KikiRecorder file 
-    
+    #   000   000  00000000  000   000
+    #   000  000   000        000 000 
+    #   0000000    0000000     00000  
+    #   000  000   000          000   
+    #   000   000  00000000     000   
+        
     handleKey: (key) ->
         keyName = key.getUnmodifiedName()
         keyHandled = -> 
@@ -349,11 +401,11 @@ class Player extends Bot
             
             if @move_action == null # player is currently not performing a move action
                 # forward or backward direction
-                new_dir_sgn = dir_sgn = (key.getUnmodifiedName() == backward_key) ? -1 : 1 
+                @new_dir_sgn = @dir_sgn = (key.getUnmodifiedName() == backward_key) ? -1 : 1 
     
                 moveBot() # perform new move action (depending on environment)
             else
-                new_dir_sgn = (keyName == backward_key) ? -1 : 1
+                @new_dir_sgn = (keyName == backward_key) ? -1 : 1
         
             return keyHandled()
         
@@ -394,6 +446,12 @@ class Player extends Bot
             return keyHandled()
         
         return false
+    
+    #   00000000   00000000  000      00000000   0000000    0000000  00000000
+    #   000   000  000       000      000       000   000  000       000     
+    #   0000000    0000000   000      0000000   000000000  0000000   0000000 
+    #   000   000  000       000      000       000   000       000  000     
+    #   000   000  00000000  0000000  00000000  000   000  0000000   00000000
     
     handleKeyRelease: (key) ->
         keyName = key.getUnmodifiedName()
@@ -440,6 +498,13 @@ class Player extends Bot
             
         return false
     
+    
+    #     0000000    000   0000000  00000000   000       0000000   000   000
+    #     000   000  000  000       000   000  000      000   000   000 000 
+    #     000   000  000  0000000   00000000   000      000000000    00000  
+    #     000   000  000       000  000        000      000   000     000   
+    #     0000000    000  0000000   000        0000000  000   000     000   
+    
     display: () ->
         if world.getCameraMode() != world.CAMERA_INSIDE or world.getEditMode()
             render()
@@ -461,10 +526,5 @@ class Player extends Bot
             return tireColor
     
         return colors[KikiPlayer_tire_color]
-     
-    finishRotateAction: () ->
-        if rotate_action
-            @rotate = false
-            @finishAction rotate_action 
-    
+         
 module.exports = Player

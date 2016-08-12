@@ -9,7 +9,7 @@ Matrix = require './lib/matrix'
 
 class Perspective extends Matrix
     
-    constructor: (fov,near,far) ->
+    constructor: (fov,near=0.1,far=10000) ->
         @znear = near
         @zfar  = far
         @fov   = fov
@@ -19,8 +19,9 @@ class Perspective extends Matrix
         @setViewport 0.0, 0.0, 1.0, 1.0 
         # WINDOW_SIZE_CHANGED -> updateViewport
         super
+        log "Perspective #{@fov} #{@znear} #{@zfar}"
 
-    reset: () ->
+    reset: ->
         @fov          = 60.0
         @eye_distance = @znear
         super
@@ -65,7 +66,7 @@ class Perspective extends Matrix
         up     = @getYVector()
         lookAt = @getLookAtPosition()
         
-        log "Perspective.apply", camPos, up, lookAt
+        # log "Perspective.apply", @matrix #camPos, up, lookAt
         
         camera.position.clone camPos #set camPos.x, camPos.y, camPos.z 
         camera.up.clone up #new THREE.Vector3 up.x, up.y, up.z

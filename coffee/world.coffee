@@ -13,6 +13,8 @@ Size        = require './lib/size'
 Cell        = require './cell'
 Light       = require './light'
 Player      = require './player'
+Timer       = require './timer'
+TmpObject   = require './tmpobject'
 Quaternion  = require './lib/quaternion'
 Vector      = require './lib/vector'
 Pos         = require './lib/pos'
@@ -86,6 +88,8 @@ class World
         @size            = new Pos()
         @depth           = -Number.MAX_SAFE_INTEGER
         @camera_mode     = World.CAMERA_BEHIND
+        @camera_mode     = World.CAMERA_INSIDE
+        @camera_mode     = World.CAMERA_FOLLOW
         @edit_projection = null
         @raster_size     = 0.1
             
@@ -96,7 +100,6 @@ class World
     #    0000000  000   000   0000000   00000000
     
     initCage: ->
-        log "initCage size:", @size
         mat  = new THREE.MeshPhongMaterial 
             color:          0x440000
             side:           THREE.BackSide
@@ -110,12 +113,6 @@ class World
         @cage.translateY @size.y/2-0.5 
         @cage.translateZ @size.z/2-0.5
         @scene.add @cage
-        # glDisable(GL_BLEND);
-        # glDisable(GL_DEPTH_TEST);
-        # glDisable(GL_ALPHA_TEST);
-        # glDisable(GL_NORMALIZE);
-#         
-        # # colors[World_plate_color].glColor();
 #         
     @init: (view) ->
         return if world?
@@ -138,7 +135,7 @@ class World
         
         @levelList = [
               # intro
-              # "start", 
+              "start", 
               "steps", 
               #"move", "electro", "elevate", 
               # "throw", 
@@ -494,7 +491,6 @@ class World
         menu.addItem(Controller.getLocalizedString("quit"), once(Controller.quit))
 
     setSize: (size) ->
-        log 'World.setSize!', size
         @deleteAllObjects()
         @cells = []
         @size = new Pos size
@@ -517,7 +513,7 @@ class World
     getOccupantAtPos:            (pos) -> @getCellAtPos(pos)?.getOccupant()
     getRealOccupantAtPos: (pos) ->
         occupant = @getOccupantAtPos pos
-        if occupant and occupant instanceof KikiTmpObject
+        if occupant and occupant instanceof TmpObject
             occupant.object
         else
             occupant
@@ -527,18 +523,16 @@ class World
             log "World.setObjectAtPos invalid pos:", pos
             return
     
-        cell = @getCellAtPos pos
-        log "world.setObjectAtPos", cell
-    
+        cell = @getCellAtPos pos    
         if object.isSpaceEgoistic() and cell and cell.getOccupant()
             objectAtNewPos = cell.getOccupant()
-            if objectAtNewPos instanceof KikiTmpObject
+            if objectAtNewPos instanceof TmpObject
                 if objectAtNewPos.time > 0
                     log "WARNING World.setObject already occupied pos:", pos
                     # "already occupied by %s with time %d!",
                     # object.getClassName(), pos.x, pos.y, pos.z, 
                     # cell.getOccupant().getClassName(),
-                    # ((KikiTmpObject*)objectAtNewPos).time)
+                    # ((TmpObject*)objectAtNewPos).time)
             objectAtNewPos.del() # temporary object at new pos will vanish anyway . delete it
         
         cell = @getCellAtPos pos
@@ -605,12 +599,12 @@ class World
         @picked_pickable = null
         @moved_objects = []
     
-        # if Controller.player
-            # Controller.player.finishRotateAction()
-            # @removeObject (Controller.player) # remove the player first, to keep it's state
-            # Controller.timer_event.removeAllActions ()
+        if @player?
+            @player.finishRotateAction()
+            @removeObject @player # remove the player first, to keep it's state
+            Timer.removeAllActions()
             # Controller.removeKeyHandler (Controller.player) # prevent keyboard input while building world
-            # Controller.player.reset ()
+            @player.reset()
     
         while @lights.length
             oldSize = @lights.length
@@ -638,14 +632,14 @@ class World
         log "World.getObjectWithName :: no object found with name #{objectName}"
         null
     
-    setCameraMode: (mode) -> @camera_mode = clamp CAMERA_INSIDE, CAMERA_FOLLOW, mode
+    setCameraMode: (mode) -> @camera_mode = clamp World.CAMERA_INSIDE, World.CAMERA_FOLLOW, mode
     
-    changeCameraMode: () -> @camera_mode = (@camera_mode+1) % (CAMERA_FOLLOW+1)
+    changeCameraMode: () -> @camera_mode = (@camera_mode+1) % (World.CAMERA_FOLLOW+1)
     
     objectMovedFromPos: (object, pos) ->
     
         if cell = @getCellAtPos(pos)
-            if tmpObject = cell.getObjectOfType KikiTmpObject 
+            if tmpObject = cell.getObjectOfType TmpObject 
                 if tmpObject.object == object
                     tmpObject.del()
         @moved_objects.push object 
@@ -662,10 +656,10 @@ class World
     
         if cell
             if objectAtNewPos = cell.getOccupant()
-                if objectAtNewPos instanceof KikiTmpObject
+                if objectAtNewPos instanceof TmpObject
                     tmpObject = objectAtNewPos
                     
-                    if (objectAtNewPos.time < 0 and -objectAtNewPos.time <= duration)
+                    if objectAtNewPos.time < 0 and -objectAtNewPos.time <= duration
                         # temporary object at new pos will vanish before object will arrive . delete it
                         objectAtNewPos.del()
                     else
@@ -675,13 +669,13 @@ class World
     
         @unsetObject object # remove object from cell grid
         
-        tmpObject = new KikiTmpObject object  # insert temporary objects at new pos
+        tmpObject = new TmpObject object  # insert temporary objects at new pos
         tmpObject.setPosition pos 
         tmpObject.time = duration
         @addObjectAtPos tmpObject, pos 
         
-        tmpObject = new KikiTmpObject object  # insert temporary objects at old pos
-        tmpObject.setPosition object.getPosition() 
+        tmpObject = new TmpObject object  # insert temporary objects at old pos
+        tmpObject.setPosition object.position
         tmpObject.time = -duration
         @addObjectAtPos tmpObject, object.getPos() 
     
@@ -695,7 +689,7 @@ class World
                  log "World.updateStatus invalid new pos"
                  return
     
-            if tmpObject = @getObjectOfTypeAtPos KikiTmpObject, pos 
+            if tmpObject = @getObjectOfTypeAtPos TmpObject, pos
                 if tmpObject.object == movedObject
                     tmpObject.del()
                 else
@@ -864,18 +858,19 @@ class World
                 glRectf w+l, h+l, w+t, h+t
     
     getProjection: () ->
-        if @projection == NULL
+        log "world.getProjection #{@camera_mode}"
+        if not @projection
             switch @camera_mode 
-                when CAMERA_INSIDE then @projection = @player.getProjection()     
-                when CAMERA_BEHIND then @projection = @player.getBehindProjection()
-                when CAMERA_FOLLOW then @projection = @player.getFollowProjection()
+                when World.CAMERA_INSIDE then @projection = @player.getProjection()     
+                when World.CAMERA_BEHIND then @projection = @player.getBehindProjection()
+                when World.CAMERA_FOLLOW then @projection = @player.getFollowProjection()
         @projection
     
     display: (mode) ->
         switch @camera_mode 
-            when CAMERA_INSIDE then @projection = @player.getProjection()
-            when CAMERA_BEHIND then @projection = @player.getBehindProjection()
-            when CAMERA_FOLLOW then @projection = @player.getFollowProjection()
+            when World.CAMERA_INSIDE then @projection = @player.getProjection()
+            when World.CAMERA_BEHIND then @projection = @player.getBehindProjection()
+            when World.CAMERA_FOLLOW then @projection = @player.getFollowProjection()
     
         @player_projection = @projection
         

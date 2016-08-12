@@ -12,22 +12,18 @@ class Matrix
     constructor: (o) ->
         
         @matrix = []
-    
-        if o instanceof Matrix
-            @copy o
-    
-        else if o instanceof Array
-            if o.length == 16
-                for i in [0...16]
-                    @matrix[i] = o[i]
-    
-        else if o?.x? and o?.y? and o?.z?
-            @initXYZ o.x, o.y, o.z
-    
-        else if o instanceof Quaternion
-            @initQuat o
-        else
-            @reset()
+        
+        switch
+            when not o? then @reset()
+            when o instanceof Quaternion then @initQuat o
+            when o instanceof Matrix then @copy o
+            when o instanceof Array
+                if o.length == 16
+                    for i in [0...16]
+                        @matrix[i] = o[i]
+            when o?.x? and o?.y? and o?.z?
+                @initXYZ o.x, o.y, o.z
+            else @reset()
     
     initXYZ: (x,y,z) ->  
         @matrix[0]  = x.x

@@ -62,6 +62,7 @@ class Actor extends Emitter
             return a if action.name = name
 
     addEventWithName: (eventName) ->
+        log "Actor.addEventWithName eventName:#{eventName}"
         if @getEventWithName eventName # to be removed
             log "Actor.addEventWithName '#{eventName}' already in use!"
             return -1; # shouldn't happen anyway :-)

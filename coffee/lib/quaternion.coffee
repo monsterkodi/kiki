@@ -59,9 +59,10 @@ class Quaternion
             w /= l; x = -x/l; y = -y/l; z = -z/l 
         @
 
+    isZero: -> @x==@y==@z==0 and @w==1
     reset: -> 
         @x=@y=@z=0
-        @w=1.0 
+        @w=1 
         @
         
     conjugate: -> 

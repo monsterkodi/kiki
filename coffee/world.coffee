@@ -5,6 +5,8 @@
 #   000   000  000   000  000   000  000      000   000
 #   00     00   0000000   000   000  0000000  0000000  
 {
+absMin,
+clamp,
 first,
 last}       = require "/Users/kodi/s/ko/js/tools/tools"
 log         = require "/Users/kodi/s/ko/js/tools/log"
@@ -37,6 +39,8 @@ class World extends Actor
     constructor: (@view) ->
         
         super
+        
+        @speed = 5
         
         @screenSize = new Size @view.clientWidth, @view.clientHeight
         # log "view @screenSize:", @screenSize
@@ -743,8 +747,13 @@ class World extends Actor
     getTime: -> now().toFixed 0
     setSpeed: (s) -> @speed = s
     getSpeed: -> @speed
-    mapMsTime:  (unmapped) -> parseInt 10.0 * unmapped/@speed
-    unmapMsTime: (mapped) -> parseInt mapped * @speed/10.0
+    mapMsTime:  (unmapped) -> 
+        # log "mapMsTime #{unmapped} #{@speed} #{parseInt 10.0 * unmapped/@speed}"
+        parseInt 10.0 * unmapped/@speed
+    unmapMsTime: (mapped) -> 
+        # log "unmapMsTime #{mapped} #{@speed} #{parseInt mapped * @speed/10.0}"
+        parseInt mapped * @speed/10.0
+        
     getRelativeTime: -> @frame_time % (10000/@speed)/(10000.0/@speed)
     getRelativeDelta: -> (@frame_time - @last_time)/(10000.0/@speed)
 
@@ -773,6 +782,7 @@ class World extends Actor
                     Math.min(size.z-1, Math.max(pos.z, 0))
     
     isUnoccupiedPos: (pos) ->
+        log 'world.isUnoccupiedPos', pos
         return false if @isInvalidPos pos
         not @getOccupantAtPos pos
     
@@ -837,7 +847,7 @@ class World extends Actor
         
             f = kRayPlaneIntersectionFactor pos, -@normals[w], planePos, @normals[w]
             
-            min_f = kAbsMin min_f, f 
+            min_f = absMin min_f, f 
         min_f
     
     # returns the distace to the next wall in direction rayDirection from rayPos (positive values only)

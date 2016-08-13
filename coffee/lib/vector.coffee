@@ -5,10 +5,6 @@
 #      000     000       000          000     000   000  000   000
 #       0      00000000   0000000     000      0000000   000   000
 
-#define kMinMax(a,b,c)          (kMax((a), kMin((b), (c))))
-#define kAbsMax(a,b)            ((kAbs((a)) >= kAbs((b))) ? (a) : (b))
-#define kAbsMin(a,b)            ((kAbs((a)) < kAbs((b))) ? (a) : (b))
-
 # X  = 0
 # SX = 0
 # Y  = 1
@@ -60,7 +56,10 @@ class Vector
         @    
 
     xyperp: -> new Vector -@y, @x
-    round:  -> new Vector rint(@x), rint(@y), rint(@z), @w
+    round:  -> new Vector @rint(@x), @rint(@y), @rint(@z), @w
+    rint: (n) -> 
+        if n < 0 then Math.floor(n - 0.5) 
+        else Math.round n
 
     xyangle: (v) ->
         thisXY  = new Vector(@x, @y).normal()
@@ -104,8 +103,6 @@ class Vector
         @
     
     isZero: -> @x == @y == @z == 0
-
-    # glTranslate: () -> glTranslatef @x,@y,@z  
 
     @DEG2RAD: (d) -> Math.PI*d/180.0
     @RAD2DEG: (r) -> r*180.0/Math.PI

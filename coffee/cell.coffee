@@ -12,7 +12,7 @@ class Cell
     constructor: () -> @objects = []
         
     getObjectsOfType: (clss) -> @objects.filter (o) -> o instanceof clss
-    getObjectOfType: (clss) -> _.find @objects, (o) -> o instanceof clss
+    getObjectOfType:  (clss) -> _.find @objects, (o) -> o instanceof clss
 
     getRealObjectOfType: (clss) -> _.find @objects, (o) -> o instanceof clss or o instanceof TmpObject and o.object instanceof clss
     getOccupant: -> _.find @objects, (o) -> o.isSpaceEgoistic()

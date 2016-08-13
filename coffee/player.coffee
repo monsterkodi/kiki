@@ -152,8 +152,8 @@ class Player extends Bot
         log 'getBehindProjection'
         @updatePosition()
     
-        @playerDir = getCurrentDir()
-        @playerUp  = @current_orientation.rotate(new Vector(0,1,0)).normal()
+        playerDir = getCurrentDir()
+        playerUp  = @current_orientation.rotate(new Vector(0,1,0)).normal()
         
         # find a valid camera position
         botToCamera = (playerUp - 2 * playerDir)
@@ -201,7 +201,7 @@ class Player extends Bot
     
         playerPos   = @current_position        # desired look pos
         playerDir   = @getCurrentDir()
-        playerUp    = current_orientation.rotate(new Vector(0,1,0)).normal()
+        playerUp    = @current_orientation.rotate new Vector(0,1,0).normal()
         playerRight = playerDir.cross(playerUp).normal()
     
         # ____________________________________________________ camera follows bot
@@ -229,7 +229,7 @@ class Player extends Bot
         # if camera below bot, rotate up
         if botToCameraNormal.dot(playerUp) < 0
             # calculate angle between player to camera vector and player up vector
-            verticalAngle = Vector.RAD2DEG Math.acos(kMinMax(-1.0, 1.0, botToCameraNormal.dot playerUp)) - 90.0
+            verticalAngle = Vector.RAD2DEG Math.acos(clamp(-1.0, 1.0, botToCameraNormal.dot playerUp)) - 90.0
             cameraPos = playerPos.plus Quaternion.rotationAroundVector(verticalAngle/40.0, botToCameraNormal.cross(playerUp)).rotate botToCamera 
             
             botToCamera = cameraPos.minus playerPos
@@ -249,7 +249,7 @@ class Player extends Bot
         # ____________________________________________________ try view bot from behind
         # calculate horizontal angle between bot orientation and vector to camera
         mappedToXZ = (botToCamera.minus playerUp.mul(botToCamera.dot playerUp)).normal()
-        horizontalAngle = Vector.RAD2DEG Math.acos(kMinMax(-1.0, 1.0, -playerDir.dot mappedToXZ))
+        horizontalAngle = Vector.RAD2DEG Math.acos(clamp(-1.0, 1.0, -playerDir.dot mappedToXZ))
         if botToCameraNormal.dot(playerRight) > 0
             horizontalAngle = -horizontalAngle
     
@@ -273,7 +273,7 @@ class Player extends Bot
         # slowly adjust up vector by interpolating current and desired up vectors
         upDelta = 2.0 - @projection.getYVector().dot playerUp
         upDelta *= upDelta / 100.0    
-        KVector newRightVector = (@projection.getYVector().mul(1.0 - upDelta).plus playerUp.mul(upDelta)).cross newLookVector 
+        newRightVector = (@projection.getYVector().mul(1.0-upDelta).plus playerUp.mul(upDelta)).cross newLookVector 
         newRightVector.normalize()
         newUpVector = newLookVector.cross(newRightVector).normal()
     
@@ -281,9 +281,7 @@ class Player extends Bot
         @projection.setZVector newLookVector
         @projection.setXVector newRightVector
         @projection.setYVector newUpVector
-        
         @projection
-    
     
     #    0000000    0000000  000000000  000   0000000   000   000
     #   000   000  000          000     000  000   000  0000  000
@@ -306,9 +304,9 @@ class Player extends Bot
         super action
     
     finishRotateAction: () ->
-        if rotate_action
+        if @rotate_action
             @rotate = false
-            @finishAction rotate_action 
+            @finishAction @rotate_action 
     
     #   00000000   00000000  00000000   00000000   0000000   00000000   00     00
     #   000   000  000       000   000  000       000   000  000   000  000   000
@@ -356,10 +354,10 @@ class Player extends Bot
                 super action
             
             if actionId == Action.TURN_LEFT or actionId == Action.TURN_RIGHT
-                if rotate
-                    @rotate_action = @getActionWithId rotate
-                    rotate_action.reset()
-                    Timer.addAction rotate_action
+                if @rotate
+                    @rotate_action = @getActionWithId @rotate
+                    @rotate_action.reset()
+                    Timer.addAction @rotate_action
     
     die: () ->
         # Controller.removeKeyHandler @
@@ -419,11 +417,11 @@ class Player extends Bot
             
             return keyHandled()
         
-        if combo == @key.turn or combo == @key.right
-            rotate = (combo == @key.left) and Action.TURN_LEFT or Action.TURN_RIGHT
+        if combo == @key.left or combo == @key.right
+            @rotate = (combo == @key.left) and Action.TURN_LEFT or Action.TURN_RIGHT
             
             if @rotate_action == null and not @spiked # player is not performing a rotation and unspiked
-                @rotate_action = @getActionWithId rotate
+                @rotate_action = @getActionWithId @rotate
                 Timer.addAction @rotate_action
             
             return keyHandled()
@@ -488,11 +486,11 @@ class Player extends Bot
             return releaseHandled()
         
         if combo == @key.left or combo == @key.right
-            rotate = 0
+            @rotate = 0
             return releaseHandled()
         
         if key.name == @key.push
-            push = false
+            @push = false
             return releaseHandled()
         
         if combo == @key.lookDown or combo == @key.lookUp

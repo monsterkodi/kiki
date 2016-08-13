@@ -21,11 +21,11 @@ class Timer
         @event.removeActionsOfObject o
         
     @addAction:    (a) -> 
-        log "addAction"
+        log "addAction #{a.name}"
         @event.addAction a
         
     @removeAction: (a) -> 
-        log "removeAction"
+        log "removeAction #{a.name}"
         @event.removeAction a
         
 module.exports = Timer

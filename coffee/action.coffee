@@ -51,19 +51,6 @@ class Action
         @delete_flag_ptr = false
         @reset()
 
-# KikiAction (KikiActionObject* o, int d, int m ) 
-# { 
-    # action_object = o
-    # action_id     = 0
-    # mode          = m
-    # duration      = d
-    # event         = null
-
-    # delete_flag_ptr = null
-
-    # @reset()
-# }
-
     del: ->
         if @event           then @event.removeAction @
         if @object          then @object.removeAction @
@@ -102,7 +89,7 @@ class Action
 
     performWithEvent: (event) ->
         eventTime = event.getTime()
-    
+        log "action.performWithEvent #{@name} eventTime #{eventTime}"
         if @start == 0
             @start   = eventTime
             @current = 0
@@ -112,7 +99,6 @@ class Action
             @perform()
             @last = @current
             @finished() if @duration == 0 and @mode == Action.ONCE
-                
         else
             currentDiff = eventTime - @start
             if currentDiff >= @getDuration()

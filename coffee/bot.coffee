@@ -74,6 +74,11 @@ class Bot extends Pushable
     
         @startTimedAction @getActionWithId(Action.NOOP), 500
 
+
+    getDown: -> @orientation.rotate(new Vector 0,1,0).neg()
+    getUp:   -> @orientation.rotate(new Vector 0,1,0)
+    getDir:  -> @orientation.rotate(new Vector 0,0,1).mul @dir_sgn
+
     addMoves:  (m) -> @moves += m
     addHealth: (h) -> @health = Math.max @health+h
     
@@ -143,7 +148,8 @@ class Bot extends Pushable
         relTime  = action.getRelativeTime()
         dltTime  = action.getRelativeDelta()
     
-        log "performAction #{action.name} #{relTime} #{dltTime} id #{actionId}"
+        log "Bot.performAction #{action.name} #{action.current} #{action.last} #{action.duration} id #{actionId}"
+        log "Bot.performAction #{action.name} #{relTime} #{dltTime} id #{actionId}"
         
         switch actionId
             when Action.SHOOT
@@ -212,10 +218,10 @@ class Bot extends Pushable
                 if @move_action == null and relTime == 0.0 # if not performing move action and start of rotation
                     # update @orientation now, so next move action will move in desired @direction
                     if actionId == Action.TURN_LEFT
-                        @orientation *= Quaternion.rotationAroundVector 90.0, new Vector 0,1,0
+                        @orientation = @orientation.mul Quaternion.rotationAroundVector 90.0, new Vector 0,1,0
                         @rest_orientation = Quaternion.rotationAroundVector -90.0, new Vector 0,1,0
                     else
-                        @orientation *= Quaternion.rotationAroundVector -90.0, new Vector 0,1,0
+                        @orientation = @orientation.mul Quaternion.rotationAroundVector -90.0, new Vector 0,1,0
                         @rest_orientation = Quaternion.rotationAroundVector 90.0, new Vector 0,1,0
     
                 if actionId == Action.TURN_LEFT
@@ -247,7 +253,7 @@ class Bot extends Pushable
         if actionId == Action.TURN_LEFT or actionId == Action.TURN_RIGHT
             @rotate_action = null
             
-            if move_action # bot currently performing a move action -> store rotation in @rest_orientation
+            if @move_action # bot currently performing a move action -> store rotation in @rest_orientation
                 @rest_orientation = @rest_orientation.mul @rotate_orientation
                 @rotate_orientation.reset()
             else
@@ -280,19 +286,18 @@ class Bot extends Pushable
     actionFinished: (action) ->
         actionId = action.id
     
-        if @isDead()
-            die() if not @died 
-            
+        if not @died 
+            @die() 
             if actionId != Action.PUSH and actionId != Action.FALL
                 # dead player may only fall, nothing else
                 return
         
         if @spiked
             @move_action = null
-            @startTimedAction getActionWithId(Action.NOOP), 0
+            @startTimedAction @getActionWithId(Action.NOOP), 0
             return
     
-        if actionId == Action.PUSH or @direction != KVector()
+        if actionId == Action.PUSH or not @direction.isZero()
             super action
             return
     
@@ -312,22 +317,22 @@ class Bot extends Pushable
                     @move_action = @getActionWithId Action.FORWARD
                     world.playSound 'BOT_LAND', @getPos(), 0.25 
             else # forward will not be empty
-                if world.isUnoccupiedPos position.minus @getUp()  # below is empty
+                if world.isUnoccupiedPos @position.minus @getUp()  # below is empty
                     @move_action = @getActionWithId Action.CLIMB_UP
                     world.playSound 'BOT_LAND', @getPos(), 0.5
-        else if world.isUnoccupiedPos position.minus @getUp()  # below will be empty
+        else if world.isUnoccupiedPos @position.minus @getUp()  # below will be empty
             if move # sticky if moving
-                if world.isUnoccupiedPos position.plus @getDir() 
+                if world.isUnoccupiedPos @position.plus @getDir() 
                     # forward will be empty 
-                    if world.isOccupiedPos position.plus @getDir().minus @getUp()
+                    if world.isOccupiedPos @position.plus @getDir().minus @getUp()
                         # below forward is solid
-                        occupant = world.getOccupantAtPos position.plus @getDir().minus @getUp() 
+                        occupant = world.getOccupantAtPos @position.plus @getDir().minus @getUp() 
                         if occupant == null or not occupant.isSlippery()
-                            @move_action = @getActionWithId (Action.FORWARD)
+                            @move_action = @getActionWithId Action.FORWARD
                 else
                     occupant = world.getOccupantAtPos position.plus @getDir() 
                     if occupant == null or not occupant.isSlippery()
-                        @move_action = @getActionWithId (Action.CLIMB_UP)
+                        @move_action = @getActionWithId Action.CLIMB_UP
             
             if @move_action == null
                 @move_action = @getActionWithId Action.FALL
@@ -354,9 +359,10 @@ class Bot extends Pushable
     
     moveBot: () ->
         @move_action = null
-         
+        log "bot.moveBot @position", @position
+        log "bot.moveBot @getDir", @getDir()
         forwardPos = @position.plus @getDir()
-        
+        log "bot.moveBot", forwardPos
         if @jump or @jump_once and                 # jump mode or jump activated while moving
             @dir_sgn == 1.0 and                     # and moving forward
                 world.isUnoccupiedPos @position.plus @getUp()  # and above empty
@@ -366,12 +372,14 @@ class Bot extends Pushable
                     else # no space to jump forward -> jump up
                         @move_action = @getActionWithId Action.JUMP
         else if world.isUnoccupiedPos forwardPos  # forward is empty
+            log 'forward is empty'
             if world.isUnoccupiedPos forwardPos.plus @getDown()  
                 # below forward also empty
                 @move_action = @getActionWithId Action.CLIMB_DOWN
             else # forward down is solid
                 @move_action = @getActionWithId Action.FORWARD
         else # forward is not empty
+            log 'forward is not empty'
             moveAction = @getActionWithId Action.FORWARD
             if @push and world.mayObjectPushToPos @, forwardPos, moveAction.getDuration()
                 moveAction.reset()

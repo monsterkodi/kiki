@@ -52,6 +52,7 @@ class Event
         _.pull @finished_actions, action
     
     triggerActions: () ->
+        return if not @actions.length
         @time = world.getTime()
         log 'trigger actions', @time, @actions.length
         @save_actions = _.clone @actions
@@ -62,16 +63,15 @@ class Event
             if @save_actions.length and action == last @save_actions
                 @save_actions.pop()
     
-    addFinishedAction: (action) -> @finished_actions.push action
+    addFinishedAction: (action) -> 
+        log "Event.addFinishedAction #{action.name} #{@finished_actions.length}"
+        @finished_actions.push action
     
     finishActions: () ->
-        try 
-            while @finished_actions.length
-                action = last @finished_actions
-                action.finished()
-                if @finished_actions.length and action == last @finished_actions
-                    @finished_actions.pop()
-        catch err
-            log "!!! finishActions failed !!!", err
+        while @finished_actions.length
+            action = last @finished_actions
+            action.finished()
+            if @finished_actions.length and action == last @finished_actions
+                @finished_actions.pop()
         
 module.exports = Event

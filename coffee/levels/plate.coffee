@@ -1,7 +1,7 @@
 # level design by Michael Abel
 
-KQuaternion = require '../lib/quaternion'
-KVector     = require '../lib/vector'
+Quaternion = require '../lib/quaternion'
+Vector     = require '../lib/vector'
 
 module.exports =
     name:       "plate"
@@ -16,7 +16,7 @@ module.exports =
     player:   
         coordinates:    [3,2,1]
         nostatus:        0
-        orientation:    KQuaternion.rotationAroundVector(270, KVector(1,0,0))
+        orientation:    Quaternion.rotationAroundVector(270, new Vector(1,0,0))
     exits:    [
         name:         "exit"
         active:       1
@@ -29,9 +29,9 @@ module.exports =
         
         world.addObjectPoly(stone, [world.decenter(1,1,0),world.decenter(1,-1,0), world.decenter(-1,-1,0),world.decenter(-1,1,0)], 1)
         
-        world.addObjectAtPos(KikiBomb(), world.decenter(0,1,-4))
-        world.addObjectAtPos(KikiBomb(), world.decenter(0,-1,-4))
-        world.addObjectAtPos(KikiBomb(), world.decenter(1,0,-4))
-        world.addObjectAtPos(KikiBomb(), world.decenter(-1,0,-4))
+        world.addObjectAtPos 'KikiBomb', world.decenter 0,1,-4
+        world.addObjectAtPos 'KikiBomb', world.decenter 0,-1,-4
+        world.addObjectAtPos 'KikiBomb', world.decenter 1,0,-4
+        world.addObjectAtPos 'KikiBomb', world.decenter -1,0,-4
         
-        world.addObjectAtPos(KikiBomb(), world.decenter(0,0,-2))
+        world.addObjectAtPos 'KikiBomb', world.decenter 0,0,-2

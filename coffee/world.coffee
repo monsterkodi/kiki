@@ -334,6 +334,12 @@ class World extends Actor
         # saves the current level status in highscore file
         highscore.levelFinished world.level_name, Controller.player.getStatus().getMoves()
 
+    # 00000000   00000000   0000000  00000000  000000000      00000000   000       0000000   000   000  00000000  00000000 
+    # 000   000  000       000       000          000         000   000  000      000   000   000 000   000       000   000
+    # 0000000    0000000   0000000   0000000      000         00000000   000      000000000    00000    0000000   0000000  
+    # 000   000  000            000  000          000         000        000      000   000     000     000       000   000
+    # 000   000  00000000  0000000   00000000     000         000        0000000  000   000     000     00000000  000   000
+    
     resetPlayer: (self) ->
         # reset the player to it's original position and orientation
         
@@ -351,7 +357,14 @@ class World extends Actor
             world.moveObjectToPos player, world.decenter(player_dict["reset position"])
         else
             world.moveObjectToPos player, world.decenter(player_dict["position"])
-            
+      
+
+    #    0000000    0000000  000000000  000   0000000   000   000
+    #   000   000  000          000     000  000   000  0000  000
+    #   000000000  000          000     000  000   000  000 0 000
+    #   000   000  000          000     000  000   000  000  0000
+    #   000   000   0000000     000     000   0000000   000   000
+          
     performAction: (name, time) ->
         # log "world.performAction #{name}"
         # action callback. used to exit current world
@@ -379,6 +392,14 @@ class World extends Actor
     isValidPos: (pos) -> pos.x >= 0 and pos.x < @size.x and pos.y >= 0 and pos.y < @size.y and pos.z >= 0 and pos.z < @size.z
     isInvalidPos: (pos) -> not @isValidPos pos
 
+
+    #    0000000   0000000          000  00000000   0000000  000000000        000      000  000   000  00000000
+    #   000   000  000   000        000  000       000          000           000      000  0000  000  000     
+    #   000   000  0000000          000  0000000   000          000           000      000  000 0 000  0000000 
+    #   000   000  000   000  000   000  000       000          000           000      000  000  0000  000     
+    #    0000000   0000000     0000000   00000000   0000000     000           0000000  000  000   000  00000000
+    
+    
     addObjectLine: (object, sx,sy,sz, ex,ey,ez) ->
         if sx instanceof Pos
             start = sx
@@ -431,6 +452,12 @@ class World extends Actor
             if not object.isSpaceEgoistic() or @isUnoccupiedPos(random_pos)
                 @addObjectAtPos object, random_pos
                 object_set = 1
+
+    #   000   000  00000000  000      00000000 
+    #   000   000  000       000      000   000
+    #   000000000  0000000   000      00000000 
+    #   000   000  000       000      000      
+    #   000   000  00000000  0000000  000      
     
     help: (index=0) ->
         # displays help messages
@@ -486,6 +513,12 @@ class World extends Actor
         # toggles object with name objectName
         @startTimedAction(@getObjectWithName(objectName).getActionWithName("toggle"))
     
+    #   00000000   0000000   0000000
+    #   000       000       000     
+    #   0000000   0000000   000     
+    #   000            000  000     
+    #   00000000  0000000    0000000
+    
     escape: (self) -> # handles an ESC key event
         
         @resetProjection()
@@ -513,6 +546,12 @@ class World extends Actor
         menu.addItem(Controller.getLocalizedString("about"), once @display_about)
         menu.addItem(Controller.getLocalizedString("quit"), once world.quit)
 
+    #    0000000  00000000  000      000       0000000
+    #   000       000       000      000      000     
+    #   000       0000000   000      000      0000000 
+    #   000       000       000      000           000
+    #    0000000  00000000  0000000  0000000  0000000 
+    
     setSize: (size) ->
         @deleteAllObjects()
         @cells = []
@@ -530,6 +569,12 @@ class World extends Actor
         lrest = index % lsize
         new Pos index/lsize, lrest/@size.z, lrest%@size.z
     
+    #    0000000   0000000          000  00000000   0000000  000000000   0000000
+    #   000   000  000   000        000  000       000          000     000     
+    #   000   000  0000000          000  0000000   000          000     0000000 
+    #   000   000  000   000  000   000  000       000          000          000
+    #    0000000   0000000     0000000   00000000   0000000     000     0000000 
+        
     getObjectsOfType:      (clss) -> @objects.filter (o) -> o instanceof clss
     getObjectsOfTypeAtPos: (clss, pos) -> @getCellAtPos(pos)?.getObjectsOfType clss
     getObjectOfTypeAtPos:  (clss, pos) -> @getCellAtPos(pos)?.getRealObjectOfType clss
@@ -606,7 +651,13 @@ class World extends Actor
         @setObjectAtPos object, pos
         world.playSound 'BOT_LAND'
         true
-
+    
+    #   0000000    00000000  000      00000000  000000000  00000000
+    #   000   000  000       000      000          000     000     
+    #   000   000  0000000   000      0000000      000     0000000 
+    #   000   000  000       000      000          000     000     
+    #   0000000    00000000  0000000  00000000     000     00000000
+    
     deleteObject: (object) ->
         if not object?
             log "WARNING: World.deleteObject null"
@@ -654,6 +705,13 @@ class World extends Actor
     setCameraMode: (mode) -> @camera_mode = clamp World.CAMERA_INSIDE, World.CAMERA_FOLLOW, mode
     
     changeCameraMode: () -> @camera_mode = (@camera_mode+1) % (World.CAMERA_FOLLOW+1)
+    
+    
+    #    0000000   0000000          000        00     00   0000000   000   000  00000000
+    #   000   000  000   000        000        000   000  000   000  000   000  000     
+    #   000   000  0000000          000        000000000  000   000   000 000   0000000 
+    #   000   000  000   000  000   000        000 0 000  000   000     000     000     
+    #    0000000   0000000     0000000         000   000   0000000       0      00000000
     
     objectMovedFromPos: (object, pos) ->
     
@@ -757,7 +815,13 @@ class World extends Actor
             when World.CAMERA_BEHIND then @projection = @player.getBehindProjection()
             when World.CAMERA_FOLLOW then @projection = @player.getFollowProjection()
         @projection.apply @camera
-
+    
+    #   000000000  000  00     00  00000000
+    #      000     000  000   000  000     
+    #      000     000  000000000  0000000 
+    #      000     000  000 0 000  000     
+    #      000     000  000   000  00000000
+    
     getTime: -> now().toFixed 0
     setSpeed: (s) -> @speed = s
     getSpeed: -> @speed
@@ -783,6 +847,12 @@ class World extends Actor
             name: "once"
             mode: Action.ONCE
 
+    # 00000000   00000000   0000000  000  0000000  00000000  0000000  
+    # 000   000  000       000       000     000   000       000   000
+    # 0000000    0000000   0000000   000    000    0000000   000   000
+    # 000   000  000            000  000   000     000       000   000
+    # 000   000  00000000  0000000   000  0000000  00000000  0000000  
+    
     resized: (w,h) ->
         @aspect = w/h
         @camera?.aspect = @aspect
@@ -802,8 +872,8 @@ class World extends Actor
     
     isOccupiedPos: (pos) -> not @isUnoccupiedPos pos
     
-    # returns true, if a pushable object is at pos and may be pushed
     mayObjectPushToPos: (object, pos, duration) ->
+        # returns true, if a pushable object is at pos and may be pushed
         return false if @isInvalidPos pos
         
         direction = pos.minus object.getPos() # direction from object to pushable object
@@ -837,6 +907,12 @@ class World extends Actor
         
         # Spikes::initialize()
         # Text::reinit()
+    
+    #   000   000   0000000   000      000    
+    #   000 0 000  000   000  000      000    
+    #   000000000  000000000  000      000    
+    #   000   000  000   000  000      000    
+    #   00     00  000   000  0000000  0000000
     
     getInsideWallPosWithDelta: (pos, delta) ->
         insidePos = new Vector pos

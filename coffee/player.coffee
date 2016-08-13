@@ -292,15 +292,16 @@ class Player extends Bot
     #   000   000   0000000     000     000   0000000   000   000
     
     initAction: (action) ->
+        log "initAction #{action.id} #{action.name}"
         actionId = action.id
         switch actionId
             when Action.CLIMB_DOWN, Action.FORWARD
                 @status.addMoves 1 
             when Action.TURN_LEFT, Action.TURN_RIGHT
-                sound.playSound KikiSound.BOT_MOVE 
+                world.playSound 'BOT_MOVE'
             when Action.JUMP, Action.JUMP_FORWARD
                 @status.addMoves actionId == Action.JUMP and 1 or 2
-                sound.playSound KikiSound.BOT_JUMP 
+                world.playSound 'BOT_JUMP'
         
         super action
     
@@ -352,11 +353,11 @@ class Player extends Bot
                 @dir_sgn = @new_dir_sgn
             
             if actionId != Action.LOOK_UP and actionId != Action.LOOK_DOWN
-                KikiBot.finishAction(action)
+                super action
             
             if actionId == Action.TURN_LEFT or actionId == Action.TURN_RIGHT
                 if rotate
-                    @rotate_action = getActionWithId rotate
+                    @rotate_action = @getActionWithId rotate
                     rotate_action.reset()
                     Timer.addAction rotate_action
     
@@ -364,7 +365,7 @@ class Player extends Bot
         # Controller.removeKeyHandler @
         super
         # Controller.displayText "game over" 
-        # sound.playSound KikiSound.BOT_DEATH
+        world.playSound 'BOT_DEATH'
         world.setCameraMode world.CAMERA_FOLLOW
     
     reborn: () ->
@@ -421,8 +422,8 @@ class Player extends Bot
         if combo == @key.turn or combo == @key.right
             rotate = (combo == @key.left) and Action.TURN_LEFT or Action.TURN_RIGHT
             
-            if @rotate_action == null and spiked == false # player is not performing a rotation and unspiked
-                @rotate_action = getActionWithId rotate
+            if @rotate_action == null and not @spiked # player is not performing a rotation and unspiked
+                @rotate_action = @getActionWithId rotate
                 Timer.addAction @rotate_action
             
             return keyHandled()
@@ -481,8 +482,8 @@ class Player extends Bot
             if jump_once
                 if @move_action == null and world.isUnoccupiedPos position.plus @getUp()
                     jump_once = false
-                    @move_action = getActionWithId Action.JUMP
-                    sound.playSound KikiSound.BOT_JUMP
+                    @move_action = @getActionWithId Action.JUMP
+                    world.playSound 'BOT_JUMP'
                     Timer.addAction @move_action
             return releaseHandled()
         
@@ -497,7 +498,7 @@ class Player extends Bot
         if combo == @key.lookDown or combo == @key.lookUp
             if @look_action and @look_action.id != Action.LOOK_RESET
                 Timer.removeAction @look_action
-            @look_action = getActionWithId Action.LOOK_RESET
+            @look_action = @getActionWithId Action.LOOK_RESET
             Timer.addAction @look_action
             return releaseHandled()
         

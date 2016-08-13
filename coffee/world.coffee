@@ -14,15 +14,17 @@ Cell        = require './cell'
 Light       = require './light'
 Player      = require './player'
 Timer       = require './timer'
+Actor       = require './actor'
 TmpObject   = require './tmpobject'
 Quaternion  = require './lib/quaternion'
 Vector      = require './lib/vector'
 Pos         = require './lib/pos'
 _           = require 'lodash'
+now         = require 'performance-now'
 
 world       = null
 
-class World
+class World extends Actor
 
     @CAMERA_INSIDE = 0 
     @CAMERA_BEHIND = 1 
@@ -30,11 +32,14 @@ class World
     
     @levelList = []
     @levelDict = []
+    @speed     = 5
     
-    constructor: (@view) -> 
+    constructor: (@view) ->
+        
+        super
         
         @screenSize = new Size @view.clientWidth, @view.clientHeight
-        log "view @screenSize:", @screenSize
+        # log "view @screenSize:", @screenSize
         
         @renderer = new THREE.WebGLRenderer 
             antialias:              true
@@ -181,6 +186,7 @@ class World
         log "create world in view:", view
         world = new World view
         global.world = world
+        Timer.init()
         world.create first @levelList
         world
 
@@ -192,7 +198,7 @@ class World
         
     create: (worldDict={}) -> # creates the world from a level name or a dictionary
         
-        log "world.create", worldDict
+        # log "world.create", worldDict
         
         if worldDict
             if _.isString worldDict
@@ -205,7 +211,8 @@ class World
         # ............................................................ appearance
         
         @setSize @dict["size"]
-        log "world size set", @size
+        # log "world size set", @size
+        
         # if "scheme" in @dict
             # @applyColorScheme eval(@dict["scheme"])
         # else
@@ -244,7 +251,7 @@ class World
             log "exits"
             exit_id = 0
             for entry in @dict.exits
-                exit_gate = new KikiGate entry["active"]
+                exit_gate = new Gate entry["active"]
                 
                 if "name" in entry
                     name = entry["name"]
@@ -253,7 +260,7 @@ class World
                 exit_gate.setName name 
 
                 exit_action  = once "exit " + str(exit_id) 
-                delay_action = once (a=exit_action) -> Controller.timer_event.addAction(a) 
+                delay_action = once (a=exit_action) -> Timer.addAction a  
                 # exit_gate.getEventWithName("enter").addAction(delay_action)
                 if entry.position?
                     pos = @decenter entry.position
@@ -334,8 +341,9 @@ class World
             world.moveObjectToPos player, world.decenter(player_dict["position"])
             
     performAction: (name, time) ->
+        log "world.performAction #{name}"
         # action callback. used to exit current world
-        if name.find ("exit") == 0
+        if /exit/.test name
             @finish()
             @player.status.setMoves 0
             if "world" in @dict["exits"][parseInt name.slice 5]
@@ -344,18 +352,15 @@ class World
                     w.create()
                 else if _.isFunction w
                     w()
-                else
-                    exec "World().create(" + world + ")"
+                # else
+                    # exec "World().create(" + world + ")"
             else
-                KikiPyWorld().create (levelList[world.level_index+1])
+                world.create levelList[world.level_index+1]
 
     activate: (objectName) ->
         # activates object with name objectName
-        object = @getObjectWithName(objectName)
-        if object.getClassName() == "KikiSwitch"
-            kikiObjectToSwitch(object).setActive(1)
-        else if object.getClassName() == "KikiGate"
-            kikiObjectToGate(object).setActive(1)
+        object = @getObjectWithName objectName 
+        object?.setActive? 1
     
     decenter: (x,y,z) -> new Pos(x,y,z).plus @size.div 2
 
@@ -400,9 +405,9 @@ class World
         # adds number objects of type at random positions to the world
         for i in [0...number]
             if type (object) == types.StringType
-                @setObjectRandom (eval(object))
+                @setObjectRandom eval object 
             else
-                @setObjectRandom (object())
+                @setObjectRandom object()
         
     setObjectRandom: (object) ->
         # adds number objects of type at random positions to the world
@@ -480,8 +485,8 @@ class World
                 exec @dict["escape"] in globals()
             return
 
-        menu = KikiMenu()
-        menu.getEventWithName ("hide").addAction (once(@resetProjection))
+        menu = new Menu()
+        menu.getEventWithName("hide").addAction once @resetProjection 
         
         # if Controller.isDebugVersion()
             # menu.addItem (Controller.getLocalizedString("next level"), once(lambda w=self: w.performAction("exit 0",0)))
@@ -489,12 +494,12 @@ class World
             # menu.addItem (Controller.getLocalizedString("help"), once(@help))
         menu.addItem(Controller.getLocalizedString("restart"), once(@restart))
         
-        esc_menu_action = once (@escape)
-        console.out("level_index %d" % world.level_index)
+        esc_menu_action = once @escape
+        log "level_index #{world.level_index}"
         menu.addItem(Controller.getLocalizedString("load level"), (i=world.level_index,a=esc_menu_action) -> levelSelection(i, a))
-        menu.addItem(Controller.getLocalizedString("setup"), once(quickSetup))        
-        menu.addItem(Controller.getLocalizedString("about"), once(display_about))
-        menu.addItem(Controller.getLocalizedString("quit"), once(Controller.quit))
+        menu.addItem(Controller.getLocalizedString("setup"), once @quickSetup)        
+        menu.addItem(Controller.getLocalizedString("about"), once @display_about)
+        menu.addItem(Controller.getLocalizedString("quit"), once world.quit)
 
     setSize: (size) ->
         @deleteAllObjects()
@@ -559,7 +564,7 @@ class World
 
     newObject: (object) ->
         if _.isString object
-            log "newObject:", object
+            # log "newObject:", object
             if object.startsWith 'Kiki'
                 return new (require "./#{object.slice(4).toLowerCase()}")()
         object
@@ -587,9 +592,7 @@ class World
     
         @unsetObject    object
         @setObjectAtPos object, pos
-    
-        # Controller.sound.playSound(KikiSound::BOT_LAND)
-    
+        world.playSound 'BOT_LAND'
         true
 
     deleteObject: (object) ->
@@ -649,6 +652,7 @@ class World
         @moved_objects.push object 
     
     objectWillMoveToPos: (object, pos, duration) ->
+        log "world.objectWillMoveToPos", pos
         cell = @getCellAtPos pos
     
         if @isInvalidPos pos
@@ -729,14 +733,18 @@ class World
             @camera.position.set(center.x,center.y,center.z+@dist).applyQuaternion quat
             @camera.quaternion.copy quat
 
+        Timer.event.triggerActions()
+        Timer.event.finishActions()
+        
         @player.getProjection().apply @camera
         @sun.position.copy @camera.position
         @renderer.render @scene, @camera
 
+    getTime: -> now().toFixed 0
     setSpeed: (s) -> @speed = s
     getSpeed: -> @speed
-    mapMsTime:  (unmapped) -> parseInt 10.0 * unmapped/speed
-    unmapMsTime: (mapped) -> parseInt mapped * speed/10.0
+    mapMsTime:  (unmapped) -> parseInt 10.0 * unmapped/@speed
+    unmapMsTime: (mapped) -> parseInt mapped * @speed/10.0
     getRelativeTime: -> @frame_time % (10000/@speed)/(10000.0/@speed)
     getRelativeDelta: -> (@frame_time - @last_time)/(10000.0/@speed)
 
@@ -865,6 +873,9 @@ class World
             when World.CAMERA_BEHIND then @projection = @player.getBehindProjection()
             when World.CAMERA_FOLLOW then @projection = @player.getFollowProjection()
         @projection.apply @camera
+   
+    playSound: (sound, pos, time) ->
+        log "World.playSound #{sound} #{time}", pos 
     
     #   000   000  00000000  000   000
     #   000  000   000        000 000 

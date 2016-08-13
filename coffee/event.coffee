@@ -12,28 +12,30 @@ _      = require 'lodash'
 class Event
     
     constructor: (obj, name) ->
-        @object = obj
-        @name   = name
+        @object  = obj
+        @name    = name
+        @time    = 0
+        @actions = []
         @save_actions = []
+        @finished_actions = []
     
+    getTime: -> @time
     hasAction: (action) -> _.find @actions, action
     
     addAction: (action) ->
-        if @hasAction action
-            actions.push action
+        log "Event.addAction #{action.name}"
+        if action? and not @hasAction action
+            @actions.push action
             action.event = @
             action.init()
+        else
+            log 'no action?', action
     
     removeAllActions: () ->
-        while actions.length
+        while @actions.length
             @removeAction last @actions
     
-    getActionsOfObject: (object) ->
-        actions = []
-        for a in _.clone @actions
-            if a.object == object
-                actions.push a
-        actions
+    getActionsOfObject: (object) -> @actions.filter (a) -> a.object == object
     
     removeActionsOfObject: (object) ->
         for a in @actions
@@ -41,8 +43,7 @@ class Event
     
     removeActionWithName: (actionName) ->
         for a in @actions
-            if a.name == actionName
-                @removeAction a
+            @removeAction a if a.name == actionName
     
     removeAction: (action) ->
         action.event = null
@@ -51,10 +52,12 @@ class Event
         _.pull @finished_actions, action
     
     triggerActions: () ->
-        time = KEventHandler.getTime()
-        @save_actions = KikiActionList (actions)
+        @time = world.getTime()
+        log 'trigger actions', @time, @actions.length
+        @save_actions = _.clone @actions
         while @save_actions.length
-            action= last @save_actions
+            action = last @save_actions
+            log "performAction #{action.name}" 
             action.performWithEvent @
             if @save_actions.length and action == last @save_actions
                 @save_actions.pop()

@@ -4,7 +4,8 @@
 # 000   000  000          000     000  000   000  000  0000
 # 000   000   0000000     000     000   0000000   000   000
 
-_ = require 'lodash'
+log = require '/Users/kodi/s/ko/js/tools/log'
+_   = require 'lodash'
 
 class Action
     
@@ -21,18 +22,26 @@ class Action
     @FALL_FORWARD = 10
     @SHOOT        = 11
     @END          = 12
+    @LOOK_UP      = 13
+    @LOOK_DOWN    = 14
+    @LOOK_RESET   = 15
     
     @ONCE       = 0
     @CONTINUOUS = 1
     @REPEAT     = 2
 
-    constructor: (o, i, n, d, m) ->
+    constructor: (o, i, n, d, m) ->        
         if _.isPlainObject o 
-            i = o.id ? 0
+            i = o.id ? -1
             n = o.name
             d = o.duration ? 0
             m = o.mode ? Action.ONCE
             o = o.func
+        else
+            i ?= -1
+            m ?= Action.ONCE
+            d ?= 0
+        log "newAction #{i} #{n} #{d} #{m}"
         @object     = o
         @name       = n
         @id         = i
@@ -87,11 +96,9 @@ class Action
             @current = @rest
             @rest = 0
 
-    getRelativeTime: () ->
-        return @current / @getDuration() 
- 
-    getDuration: ()  ->
-        return world.mapMsTime @duration 
+    getRelativeTime:  -> @current / @getDuration() 
+    getRelativeDelta: -> (@current-@last) / @getDuration()
+    getDuration:      -> world.mapMsTime @duration 
 
     performWithEvent: (event) ->
         eventTime = event.getTime()
@@ -101,15 +108,11 @@ class Action
             @current = 0
             @rest    = 0
             @last    = 0
-            if @duration == 0 and @mode == Action.ONCE
-                event.removeAction @
-    
+            event.removeAction @ if @duration == 0 and @mode == Action.ONCE
             @perform()
-            
             @last = @current
-            
-            if @duration == 0 and @mode == Action.ONCE
-                @finished()
+            @finished() if @duration == 0 and @mode == Action.ONCE
+                
         else
             currentDiff = eventTime - @start
             if currentDiff >= @getDuration()
@@ -123,8 +126,7 @@ class Action
                 if @mode == Action.CONTINUOUS
                     @current = @rest
                     return
-                if @mode == Action.ONCE
-                    event.removeAction @
+                event.removeAction @ if @mode == Action.ONCE
                 
                 @finish()
     

@@ -8,8 +8,24 @@ log = require '/Users/kodi/s/ko/js/tools/log'
 
 class Timer
     
-    @removeActionsOfObject: (o) -> log "removeActionsOfObject"
-    @addAction:    (a) -> log "addAction"
-    @removeAction: (a) -> log "removeAction"
+    @event   = null
+    @eventID = -1
+    
+    @init: -> 
+        @eventID = world.addEventWithName 'timer'
+        @event   = world.getEventWithId @eventID
+        log "Timer.@init @eventID:#{@eventID} #{@event.name}"
+    
+    @removeActionsOfObject: (o) -> 
+        log "removeActionsOfObject"
+        @event.removeActionsOfObject o
+        
+    @addAction:    (a) -> 
+        log "addAction"
+        @event.addAction a
+        
+    @removeAction: (a) -> 
+        log "removeAction"
+        @event.removeAction a
         
 module.exports = Timer

@@ -26,13 +26,13 @@ class Pushable extends Item
         @move_action = pushAction
         @direction   = dir
         
-        # pushAction->setDuration Controller.unmapMsTime duration
-        # Controller.timer_event->addAction (pushAction);
+        pushAction.setDuration world.unmapMsTime duration
+        Timer.addAction pushAction
 
     initAction: (action) ->
-        # switch action->getId()
-            # when Action.FALL
-                # Controller.world->objectWillMoveToPos @, @position + @direction, action->getDuration()
+        switch action.id
+            when Action.FALL
+                world.objectWillMoveToPos @, @position.plus(@direction), action.getDuration()
 
     performAction: (action) ->
         switch action.id
@@ -53,10 +53,10 @@ class Pushable extends Item
             gravityDir = @direction
             
             if actionId == Action.PUSH
-                if @pusher instanceof KikiBot
+                if @pusher instanceof Bot
                     gravityDir = pusher.getDown()
-                else if pusher instanceof KikiBomb
-                    if @ instanceof KikiBot
+                else if pusher instanceof Bomb
+                    if @ instanceof Bot
                         if @direction == @getUp()
                             # bots don't fall through bomb splitter
                             @direction.reset()
@@ -70,9 +70,9 @@ class Pushable extends Item
             if world.isUnoccupiedPos @position + gravityDir
                 @direction = gravityDir
                 @move_action = @getActionWithId Action.FALL
-                # Controller.timer_event->addAction (move_action)
+                Timer.addAction @move_action
             else
                 @direction.reset()
-                # playSoundAtPos landing_sound, position
+                world.playSound @landing_sound, position
 
 module.exports = Pushable

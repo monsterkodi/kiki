@@ -10,7 +10,8 @@ TmpObject = require './tmpobject'
 class Cell
     
     constructor: () -> @objects = []
-        
+    
+    isEmpty: -> @objects.length == 0    
     getObjectsOfType: (clss) -> @objects.filter (o) -> o instanceof clss
     getObjectOfType:  (clss) -> _.find @objects, (o) -> o instanceof clss
 

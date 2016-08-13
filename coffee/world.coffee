@@ -345,7 +345,7 @@ class World extends Actor
             world.moveObjectToPos player, world.decenter(player_dict["position"])
             
     performAction: (name, time) ->
-        log "world.performAction #{name}"
+        # log "world.performAction #{name}"
         # action callback. used to exit current world
         if /exit/.test name
             @finish()
@@ -564,7 +564,7 @@ class World extends Actor
             cell.removeObject object
             if cell.isEmpty()
                 # delete cell
-                @cells[posToIndex(pos)] = null
+                @cells[@posToIndex(pos)] = null
 
     newObject: (object) ->
         if _.isString object
@@ -657,20 +657,17 @@ class World extends Actor
     
     objectWillMoveToPos: (object, pos, duration) ->
         log "world.objectWillMoveToPos", pos
-        cell = @getCellAtPos pos
-    
+        
         if @isInvalidPos pos
             log "objectWillMoveToPos invalid pos:", pos
         
-        if object.getPos() == pos
+        if object.getPos().eql pos
             log "WARNING objectWillMoveToPos equal pos:", pos
             return
-    
-        if cell
+        
+        if cell = @getCellAtPos pos
             if objectAtNewPos = cell.getOccupant()
                 if objectAtNewPos instanceof TmpObject
-                    tmpObject = objectAtNewPos
-                    
                     if objectAtNewPos.time < 0 and -objectAtNewPos.time <= duration
                         # temporary object at new pos will vanish before object will arrive . delete it
                         objectAtNewPos.del()

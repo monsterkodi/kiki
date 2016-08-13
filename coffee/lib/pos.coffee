@@ -5,13 +5,14 @@
 #   000        000   000       000
 #   000         0000000   0000000 
 
+log    = require '/Users/kodi/s/ko/js/tools/log'
 Vector = require './vector'
 
 class Pos
 
     constructor: (x=0, y=0, z=0) ->
         
-        if x instanceof Vector or x instanceof Pos
+        if (x instanceof Vector) or (x instanceof Pos)
             @x = parseInt x.x
             @y = parseInt x.y
             @z = parseInt x.z
@@ -23,6 +24,9 @@ class Pos
             @x = parseInt x
             @y = parseInt y
             @z = parseInt z
+        # log "Pos #{x} #{y} #{z}", @
+        if Number.isNaN @x
+            throw new Error
 
     vector: () -> new Vector x, y, z 
     minus: (p) -> new Pos @x-p.x, @y-p.y, @z-p.z
@@ -32,15 +36,15 @@ class Pos
     eql:   (p) -> @x==p.x and @y==p.y and @z==p.z
     
     add: (p) -> 
-        @x += p.x 
-        @y += p.y 
-        @z += p.z
+        @x = parseInt @x + p.x 
+        @y = parseInt @y + p.y 
+        @z = parseInt @z + p.z
         @
         
     sub: (p) -> 
-        @x -= p.x 
-        @y -= p.y 
-        @z -= p.z
+        @x = parseInt @x - p.x 
+        @y = parseInt @y - p.y 
+        @z = parseInt @z - p.z
         @
 
 module.exports = Pos

@@ -5,28 +5,32 @@
 #      000     000       000          000     000   000  000   000
 #       0      00000000   0000000     000      0000000   000   000
 
-# X  = 0
-# SX = 0
-# Y  = 1
-# Z  = 2
-# W  = 3
-# SY = 5
-# SZ = 10
-# TX = 12
-# TY = 13
-# TZ = 14
+log = require '/Users/kodi/s/ko/js/tools/log'
 
 class Vector
 
-    constructor: (@x,@y,@z,@w) ->
-        if @x instanceof Vector
-            @copy @x
+    constructor: (x=0,y=0,z=0,w=0) ->
+        if x.x? and x.y?
+            @copy x
+        else if Array.isArray x
+            @x = x[0]
+            @y = x[1]
+            @z = x[2]
+            @w = x[3] ? 0
+        else
+            @x = x
+            @y = y
+            @z = z
+            @w = w
+        if Number.isNaN @x
+            throw new Error
+        # log "Vector #{x} #{y} #{z} #{w} -> #{@x} #{@y} #{@z} #{@w}"
 
     copy: (v) -> 
         @x = v.x
         @y = v.y 
-        @z = v.z 
-        @w = v.w
+        @z = v.z ? 0
+        @w = v.w ? 0
         @
 
     normal: -> new Vector(@).normalize()
@@ -64,18 +68,19 @@ class Vector
     xyangle: (v) ->
         thisXY  = new Vector(@x, @y).normal()
         otherXY = new Vector(v.x, v.y).normal()
-        if thisXY.xyperp() * otherXY >= 0 
-            return Vector.RAD2DEG(Math.acos(thisXY * otherXY))
-        -Vector.RAD2DEG(Math.acos(thisXY * otherXY));
+        if thisXY.xyperp().dot otherXY >= 0 
+            return Vector.RAD2DEG(Math.acos(thisXY.dot otherXY))
+        -Vector.RAD2DEG(Math.acos(thisXY.dot otherXY))
 
     length:    -> Math.sqrt @x*@x+@y*@y+@z*@z+@w*@w
-    angle: (v) -> Vector.RAD2DEG Math.acos @normal()*v.normal()  
+    angle: (v) -> Vector.RAD2DEG Math.acos @normal().dot v.normal()  
     dot:   (v) -> @x*v.x + @y*v.y + @z*v.z + @w*v.w
     
-    mul:   (f) -> new Vector @x*f, @y*f, @z*f, @w*f 
-    div:   (d) -> new Vector @x/d, @y/d, @z/d, @w/d 
+    mul:   (f) -> new Vector @x*f, @y*f, @z*f, @w*f
+    div:   (d) -> new Vector @x/d, @y/d, @z/d, @w/d
     plus:  (v) -> new Vector @x+v.x, @y+v.y, @z+v.z, @w+v.w
     minus: (v) -> new Vector @x-v.x, @y-v.y, @z-v.z, @w-v.w
+    neg:       -> new Vector -@x, -@y, -@z, -@w
      
     add: (v) ->
         @x += v.x 
@@ -102,9 +107,20 @@ class Vector
         @x = @y = @z = @w = 0
         @
     
-    isZero: -> @x == @y == @z == 0
+    isZero: -> @x == @y == @z == @w == 0
 
     @DEG2RAD: (d) -> Math.PI*d/180.0
     @RAD2DEG: (r) -> r*180.0/Math.PI
+    
+    @X  = 0
+    @SX = 0
+    @Y  = 1
+    @Z  = 2
+    @W  = 3
+    @SY = 5
+    @SZ = 10
+    @TX = 12
+    @TY = 13
+    @TZ = 14
 
 module.exports = Vector

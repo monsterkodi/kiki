@@ -120,7 +120,7 @@ class Player extends Bot
     getProjection: () ->
         # smooth camera movement a little bit
         posDelta = world.getSpeed() / 10.0
-        @projection.setPosition ((1.0 - posDelta) * @projection.getPosition() + posDelta * @current_position)
+        @projection.setPosition @projection.getPosition().mul(1.0 - posDelta).plus @current_position.mul posDelta
     
         playerDir = @getCurrentDir()
         playerUp  = @current_orientation.rotate(new Vector(0,1,0)).normal()
@@ -129,11 +129,11 @@ class Player extends Bot
             @projection.setXVector playerUp.cross(playerDir).normal()
             @look_rot = Quaternion.rotationAroundVector @look_angle, @projection.getXVector()
             @projection.setYVector @look_rot.rotate playerUp 
-            @projection.setZVector @look_rot.rotate -playerDir 
+            @projection.setZVector @look_rot.rotate playerDir.neg()
         else
             # smooth camera rotation a little bit
             lookDelta = (2.0 - @projection.getZVector().dot playerDir) * world.getSpeed() / 50.0
-            newLookVector  = @projection.getZVector().mul(1.0 - lookDelta).minus playerDir.mul lookDelta
+            newLookVector = @projection.getZVector().mul(1.0 - lookDelta).minus playerDir.mul lookDelta
             newLookVector.normalize()
     
             @projection.setXVector playerUp.cross(newLookVector).normal()
@@ -172,7 +172,7 @@ class Player extends Bot
             @projection.setXVector(playerUp.cross(playerDir).normal())
             KQuaternion look_rot = KQuaternion.rotationAroundVector(@look_angle, @projection.getXVector())
             @projection.setYVector(look_rot.rotate(playerUp))
-            @projection.setZVector(look_rot.rotate(-playerDir))
+            @projection.setZVector(look_rot.rotate(playerDir.neg()))
         else
             # smooth camera rotation a little bit
             lookDelta = 0.3
@@ -294,11 +294,12 @@ class Player extends Bot
         actionId = action.id
         switch actionId
             when Action.CLIMB_DOWN, Action.FORWARD
-                @status.addMoves 1 
+                # @status.addMoves 1 
+                log 'init action forward'
             when Action.TURN_LEFT, Action.TURN_RIGHT
                 world.playSound 'BOT_MOVE'
-            when Action.JUMP, Action.JUMP_FORWARD
-                @status.addMoves actionId == Action.JUMP and 1 or 2
+            when Action.JUMP
+                # @status.addMoves actionId == Action.JUMP and 1 or 2
                 world.playSound 'BOT_JUMP'
         
         super action

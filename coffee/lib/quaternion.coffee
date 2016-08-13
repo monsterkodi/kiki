@@ -5,27 +5,40 @@
 #   000 0000   000   000  000   000     000     000       000   000  000  0000  000  000   000  000  0000
 #    00000 00   0000000   000   000     000     00000000  000   000  000   000  000   0000000   000   000
 
+log    = require '/Users/kodi/s/ko/js/tools/log'
 Vector = require './vector'
 
 class Quaternion
     
-    constructor: (@w=1, @x=0, @y=0, @z=0) ->
-        if @w instanceof Vector
-            @x = @w.x
-            @y = @w.y
-            @z = @w.z
+    constructor: (w=1, x=0, y=0, z=0) ->
+        if w instanceof Vector
+            @x = w.x
+            @y = w.y
+            @z = w.z
             @w = 0
-        else if @w instanceof Quaternion
-            @x = @w.x
-            @y = @w.y
-            @z = @w.z
-            @w = @w.w
+        else if w instanceof Quaternion
+            @x = w.x
+            @y = w.y
+            @z = w.z
+            @w = w.w
+        else if Array.isArray w
+            @w = w[0]            
+            @x = w[1]
+            @y = w[2]
+            @z = w[3]
+        else
+            @x = x
+            @y = y
+            @z = z
+            @w = w
+        if Number.isNaN @x
+            throw new Error
         
     @rotationAroundVector: (theta, vector) ->
         v = new Vector vector 
         v.normalize()
         t = Vector.DEG2RAD(theta)/2.0       
-        s = Math.sin(t)
+        s = Math.sin t 
         new Quaternion(Math.cos(t), v.x*s, v.y*s, v.z*s).normalize()
 
     add: (quat) ->
@@ -48,15 +61,21 @@ class Quaternion
         new Vector rq.x, rq.y, rq.z 
                 
     normalize: ->
-        l = Math.sqrt(w*w + x*x + y*y + z*z)
+        l = Math.sqrt @w*@w + @x*@x + @y*@y + @z*@z 
         if l != 0.0
-            w /= l; x /= l; y /= l; z /= l
+            @w /= l 
+            @x /= l 
+            @y /= l 
+            @z /= l
         @
 
     invert: ->
-        l = Math.sqrt(w*w + x*x + y*y + z*z)
+        l = Math.sqrt @w*@w + @x*@x + @y*@y + @z*@z 
         if l != 0.0 
-            w /= l; x = -x/l; y = -y/l; z = -z/l 
+            @w /= l 
+            @x = -x/l
+            @y = -y/l
+            @z = -z/l 
         @
 
     isZero: -> @x==@y==@z==0 and @w==1
@@ -120,17 +139,17 @@ class Quaternion
             to1[3] = quat.w
         
         if (1.0 - cosom) > 0.001 # calculate coefficients
-            omega  = Math.acos(cosom) # standard case (slerp)
-            sinom  = Math.sin(omega)
+            omega  = Math.acos cosom  # standard case (slerp)
+            sinom  = Math.sin omega 
             scale0 = Math.sin((1.0 - t) * omega) / sinom
             scale1 = Math.sin(t * omega) / sinom
         else # "from" and "to" quaternions are very close -> we can do a linear interpolation
             scale0 = 1.0 - t
             scale1 = t
 
-        new Quaternion scale0 * w + scale1 * to1[3],
-                       scale0 * x + scale1 * to1[0], 
-                       scale0 * y + scale1 * to1[1],
-                       scale0 * z + scale1 * to1[2]
+        new Quaternion scale0 * @w + scale1 * to1[3],
+                       scale0 * @x + scale1 * to1[0], 
+                       scale0 * @y + scale1 * to1[1],
+                       scale0 * @z + scale1 * to1[2]
 
 module.exports = Quaternion            

@@ -74,10 +74,10 @@ class Bot extends Pushable
     
         @startTimedAction @getActionWithId(Action.NOOP), 500
 
-
     getDown: -> @orientation.rotate(new Vector 0,1,0).neg()
     getUp:   -> @orientation.rotate(new Vector 0,1,0)
     getDir:  -> @orientation.rotate(new Vector 0,0,1).mul @dir_sgn
+    getCurrentDir: -> @current_orientation.rotate(new Vector(0,0,1)).normal()
 
     addMoves:  (m) -> @moves += m
     addHealth: (h) -> @health = Math.max @health+h
@@ -123,24 +123,24 @@ class Bot extends Pushable
     
         switch action.id
             when Action.NOOP         then return
-            
-            when Action.FORWARD      then newPos += @getDir()
-            when Action.CLIMB_DOWN   then newPos += @getDir()  + @getDown()
-            when Action.JUMP         then newPos += @getUp()
-            when Action.JUMP_FORWARD then newPos += @getUp()   + @getDir()
-            when Action.FALL_FORWARD then newPos += @getDown() + @getDir()
+            when Action.FORWARD      then newPos.add @getDir()
+            when Action.CLIMB_DOWN   then newPos.add @getDir().plus @getDown()
+            when Action.JUMP         then newPos.add @getUp()
+            when Action.JUMP_FORWARD then newPos.add @getUp().plus @getDir()
+            when Action.FALL_FORWARD then newPos.add @getDown().plus @getDir()
             when Action.FALL
                 if not @direction.isZero()
                     super action 
                     return
                 else
-                    newPos += @getDown()        
+                    newPos.add @getDown()        
                 break
             else
                 super action
                 return
     
-        if newPos != @position
+        if not newPos.eql @position
+            log 'bot.initAction', newPos
             world.objectWillMoveToPos @, newPos, action.getDuration()
     
     performAction: (action) ->
@@ -148,8 +148,8 @@ class Bot extends Pushable
         relTime  = action.getRelativeTime()
         dltTime  = action.getRelativeDelta()
     
-        log "Bot.performAction #{action.name} #{action.current} #{action.last} #{action.duration} id #{actionId}"
-        log "Bot.performAction #{action.name} #{relTime} #{dltTime} id #{actionId}"
+        # log "Bot.performAction #{action.name} #{action.current} #{action.last} #{action.duration} id #{actionId}"
+        # log "Bot.performAction #{action.name} #{relTime} #{dltTime} id #{actionId}"
         
         switch actionId
             when Action.SHOOT
@@ -397,9 +397,6 @@ class Bot extends Pushable
         if @move_action
             @move_action.keepRest() # try to make subsequent actions smooth
             Timer.addAction @move_action
-
-    getCurrentDir: -> @current_orientation.rotate(new Vector(0,0,1)).normal()
-    getDir: -> @dir_sgn * @orientation.rotate new Vector 0,0,1 
 
     render: () ->
         radius     = 0.5

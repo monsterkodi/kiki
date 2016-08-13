@@ -25,9 +25,11 @@ class Bot extends Pushable
         @climb_orientation   = new Quaternion
         @rest_orientation    = new Quaternion
         
+        tireRadius = 0.18
+        
         geom = new THREE.SphereGeometry 0.5, 32, 32 
         mat  = new THREE.MeshPhongMaterial 
-            color:          0x0000ff
+            color:          0x222288
             side:           THREE.FrontSide
             shading:        THREE.SmoothShading
             transparent:    true
@@ -36,30 +38,23 @@ class Bot extends Pushable
         @mesh = new THREE.Mesh geom, mat
         world.scene.add @mesh
 
-        geom = new THREE.TorusGeometry 0.5, 0.2, 16, 64
+        geom = new THREE.TorusGeometry 0.5, tireRadius, 16, 16
         mat  = new THREE.MeshPhongMaterial 
-            color:          0x0000ff
-            side:           THREE.FrontSide
-            shading:        THREE.SmoothShading
-            transparent:    true
-            opacity:        0.9
-            shininess:      0.99        
-        @leftTire = new THREE.Mesh geom, mat
-        @leftTire.position.set -0.5,0,0 
-        @leftTire.rotation.set 0, Vector.DEG2RAD(90), 0
-        @mesh.add @leftTire
-
-        geom = new THREE.TorusGeometry 0.5, 0.2, 16, 64
-        mat  = new THREE.MeshPhongMaterial 
-            color:          0x0000ff
+            color:          0x000044
             side:           THREE.FrontSide
             shading:        THREE.SmoothShading
             transparent:    true
             opacity:        0.9
             shininess:      0.99 
+            
+        @leftTire = new THREE.Mesh geom, mat
+        @leftTire.position.set -0.5,0,0 
+        @leftTire.rotation.set 0, Vector.DEG2RAD(90), 0
+        @mesh.add @leftTire
+
         @rightTire = new THREE.Mesh geom, mat
         @rightTire.position.set 0.5,0,0 
-        @leftTire.rotation.set 0, Vector.DEG2RAD(-90), 0
+        @rightTire.rotation.set 0, Vector.DEG2RAD(-90), 0
         @mesh.add @rightTire
 
         @left_tire_rot   = 0.0
@@ -107,6 +102,13 @@ class Bot extends Pushable
     addMoves:  (m) -> @moves += m
     addHealth: (h) -> @health = Math.max @health+h
     
+    
+    # 0000000    000  00000000
+    # 000   000  000  000     
+    # 000   000  000  0000000 
+    # 000   000  000  000     
+    # 0000000    000  00000000
+    
     die: () ->
         Timer.removeActionsOfObject @
         
@@ -117,6 +119,12 @@ class Bot extends Pushable
     
         @getEventWithName("died").triggerActions()
         @died  = true
+    
+    # 00000000   00000000   0000000  00000000  000000000
+    # 000   000  000       000       000          000   
+    # 0000000    0000000   0000000   0000000      000   
+    # 000   000  000            000  000          000   
+    # 000   000  00000000  0000000   00000000     000   
     
     reset: () ->
     
@@ -141,6 +149,12 @@ class Bot extends Pushable
         @died        = false
     
     isFalling: -> @move_action and @move_action.id == Action.FALL
+    
+    #  0000000    0000000  000000000  000   0000000   000   000
+    # 000   000  000          000     000  000   000  0000  000
+    # 000000000  000          000     000  000   000  000 0 000
+    # 000   000  000          000     000  000   000  000  0000
+    # 000   000   0000000     000     000   0000000   000   000
     
     initAction: (action) ->
         log "initAction #{action.name}"
@@ -168,13 +182,19 @@ class Bot extends Pushable
             log 'bot.initAction', newPos
             world.objectWillMoveToPos @, newPos, action.getDuration()
     
+    # 00000000   00000000  00000000   00000000   0000000   00000000   00     00
+    # 000   000  000       000   000  000       000   000  000   000  000   000
+    # 00000000   0000000   0000000    000000    000   000  0000000    000000000
+    # 000        000       000   000  000       000   000  000   000  000 0 000
+    # 000        00000000  000   000  000        0000000   000   000  000   000
+    
     performAction: (action) ->
         actionId = action.id
         relTime  = action.getRelativeTime()
         dltTime  = action.getRelativeDelta()
     
         # log "Bot.performAction #{action.name} #{action.current} #{action.last} #{action.duration} id #{actionId}"
-        log "Bot.performAction #{action.name} #{relTime} #{dltTime} id #{actionId}"
+        # log "Bot.performAction #{action.name} #{relTime} #{dltTime} id #{actionId}"
         
         switch actionId
             when Action.SHOOT
@@ -266,6 +286,12 @@ class Bot extends Pushable
         
         @current_orientation = @orientation.mul @climb_orientation.mul @rotate_orientation.mul @rest_orientation
     
+    # 00000000  000  000   000  000   0000000  000   000
+    # 000       000  0000  000  000  000       000   000
+    # 000000    000  000 0 000  000  0000000   000000000
+    # 000       000  000  0000  000       000  000   000
+    # 000       000  000   000  000  0000000   000   000
+    
     finishAction: (action) ->
         actionId = action.id
     
@@ -309,6 +335,12 @@ class Bot extends Pushable
             if actionId != Action.JUMP_FORWARD and @rotate_action == null # if not jumping forward
                 @orientation = @orientation.mul @rest_orientation # update rotation @orientation
                 @rest_orientation.reset()
+    
+    # 00000000  000  000   000  000   0000000  000   000  00000000  0000000  
+    # 000       000  0000  000  000  000       000   000  000       000   000
+    # 000000    000  000 0 000  000  0000000   000000000  0000000   000   000
+    # 000       000  000  0000  000       000  000   000  000       000   000
+    # 000       000  000   000  000  0000000   000   000  00000000  0000000  
     
     actionFinished: (action) ->
         actionId = action.id
@@ -395,7 +427,13 @@ class Bot extends Pushable
             @jump_once = false if actionId != Action.NOOP
             # keep action chain flowinwg in order to detect environment changes
             # @startTimedAction @getActionWithId(Action.NOOP), 0
-    
+
+    # 00     00   0000000   000   000  00000000
+    # 000   000  000   000  000   000  000     
+    # 000000000  000   000   000 000   0000000 
+    # 000 0 000  000   000     000     000     
+    # 000   000   0000000       0      00000000
+        
     moveBot: () ->
         @move_action = null
         log "bot.moveBot @position", @position
@@ -436,7 +474,6 @@ class Bot extends Pushable
         if @move_action
             @move_action.keepRest() # try to make subsequent actions smooth
             Timer.addAction @move_action
-
         
     #  0000000  000000000  00000000  00000000 
     # 000          000     000       000   000
@@ -445,41 +482,10 @@ class Bot extends Pushable
     # 0000000      000     00000000  000      
         
     step: (step) ->
-        # log 'Bot.step', step
-        radius     = 0.5
-        tireRadius = 0.15
-        # log 'Bot.step', @current_position
         @mesh.position.copy @current_position
         @mesh.quaternion.copy @current_orientation
-    
-        # @leftTire.rotation.copy @left_tire_rot
-        # @leftTire.rotation.copy @right_tire_rot
-
-        # if (@died) @getDeadColor().glColor()
-        # else       @getTireColor().glColor()
-            
-        # KMatrix(current_orientation).glMultMatrix()
-        # glPushMatrix() # tires
-            # glRotated(90.0, 0.0, 1.0, 0.0)
-            # glTranslated(0.0, 0.0, radius-tireRadius)
-            # glRotated(@left_tire_rot * 180.0, 0.0, 0.0, 1.0)
-#             
-            # render_tire
-#             
-        # glPopMatrix()
-        # glPushMatrix()
-            # glRotated(90.0, 0.0, 1.0, 0.0)
-            # glTranslated(0.0, 0.0, -(radius-tireRadius))
-            # glRotated(@right_tire_rot * 180.0, 0.0, 0.0, 1.0)
-#     
-            # render_tire
-#             
-        # glPopMatrix()
-    
-        # if not @died then @getBodyColor().glColor()
-    
-        # @render_body()
-        
+        @leftTire.rotation.set Vector.DEG2RAD(180*@left_tire_rot), Vector.DEG2RAD(90), 0
+        @rightTire.rotation.set Vector.DEG2RAD(180*@right_tire_rot), Vector.DEG2RAD(-90), 0
         # if (@move_action or @rotate_action) and not @died
             # unsigned now = getTime()
             # if ((int)(now - last_fume) > mapMsTime (40))

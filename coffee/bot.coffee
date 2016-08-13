@@ -25,18 +25,43 @@ class Bot extends Pushable
         @climb_orientation   = new Quaternion
         @rest_orientation    = new Quaternion
         
-        @geom = new THREE.SphereGeometry 1, 32, 32 
-        @mat  = new THREE.MeshPhongMaterial 
+        geom = new THREE.SphereGeometry 0.5, 32, 32 
+        mat  = new THREE.MeshPhongMaterial 
             color:          0x0000ff
             side:           THREE.FrontSide
             shading:        THREE.SmoothShading
             transparent:    true
             opacity:        0.9
             shininess:      0.99
-        
-        @mesh = new THREE.Mesh @geom, @mat
+        @mesh = new THREE.Mesh geom, mat
         world.scene.add @mesh
-        
+
+        geom = new THREE.TorusGeometry 0.5, 0.2, 16, 64
+        mat  = new THREE.MeshPhongMaterial 
+            color:          0x0000ff
+            side:           THREE.FrontSide
+            shading:        THREE.SmoothShading
+            transparent:    true
+            opacity:        0.9
+            shininess:      0.99        
+        @leftTire = new THREE.Mesh geom, mat
+        @leftTire.position.set -0.5,0,0 
+        @leftTire.rotation.set 0, Vector.DEG2RAD(90), 0
+        @mesh.add @leftTire
+
+        geom = new THREE.TorusGeometry 0.5, 0.2, 16, 64
+        mat  = new THREE.MeshPhongMaterial 
+            color:          0x0000ff
+            side:           THREE.FrontSide
+            shading:        THREE.SmoothShading
+            transparent:    true
+            opacity:        0.9
+            shininess:      0.99 
+        @rightTire = new THREE.Mesh geom, mat
+        @rightTire.position.set 0.5,0,0 
+        @leftTire.rotation.set 0, Vector.DEG2RAD(-90), 0
+        @mesh.add @rightTire
+
         @left_tire_rot   = 0.0
         @right_tire_rot  = 0.0
         @last_fume       = 0
@@ -149,7 +174,7 @@ class Bot extends Pushable
         dltTime  = action.getRelativeDelta()
     
         # log "Bot.performAction #{action.name} #{action.current} #{action.last} #{action.duration} id #{actionId}"
-        # log "Bot.performAction #{action.name} #{relTime} #{dltTime} id #{actionId}"
+        log "Bot.performAction #{action.name} #{relTime} #{dltTime} id #{actionId}"
         
         switch actionId
             when Action.SHOOT
@@ -163,7 +188,7 @@ class Bot extends Pushable
                 @left_tire_rot  += @dir_sgn * dltTime
                 @right_tire_rot += @dir_sgn * dltTime
                 @current_position = @position.plus @getDir().mul relTime
-                log 'forward', @current_position
+                # log 'bot.forward', @current_position
                 return
             
             when Action.JUMP
@@ -203,7 +228,7 @@ class Bot extends Pushable
                 @left_tire_rot  += @dir_sgn * dltTime
                 @right_tire_rot += @dir_sgn * dltTime
                 if relTime <= 0.2
-                    @current_position = @position.plus  @getDir().mul (relTime/0.2)/2
+                    @current_position = @position.plus @getDir().mul (relTime/0.2)/2
                 else if (relTime >= 0.8)
                     @climb_orientation = Quaternion.rotationAroundVector @dir_sgn * 90.0, new Vector 1,0,0  
                     @current_position = @position.plus @getDir().plus @getDown().mul 0.5+(relTime-0.8)/0.2/2
@@ -368,9 +393,8 @@ class Bot extends Pushable
         else
             @dir_sgn = 1
             @jump_once = false if actionId != Action.NOOP
-            # keep action chain flowing in order to detect environment changes
-            log 'startTimedAction NOOP'
-            @startTimedAction @getActionWithId(Action.NOOP), 0
+            # keep action chain flowinwg in order to detect environment changes
+            # @startTimedAction @getActionWithId(Action.NOOP), 0
     
     moveBot: () ->
         @move_action = null
@@ -413,10 +437,24 @@ class Bot extends Pushable
             @move_action.keepRest() # try to make subsequent actions smooth
             Timer.addAction @move_action
 
-    render: () ->
+        
+    #  0000000  000000000  00000000  00000000 
+    # 000          000     000       000   000
+    # 0000000      000     0000000   00000000 
+    #      000     000     000       000      
+    # 0000000      000     00000000  000      
+        
+    step: (step) ->
+        # log 'Bot.step', step
         radius     = 0.5
         tireRadius = 0.15
+        # log 'Bot.step', @current_position
+        @mesh.position.copy @current_position
+        @mesh.quaternion.copy @current_orientation
     
+        # @leftTire.rotation.copy @left_tire_rot
+        # @leftTire.rotation.copy @right_tire_rot
+
         # if (@died) @getDeadColor().glColor()
         # else       @getTireColor().glColor()
             
@@ -440,7 +478,7 @@ class Bot extends Pushable
     
         # if not @died then @getBodyColor().glColor()
     
-        @render_body()
+        # @render_body()
         
         # if (@move_action or @rotate_action) and not @died
             # unsigned now = getTime()

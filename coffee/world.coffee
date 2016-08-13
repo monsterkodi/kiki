@@ -34,13 +34,21 @@ class World extends Actor
     
     @levelList = []
     @levelDict = []
-    @speed     = 5
+    
+    @normals = [
+            new Vector 1, 0, 0
+            new Vector 0, 1, 0 
+            new Vector 0, 0, 1
+            new Vector -1,0, 0 
+            new Vector 0,-1, 0 
+            new Vector 0, 0,-1
+    ]
     
     constructor: (@view) ->
         
         super
         
-        @speed = 0.5
+        @speed = 2.0
         
         @screenSize = new Size @view.clientWidth, @view.clientHeight
         # log "view @screenSize:", @screenSize
@@ -96,9 +104,9 @@ class World extends Actor
         @cells           = [] 
         @size            = new Pos()
         @depth           = -Number.MAX_SAFE_INTEGER
-        @camera_mode     = World.CAMERA_BEHIND
+        # @camera_mode     = World.CAMERA_BEHIND
         @camera_mode     = World.CAMERA_INSIDE
-        @camera_mode     = World.CAMERA_FOLLOW
+        # @camera_mode     = World.CAMERA_FOLLOW
         @edit_projection = null
         @raster_size     = 0.1
             
@@ -476,7 +484,7 @@ class World extends Actor
 
     toggle: (objectName) ->
         # toggles object with name objectName
-        Controller.startTimedAction(@getObjectWithName(objectName).getActionWithName("toggle"))
+        @startTimedAction(@getObjectWithName(objectName).getActionWithName("toggle"))
     
     escape: (self) -> # handles an ESC key event
         
@@ -737,9 +745,18 @@ class World extends Actor
         Timer.event.triggerActions()
         Timer.event.finishActions()
         
-        @player.getProjection().apply @camera
+        @player.step step
+        @display()
         @sun.position.copy @camera.position
         @renderer.render @scene, @camera
+
+    display: () ->
+        # log "world.display #{@camera_mode}"
+        switch @camera_mode 
+            when World.CAMERA_INSIDE then @projection = @player.getProjection()
+            when World.CAMERA_BEHIND then @projection = @player.getBehindProjection()
+            when World.CAMERA_FOLLOW then @projection = @player.getFollowProjection()
+        @projection.apply @camera
 
     getTime: -> now().toFixed 0
     setSpeed: (s) -> @speed = s
@@ -825,39 +842,32 @@ class World extends Actor
         insidePos = new Vector pos
         for w in [0..5]
             planePos = new Vector -0.5, -0.5, -0.5
-            if w >= 3 then planePos.add size
-        
-            f = kRayPlaneIntersectionFactor pos, -@normals[w], planePos, @normals[w]
-            
+            if w >= 3 then planePos.add @size
+            f = Vector.rayPlaneIntersectionFactor pos, World.normals[w].neg(), planePos, World.normals[w]
             if f < delta
-                insidePos.add new Vector (delta-f)*@normals[w]
-        
+                insidePos.add World.normals[w].mul delta-f
+        log 'getInsideWallPosWithDelta', insidePos
         insidePos
     
-    # returns the distance to the next wall (positive or negative)
-    getWallDistanceForPos: (pos) ->
-        
+    getWallDistanceForPos: (pos) -> # distance to the next wall (positive or negative)
         min_f = 10000
         for w in [0..5] 
             planePos = new Vector -0.5, -0.5, -0.5
-            if w >= 3 then planePos.add size
-        
-            f = kRayPlaneIntersectionFactor pos, -@normals[w], planePos, @normals[w]
-            
+            if w >= 3 then planePos.add @size
+            f = Vector.rayPlaneIntersectionFactor pos, World.normals[w].neg(), planePos, World.normals[w]
+            log "getWallDistanceForPos #{min_f} #{f}"
             min_f = absMin min_f, f 
+        log "getWallDistanceForPos #{min_f}", pos
         min_f
     
-    # returns the distace to the next wall in direction rayDirection from rayPos (positive values only)
-    getWallDistanceForRay: (rayPos, rayDirection) ->
-        
+    getWallDistanceForRay: (rayPos, rayDirection) -> # distance to the next wall in rayDirection 
         min_f = 10000
         for w in [0..5]
-            planePos -0.5, -0.5, -0.5
-            if w >= 3 then planePos.add size
-        
-            f = kRayPlaneIntersectionFactor rayPos, rayDirection, planePos, @normals[w]
-            
+            planePos = new Vector -0.5, -0.5, -0.5
+            if w >= 3 then planePos.add @size
+            f = Vector.rayPlaneIntersectionFactor rayPos, rayDirection, planePos, World.normals[w]
             min_f = f if f >= 0.0 and f < min_f
+        log "getWallDistanceForRay #{min_f}", rayDirection
         min_f
     
     displayLights: () ->
@@ -865,24 +875,15 @@ class World extends Actor
             lignt.display()
         
     getProjection: () ->
-        log "world.getProjection #{@camera_mode}"
+        # log "world.getProjection #{@camera_mode}"
         if not @projection
             switch @camera_mode 
                 when World.CAMERA_INSIDE then @projection = @player.getProjection()     
                 when World.CAMERA_BEHIND then @projection = @player.getBehindProjection()
                 when World.CAMERA_FOLLOW then @projection = @player.getFollowProjection()
         @projection
-    
-    display: (mode) ->
-        log "display #{@mode}"
-        switch @camera_mode 
-            when World.CAMERA_INSIDE then @projection = @player.getProjection()
-            when World.CAMERA_BEHIND then @projection = @player.getBehindProjection()
-            when World.CAMERA_FOLLOW then @projection = @player.getFollowProjection()
-        @projection.apply @camera
-   
-    playSound: (sound, pos, time) ->
-        log "World.playSound #{sound} #{time}", pos 
+       
+    playSound: (sound, pos, time) -> # log "World.playSound #{sound} #{time}", pos 
     
     #   000   000  00000000  000   000
     #   000  000   000        000 000 

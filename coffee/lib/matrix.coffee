@@ -4,8 +4,9 @@
 # 000 0 000  000   000     000     000   000  000   000 000 
 # 000   000  000   000     000     000   000  000  000   000
 
-Quaternion = require './quaternion'
-Vector     = require './vector'
+log         = require '/Users/kodi/s/ko/js/tools/log'
+Quaternion  = require './quaternion'
+Vector      = require './vector'
 
 class Matrix
     
@@ -24,6 +25,7 @@ class Matrix
             when o?.x? and o?.y? and o?.z?
                 @initXYZ o.x, o.y, o.z
             else @reset()
+        log 'matrix.init', @matrix
     
     initXYZ: (x,y,z) ->  
         @matrix[0]  = x.x
@@ -304,21 +306,22 @@ class Matrix
         @matrix[12] = v.x 
         @matrix[13] = v.y
         @matrix[14] = v.z
+        # log 'Matrix.setPosition', @matrix
             
     setXVector: (v) ->
-        @matrix[0] = v[0]
-        @matrix[1] = v[1]
-        @matrix[2] = v[2]
+        @matrix[0] = v.x
+        @matrix[1] = v.y
+        @matrix[2] = v.z
         
     setYVector: (v) ->
-        @matrix[4] = v[0]
-        @matrix[5] = v[1]
-        @matrix[6] = v[2]
+        @matrix[4] = v.x
+        @matrix[5] = v.y
+        @matrix[6] = v.z
         
     setZVector: (v) ->
-        @matrix[8]  = v[0]
-        @matrix[9]  = v[1]
-        @matrix[10] = v[2]
+        @matrix[8]  = v.x
+        @matrix[9]  = v.y
+        @matrix[10] = v.z
 
     getXVector:  () -> new Vector @matrix[0], @matrix[1], @matrix[2]     
     getYVector:  () -> new Vector @matrix[4], @matrix[5], @matrix[6] 

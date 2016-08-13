@@ -65,6 +65,8 @@ class Perspective extends Matrix
         lookAt = @getLookAtPosition()
         
         # log "Perspective.apply", @matrix #camPos, up, lookAt
+        # log "Perspective.apply", camPos, up, lookAt
+        # log "Perspective.apply", new Pos(camPos), new Pos(up), new Pos(lookAt)
         
         camera.position.clone camPos #set camPos.x, camPos.y, camPos.z 
         camera.up.clone up #new THREE.Vector3 up.x, up.y, up.z
@@ -79,19 +81,19 @@ class Perspective extends Matrix
     
     setEyeDistance: (distance) ->
         lookAtPos = @getLookAtPosition()
-        @eye_distance = kMin( kMax(@znear, distance), 0.9 * @zfar );
-        setPosition lookAtPos + @eye_distance * @getZVector()
+        @eye_distance = Math.min Math.max(@znear, distance), 0.9*@zfar
+        @setPosition lookAtPos.plus @getZVector().mul @eye_distance
     
     setLookAtPosition: (lookAtPos) ->
         up       = @getYVector()
-        newLook  = (lookAtPos - @getPosition()).normal()
+        newLook  = lookAtPos.minus(@getPosition()).normal()
         newRight = up.cross(newLook).normal()
         newUp    = newLook.cross(newRight).normal()
     
         @setXVector newRight
         @setYVector newUp
         @setZVector newLook
-        
+        log 'setLookAtPosition', @matrix
         @eye_distance = lookAtPos.minus(@getPosition()).length()
     
     getLookAtPosition: -> @getZVector().mul(-@eye_distance).plus @getPosition()
@@ -112,7 +114,7 @@ class Perspective extends Matrix
         
     setViewportBorder: (l, b, r, t) ->
         @border = [l,b,r,t]
-        @updateViewport();
+        @updateViewport()
     
     setViewport: (l, b, w, h) ->
         @viewport = [l,b,w,h] 

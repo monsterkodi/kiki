@@ -39,6 +39,7 @@ class Player extends Bot
             lookDown: 'down'
             shoot:    'space'
             jump:     'command'
+            view:     'v'
 
         @look_action = null
         @look_angle  = 0.0
@@ -100,7 +101,7 @@ class Player extends Bot
     
     updatePosition: () ->
         if @move_action
-            relTime = (world.getTime() - @move_action.getStart()) / @move_action.getDuration()
+            relTime = (world.getTime() - @move_action.start) / @move_action.duration
             if relTime <= 1.0
                 switch @move_action.id
                     when Action.FORWARD
@@ -119,10 +120,10 @@ class Player extends Bot
     #   000        000   000   0000000    0000000   00000000   0000000     000     000   0000000   000   000
     
     getProjection: () ->
+        
         # smooth camera movement a little bit
         posDelta = world.getSpeed() / 10.0
         @projection.setPosition @projection.getPosition().mul(1.0 - posDelta).plus @current_position.mul posDelta
-    
         playerDir = @getCurrentDir()
         playerUp  = @current_orientation.rotate(new Vector(0,1,0)).normal()
             
@@ -131,6 +132,7 @@ class Player extends Bot
             @look_rot = Quaternion.rotationAroundVector @look_angle, @projection.getXVector()
             @projection.setYVector @look_rot.rotate playerUp 
             @projection.setZVector @look_rot.rotate playerDir.neg()
+            log 'Player.getProjection 2', @projection.matrix
         else
             # smooth camera rotation a little bit
             lookDelta = (2.0 - @projection.getZVector().dot playerDir) * world.getSpeed() / 50.0
@@ -141,6 +143,7 @@ class Player extends Bot
             @projection.setYVector playerUp
             @projection.setZVector newLookVector
             
+        # log 'Player.getProjection', @projection.getPosition()
         @projection
     
     #   0000000    00000000  000   000  000  000   000  0000000  
@@ -150,42 +153,41 @@ class Player extends Bot
     #   0000000    00000000  000   000  000  000   000  0000000  
     
     getBehindProjection: () ->
-        log 'getBehindProjection'
         @updatePosition()
     
-        playerDir = getCurrentDir()
+        playerDir = @getCurrentDir()
         playerUp  = @current_orientation.rotate(new Vector(0,1,0)).normal()
         
         # find a valid camera position
-        botToCamera = (playerUp - 2 * playerDir)
+        botToCamera = playerUp.minus playerDir.mul 2
         min_f = botToCamera.length()
         botToCamera.normalize()
         
         min_f = Math.min world.getWallDistanceForRay(@current_position, botToCamera), min_f
-        cameraPos = @current_position + kMax(min_f, 0.72) * botToCamera
+        cameraPos = @current_position.plus botToCamera.mul Math.max min_f, 0.72 
         cameraPos = world.getInsideWallPosWithDelta cameraPos, 0.2
             
         # smooth camera movement a little bit
         posDelta = 0.2
-        @projection.setPosition ((1.0 - posDelta) * @projection.getPosition() + posDelta * cameraPos)
+        @projection.setPosition @projection.getPosition().mul(1.0 - posDelta).plus cameraPos.mul posDelta
                                                                                 
         if @look_angle
-            @projection.setXVector(playerUp.cross(playerDir).normal())
-            KQuaternion look_rot = KQuaternion.rotationAroundVector(@look_angle, @projection.getXVector())
-            @projection.setYVector(look_rot.rotate(playerUp))
-            @projection.setZVector(look_rot.rotate(playerDir.neg()))
+            @projection.setXVector playerUp.cross(playerDir).normal() 
+            look_rot = Quaternion.rotationAroundVector @look_angle, @projection.getXVector() 
+            @projection.setYVector look_rot.rotate playerUp  
+            @projection.setZVector look_rot.rotate playerDir.neg()  
         else
             # smooth camera rotation a little bit
             lookDelta = 0.3
-            newLookVector = @projection.getZVector().mul((1.0 - lookDelta)).minus @playerDir.mul lookDelta
+            newLookVector = @projection.getZVector().mul(1.0 - lookDelta).minus playerDir.mul lookDelta
             newLookVector.normalize()
             
-            @projection.setZVector(newLookVector) 
-            @projection.setXVector(playerUp.cross(newLookVector).normal())
-            @projection.setYVector(newLookVector.cross(@projection.getXVector()).normal())
+            @projection.setZVector newLookVector  
+            @projection.setXVector playerUp.cross(newLookVector).normal() 
+            @projection.setYVector newLookVector.cross(@projection.getXVector()).normal() 
         
+        log 'Player.getBehindProjection', @projection.getPosition()
         @projection
-    
     
     #   00000000   0000000   000      000       0000000   000   000
     #   000       000   000  000      000      000   000  000 0 000
@@ -194,7 +196,7 @@ class Player extends Bot
     #   000        0000000   0000000  0000000   0000000   00     00
 
     getFollowProjection: () ->
-        log 'getFollowProjection'
+        
         cameraPos = @projection.getPosition()    # current camera position
         desiredDistance = 2.0            # desired distance from camera to bot
     
@@ -236,16 +238,16 @@ class Player extends Bot
             botToCamera = cameraPos.minus playerPos
             botToCameraNormal = botToCamera.normal()
     
-        rot_factor = 1.0
-        wall_distance = world.getWallDistanceForPos (playerPos + botToCamera)
+        rotFactor = 1.0
+        wall_distance = world.getWallDistanceForPos playerPos.plus botToCamera
         if wall_distance < 0.5
-            # ____________________________________________________ apiercing walls
-            if (wall_distance < 0.2)
+            # ____________________________________________________ piercing walls
+            if wall_distance < 0.2
                 cameraPos = world.getInsideWallPosWithDelta cameraPos, 0.2
                 botToCamera = cameraPos.minus playerPos
                 botToCameraNormal = botToCamera.normal()
             
-            rot_factor = 0.5 / (wall_distance-0.2)
+            rotFactor = 0.5 / (wall_distance-0.2)
     
         # ____________________________________________________ try view bot from behind
         # calculate horizontal angle between bot orientation and vector to camera
@@ -254,7 +256,7 @@ class Player extends Bot
         if botToCameraNormal.dot(playerRight) > 0
             horizontalAngle = -horizontalAngle
     
-        cameraPos = playerPos.plus Quaternion.rotationAroundVector(horizontalAngle / (rot_factor * 400.0), playerUp).rotate botToCamera
+        cameraPos = playerPos.plus Quaternion.rotationAroundVector(horizontalAngle / (rotFactor * 400.0), playerUp).rotate botToCamera
     
         botToCamera = cameraPos.minus playerPos
         botToCameraNormal = botToCamera.normal()
@@ -262,7 +264,7 @@ class Player extends Bot
         # ____________________________________________________ finally, set the position
         
         @projection.setPosition cameraPos 
-        
+        log 'cameraPos:', cameraPos
         # ____________________________________________________ refining camera orientation
         
         # slowly adjust look direction by interpolating current and desired directions
@@ -282,6 +284,7 @@ class Player extends Bot
         @projection.setZVector newLookVector
         @projection.setXVector newRightVector
         @projection.setYVector newUpVector
+        log 'Player.getFollowProjection', @projection.getPosition()
         @projection
     
     #    0000000    0000000  000000000  000   0000000   000   000
@@ -513,9 +516,7 @@ class Player extends Bot
     #     000   000  000       000  000        000      000   000     000   
     #     0000000    000  0000000   000        0000000  000   000     000   
     
-    display: () ->
-        if world.getCameraMode() != world.CAMERA_INSIDE or world.getEditMode()
-            render()
+    step: (step) -> super step
     
     getBodyColor: () ->
         if world.getCameraMode() == world.CAMERA_BEHIND

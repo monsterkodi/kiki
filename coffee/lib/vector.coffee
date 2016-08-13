@@ -109,6 +109,16 @@ class Vector
     
     isZero: -> @x == @y == @z == @w == 0
 
+    @rayPlaneIntersection: (rayPos, rayDirection, planePos, planeNormal) ->
+        x = planePos.minus(rayPos).dot(planeNormal) / rayDirection.dot(planeNormal)
+        return rayPos.plus rayDirection.mul x
+
+    @pointMappedToPlane: (point, planePos, planeNormal) ->
+        point.minus(planeNormal).dot point.minus(planePos).dot(planeNormal)
+
+    @rayPlaneIntersectionFactor: (rayPos, rayDirection, planePos, planeNormal) ->
+        planePos.minus(rayPos).dot(planeNormal) / rayDirection.dot(planeNormal)
+
     @DEG2RAD: (d) -> Math.PI*d/180.0
     @RAD2DEG: (r) -> r*180.0/Math.PI
     

@@ -94,6 +94,7 @@ class Actor extends Emitter
         
     startTimedAction: (action, duration) ->
         action.duration = duration if duration >= 0
+        log "Actor.startTimedAction #{action.name} duration: #{duration}"
         Timer.addAction action        
   
 module.exports = Actor

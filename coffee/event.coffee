@@ -23,13 +23,16 @@ class Event
     hasAction: (action) -> _.find @actions, action
     
     addAction: (action) ->
-        log "Event.addAction #{action.name}"
         if action? and not @hasAction action
+            log "Event.addAction #{action.name}"
             @actions.push action
             action.event = @
             action.init()
+        else if not action?
+            console.log 'Event.addAction no action?'
+            throw new Error
         else
-            log 'no action?', action
+            log "Event.addAction  has action #{action.name}"
     
     removeAllActions: () ->
         while @actions.length

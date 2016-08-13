@@ -245,6 +245,7 @@ class Bot extends Pushable
         actionId = action.id
     
         return if actionId == Action.NOOP or actionId == Action.SHOOT
+        log "Bot.finishAction #{actionId} #{action.name}"
         
         if actionId == Action.PUSH
             super action
@@ -260,6 +261,7 @@ class Bot extends Pushable
                 @orientation = @orientation.mul @rotate_orientation.mul @rest_orientation # update rotation matrix
                 @rotate_orientation.reset()
                 @rest_orientation.reset()
+                
         else if actionId < Action.END
             @move_action = null
     
@@ -285,34 +287,40 @@ class Bot extends Pushable
     
     actionFinished: (action) ->
         actionId = action.id
+        log "bot.actionFinished #{action.name} #{actionId}"
     
-        if not @died 
-            @die() 
-            if actionId != Action.PUSH and actionId != Action.FALL
-                # dead player may only fall, nothing else
-                return
+        # if @isDead()
+            # log "DIE!"
+            # @die() 
+            # if actionId != Action.PUSH and actionId != Action.FALL
+                # # dead player may only fall, nothing else
+                # return
         
         if @spiked
+            log 'spiked!'
             @move_action = null
             @startTimedAction @getActionWithId(Action.NOOP), 0
             return
     
         if actionId == Action.PUSH or not @direction.isZero()
+            log 'super action!'
             super action
             return
     
-        return if @move_action # action was not a move action -> return
+        if @move_action # action was not a move action -> return
+            log 'action was not a move action -> return'
+            return 
         
         # find next action depending on type of finished action and surrounding environment
         if actionId == Action.JUMP_FORWARD
-            
-            forwardPos = @position + @getDir()
-            if world.isUnoccupiedPos forwardPos  
+            forwardPos = @position.plus @getDir()
+            log 'jump forwardPos', forwardPos
+            if world.isUnoccupiedPos forwardPos
                 # forward will be empty
                 if world.isUnoccupiedPos forwardPos.minus @getUp()  
                     # below forward will also be empty
                     @move_action = @getActionWithId Action.FALL_FORWARD
-                    @move_action.takeRest (action)
+                    @move_action.takeRest action
                 else
                     @move_action = @getActionWithId Action.FORWARD
                     world.playSound 'BOT_LAND', @getPos(), 0.25 
@@ -321,7 +329,8 @@ class Bot extends Pushable
                     @move_action = @getActionWithId Action.CLIMB_UP
                     world.playSound 'BOT_LAND', @getPos(), 0.5
         else if world.isUnoccupiedPos @position.minus @getUp()  # below will be empty
-            if move # sticky if moving
+            log 'below will be empty'
+            if @move # sticky if moving
                 if world.isUnoccupiedPos @position.plus @getDir() 
                     # forward will be empty 
                     if world.isOccupiedPos @position.plus @getDir().minus @getUp()
@@ -335,26 +344,32 @@ class Bot extends Pushable
                         @move_action = @getActionWithId Action.CLIMB_UP
             
             if @move_action == null
+                log 'fall!'
                 @move_action = @getActionWithId Action.FALL
                 @move_action.takeRest action
+                
         else if actionId == Action.FALL or actionId == Action.FALL_FORWARD # landed
+            log 'fall|forward!'
             if @ == world.player
                 world.playSound 'BOT_LAND'
             else
                 world.playSound 'BOT_LAND', @getPos()
         
         if @move_action
+            log 'move_action!'
             Timer.addAction @move_action
             return
         
         return if @rotate_action 
         
         if @move
+            log '!move'
             @moveBot()
         else
-            @dir_sgn = 1.0
-            if actionId != Action.NOOP then @jump_once = false
+            @dir_sgn = 1
+            @jump_once = false if actionId != Action.NOOP
             # keep action chain flowing in order to detect environment changes
+            log 'startTimedAction NOOP'
             @startTimedAction @getActionWithId(Action.NOOP), 0
     
     moveBot: () ->

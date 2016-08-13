@@ -54,11 +54,11 @@ class Event
     triggerActions: () ->
         return if not @actions.length
         @time = world.getTime()
-        log 'trigger actions', @time, @actions.length
+        # log 'trigger actions', @time, @actions.length
         @save_actions = _.clone @actions
         while @save_actions.length
             action = last @save_actions
-            log "performAction #{action.name}" 
+            # log "performAction #{action.name}" if action.name != 'noop'
             action.performWithEvent @
             if @save_actions.length and action == last @save_actions
                 @save_actions.pop()
@@ -69,9 +69,13 @@ class Event
     
     finishActions: () ->
         while @finished_actions.length
-            action = last @finished_actions
-            action.finished()
-            if @finished_actions.length and action == last @finished_actions
-                @finished_actions.pop()
+            log "Event.finishActions pop:#{@finished_actions.length}", last(@finished_actions).name
+            @finished_actions.pop().finished()
+            # action = last @finished_actions
+            # action.finished()
+            # if @finished_actions.length and action == last @finished_actions
+                # log 'pop finished'
+                # @finished_actions.pop()
+        # log "Event.finishActions actions:#{@actions.length}" if @actions.length > 1 or @actions[0]?.name != 'noop'
         
 module.exports = Event

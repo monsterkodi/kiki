@@ -10,6 +10,7 @@ Bot    = require './bot'
 Action = require './action'
 Timer  = require './timer'
 Vector = require './lib/vector'
+Quaternion = require './lib/quaternion'
 Perspective = require './perspective'
 
 forward_key    = "UP"
@@ -433,12 +434,12 @@ class Player extends Bot
             return keyHandled()
         
         if combo == @key.push
-            push = true
+            @push = true
             return keyHandled()
         
         if combo == @key.shoot
-            if not shoot
-                shoot = true
+            if not @shoot
+                @shoot = true
                 Timer.addAction @getActionWithId Action.SHOOT
             return keyHandled()
         
@@ -469,18 +470,18 @@ class Player extends Bot
             
         if combo == @key.shoot
             Timer.removeAction @getActionWithId Action.SHOOT
-            shoot = false
+            @shoot = false
             return releaseHandled()
         
         if combo == @key.forward or combo == @key.backward
-            move = false
+            @move = false
             return releaseHandled()
         
         if key.name == @key.jump
-            jump = false
-            if jump_once
+            @jump = false
+            if @jump_once
                 if @move_action == null and world.isUnoccupiedPos position.plus @getUp()
-                    jump_once = false
+                    @jump_once = false
                     @move_action = @getActionWithId Action.JUMP
                     world.playSound 'BOT_JUMP'
                     Timer.addAction @move_action

@@ -40,7 +40,7 @@ class World extends Actor
         
         super
         
-        @speed = 5
+        @speed = 0.5
         
         @screenSize = new Size @view.clientWidth, @view.clientHeight
         # log "view @screenSize:", @screenSize

@@ -14,18 +14,18 @@ class Timer
     @init: -> 
         @eventID = world.addEventWithName 'timer'
         @event   = world.getEventWithId @eventID
-        log "Timer.@init @eventID:#{@eventID} #{@event.name}"
+        log "Timer.init @eventID:#{@eventID} #{@event.name}"
     
     @removeActionsOfObject: (o) -> 
-        log "removeActionsOfObject"
+        log "Timer.removeActionsOfObject"
         @event.removeActionsOfObject o
         
     @addAction:    (a) -> 
-        log "addAction #{a.name}"
+        log "Timer.addAction #{a.name}"
         @event.addAction a
         
     @removeAction: (a) -> 
-        log "removeAction #{a.name}"
+        log "Timer.removeAction #{a.name}"
         @event.removeAction a
         
 module.exports = Timer

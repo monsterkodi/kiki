@@ -5,18 +5,20 @@
 #   000     000     000       000 0 000
 #   000     000     00000000  000   000
 
-log    = require '/Users/kodi/s/ko/js/tools/log'
-Actor  = require './actor'
-Vector = require './lib/vector'
-Quat   = require './lib/quaternion'
-Pos    = require './lib/pos'
+log        = require '/Users/kodi/s/ko/js/tools/log'
+Actor      = require './actor'
+Pos        = require './lib/pos'
+Vector     = require './lib/vector'
+Quaternion = require './lib/quaternion'
 
 class Item extends Actor
 
     constructor: ->
         super
-        @move_action = null
-        @direction   = new Vector
+        @position         = new Vector
+        @current_position = new Vector
+        @direction        = new Vector
+        @move_action      = null
 
     del: -> 
         world.removeObject @
@@ -40,7 +42,7 @@ class Item extends Actor
     # getOrientation: -> @orientation
     # getCurrentPosition: -> @current_position
     # getCurrentOrientation: -> @current_orientation
-    setOrientation: (q) -> @current_orientation = @orientation = new Quat q
+    setOrientation: (q) -> @current_orientation = @orientation = new Quaternion q
     setCurrentPosition: (p) -> @current_position = p
     setCurrentOrientation: (q) -> @current_orientation = q
     

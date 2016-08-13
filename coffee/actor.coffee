@@ -52,27 +52,32 @@ class Actor extends Emitter
         
     del: -> @deleteActions()
 
-    deleteActions: -> last(@actions).del() while @actions.length
+    deleteActions: -> 
+        a?.del() for a in @actions
+        @actions = []
             
-    removeAction: (action) -> _.pull @actions, action
+    removeAction: (action) -> @actions[action.id] = null
  
     getActionWithId: (actionId) ->
-        if actionId < @actions.length and @actions[actionId].id == actionId
-            return @actions[actionId]
-    
-        # to be deleted...
-        log "[WARNING] Actor.getActionWithId #{actionId} [#{@actions.length}]", (a.id for a in @actions)
-        for a in @actions
-            return a if a.id == actionId
+        if @actions[actionId]?.id? and @actions[actionId].id != actionId
+            throw new Error
+        @actions[actionId]
+        # if actionId < @actions.length and @actions[actionId].id == actionId
+            # return @actions[actionId]
+#     
+        # # to be deleted...
+        # log "[WARNING] Actor.getActionWithId #{actionId} [#{@actions.length}]", (a?.id for a in @actions)
+        # for a in @actions
+            # return a if a?.id == actionId
 
-    getActionWithName: (name) ->
+    getActionWithName: (name) -> 
         for a in @actions
-            return a if action.name = name
+            return a if a?.name == name 
 
     initAction: ->
     performAction: ->
-    finishAction: ->
-    actionFinished: ->
+    finishAction: -> log "actor.finishAction not implemented? #{@name}"
+    actionFinished: -> log 'actor.actionFinished not implemented? #{@name}'
        
     #   000000000  000  00     00  00000000  00000000 
     #      000     000  000   000  000       000   000

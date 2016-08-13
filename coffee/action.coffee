@@ -48,20 +48,22 @@ class Action
         @mode       = m
         @duration   = d
         @event      = null
-        @delete_flag_ptr = false
+        @deleted    = false
         @reset()
 
     del: ->
-        if @event           then @event.removeAction @
-        if @object          then @object.removeAction @
-        if @delete_flag_ptr then @delete_flag_ptr = true
+        log "Action.del #{@name} #{@event?} #{@object?}"
+        if @event?  then @event.removeAction @
+        if @object? then @object.removeAction @
+        @deleted = true
 
     init: () ->    @object.initAction @
     perform: () -> @object.performAction @
     finish: () ->  @object.finishAction @
     finished: () -> 
+        log "Action.finished #{@name} #{@object?.actionFinished?}"
         @object.actionFinished @
-        return if @delete_flag_ptr
+        return if @deleted
     
         if @current == @getDuration() # if keepRest wasn't called -> reset start and current values
             @reset()
@@ -89,7 +91,7 @@ class Action
 
     performWithEvent: (event) ->
         eventTime = event.getTime()
-        log "action.performWithEvent #{@name} eventTime #{eventTime}"
+        # log "action.performWithEvent #{@name} eventTime #{eventTime}" if @name != 'noop'
         if @start == 0
             @start   = eventTime
             @current = 0

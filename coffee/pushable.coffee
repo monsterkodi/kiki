@@ -40,10 +40,12 @@ class Pushable extends Item
                 @setCurrentPosition @position + action.getRelativeTime() * @direction
 
     finishAction: (action) ->
+        log "Pushable.finishAction #{action.name}"
         switch action.id
             when Action.PUSH, Action.FALL
                 @move_action = null
                 world.objectMovedFromPos @, @position
+                log "Pushable.finishAction setPosition #{@current_position}"
                 @setPosition @current_position
 
     actionFinished: (action) ->

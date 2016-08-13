@@ -34,7 +34,7 @@ class World
     constructor: (@view) -> 
         
         @screenSize = new Size @view.clientWidth, @view.clientHeight
-        log "view @screenSize #{@screenSize}"
+        log "view @screenSize:", @screenSize
         
         @renderer = new THREE.WebGLRenderer 
             antialias:              true
@@ -113,7 +113,13 @@ class World
         @cage.translateY @size.y/2-0.5 
         @cage.translateZ @size.z/2-0.5
         @scene.add @cage
-#         
+        
+        # l = @raster_size/2.0
+        # t = 1.0 - l
+        # for w in [0..width]
+            # for h in [0..height]
+                # log 'wall:', w+l, h+l, w+t, h+t
+
     @init: (view) ->
         return if world?
                 
@@ -539,7 +545,6 @@ class World
         if not cell?
             cell = new Cell()
             @cells[@posToIndex(pos)] = cell
-            log "world.setObjectAtPos new cell", cell
         
         object.setPosition pos
         cell.addObject object
@@ -568,7 +573,6 @@ class World
 
     addObjectAtPos: (object, x, y, z) ->
         pos = new Pos x, y, z
-        log "world.addObjectAtPos", pos
         object = @newObject object
         @setObjectAtPos object, pos
         @addObject object
@@ -844,19 +848,7 @@ class World
     displayLights: () ->
         for light in @lights
             lignt.display()
-    
-    displayWall: (width, height) ->
-        l = @raster_size/2.0
-        t = 1.0 - l
-    
-        # if flags[DISPLAY_RASTER] == false
-            # l = 0.0; t = 1.0
         
-        glNormal3f 0.0, 0.0, 1.0 
-        for w in [0..width]
-            for h in [0..height]
-                glRectf w+l, h+l, w+t, h+t
-    
     getProjection: () ->
         log "world.getProjection #{@camera_mode}"
         if not @projection
@@ -867,13 +859,23 @@ class World
         @projection
     
     display: (mode) ->
+        log "display #{@mode}"
         switch @camera_mode 
             when World.CAMERA_INSIDE then @projection = @player.getProjection()
             when World.CAMERA_BEHIND then @projection = @player.getBehindProjection()
             when World.CAMERA_FOLLOW then @projection = @player.getFollowProjection()
+        @projection.apply @camera
     
-        @player_projection = @projection
-        
-        @projection.initProjection()
+    #   000   000  00000000  000   000
+    #   000  000   000        000 000 
+    #   0000000    0000000     00000  
+    #   000  000   000          000   
+    #   000   000  00000000     000   
     
+    modKeyComboEventUp: (mod, key, combo, event) ->
+        @player?.modKeyComboEventUp mod, key, combo, event
+
+    modKeyComboEventDown: (mod, key, combo, event) ->
+        @player?.modKeyComboEventDown mod, key, combo, event
+
 module.exports = World

@@ -4,6 +4,7 @@
 # 000   000  000   000     000   
 # 0000000     0000000      000   
 
+log      = require '/Users/kodi/s/ko/js/tools/log'
 Pushable = require './pushable'
 Action   = require './action'
 Timer    = require './timer'
@@ -123,14 +124,14 @@ class Bot extends Pushable
             when Action.JUMP_FORWARD then newPos += @getUp()   + @getDir()
             when Action.FALL_FORWARD then newPos += @getDown() + @getDir()
             when Action.FALL
-                if @direction != KVector()
-                    KikiPushable.initAction action 
+                if not @direction.isZero()
+                    super action 
                     return
                 else
                     newPos += @getDown()        
                 break
             else
-                KikiPushable.initAction (action)
+                super action
                 return
     
         # if newPos != @position
@@ -144,7 +145,7 @@ class Bot extends Pushable
         switch actionId
             when Action.SHOOT
                 if relTime == 0
-                    KikiBullet.shootFromBot (@)
+                    Bullet.shootFromBot @
                 
             when Action.NOOP then return
             
@@ -175,8 +176,8 @@ class Bot extends Pushable
     
             when Action.FALL
         
-                if @direction != KVector()
-                    KikiPushable.performAction action
+                if not @direction.isZero()
+                    super action
                     return
                 @current_position = @position + relTime * @getDown()
                 return
@@ -185,7 +186,7 @@ class Bot extends Pushable
         
                 @left_tire_rot  += dir_sgn * dltTime/2
                 @right_tire_rot += dir_sgn * dltTime/2
-                @climb_orientation = KQuaternion.rotationAroundVector(dir_sgn * relTime * -90.0, KVector(1,0,0))
+                @climb_orientation = Quaternion.rotationAroundVector(dir_sgn * relTime * -90.0, KVector(1,0,0))
                 break
             
             when Action.CLIMB_DOWN
@@ -195,10 +196,10 @@ class Bot extends Pushable
                 if relTime <= 0.2
                     @current_position = @position + (relTime/0.2)/2 * @getDir()
                 else if (relTime >= 0.8)
-                    @climb_orientation = KQuaternion.rotationAroundVector(dir_sgn * 90.0, KVector(1,0,0))
+                    @climb_orientation = Quaternion.rotationAroundVector(dir_sgn * 90.0, KVector(1,0,0))
                     @current_position = @position + @getDir() + (0.5+(relTime-0.8)/0.2/2) * @getDown()
                 else
-                    @climb_orientation = KQuaternion.rotationAroundVector(dir_sgn * (relTime-0.2)/0.6 * 90.0, KVector(1,0,0))
+                    @climb_orientation = Quaternion.rotationAroundVector(dir_sgn * (relTime-0.2)/0.6 * 90.0, KVector(1,0,0))
                     rotVec = (orientation * @climb_orientation).rotate(KVector(0.0, 1.0, 0.0))
                     @current_position = @position.plus @getDir().plus(@getDown()).plus(rotVec).mul 0.5
                 break
@@ -208,25 +209,25 @@ class Bot extends Pushable
                 if @move_action == null and relTime == 0.0 # if not performing move action and start of rotation
                     # update @orientation now, so next move action will move in desired @direction
                     if actionId == Action.TURN_LEFT
-                        @orientation *= KQuaternion.rotationAroundVector(90.0, KVector(0,1,0))
-                        @rest_orientation = KQuaternion.rotationAroundVector(-90.0, KVector(0,1,0))
+                        @orientation *= Quaternion.rotationAroundVector(90.0, KVector(0,1,0))
+                        @rest_orientation = Quaternion.rotationAroundVector(-90.0, KVector(0,1,0))
                     else
-                        @orientation *= KQuaternion.rotationAroundVector(-90.0, KVector(0,1,0))
-                        @rest_orientation = KQuaternion.rotationAroundVector(90.0, KVector(0,1,0))
+                        @orientation *= Quaternion.rotationAroundVector(-90.0, KVector(0,1,0))
+                        @rest_orientation = Quaternion.rotationAroundVector(90.0, KVector(0,1,0))
     
                 if actionId == Action.TURN_LEFT
                     @left_tire_rot  += -dltTime
                     @right_tire_rot +=  dltTime
-                    @rotate_orientation = KQuaternion.rotationAroundVector(relTime * 90.0, KVector(0,1,0))
+                    @rotate_orientation = Quaternion.rotationAroundVector(relTime * 90.0, KVector(0,1,0))
                 else
                     @left_tire_rot  +=  dltTime
                     @right_tire_rot += -dltTime
-                    @rotate_orientation = KQuaternion.rotationAroundVector(relTime * -90.0, KVector(0,1,0))
+                    @rotate_orientation = Quaternion.rotationAroundVector(relTime * -90.0, KVector(0,1,0))
                 break
             
             else
                 
-                KikiPushable.performAction action
+                super action
                 return
         
         @current_orientation =  @orientation * @climb_orientation * @rotate_orientation * @rest_orientation
@@ -238,7 +239,7 @@ class Bot extends Pushable
         return if actionId == Action.NOOP or actionId == Action.SHOOT
         
         if actionId == Action.PUSH
-            KikiPushable.finishAction action
+            super action
             return
         
         if actionId == Action.TURN_LEFT or actionId == Action.TURN_RIGHT
@@ -260,11 +261,11 @@ class Bot extends Pushable
             if @rotate_action and actionId != Action.JUMP_FORWARD # bot is currently performing a rotation ->
                 # take over result of rotation to prevent sliding
                 if @rotate_action.id == Action.TURN_LEFT
-                    @orientation *= KQuaternion.rotationAroundVector(90.0, KVector(0,1,0)) * @rest_orientation
-                    @rest_orientation = KQuaternion.rotationAroundVector(-90.0, KVector(0,1,0))
+                    @orientation *= Quaternion.rotationAroundVector(90.0, KVector(0,1,0)) * @rest_orientation
+                    @rest_orientation = Quaternion.rotationAroundVector(-90.0, KVector(0,1,0))
                 else
-                    @orientation *= KQuaternion.rotationAroundVector(-90.0, KVector(0,1,0)) * @rest_orientation
-                    @rest_orientation = KQuaternion.rotationAroundVector(90.0, KVector(0,1,0))
+                    @orientation *= Quaternion.rotationAroundVector(-90.0, KVector(0,1,0)) * @rest_orientation
+                    @rest_orientation = Quaternion.rotationAroundVector(90.0, KVector(0,1,0))
         
             if actionId != Action.CLIMB_UP
                 world.objectMovedFromPos @, @position # update world @position
@@ -290,7 +291,7 @@ class Bot extends Pushable
             return
     
         if actionId == Action.PUSH or @direction != KVector()
-            KikiPushable.actionFinished (action)
+            super action
             return
     
         return if @move_action # action was not a move action -> return
@@ -336,27 +337,27 @@ class Bot extends Pushable
                 playSoundAtPos KikiSound.BOT_LAND, @getPos() 
         
         if @move_action
-            timer_event.addAction @move_action
+            Timer.addAction @move_action
             return
         
         return if @rotate_action 
         
-        if move
+        if @move
             @moveBot()
         else
             dir_sgn = 1.0
             if actionId != Action.NOOP then jump_once = false
             # keep action chain flowing in order to detect environment changes
-            startTimedAction getActionWithId(Action.NOOP), 0
+            @startTimedAction @getActionWithId(Action.NOOP), 0
     
     moveBot: () ->
         @move_action = null
          
-        KikiPos forwardPos = @position + @getDir()
+        forwardPos = @position.plus @getDir()
         
-        if jump or jump_once and                 # jump mode or jump activated while moving
-            dir_sgn == 1.0 and                     # and moving forward
-                world.isUnoccupiedPos position.plus @getUp()  # and above empty
+        if @jump or @jump_once and                 # jump mode or jump activated while moving
+            @dir_sgn == 1.0 and                     # and moving forward
+                world.isUnoccupiedPos @position.plus @getUp()  # and above empty
                     if world.isUnoccupiedPos forwardPos.plus @getUp()  and
                         world.isUnoccupiedPos forwardPos  # forward and above forward also empty
                             @move_action = @getActionWithId Action.JUMP_FORWARD
@@ -370,7 +371,7 @@ class Bot extends Pushable
                 @move_action = @getActionWithId Action.FORWARD
         else # forward is not empty
             moveAction = @getActionWithId Action.FORWARD
-            if push and world.mayObjectPushToPos @, forwardPos, moveAction.getDuration()
+            if @push and world.mayObjectPushToPos @, forwardPos, moveAction.getDuration()
                 moveAction.reset()
                 # player in push mode and pushing object is possible
                 if world.isUnoccupiedPos forwardPos.plus @getDown()  # below forward is empty
@@ -381,13 +382,14 @@ class Bot extends Pushable
                 @move_action = @getActionWithId Action.CLIMB_UP
         
         # reset the jump once flag (either we jumped or it's not possible to jump at current @position)
-        jump_once = false 
+        @jump_once = false 
     
-        if move_action
+        if @move_action
             @move_action.keepRest() # try to make subsequent actions smooth
-            timer_event.addAction @move_action
+            Timer.addAction @move_action
 
     getCurrentDir: -> @current_orientation.rotate(new Vector(0,0,1)).normal()
+    getDir: -> @dir_sgn * @orientation.rotate new Vector 0,0,1 
 
     render: () ->
         radius     = 0.5

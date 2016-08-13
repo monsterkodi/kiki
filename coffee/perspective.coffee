@@ -58,8 +58,6 @@ class Perspective extends Matrix
         
         @setPosition savePos.plus @getZVector().mul @eye_distance
 
-    initProjection: -> @apply()
-
     apply: (camera) ->
             
         camPos = @getPosition()

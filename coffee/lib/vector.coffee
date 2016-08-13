@@ -102,6 +102,8 @@ class Vector
     reset: ->
         @x = @y = @z = @w = 0
         @
+    
+    isZero: -> @x == @y == @z == 0
 
     # glTranslate: () -> glTranslatef @x,@y,@z  
 

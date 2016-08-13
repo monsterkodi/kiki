@@ -38,7 +38,7 @@ class Player extends Bot
             lookUp:   'up'
             lookDown: 'down'
             shoot:    'space'
-            jump:     'command'
+            jump:     'j'
             view:     'v'
 
         @look_action = null
@@ -62,43 +62,7 @@ class Player extends Bot
         
         # @projection.getLight().setCutoff 90.0
         # @projection.getLight().setAttenuation 1.0, 0.0, 0.05
-    
-    # getActionForKey: (keyName) ->
-        # index = 0
-        # while actionKeyMapping[index].actionName
-            # if keyName == actionKeyMapping[index].keyName
-                # return actionKeyMapping[index].actionName
-            # index += 1
-        # return ''
-#     
-    # getKeyForAction: (actionName) ->
-        # index = 0
-        # while actionKeyMapping[index].actionName
-            # if actionName == actionKeyMapping[index].actionName
-                # return actionKeyMapping[index].keyName
-            # index += 1
-        # return ''
-#     
-    # setKeyForAction: (keyName, actionName) ->
-        # index = 0
-        # while actionKeyMapping[index].actionName
-            # if actionName == actionKeyMapping[index].actionName
-                # actionKeyMapping[index].keyName = keyName
-            # index += 1
-    
-    # recordKeyForAction: (actionName) ->
-        # RecordingActionName = actionName
-        # KeyRecorder.startRecordingSequence @, @setRecordedKey, 1
-#     
-    # setRecordedKey: (keyName) ->
-        # index = 0
-        # while actionKeyMapping[index].actionName
-            # if keyName == actionKeyMapping[index].keyName and actionKeyMapping[index].actionName != RecordingActionName
-                # setKeyForAction "", actionKeyMapping[index].actionName
-            # index += 1
-        # setKeyForAction keyName, RecordingActionName
-        # getEventWithName("keyset").triggerActions()
-    
+        
     updatePosition: () ->
         if @move_action
             relTime = (world.getTime() - @move_action.start) / @move_action.duration
@@ -365,14 +329,12 @@ class Player extends Bot
                     Timer.addAction @rotate_action
     
     die: () ->
-        # Controller.removeKeyHandler @
         super
         # Controller.displayText "game over" 
         world.playSound 'BOT_DEATH'
         world.setCameraMode world.CAMERA_FOLLOW
     
     reborn: () ->
-        # Controller.addKeyHandler @
         @died = false
     
     reset: () ->
@@ -384,20 +346,6 @@ class Player extends Bot
         @new_dir_sgn = 1.0
         @rotate      = 0
         
-        # @recorder    = null
-        # @playback    = null
-    
-    # saveRecorder: () ->
-        # if @recorder
-            # @recorder.save()
-            # @recorder = null
-#     
-    # startRecorder: (file) ->
-        # if @recorder
-            # saveRecorder()
-        # @recorder = new KikiRecorder file 
-
-    
     #   000   000  00000000  000   000
     #   000  000   000        000 000 
     #   0000000    0000000     00000  
@@ -406,56 +354,48 @@ class Player extends Bot
         
     modKeyComboEventDown: (mod, key, combo, event) ->
         # log "player.modKeyComboEventDown mod:#{mod} key:#{key} combo:#{combo}"
-        keyHandled = -> 
-            # @recorder?.recordKey combo
-            true
-        if combo == @key.forward or combo == @key.backward
-            # log 'move!'
-            @move = true # try to move as long as the key is not released
+        switch combo
+            when @key.forward, @key.backward
+                @move = true # try to move as long as the key is not released
+                if not @move_action?
+                    @new_dir_sgn = @dir_sgn = (combo == @key.backward) and -1 or 1 
+                    @moveBot() # perform new move action (depending on environment)
+                else
+                    @new_dir_sgn = (combo == @key.backward) and -1 or 1
+                return true
+        
+            when @key.left, @key.right
+                @rotate = (combo == @key.left) and Action.TURN_LEFT or Action.TURN_RIGHT
+                if not @rotate_action? and not @spiked # player is not performing a rotation and unspiked
+                    @rotate_action = @getActionWithId @rotate
+                    Timer.addAction @rotate_action
+                return true
             
-            if @move_action == null # player is currently not performing a move action
-                # forward or backward direction
-                @new_dir_sgn = @dir_sgn = (combo == @key.backward) and -1 or 1 
-                @moveBot() # perform new move action (depending on environment)
-            else
-                @new_dir_sgn = (combo == @key.backward) and -1 or 1
+            when @key.jump
+                @jump = true # switch to jump mode until jump_key released
+                @jump_once = true
+                return true
             
-            return keyHandled()
-        
-        if combo == @key.left or combo == @key.right
-            @rotate = (combo == @key.left) and Action.TURN_LEFT or Action.TURN_RIGHT
+            when @key.push
+                @push = true
+                return true
             
-            if @rotate_action == null and not @spiked # player is not performing a rotation and unspiked
-                @rotate_action = @getActionWithId @rotate
-                Timer.addAction @rotate_action
+            when @key.shoot
+                if not @shoot
+                    @shoot = true
+                    Timer.addAction @getActionWithId Action.SHOOT
+                return true
             
-            return keyHandled()
-        
-        if combo == @key.jump
-            @jump = true # switch to jump mode until jump_key released
-            @jump_once = true
-            return keyHandled()
-        
-        if combo == @key.push
-            @push = true
-            return keyHandled()
-        
-        if combo == @key.shoot
-            if not @shoot
-                @shoot = true
-                Timer.addAction @getActionWithId Action.SHOOT
-            return keyHandled()
-        
-        if combo == @key.lookUp or combo == @key.lookDown
-            if not @look_action
-                @look_action = @getActionWithId (combo == @key.lookUp) and Action.LOOK_UP or Action.LOOK_DOWN
-                @look_action.reset()
-                Timer.addAction @look_action
-            return keyHandled()
-        
-        if combo == @key.view
-            world.changeCameraMode()
-            return keyHandled()
+            when @key.lookUp, @key.lookDown
+                if not @look_action
+                    @look_action = @getActionWithId (combo == @key.lookUp) and Action.LOOK_UP or Action.LOOK_DOWN
+                    @look_action.reset()
+                    Timer.addAction @look_action
+                return true
+            
+            when @key.view
+                world.changeCameraMode()
+                return true
         
         false
     
@@ -467,46 +407,43 @@ class Player extends Bot
     
     modKeyComboEventUp: (mod, key, combo, event) ->
         # log "player.modKeyComboEventUp mod:#{mod} key:#{key} combo:#{combo}"
-        releaseHandled = ->
-            # @recorder?.recordKeyRelease combo
-            true
+        switch combo    
+            when @key.shoot
+                Timer.removeAction @getActionWithId Action.SHOOT
+                @shoot = false
+                return true
             
-        if combo == @key.shoot
-            Timer.removeAction @getActionWithId Action.SHOOT
-            @shoot = false
-            return releaseHandled()
-        
-        if combo == @key.forward or combo == @key.backward
-            @move = false
-            return releaseHandled()
-        
-        if key.name == @key.jump
-            @jump = false
-            if @jump_once
-                if @move_action == null and world.isUnoccupiedPos position.plus @getUp()
-                    @jump_once = false
-                    @move_action = @getActionWithId Action.JUMP
-                    world.playSound 'BOT_JUMP'
-                    Timer.addAction @move_action
-            return releaseHandled()
-        
-        if combo == @key.left or combo == @key.right
-            @rotate = 0
-            return releaseHandled()
-        
-        if key.name == @key.push
-            @push = false
-            return releaseHandled()
-        
-        if combo == @key.lookDown or combo == @key.lookUp
-            if @look_action and @look_action.id != Action.LOOK_RESET
-                Timer.removeAction @look_action
-            @look_action = @getActionWithId Action.LOOK_RESET
-            Timer.addAction @look_action
-            return releaseHandled()
-        
-        if combo == @key.view 
-            return releaseHandled()
+            when @key.forward, @key.backward
+                @move = false
+                return true
+            
+            when @key.jump
+                @jump = false
+                if @jump_once
+                    if not @move_action? and world.isUnoccupiedPos @position.plus @getUp()
+                        @jump_once = false
+                        @move_action = @getActionWithId Action.JUMP
+                        world.playSound 'BOT_JUMP'
+                        Timer.addAction @move_action
+                return releaseHandled()
+            
+            when @key.left, @key.right
+                @rotate = 0
+                return true
+            
+            when @key.push
+                @push = false
+                return releaseHandled()
+            
+            when @key.lookDown, @key.lookUp
+                if @look_action and @look_action.id != Action.LOOK_RESET
+                    Timer.removeAction @look_action
+                @look_action = @getActionWithId Action.LOOK_RESET
+                Timer.addAction @look_action
+                return true
+            
+            when @key.view 
+                return true
             
         false
     

@@ -11,6 +11,8 @@ class Action
     
     @NOOP         = 0
     @PUSH         = 1
+    @EXPLODE      = 1
+    @FLY          = 2
     @FALL         = 2
     @FORWARD      = 3
     @CLIMB_UP     = 4
@@ -21,10 +23,9 @@ class Action
     @JUMP_FORWARD = 9
     @FALL_FORWARD = 10
     @SHOOT        = 11
-    @END          = 12
-    @LOOK_UP      = 13
-    @LOOK_DOWN    = 14
-    @LOOK_RESET   = 15
+    @LOOK_UP      = 12
+    @LOOK_DOWN    = 13
+    @LOOK_RESET   = 14
     
     @ONCE       = 0
     @CONTINUOUS = 1

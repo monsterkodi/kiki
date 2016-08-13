@@ -50,10 +50,7 @@ class Kiki extends Stage
         
     resized: (w,h) -> @world.resized w, h
 
-    modKeyComboEventDown: (mod, key, combo, event) -> 
-        world.modKeyComboEventDown mod, key, combo, event
-
-    modKeyComboEventUp:   (mod, key, combo, event) -> 
-        world.modKeyComboEventUp   mod, key, combo, event
+    modKeyComboEventDown: (mod, key, combo, event) -> world.modKeyComboEventDown mod, key, combo, event
+    modKeyComboEventUp:   (mod, key, combo, event) -> world.modKeyComboEventUp   mod, key, combo, event
         
 module.exports = Kiki

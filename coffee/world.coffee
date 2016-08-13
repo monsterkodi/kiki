@@ -745,7 +745,7 @@ class World extends Actor
         Timer.event.triggerActions()
         Timer.event.finishActions()
         
-        @player.step step
+        o.step?(step) for o in @objects
         @display()
         @sun.position.copy @camera.position
         @renderer.render @scene, @camera

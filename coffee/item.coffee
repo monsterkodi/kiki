@@ -15,12 +15,14 @@ class Item extends Actor
 
     constructor: ->
         super
+        world.scene.add @mesh if @mesh?
         @position         = new Vector
         @current_position = new Vector
         @direction        = new Vector
         @move_action      = null
 
     del: -> 
+        world.scene.remove @mesh if @mesh?
         world.removeObject @
         @emit 'deleted'
         

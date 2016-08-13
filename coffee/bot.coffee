@@ -4,20 +4,19 @@
 # 000   000  000   000     000   
 # 0000000     0000000      000   
 
-log      = require '/Users/kodi/s/ko/js/tools/log'
-Pushable = require './pushable'
-Action   = require './action'
-Timer    = require './timer'
-Pos      = require './lib/pos'
-Vector   = require './lib/vector'
+log        = require '/Users/kodi/s/ko/js/tools/log'
+Pushable   = require './pushable'
+Action     = require './action'
+Timer      = require './timer'
+Bullet     = require './bullet'
+Pos        = require './lib/pos'
+Vector     = require './lib/vector'
 Quaternion = require './lib/quaternion'
 
 class Bot extends Pushable
     
     constructor: () ->
-        
-        super 
-        
+                
         @direction           = new Quaternion
         @orientation         = new Quaternion
         @current_orientation = new Quaternion
@@ -29,18 +28,17 @@ class Bot extends Pushable
         
         geom = new THREE.SphereGeometry 0.5, 32, 32 
         mat  = new THREE.MeshPhongMaterial 
-            color:          0x222288
+            color:          0x222266
             side:           THREE.FrontSide
             shading:        THREE.SmoothShading
             transparent:    true
             opacity:        0.9
             shininess:      0.99
         @mesh = new THREE.Mesh geom, mat
-        world.scene.add @mesh
 
         geom = new THREE.TorusGeometry 0.5, tireRadius, 16, 16
         mat  = new THREE.MeshPhongMaterial 
-            color:          0x000044
+            color:          0x111155
             side:           THREE.FrontSide
             shading:        THREE.SmoothShading
             transparent:    true
@@ -78,6 +76,8 @@ class Bot extends Pushable
         
         @dir_sgn       = 1.0
         
+        super 
+
         @addAction new Action @, Action.NOOP,         "noop",           0
         @addAction new Action @, Action.FORWARD,      "move forward",   200
         @addAction new Action @, Action.CLIMB_UP,     "climb up",       200
@@ -293,48 +293,49 @@ class Bot extends Pushable
     # 000       000  000   000  000  0000000   000   000
     
     finishAction: (action) ->
-        actionId = action.id
     
-        return if actionId == Action.NOOP or actionId == Action.SHOOT
-        log "Bot.finishAction #{actionId} #{action.name}"
+        # log "Bot.finishAction #{actionId} #{action.name}"
         
-        if actionId == Action.PUSH
-            super action
-            return
-        
-        if actionId == Action.TURN_LEFT or actionId == Action.TURN_RIGHT
-            @rotate_action = null
-            
-            if @move_action # bot currently performing a move action -> store rotation in @rest_orientation
-                @rest_orientation = @rest_orientation.mul @rotate_orientation
-                @rotate_orientation.reset()
-            else
-                @orientation = @orientation.mul @rotate_orientation.mul @rest_orientation # update rotation matrix
-                @rotate_orientation.reset()
-                @rest_orientation.reset()
-                
-        else if actionId < Action.END
-            @move_action = null
-    
-            @orientation = @orientation.mul @climb_orientation # update climb @orientation
-            @climb_orientation.reset()
-    
-            if @rotate_action and actionId != Action.JUMP_FORWARD # bot is currently performing a rotation ->
-                # take over result of rotation to prevent sliding
-                if @rotate_action.id == Action.TURN_LEFT
-                    @orientation = @orientation.mul Quaternion.rotationAroundVector(90.0, new Vector(0,1,0)).mul @rest_orientation
-                    @rest_orientation = Quaternion.rotationAroundVector -90.0, new Vector 0,1,0  
+        switch action.id
+            when Action.NOOP, Action.SHOOT
+                return
+            when Action.PUSH
+                super action
+                return
+            when Action.TURN_LEFT or Action.TURN_RIGHT
+                @rotate_action = null
+                if @move_action # bot currently performing a move action -> store rotation in @rest_orientation
+                    @rest_orientation = @rest_orientation.mul @rotate_orientation
+                    @rotate_orientation.reset()
                 else
-                    @orientation = @orientation.mul Quaternion.rotationAroundVector(-90.0, new Vector(0,1,0)).mul @rest_orientation
-                    @rest_orientation = Quaternion.rotationAroundVector 90.0, new Vector 0,1,0  
+                    @orientation = @orientation.mul @rotate_orientation.mul @rest_orientation # update rotation matrix
+                    @rotate_orientation.reset()
+                    @rest_orientation.reset()
+                return
+                
+        return if action.id > Action.SHOOT
         
-            if actionId != Action.CLIMB_UP
-                world.objectMovedFromPos @, @position # update world @position
-                @position = @current_position.round()
-                    
-            if actionId != Action.JUMP_FORWARD and @rotate_action == null # if not jumping forward
-                @orientation = @orientation.mul @rest_orientation # update rotation @orientation
-                @rest_orientation.reset()
+        @move_action = null
+        
+        @orientation = @orientation.mul @climb_orientation # update climb @orientation
+        @climb_orientation.reset()
+        
+        if @rotate_action and action.id != Action.JUMP_FORWARD # bot is currently performing a rotation ->
+            # take over result of rotation to prevent sliding
+            if @rotate_action.id == Action.TURN_LEFT
+                @orientation = @orientation.mul Quaternion.rotationAroundVector(90.0, new Vector(0,1,0)).mul @rest_orientation
+                @rest_orientation = Quaternion.rotationAroundVector -90.0, new Vector 0,1,0  
+            else
+                @orientation = @orientation.mul Quaternion.rotationAroundVector(-90.0, new Vector(0,1,0)).mul @rest_orientation
+                @rest_orientation = Quaternion.rotationAroundVector 90.0, new Vector 0,1,0  
+    
+        if action.id != Action.CLIMB_UP
+            world.objectMovedFromPos @, @position # update world @position
+            @position = @current_position.round()
+                
+        if action.id != Action.JUMP_FORWARD and @rotate_action == null # if not jumping forward
+            @orientation = @orientation.mul @rest_orientation # update rotation @orientation
+            @rest_orientation.reset()
     
     # 00000000  000  000   000  000   0000000  000   000  00000000  0000000  
     # 000       000  0000  000  000  000       000   000  000       000   000
@@ -343,8 +344,7 @@ class Bot extends Pushable
     # 000       000  000   000  000  0000000   000   000  00000000  0000000  
     
     actionFinished: (action) ->
-        actionId = action.id
-        log "bot.actionFinished #{action.name} #{actionId}"
+        log "bot.actionFinished #{action.name} #{action.id}"
     
         # if @isDead()
             # log "DIE!"
@@ -359,7 +359,7 @@ class Bot extends Pushable
             @startTimedAction @getActionWithId(Action.NOOP), 0
             return
     
-        if actionId == Action.PUSH or not @direction.isZero()
+        if action.id == Action.PUSH or not @direction.isZero()
             log 'super action!'
             super action
             return
@@ -369,7 +369,7 @@ class Bot extends Pushable
             return 
         
         # find next action depending on type of finished action and surrounding environment
-        if actionId == Action.JUMP_FORWARD
+        if action.id == Action.JUMP_FORWARD
             forwardPos = @position.plus @getDir()
             log 'jump forwardPos', forwardPos
             if world.isUnoccupiedPos forwardPos
@@ -405,7 +405,7 @@ class Bot extends Pushable
                 @move_action = @getActionWithId Action.FALL
                 @move_action.takeRest action
                 
-        else if actionId == Action.FALL or actionId == Action.FALL_FORWARD # landed
+        else if action.id == Action.FALL or action.id == Action.FALL_FORWARD # landed
             log 'fall|forward!'
             if @ == world.player
                 world.playSound 'BOT_LAND'
@@ -424,7 +424,7 @@ class Bot extends Pushable
             @moveBot()
         else
             @dir_sgn = 1
-            @jump_once = false if actionId != Action.NOOP
+            @jump_once = false if action.id != Action.NOOP
             # keep action chain flowinwg in order to detect environment changes
             # @startTimedAction @getActionWithId(Action.NOOP), 0
 

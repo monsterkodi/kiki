@@ -161,12 +161,12 @@ class Player extends Bot
 
     getFollowProjection: () ->
         
-        cameraPos = @projection.getPosition()    # current camera position
-        desiredDistance = 2.0            # desired distance from camera to bot
+        cameraPos = @projection.getPosition()   
+        desiredDistance = 2.0 # desired distance from camera to bot
     
         @updatePosition()
     
-        playerPos   = @current_position        # desired look pos
+        playerPos   = @current_position # desired look pos
         playerDir   = @getCurrentDir()
         playerUp    = @current_orientation.rotate new Vector(0,1,0).normal()
         playerRight = playerDir.cross(playerUp).normal()

@@ -94,7 +94,7 @@ class World extends Actor
         @sun.position.copy @camera.position
         @scene.add @sun
         
-        @ambient = new THREE.AmbientLight 0x444444
+        @ambient = new THREE.AmbientLight 0x111111
         @scene.add @ambient
          
         @preview         = false
@@ -105,9 +105,8 @@ class World extends Actor
         @size            = new Pos()
         @depth           = -Number.MAX_SAFE_INTEGER
         # @camera_mode     = World.CAMERA_INSIDE
-        @camera_mode     = World.CAMERA_BEHIND
-        # @camera_mode     = World.CAMERA_FOLLOW
-        @edit_projection = null
+        # @camera_mode     = World.CAMERA_BEHIND
+        @camera_mode     = World.CAMERA_FOLLOW
         @raster_size     = 0.1
             
     #    0000000   0000000    0000000   00000000
@@ -287,7 +286,7 @@ class World extends Actor
 
         @player = new Player
         player_dict = @dict.player
-        log "player_dict", player_dict
+        # log "player_dict", player_dict
         if player_dict.orientation?
             @player.setOrientation player_dict.orientation
         else
@@ -309,7 +308,7 @@ class World extends Actor
             # else
                 # Controller.player_status.show()
 #         
-        # @getProjection().setPosition(KVector())
+        @getProjection().setPosition new Vector 0,0,0
 
         # @player.getStatus().setMinMoves (highscore.levelParMoves (@level_name))
         # @player.getStatus().setMoves (0)
@@ -601,7 +600,7 @@ class World extends Actor
         if not cell?
             cellIndex = @posToIndex(pos)
             cell = new Cell()
-            log "created cell at index #{cellIndex}"
+            # log "created cell at index #{cellIndex}"
             @cells[cellIndex] = cell
         
         object.setPosition pos
@@ -724,14 +723,14 @@ class World extends Actor
         @moved_objects.push object 
     
     objectWillMoveToPos: (object, pos, duration) ->
-        log "world.objectWillMoveToPos", pos
+        # log "world.objectWillMoveToPos", pos
         
         if @isInvalidPos pos
-            log "objectWillMoveToPos invalid pos:", pos
+            log "world.objectWillMoveToPos [WARNING] invalid pos:", pos
             return
         
         if object.getPos().eql pos
-            log "WARNING objectWillMoveToPos equal pos:", pos
+            log "world.objectWillMoveToPos [WARNING] equal pos:", pos
             return
         
         if cell = @getCellAtPos pos
@@ -741,18 +740,18 @@ class World extends Actor
                         # temporary object at new pos will vanish before object will arrive . delete it
                         objectAtNewPos.del()
                     else
-                        log "World.objectWillMoveToPos timing conflict at pos:", pos
+                        log "world.objectWillMoveToPos [WARNING] timing conflict at pos:", pos
                 else
-                    log "World.objectWillMoveToPos already occupied:", pos 
+                    log "world.objectWillMoveToPos [WARNING] already occupied:", pos 
     
         @unsetObject object # remove object from cell grid
         # log 'tmpObject at new pos', pos 
-        tmpObject = new TmpObject object  # insert temporary objects at new pos
+        tmpObject = new TmpObject object  # insert tmp object at new pos
         tmpObject.setPosition pos 
         tmpObject.time = duration
         @addObjectAtPos tmpObject, pos 
         # log 'tmpObject at old pos', object.position
-        tmpObject = new TmpObject object  # insert temporary objects at old pos
+        tmpObject = new TmpObject object  # insert tmp object at old pos
         tmpObject.setPosition object.position
         tmpObject.time = -duration
         @addObjectAtPos tmpObject, object.getPos() 
@@ -799,7 +798,7 @@ class World extends Actor
             quat.multiply (new THREE.Quaternion).setFromAxisAngle(new THREE.Vector3(0,1,0), step.dsecs*0.1)
             # center = @decenter 0,0,0
             center = @size.div 2
-            log center
+            # log center
             @camera.position.set(center.x,center.y,center.z+@dist).applyQuaternion quat
             @camera.quaternion.copy quat
 

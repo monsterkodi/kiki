@@ -24,34 +24,63 @@ class Bot extends Pushable
         @climb_orientation   = new Quaternion
         @rest_orientation    = new Quaternion
         
-        tireRadius = 0.18
+        tireRadius = 0.15
         
-        geom = new THREE.SphereGeometry 0.5, 32, 32 
-        mat  = new THREE.MeshPhongMaterial 
-            color:          0x222266
+        nose = new THREE.ConeGeometry 0.404, 0.5, 32, 16, true
+        geom = new THREE.SphereGeometry 0.5, 32, 32, 16, Math.PI
+        geom = new THREE.SphereGeometry 0.5, 32, 32, 0, 2*Math.PI, 0, 2.2
+        
+        noseMat = new THREE.Matrix4()
+        trans = new THREE.Vector3 0,-0.543,0
+        rot = new THREE.Quaternion().setFromEuler new THREE.Euler Vector.DEG2RAD(180), 0, 0
+        
+        noseMat.compose trans, rot, new THREE.Vector3 1,1,1
+        geom.merge nose, noseMat
+        geom.rotateX Vector.DEG2RAD -90
+        # geom.mergeVertices()
+        # geom.computeFaceNormals()
+        # geom.computeVertexNormals()
+        geom.scale 0.7, 0.7, 0.7
+                    
+        botMat = new THREE.MeshPhongMaterial
+            color:          0x2222ff
             side:           THREE.FrontSide
             shading:        THREE.SmoothShading
+            roughness:      0.9
+            metalness:      1
             transparent:    true
             opacity:        0.9
-            shininess:      0.99
-        @mesh = new THREE.Mesh geom, mat
+            shininess:      5
 
-        geom = new THREE.TorusGeometry 0.5, tireRadius, 16, 16
-        mat  = new THREE.MeshPhongMaterial 
-            color:          0x111155
+        @mesh = new THREE.Mesh geom, botMat
+
+        geom = new THREE.TorusGeometry 0.5-tireRadius, tireRadius, 16, 16
+        
+        tireMat = new THREE.MeshStandardMaterial
+            color:          0x2222ff
             side:           THREE.FrontSide
-            shading:        THREE.SmoothShading
+            shading:        THREE.FlatShading
+            roughness:      0.8
+            metalness:      1
             transparent:    true
-            opacity:        0.9
-            shininess:      0.99 
+            opacity:        0.7
+
+        tireMat  = new THREE.MeshPhongMaterial 
+            color:          0x000066
+            specular:       0x222255
+            side:           THREE.FrontSide
+            shading:        THREE.FlatShading
+            transparent:    true
+            opacity:        0.7
+            shininess:      4
             
-        @leftTire = new THREE.Mesh geom, mat
-        @leftTire.position.set -0.5,0,0 
+        @leftTire = new THREE.Mesh geom, tireMat
+        @leftTire.position.set 0.5-tireRadius,0,0 
         @leftTire.rotation.set 0, Vector.DEG2RAD(90), 0
         @mesh.add @leftTire
 
-        @rightTire = new THREE.Mesh geom, mat
-        @rightTire.position.set 0.5,0,0 
+        @rightTire = new THREE.Mesh geom, tireMat
+        @rightTire.position.set -0.5+tireRadius,0,0 
         @rightTire.rotation.set 0, Vector.DEG2RAD(-90), 0
         @mesh.add @rightTire
 

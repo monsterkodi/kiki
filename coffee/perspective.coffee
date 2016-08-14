@@ -3,7 +3,9 @@
 # 00000000   0000000   0000000    0000000   00000000   0000000   000          000     000   000 000   0000000 
 # 000        000       000   000       000  000        000       000          000     000     000     000     
 # 000        00000000  000   000  0000000   000        00000000   0000000     000     000      0      00000000
-
+{
+clamp
+}      = require '/Users/kodi/s/ko/js/tools/tools'
 log    = require '/Users/kodi/s/ko/js/tools/log'
 Matrix = require './lib/matrix'
 
@@ -17,9 +19,8 @@ class Perspective extends Matrix
         @eye_distance = 5.0
         @border = [0,0,0,0]
         @setViewport 0.0, 0.0, 1.0, 1.0 
-        # WINDOW_SIZE_CHANGED -> updateViewport
         super
-        log "Perspective #{@fov} #{@znear} #{@zfar}"
+        # log "Perspective #{@fov} #{@znear} #{@zfar}"
 
     reset: ->
         @fov          = 60.0
@@ -112,7 +113,7 @@ class Perspective extends Matrix
     
     setFov: (fov) -> @fov = Math.max(2.0, Math.min fov, 175.0)
     
-    setEyeDistance: (distance) -> @eye_distance = Math.min( Math.max(@znear, distance), 0.9 * @zfar );
+    setEyeDistance: (distance) -> @eye_distance = clamp @znear, distance, 0.9 * @zfar
     
 module.exports = Perspective
     

@@ -28,7 +28,7 @@ class Actor extends Emitter
     #   00000000      0      00000000  000   000     000   
     
     addEventWithName: (eventName) ->
-        # log "Actor.addEventWithName eventName:#{eventName}"
+        log "Actor.addEventWithName #{@name} eventName:#{eventName}"
         if @getEventWithName eventName # to be removed
             log "Actor.addEventWithName [WARNING] '#{eventName}' already in use!"
             return -1; # shouldn't happen anyway :-)
@@ -37,7 +37,7 @@ class Actor extends Emitter
 
     getEventWithName: (name) ->
         for e in @events
-            return e if e.name = name
+            return e if e.name == name
 
     getEventWithId: (eventId) ->
         return @events[eventId]

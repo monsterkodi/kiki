@@ -158,7 +158,7 @@ class World extends Actor
         
         @levelList = [
               # intro
-              "start", 
+              # "start", 
               "steps", 
               #"move", "electro", "elevate", 
               # "throw", 
@@ -188,7 +188,6 @@ class World extends Actor
               # outro
               "mutants", 
              ]
-                   
                
         # import the levels
         for levelName in @levelList
@@ -197,6 +196,7 @@ class World extends Actor
         # log 'levelDict', @levelDict
         log "create world in view:", view
         world = new World view
+        world.name = 'world'
         global.world = world
         Timer.init()
         world.create first @levelList
@@ -929,7 +929,7 @@ class World extends Actor
             f = Vector.rayPlaneIntersectionFactor pos, World.normals[w].neg(), planePos, World.normals[w]
             # log "getWallDistanceForPos w #{w} min_f #{min_f} f #{f}"
             min_f = absMin min_f, f 
-        log "getWallDistanceForPos #{min_f}", pos
+        # log "getWallDistanceForPos #{min_f}", pos
         min_f
     
     getWallDistanceForRay: (rayPos, rayDirection) -> # distance to the next wall in rayDirection 

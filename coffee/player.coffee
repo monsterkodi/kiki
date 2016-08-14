@@ -55,8 +55,8 @@ class Player extends Bot
         @addAction new Action @, Action.LOOK_DOWN,  "look down",  220
         @addAction new Action @, Action.LOOK_RESET, "look reset", 60
     
-        @addEventWithName "keyset"
-        @addEventWithName "keyset failed"
+        # @addEventWithName "keyset"
+        # @addEventWithName "keyset failed"
         @addEventWithName "landed"
     
         @projection = new Perspective 90.0
@@ -416,7 +416,7 @@ class Player extends Bot
                         @move_action = @getActionWithId Action.JUMP
                         world.playSound 'BOT_JUMP'
                         Timer.addAction @move_action
-                return releaseHandled()
+                return true
             
             when @key.left, @key.right
                 @rotate = 0
@@ -424,7 +424,7 @@ class Player extends Bot
             
             when @key.push
                 @push = false
-                return releaseHandled()
+                return true
             
             when @key.lookDown, @key.lookUp
                 if @look_action and @look_action.id != Action.LOOK_RESET

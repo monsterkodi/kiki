@@ -4,7 +4,9 @@
 #   00000000   000      000000000    00000    0000000   0000000  
 #   000        000      000   000     000     000       000   000
 #   000        0000000  000   000     000     00000000  000   000
-
+{
+clamp
+}      = require '/Users/kodi/s/ko/js/tools/tools'
 log    = require '/Users/kodi/s/ko/js/tools/log'
 Bot    = require './bot'
 Action = require './action'
@@ -96,18 +98,15 @@ class Player extends Bot
             @look_rot = Quaternion.rotationAroundVector @look_angle, @projection.getXVector()
             @projection.setYVector @look_rot.rotate playerUp 
             @projection.setZVector @look_rot.rotate playerDir.neg()
-            log 'Player.getProjection 2', @projection.matrix
         else
             # smooth camera rotation a little bit
             lookDelta = (2.0 - @projection.getZVector().dot playerDir) * world.getSpeed() / 50.0
             newLookVector = @projection.getZVector().mul(1.0 - lookDelta).minus playerDir.mul lookDelta
             newLookVector.normalize()
-    
             @projection.setXVector playerUp.cross(newLookVector).normal()
             @projection.setYVector playerUp
             @projection.setZVector newLookVector
             
-        # log 'Player.getProjection', @projection.getPosition()
         @projection
     
     #   0000000    00000000  000   000  000  000   000  0000000  
@@ -150,7 +149,7 @@ class Player extends Bot
             @projection.setXVector playerUp.cross(newLookVector).normal() 
             @projection.setYVector newLookVector.cross(@projection.getXVector()).normal() 
         
-        log 'Player.getBehindProjection', @projection.getPosition()
+        # log 'Player.getBehindProjection', @projection.getPosition()
         @projection
     
     #   00000000   0000000   000      000       0000000   000   000
@@ -167,6 +166,7 @@ class Player extends Bot
         @updatePosition()
     
         playerPos   = @current_position        # desired look pos
+        # log 'getFollowProjection.current_position', @current_position
         playerDir   = @getCurrentDir()
         playerUp    = @current_orientation.rotate new Vector(0,1,0).normal()
         playerRight = playerDir.cross(playerUp).normal()
@@ -203,6 +203,7 @@ class Player extends Bot
             botToCameraNormal = botToCamera.normal()
     
         rotFactor = 1.0
+        log "playerPos", playerPos
         wall_distance = world.getWallDistanceForPos playerPos.plus botToCamera
         if wall_distance < 0.5
             # ____________________________________________________ piercing walls
@@ -228,7 +229,7 @@ class Player extends Bot
         # ____________________________________________________ finally, set the position
         
         @projection.setPosition cameraPos 
-        log 'cameraPos:', cameraPos
+        # log 'cameraPos:', cameraPos
         # ____________________________________________________ refining camera orientation
         
         # slowly adjust look direction by interpolating current and desired directions
@@ -248,7 +249,7 @@ class Player extends Bot
         @projection.setZVector newLookVector
         @projection.setXVector newRightVector
         @projection.setYVector newUpVector
-        log 'Player.getFollowProjection', @projection.getPosition()
+        # log 'Player.getFollowProjection', @projection.getPosition()
         @projection
     
     #    0000000    0000000  000000000  000   0000000   000   000

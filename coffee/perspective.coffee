@@ -59,18 +59,10 @@ class Perspective extends Matrix
         @setPosition savePos.plus @getZVector().mul @eye_distance
 
     apply: (camera) ->
-            
         camPos = @getPosition()
-        up     = @getYVector()
-        lookAt = @getLookAtPosition()
-        
-        # log "Perspective.apply", @matrix #camPos, up, lookAt
-        # log "Perspective.apply", camPos, up, lookAt
-        # log "Perspective.apply", new Pos(camPos), new Pos(up), new Pos(lookAt)
-        
-        camera.position.clone camPos #set camPos.x, camPos.y, camPos.z 
-        camera.up.clone up #new THREE.Vector3 up.x, up.y, up.z
-        camera.lookAt new THREE.Vector3 lookAt.x, lookAt.y, lookAt.z
+        camera.position.copy camPos
+        camera.up.copy @getYVector()
+        camera.lookAt camPos.minus @getZVector()
 
         if @light?
             pos = @getPosition().plus @light_offset

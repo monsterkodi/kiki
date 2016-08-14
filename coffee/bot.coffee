@@ -436,10 +436,10 @@ class Bot extends Pushable
         
     moveBot: () ->
         @move_action = null
-        log "bot.moveBot @position", @position
-        log "bot.moveBot @getDir", @getDir()
+        # log "bot.moveBot @position", @position
+        # log "bot.moveBot @getDir", @getDir()
         forwardPos = @position.plus @getDir()
-        log "bot.moveBot", forwardPos
+        # log "bot.moveBot", forwardPos
         if @jump or @jump_once and                 # jump mode or jump activated while moving
             @dir_sgn == 1.0 and                     # and moving forward
                 world.isUnoccupiedPos @position.plus @getUp()  # and above empty

@@ -85,15 +85,15 @@ class Vector
     add: (v) ->
         @x += v.x 
         @y += v.y 
-        @z += v.z
-        @w += v.w
+        @z += v.z ? 0
+        @w += v.w ? 0
         @
     
     sub: (v) ->
         @x -= v.x 
         @y -= v.y 
-        @z -= v.z
-        @w -= v.w
+        @z -= v.z ? 0
+        @w -= v.w ? 0
         @
     
     scale: (f) ->
@@ -117,7 +117,12 @@ class Vector
         point.minus(planeNormal).dot point.minus(planePos).dot(planeNormal)
 
     @rayPlaneIntersectionFactor: (rayPos, rayDirection, planePos, planeNormal) ->
-        planePos.minus(rayPos).dot(planeNormal) / rayDirection.dot(planeNormal)
+        # ((planePos - rayPos) * planeNormal) / (rayDirection * planeNormal);
+        r = planePos.minus(rayPos).dot(planeNormal) / rayDirection.dot(planeNormal)
+        # log 'rayPlaneIntersectionFactor', r
+        if Number.isNaN r
+            throw new Error
+        r
 
     @DEG2RAD: (d) -> Math.PI*d/180.0
     @RAD2DEG: (r) -> r*180.0/Math.PI

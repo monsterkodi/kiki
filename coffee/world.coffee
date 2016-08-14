@@ -48,7 +48,7 @@ class World extends Actor
         
         super
         
-        @speed = 2.0
+        @speed = 5.0
         
         @screenSize = new Size @view.clientWidth, @view.clientHeight
         # log "view @screenSize:", @screenSize
@@ -104,8 +104,8 @@ class World extends Actor
         @cells           = [] 
         @size            = new Pos()
         @depth           = -Number.MAX_SAFE_INTEGER
-        # @camera_mode     = World.CAMERA_BEHIND
         @camera_mode     = World.CAMERA_INSIDE
+        # @camera_mode     = World.CAMERA_BEHIND
         # @camera_mode     = World.CAMERA_FOLLOW
         @edit_projection = null
         @raster_size     = 0.1
@@ -229,13 +229,6 @@ class World extends Actor
             # @applyColorScheme eval(@dict["scheme"])
         # else
             # @applyColorScheme default_scheme
-
-        # if "border" in @dict
-            # border = @dict["border"]
-        # else
-            # border = 1
-
-        # @setDisplayBorder border
 
         # ............................................................ intro text   
         # if "intro" in @dict
@@ -804,17 +797,15 @@ class World extends Actor
         Timer.event.finishActions()
         
         o.step?(step) for o in @objects
-        @display()
-        @sun.position.copy @camera.position
-        @renderer.render @scene, @camera
 
-    display: () ->
-        # log "world.display #{@camera_mode}"
         switch @camera_mode 
             when World.CAMERA_INSIDE then @projection = @player.getProjection()
             when World.CAMERA_BEHIND then @projection = @player.getBehindProjection()
             when World.CAMERA_FOLLOW then @projection = @player.getFollowProjection()
         @projection.apply @camera
+
+        @sun.position.copy @camera.position
+        @renderer.render @scene, @camera
     
     #   000000000  000  00     00  00000000
     #      000     000  000   000  000     
@@ -922,7 +913,7 @@ class World extends Actor
             f = Vector.rayPlaneIntersectionFactor pos, World.normals[w].neg(), planePos, World.normals[w]
             if f < delta
                 insidePos.add World.normals[w].mul delta-f
-        log 'getInsideWallPosWithDelta', insidePos
+        # log 'getInsideWallPosWithDelta', insidePos
         insidePos
     
     getWallDistanceForPos: (pos) -> # distance to the next wall (positive or negative)
@@ -931,9 +922,9 @@ class World extends Actor
             planePos = new Vector -0.5, -0.5, -0.5
             if w >= 3 then planePos.add @size
             f = Vector.rayPlaneIntersectionFactor pos, World.normals[w].neg(), planePos, World.normals[w]
-            log "getWallDistanceForPos #{min_f} #{f}"
+            log "getWallDistanceForPos w #{w} min_f #{min_f} f #{f}"
             min_f = absMin min_f, f 
-        log "getWallDistanceForPos #{min_f}", pos
+        # log "getWallDistanceForPos #{min_f}", pos
         min_f
     
     getWallDistanceForRay: (rayPos, rayDirection) -> # distance to the next wall in rayDirection 

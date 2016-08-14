@@ -75,21 +75,21 @@ class Action
         log "action.reset #{@name}"
         @start   = 0 # world time
         @rest    = 0 
-        @last    = 0 # relative
-        @current = 0 # relative
+        @last    = 0 # relative (ms since @start)
+        @current = 0 # relative (ms since @start)
+        #@event   = null  
 
-    takeRest: (action) ->
-        @current = action.rest
+    takeOver: (action) ->
+        log "takeOver #{action.rest} from #{action.name} this: #{@name}"
+        @current = action.current
         @start   = action.start
-        @last    = 0
-        @rest    = 0
+        @last    = action.last
+        @rest    = action.rest
 
     keepRest: () ->
         if @rest != 0
             @current = @rest
             @rest    = 0
-            # @last    = 0
-            # @current = 0
 
     getRelativeTime:  -> @current / @getDuration() 
     getRelativeDelta: -> (@current-@last) / @getDuration()
@@ -109,15 +109,17 @@ class Action
             @finished() if @duration == 0 and @mode == Action.ONCE
         else
             currentDiff = eventTime - @start
-            if currentDiff >= @getDuration()
-                @current = @getDuration()
-    
-                @start  += @current
-                @rest    = eventTime - @start
+            msDur = @getDuration()
+            if currentDiff >= msDur
+                @current = msDur
+                # @start   = msDur
+                @rest    = currentDiff - msDur
+                # log "action #{name} performWithEvent start #{@start} rest #{currentDiff}-#{msDur} = #{@rest}" if @name != 'noop'
                 @perform()
                 @last    = 0
                 
                 if @mode == Action.CONTINUOUS
+                    log 'Action.CONTINUOUS'
                     @current = @rest
                     return
                 event.removeAction @ if @mode == Action.ONCE
@@ -125,7 +127,7 @@ class Action
                 @finish()
     
                 if @mode == Action.REPEAT
-                    if @current == @getDuration() # if keepRest wasn't called -> reset start and current values
+                    if @current >= @getDuration() # if keepRest wasn't called -> reset start and current values
                         @reset()
                     return
                 

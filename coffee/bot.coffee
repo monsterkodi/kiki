@@ -17,29 +17,26 @@ class Bot extends Pushable
     
     constructor: () ->
                 
-        @direction           = new Quaternion
+        @direction           = new Vector
         @orientation         = new Quaternion
         @current_orientation = new Quaternion
         @rotate_orientation  = new Quaternion
         @climb_orientation   = new Quaternion
         @rest_orientation    = new Quaternion
         
-        tireRadius = 0.15
+        tireRadius = 0.05
         
         nose = new THREE.ConeGeometry 0.404, 0.5, 32, 16, true
         geom = new THREE.SphereGeometry 0.5, 32, 32, 16, Math.PI
         geom = new THREE.SphereGeometry 0.5, 32, 32, 0, 2*Math.PI, 0, 2.2
         
         noseMat = new THREE.Matrix4()
-        trans = new THREE.Vector3 0,-0.543,0
-        rot = new THREE.Quaternion().setFromEuler new THREE.Euler Vector.DEG2RAD(180), 0, 0
+        trans   = new THREE.Vector3 0,-0.543,0
+        rot     = new THREE.Quaternion().setFromEuler new THREE.Euler Vector.DEG2RAD(180), 0, 0
         
         noseMat.compose trans, rot, new THREE.Vector3 1,1,1
         geom.merge nose, noseMat
         geom.rotateX Vector.DEG2RAD -90
-        # geom.mergeVertices()
-        # geom.computeFaceNormals()
-        # geom.computeVertexNormals()
         geom.scale 0.7, 0.7, 0.7
                     
         botMat = new THREE.MeshPhongMaterial
@@ -48,30 +45,27 @@ class Bot extends Pushable
             shading:        THREE.SmoothShading
             roughness:      0.9
             metalness:      1
-            transparent:    true
-            opacity:        0.9
             shininess:      5
 
         @mesh = new THREE.Mesh geom, botMat
 
-        geom = new THREE.TorusGeometry 0.5-tireRadius, tireRadius, 16, 16
+        geom = new THREE.TorusGeometry 0.5-tireRadius, tireRadius, 16, 32
+        geom.scale 1,1,2.5
         
         tireMat  = new THREE.MeshPhongMaterial 
             color:          0x000066
             specular:       0x222255
             side:           THREE.FrontSide
             shading:        THREE.FlatShading
-            transparent:    true
-            opacity:        0.7
             shininess:      4
             
         @leftTire = new THREE.Mesh geom, tireMat
-        @leftTire.position.set 0.5-tireRadius,0,0 
+        @leftTire.position.set 0.35,0,0 
         @leftTire.rotation.set 0, Vector.DEG2RAD(90), 0
         @mesh.add @leftTire
 
         @rightTire = new THREE.Mesh geom, tireMat
-        @rightTire.position.set -0.5+tireRadius,0,0 
+        @rightTire.position.set -0.35,0,0 
         @rightTire.rotation.set 0, Vector.DEG2RAD(-90), 0
         @mesh.add @rightTire
 
@@ -113,10 +107,20 @@ class Bot extends Pushable
     
         @startTimedAction @getActionWithId(Action.NOOP), 500
 
-    getDown: -> @orientation.rotate(new Vector 0,1,0).neg()
-    getUp:   -> @orientation.rotate(new Vector 0,1,0)
-    getDir:  -> @orientation.rotate(new Vector 0,0,1).mul @dir_sgn
-    getCurrentDir: -> @current_orientation.rotate(new Vector(0,0,1)).normal()
+    
+    # 0000000    000  00000000   00000000   0000000  000000000  000   0000000   000   000
+    # 000   000  000  000   000  000       000          000     000  000   000  0000  000
+    # 000   000  000  0000000    0000000   000          000     000  000   000  000 0 000
+    # 000   000  000  000   000  000       000          000     000  000   000  000  0000
+    # 0000000    000  000   000  00000000   0000000     000     000   0000000   000   000
+
+    getDown: -> @orientation.rotate new Vector 0,-1,0
+    getUp:   -> @orientation.rotate new Vector 0,1,0
+    getDir:  -> @orientation.rotate new Vector 0,0,@dir_sgn
+    
+    getCurrentDir:  -> @current_orientation.rotate(new Vector 0,0,1).normal()
+    getCurrentUp:   -> @current_orientation.rotate(new Vector 0,1,0).normal()
+    getCurrentLeft: -> @current_orientation.rotate(new Vector 1,0,0).normal()
 
     addMoves:  (m) -> @moves += m
     addHealth: (h) -> @health = Math.max @health+h
@@ -176,7 +180,7 @@ class Bot extends Pushable
     
     initAction: (action) ->
         newPos = new Pos @position 
-        log "initAction #{action.name} pos", newPos
+        # log "initAction #{action.name} pos", newPos
         
         switch action.id
             when Action.NOOP         then return
@@ -189,15 +193,13 @@ class Bot extends Pushable
                 if not @direction.isZero()
                     super action 
                     return
-                else
-                    newPos.add @getDown()        
-                break
+                newPos.add @getDown()
             else
                 super action
                 return
     
         if not newPos.eql new Pos @position
-            log 'bot.initAction objectWillMoveToPos:', newPos
+            # log 'bot.initAction objectWillMoveToPos:', newPos
             world.objectWillMoveToPos @, newPos, action.getDuration()
     
     # 00000000   00000000  00000000   00000000   0000000   00000000   00     00
@@ -213,7 +215,10 @@ class Bot extends Pushable
     
         # log "Bot.performAction #{action.name} #{action.current} #{action.last} #{action.duration} id #{action.id}"
         # log "Bot.performAction #{action.name} #{relTime} #{dltTime} id #{action.id}"
-        
+        # cosFac = 1.0 - Math.cos(Math.PI/2 * relTime)
+        cosFac = Math.cos Math.PI/2 - Math.PI/2 * relTime
+        sinFac = Math.sin Math.PI/2 * relTime
+        # log "bot.performAction peform #{action.name} #{relTime} #{action.current} #{action.getDuration()}"
         switch action.id
             when Action.SHOOT
                 if relTime == 0
@@ -225,25 +230,25 @@ class Bot extends Pushable
     
                 @left_tire_rot  += @dir_sgn * dltTime
                 @right_tire_rot += @dir_sgn * dltTime
-                @current_position = @position.plus @getDir().mul relTime
+                @current_position = @position.plus @getDir().mul(relTime)
                 # log 'bot.forward', @current_position
                 return
             
             when Action.JUMP
             
-                @current_position = @position.plus @getUp().mul Math.cos(Math.PI/2 - Math.PI/2 * relTime)
+                @current_position = @position.plus @getUp().mul(sinFac)
                 return
                     
             when Action.JUMP_FORWARD
         
-                @left_tire_rot  += Math.cos(Math.PI/2 - Math.PI/2 * dltTime)
-                @right_tire_rot += Math.cos(Math.PI/2 - Math.PI/2 * dltTime)
-                @current_position = @position.plus @getDir().mul(1.0 - Math.cos(Math.PI/2 * relTime)).plus @getUp().mul Math.cos(Math.PI/2 - Math.PI/2 * relTime)
+                @left_tire_rot  += 1 - Math.cos(Math.PI/2 * dltTime)
+                @right_tire_rot += 1 - Math.cos(Math.PI/2 * dltTime)
+                @current_position = @position.plus @getDir().mul(relTime).plus @getUp().mul(sinFac) 
                 return
                 
             when Action.FALL_FORWARD
         
-                @current_position = @position.plus @getDir().mul(Math.cos(Math.PI/2 - Math.PI/2 * relTime)).plus @getDown().mul (1.0 - Math.cos(Math.PI/2 * relTime))
+                @current_position = @position.plus @getDir().mul(cosFac).plus @getDown().mul(cosFac)
                 return
     
             when Action.FALL
@@ -251,14 +256,14 @@ class Bot extends Pushable
                 if not @direction.isZero()
                     super action
                     return
-                @current_position = @position.plus @getDown().mul relTime
+                @current_position = @position.plus @getDown().mul(relTime)
                 return
         
             when Action.CLIMB_UP
         
                 @left_tire_rot  += @dir_sgn * dltTime/2
                 @right_tire_rot += @dir_sgn * dltTime/2
-                @climb_orientation = Quaternion.rotationAroundVector @dir_sgn * relTime * -90.0, new Vector(1,0,0) 
+                @climb_orientation = Quaternion.rotationAroundVector @dir_sgn * relTime * -90.0, new Vector 1,0,0  
                 break
             
             when Action.CLIMB_DOWN
@@ -378,7 +383,7 @@ class Bot extends Pushable
             @startTimedAction @getActionWithId(Action.NOOP), 0
             return
     
-        if action.id == Action.PUSH #or action.id == Action.FALL # not @direction.isZero()
+        if action.id == Action.PUSH and not @direction.isZero() #or action.id == Action.FALL # not @direction.isZero()
             log 'super (Pushable) action!'
             super action
             return
@@ -390,13 +395,13 @@ class Bot extends Pushable
         # find next action depending on type of finished action and surrounding environment
         if action.id == Action.JUMP_FORWARD
             forwardPos = @position.plus @getDir()
-            log 'jump forwardPos', forwardPos
+            # log 'jump forwardPos', forwardPos
             if world.isUnoccupiedPos forwardPos
                 # forward will be empty
                 if world.isUnoccupiedPos forwardPos.minus @getUp()  
                     # below forward will also be empty
                     @move_action = @getActionWithId Action.FALL_FORWARD
-                    @move_action.takeRest action
+                    # @move_action.takeRwest action
                 else
                     @move_action = @getActionWithId Action.FORWARD
                     world.playSound 'BOT_LAND', @getPos(), 0.25 
@@ -404,7 +409,7 @@ class Bot extends Pushable
                 if world.isUnoccupiedPos @position.minus @getUp()  # below is empty
                     @move_action = @getActionWithId Action.CLIMB_UP
                     world.playSound 'BOT_LAND', @getPos(), 0.5
-        else if world.isUnoccupiedPos @position.minus @getUp()  # below will be empty
+        else if world.isUnoccupiedPos @position.plus @getDown()  # below will be empty
             log 'below will be empty!'
             if @move # sticky if moving
                 if world.isUnoccupiedPos @position.plus @getDir() 
@@ -420,9 +425,9 @@ class Bot extends Pushable
                         @move_action = @getActionWithId Action.CLIMB_UP
             
             if @move_action == null
-                log 'fall!'
+                log 'bot.actionFinished fall!'
                 @move_action = @getActionWithId Action.FALL
-                @move_action.takeRest action
+                # @move_action.takeRest action
                 
         else if action.id == Action.FALL or action.id == Action.FALL_FORWARD # landed
             log 'fall|forward!'
@@ -432,14 +437,14 @@ class Bot extends Pushable
                 world.playSound 'BOT_LAND', @getPos()
         
         if @move_action
-            log 'move_action!'
+            log "add move_action! #{@move_action.name}"
             Timer.addAction @move_action
             return
         
         return if @rotate_action 
         
-        if @move
-            log '!move'
+        if @move or @jump
+            log '!move or jump!'
             @moveBot()
         else
             @dir_sgn = 1
@@ -455,37 +460,38 @@ class Bot extends Pushable
         
     moveBot: () ->
         @move_action = null
-        # log "bot.moveBot @position", @position
-        # log "bot.moveBot @getDir", @getDir()
         forwardPos = @position.plus @getDir()
-        # log "bot.moveBot", forwardPos
-        if @jump or @jump_once and                 # jump mode or jump activated while moving
+        if @move and (@jump or @jump_once) and    # jump mode or jump activated while moving
             @dir_sgn == 1.0 and                     # and moving forward
-                world.isUnoccupiedPos @position.plus @getUp()  # and above empty
-                    if world.isUnoccupiedPos forwardPos.plus @getUp()  and
-                        world.isUnoccupiedPos forwardPos  # forward and above forward also empty
+                world.isUnoccupiedPos(@position.plus @getUp())  # and above empty
+                    if world.isUnoccupiedPos(forwardPos.plus @getUp()) and
+                        world.isUnoccupiedPos(forwardPos)  # forward and above forward also empty
                             @move_action = @getActionWithId Action.JUMP_FORWARD
                     else # no space to jump forward -> jump up
                         @move_action = @getActionWithId Action.JUMP
-        else if world.isUnoccupiedPos forwardPos  # forward is empty
-            log 'forward is empty'
-            if world.isUnoccupiedPos forwardPos.plus @getDown()  
-                # below forward also empty
-                @move_action = @getActionWithId Action.CLIMB_DOWN
-            else # forward down is solid
-                @move_action = @getActionWithId Action.FORWARD
-        else # forward is not empty
-            log 'forward is not empty'
-            moveAction = @getActionWithId Action.FORWARD
-            if @push and world.mayObjectPushToPos @, forwardPos, moveAction.getDuration()
-                moveAction.reset()
-                # player in push mode and pushing object is possible
-                if world.isUnoccupiedPos forwardPos.plus @getDown()  # below forward is empty
+        else if @move 
+            if world.isUnoccupiedPos forwardPos  # forward is empty
+                log 'forward is empty'
+                if world.isUnoccupiedPos forwardPos.plus @getDown()  
+                    # below forward also empty
                     @move_action = @getActionWithId Action.CLIMB_DOWN
-                else
-                    @move_action = moveAction
-            else # just climb up
-                @move_action = @getActionWithId Action.CLIMB_UP
+                else # forward down is solid
+                    @move_action = @getActionWithId Action.FORWARD
+            else # forward is not empty
+                log 'forward is not empty'
+                moveAction = @getActionWithId Action.FORWARD
+                if @push and world.mayObjectPushToPos @, forwardPos, moveAction.getDuration()
+                    moveAction.reset()
+                    # player in push mode and pushing object is possible
+                    if world.isUnoccupiedPos forwardPos.plus @getDown()  # below forward is empty
+                        @move_action = @getActionWithId Action.CLIMB_DOWN
+                    else
+                        @move_action = moveAction
+                else # just climb up
+                    @move_action = @getActionWithId Action.CLIMB_UP
+        else if @jump or @jump_once
+            if world.isUnoccupiedPos(@position.plus @getUp())
+                @move_action = @getActionWithId Action.JUMP
         
         # reset the jump once flag (either we jumped or it's not possible to jump at current @position)
         @jump_once = false 

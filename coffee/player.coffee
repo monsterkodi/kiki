@@ -153,100 +153,89 @@ class Player extends Bot
 
     getFollowProjection: () ->
         
-        cameraPos = @projection.getPosition()   
+        camPos = @projection.getPosition()
         desiredDistance = 2.0 # desired distance from camera to bot
     
-        playerPos   = @current_position # desired look pos
+        playerPos   = @current_position 
         playerDir   = @getCurrentDir()
-        playerUp    = @current_orientation.rotate new Vector(0,1,0).normal()
-        playerRight = playerDir.cross(playerUp).normal()
+        playerUp    = @getCurrentUp()
+        playerLeft  = @getCurrentLeft()
     
-        # ____________________________________________________ camera follows bot
         # first, adjust distance from camera to bot
          
-        botToCamera = cameraPos.minus playerPos  # vector from bot to current pos
+        botToCamera = camPos.minus playerPos     # vector from bot to current pos
         cameraBotDistance = botToCamera.length() # distance from camera to bot
         
-        # log 'getFollowProjection 1', botToCamera, cameraPos, playerPos
-
         if cameraBotDistance >= desiredDistance
             difference = cameraBotDistance - desiredDistance
-            delta = difference*difference/400.0        # weight for following speed
-            cameraPos = cameraPos.mul(1.0-delta).plus playerPos.mul delta
+            delta = difference*difference/400.0  # weight for following speed
+            camPos = camPos.mul(1.0-delta).plus playerPos.mul delta
         else
             difference = desiredDistance - cameraBotDistance
-            delta = difference/20.0                # weight for negative following speed
-            cameraPos = cameraPos.mul(1.0-delta).plus (playerPos.plus botToCamera.normal().mul desiredDistance).mul delta
+            delta = difference/20.0 # weight for negative following speed
+            camPos = camPos.mul(1.0-delta).plus (playerPos.plus botToCamera.normal().mul desiredDistance).mul delta
     
-        # log 'getFollowProjection 2', botToCamera, cameraPos, playerPos
-        
-        # ____________________________________________________ refining camera position
         # second, rotate around bot
     
-        botToCamera = cameraPos.minus playerPos
+        botToCamera = camPos.minus playerPos
         botToCameraNormal = botToCamera.normal()
-    
-        # ____________________________________________________ try view bot from above
+     
         # if camera below bot, rotate up
         if botToCameraNormal.dot(playerUp) < 0
             # calculate angle between player to camera vector and player up vector
-            verticalAngle = Vector.RAD2DEG Math.acos(clamp(-1.0, 1.0, botToCameraNormal.dot playerUp)) - 90.0
-            cameraPos = playerPos.plus Quaternion.rotationAroundVector(verticalAngle/40.0, botToCameraNormal.cross(playerUp)).rotate botToCamera 
-            
-            botToCamera = cameraPos.minus playerPos
+            verticalAngle = Vector.RAD2DEG Math.acos(clamp(-1.0, 1.0, botToCameraNormal.dot playerUp))
+            log "verticalAngle #{verticalAngle}"
+            rotQuat     = Quaternion.rotationAroundVector(verticalAngle/40.0, botToCameraNormal.cross(playerUp))
+            botToCamera = rotQuat.rotate botToCamera 
             botToCameraNormal = botToCamera.normal()
+            camPos      = playerPos.plus botToCamera
 
-        # log 'getFollowProjection 3', botToCamera, cameraPos, playerPos
-    
         rotFactor = 1.0
 
-        wall_distance = world.getWallDistanceForPos playerPos.plus botToCamera
-        if wall_distance < 0.5
-            # ____________________________________________________ piercing walls
+        wall_distance = world.getWallDistanceForPos camPos
+        if wall_distance < 0.5 # try avoid piercing walls
             if wall_distance < 0.2
-                cameraPos = world.getInsideWallPosWithDelta cameraPos, 0.2
-                botToCamera = cameraPos.minus playerPos
+                camPos = world.getInsideWallPosWithDelta camPos, 0.2
+                botToCamera = camPos.minus playerPos
                 botToCameraNormal = botToCamera.normal()
-            
             rotFactor = 0.5 / (wall_distance-0.2)
-    
-        # ____________________________________________________ try view bot from behind
+            log "rotFactor #{rotFactor}"
+     
+        # try view bot from behind
         # calculate horizontal angle between bot orientation and vector to camera
         mappedToXZ = (botToCamera.minus playerUp.mul(botToCamera.dot playerUp)).normal()
         horizontalAngle = Vector.RAD2DEG Math.acos(clamp(-1.0, 1.0, -playerDir.dot mappedToXZ))
-        if botToCameraNormal.dot(playerRight) > 0
+        if botToCameraNormal.dot(playerLeft) < 0
             horizontalAngle = -horizontalAngle
-    
-        cameraPos = playerPos.plus Quaternion.rotationAroundVector(horizontalAngle/(rotFactor*400.0), playerUp).rotate botToCamera
-    
-        botToCamera = cameraPos.minus playerPos
+        log "horizontalAngle #{horizontalAngle}"
+        rotQuat = Quaternion.rotationAroundVector horizontalAngle/(rotFactor*400.0), playerUp 
+        camPos = playerPos.plus rotQuat.rotate botToCamera
+
+        botToCamera = camPos.minus playerPos
         botToCameraNormal = botToCamera.normal()
     
-        # ____________________________________________________ finally, set the position
+        # finally, set the position
         
-        @projection.setPosition cameraPos 
-        # log 'cameraPos:', cameraPos
-        # ____________________________________________________ refining camera orientation
+        @projection.setPosition camPos 
         
         # slowly adjust look direction by interpolating current and desired directions
-        lookDelta = 2.0 - @projection.getZVector().dot botToCameraNormal
+        lookDelta = @projection.getZVector().dot botToCameraNormal
         lookDelta *= lookDelta / 30.0    
-        # newLookVector = @projection.getZVector().mul(1.0-lookDelta).plus botToCameraNormal.mul(lookDelta)
         newLookVector = @projection.getZVector().mul(1.0-lookDelta).plus botToCameraNormal.neg().mul(lookDelta)
         newLookVector.normalize()
         
         # slowly adjust up vector by interpolating current and desired up vectors
-        upDelta = 2.0 - @projection.getYVector().dot playerUp
+        upDelta = @projection.getYVector().dot playerUp
         upDelta *= upDelta / 100.0    
-        newRightVector = (@projection.getYVector().mul(1.0-upDelta).plus playerUp.mul(upDelta)).cross newLookVector 
-        newRightVector.normalize()
-        newUpVector = newLookVector.cross(newRightVector).normal()
+        newUpVector = @projection.getYVector().mul(1.0-upDelta).plus playerUp.mul(upDelta)
+        newUpVector.normalize()
+        
+        newLeftVector = newUpVector.cross newLookVector
     
         # finished interpolations, update camera matrix
-        @projection.setZVector newLookVector
-        @projection.setXVector newRightVector
+        @projection.setXVector newLeftVector
         @projection.setYVector newUpVector
-        # log 'Player.getFollowProjection', @projection.getPosition()
+        @projection.setZVector newLookVector
         @projection
     
     #    0000000    0000000  000000000  000   0000000   000   000
@@ -349,6 +338,14 @@ class Player extends Bot
                     @new_dir_sgn = @dir_sgn = (combo == @key.backward) and -1 or 1 
                     @moveBot() # perform new move action (depending on environment)
                 else
+                    if @move_action.name == 'jump' and @move_action.getRelativeTime() < 1                        
+                        if world.isUnoccupiedPos(@position.plus(@getUp()).plus(@getDir())) and
+                            world.isUnoccupiedPos(@position.plus(@getDir())) # forward and above forward also empty
+                                action = @getActionWithId Action.JUMP_FORWARD
+                                action.takeOver @move_action                                
+                                Timer.removeAction @move_action
+                                @move_action = action
+                                Timer.addAction @move_action                          
                     @new_dir_sgn = (combo == @key.backward) and -1 or 1
                 return true
         
@@ -365,6 +362,23 @@ class Player extends Bot
             when @key.jump
                 @jump = true # switch to jump mode until jump_key released
                 @jump_once = true
+                if not @move_action? 
+                    @moveBot() # perform new move action (depending on environment)
+                    @jump_once = false
+                else
+                    if @move_action.name == 'move forward' and @move_action.getRelativeTime() < 0.6 or 
+                        @move_action.name == 'climb down' and @move_action.getRelativeTime() < 0.4
+                            if world.isUnoccupiedPos @position.plus @getUp()
+                                if world.isUnoccupiedPos @position.plus @getUp().plus @getDir()  
+                                    action = @getActionWithId Action.JUMP_FORWARD
+                                else 
+                                    action = @getActionWithId Action.JUMP
+                                action.takeOver @move_action                                
+                                Timer.removeAction @move_action
+                                @move_action = action
+                                Timer.addAction @move_action 
+                    else
+                        log "cant jump #{@move_action.name}"
                 return true
             
             when @key.push

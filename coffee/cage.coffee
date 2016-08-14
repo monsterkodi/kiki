@@ -21,22 +21,20 @@ class Cage
             side:           THREE.FrontSide
             shading:        THREE.SmoothShading
             shininess:      20
-        
-        geom = @wallTiles @gap                  
-
-        @cage = new THREE.Mesh geom, cageMat
-        @cage.translateX -0.5
-        @cage.translateY -0.5 
-        @cage.translateZ -0.5
-        world.scene.add @cage        
 
         geom = @wallTiles 0
-
         @raster = new THREE.Mesh geom, rasterMat
         @raster.translateX -0.5
         @raster.translateY -0.5 
         @raster.translateZ -0.5
         world.scene.add @raster        
+        
+        geom = @wallTiles @gap                  
+        @cage = new THREE.Mesh geom, cageMat
+        @cage.translateX -0.5
+        @cage.translateY -0.5 
+        @cage.translateZ -0.5
+        world.scene.add @cage        
      
     del: -> 
         world.scene.remove @raster
@@ -52,7 +50,7 @@ class Cage
         s = 1-raster
         o = raster
         i = -1
-        offset = raster/10
+        offset = raster/20
         
         z = offset
         n = 1

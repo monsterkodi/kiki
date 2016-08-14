@@ -47,7 +47,7 @@ class World extends Actor
     
     constructor: (@view) ->
                 
-        @speed       = 6
+        @speed       = 4
         @raster_size = 0.05
         # @camera_mode     = World.CAMERA_INSIDE
         @camera_mode     = World.CAMERA_BEHIND
@@ -130,37 +130,36 @@ class World extends Actor
         # 0000000  00000000      0      00000000  0000000  0000000 
         
         @levelList = [
-              # intro
-              "start", 
-              # "steps", 
-              #"move", "electro", "elevate", 
-              # "throw", 
-              # easy
-              "gold", "jump", "escape", "gears", 
-              # "gamma", 
-              "cube", "switch", "borg", 
-              "mini", 
-              # "blocks", 
-              "bombs", "sandbox", "energy", "maze", "love", 
-              # medium
-              "towers", "edge", "random", "plate", "nice", "entropy", 
-              # owen hay's levels (TODO: sort in)
-              "grasp", "fallen", "cheese", "invisimaze", "spiral", 
-              # difficult
-              "slick", "bridge", "flower", "stones", "walls", "grid", 
-              "rings", 
-              # "core", 
-              "bronze", "pool", 
-              # tough
-              "hidden", "church", 
-              # "strange", 
-              "mesh", "columns", "machine", 
-              # very hard
-              # "neutron", 
-              "captured", "circuit", "regal", "conductor", "evil", 
-              # outro
-              "mutants", 
-             ]
+            # intro
+            # "start", 
+            "steps", 
+            #"move", "electro", "elevate", 
+            # "throw", 
+            # easy
+            "gold", "jump", "escape", "gears", 
+            # "gamma", 
+            "cube", "switch", "borg", 
+            "mini", 
+            # "blocks", 
+            "bombs", "sandbox", "energy", "maze", "love", 
+            # medium
+            "towers", "edge", "random", "plate", "nice", "entropy", 
+            # owen hay's levels (TODO: sort in)
+            "grasp", "fallen", "cheese", "invisimaze", "spiral", 
+            # difficult
+            "slick", "bridge", "flower", "stones", "walls", "grid", 
+            "rings", 
+            # "core", 
+            "bronze", "pool", 
+            # tough
+            "hidden", "church", 
+            # "strange", 
+            "mesh", "columns", "machine", 
+            # very hard
+            # "neutron", 
+            "captured", "circuit", "regal", "conductor", "evil", 
+            # outro
+            "mutants"]
                
         # import the levels
         for levelName in @levelList
@@ -719,17 +718,18 @@ class World extends Actor
                 else
                     log "world.objectWillMoveToPos [WARNING] already occupied:", pos 
     
-        @unsetObject object # remove object from cell grid
-        # log 'tmpObject at new pos', pos 
-        tmpObject = new TmpObject object  # insert tmp object at new pos
-        tmpObject.setPosition pos 
-        tmpObject.time = duration
-        @addObjectAtPos tmpObject, pos 
-        # log 'tmpObject at old pos', object.position
-        tmpObject = new TmpObject object  # insert tmp object at old pos
-        tmpObject.setPosition object.position
-        tmpObject.time = -duration
-        @addObjectAtPos tmpObject, object.getPos() 
+        if object != @player
+            @unsetObject object # remove object from cell grid
+            # log 'tmpObject at new pos', pos 
+            tmpObject = new TmpObject object  # insert tmp object at new pos
+            tmpObject.setPosition pos 
+            tmpObject.time = duration
+            @addObjectAtPos tmpObject, pos 
+            # log 'tmpObject at old pos', object.position
+            tmpObject = new TmpObject object  # insert tmp object at old pos
+            tmpObject.setPosition object.position
+            tmpObject.time = -duration
+            @addObjectAtPos tmpObject, object.getPos() 
     
     updateStatus: () ->
 
@@ -807,9 +807,6 @@ class World extends Actor
         # log "unmapMsTime #{mapped} #{@speed} #{parseInt mapped * @speed/10.0}"
         parseInt mapped * @speed/10.0
         
-    getRelativeTime: -> @frame_time % (10000/@speed)/(10000.0/@speed)
-    getRelativeDelta: -> (@frame_time - @last_time)/(10000.0/@speed)
-
     continuous: (cb) ->
         new Action 
             func: cb

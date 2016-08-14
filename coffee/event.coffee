@@ -50,6 +50,7 @@ class Event
     
     removeAction: (action) ->
         action.event = null
+        action.reset()
         _.pull @actions, action
         _.pull @save_actions, action
         _.pull @finished_actions, action

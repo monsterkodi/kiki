@@ -14,7 +14,7 @@ class Pushable extends Item
     constructor: () ->
         super
         @pusher     = null
-        @direction  = new Vector()
+        @direction  = new Vector
         
         @addAction new Action @, Action.NOOP, "noop"
         @addAction new Action @, Action.PUSH, "push"
@@ -34,21 +34,22 @@ class Pushable extends Item
     initAction: (action) ->
         switch action.id
             when Action.FALL
-                log 'fall!'
+                log 'Pushable.initAction FALL direction:', @direction
                 world.objectWillMoveToPos @, @position.plus(@direction), action.getDuration()
 
     performAction: (action) ->
+        # log "Pushable.performAction action #{action.name}"
         switch action.id
             when Action.PUSH, Action.FALL
                 @setCurrentPosition @position.plus @direction.mul action.getRelativeTime()
 
     finishAction: (action) ->
-        log "Pushable.finishAction #{action.name}"
+        # log "Pushable.finishAction #{action.name}"
         switch action.id
             when Action.PUSH, Action.FALL
                 @move_action = null
                 world.objectMovedFromPos @, @position
-                log "Pushable.finishAction setPosition #{@current_position}"
+                # log "Pushable.finishAction setPosition #{@current_position}"
                 @setPosition @current_position
 
     actionFinished: (action) ->        
@@ -57,17 +58,17 @@ class Pushable extends Item
             
             if action.id == Action.PUSH
                 if @pusher instanceof Bot
-                    gravityDir = pusher.getDown()
-                else if pusher instanceof Bomb
+                    gravityDir = @pusher.getDown()
+                else if @pusher instanceof Bomb
                     if @ instanceof Bot
-                        if @direction == @getUp()
+                        if @direction.eql @getUp()
                             # bots don't fall through bomb splitter
                             @direction.reset()
                             return
                         else
                             gravityDir = @getDown() # bots pushed by bombs fall down
                     else
-                        direction.reset()
+                        @direction.reset()
                         return # objects pushed by bombs don't fall
             
             if world.isUnoccupiedPos @position.plus gravityDir
@@ -76,6 +77,6 @@ class Pushable extends Item
                 Timer.addAction @move_action
             else
                 @direction.reset()
-                world.playSound @landing_sound, position
+                world.playSound @landing_sound, @position
 
 module.exports = Pushable

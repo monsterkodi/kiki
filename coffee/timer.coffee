@@ -26,6 +26,7 @@ class Timer
         
     @removeAction: (a) -> 
         log "Timer.removeAction #{a.name}"
+        a.reset()
         @event.removeAction a
         
 module.exports = Timer

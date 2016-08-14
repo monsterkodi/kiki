@@ -65,14 +65,18 @@ class Action
         # log "Action.finished #{@name} #{@object?.actionFinished?}"
         @object.actionFinished @
         return if @deleted
-        if @current == @getDuration() # if keepRest wasn't called -> reset start and current values
-            @reset()
+        @reset()
+        # if @current >= @getDuration() # if keepRest wasn't called -> reset start and current values
+            # @reset()
+        # else 
+            # log 'keeping rest', @current
 
     reset: () ->
-        @start   = 0
-        @rest    = 0
-        @last    = 0
-        @current = 0
+        log "action.reset #{@name}"
+        @start   = 0 # world time
+        @rest    = 0 
+        @last    = 0 # relative
+        @current = 0 # relative
 
     takeRest: (action) ->
         @current = action.rest
@@ -83,7 +87,9 @@ class Action
     keepRest: () ->
         if @rest != 0
             @current = @rest
-            @rest = 0
+            @rest    = 0
+            # @last    = 0
+            # @current = 0
 
     getRelativeTime:  -> @current / @getDuration() 
     getRelativeDelta: -> (@current-@last) / @getDuration()

@@ -155,9 +155,9 @@ class Bot extends Pushable
     # 000   000   0000000     000     000   0000000   000   000
     
     initAction: (action) ->
-        # log "initAction #{action.name}"
         newPos = new Pos @position 
-    
+        log "initAction #{action.name} pos", newPos
+        
         switch action.id
             when Action.NOOP         then return
             when Action.FORWARD      then newPos.add @getDir()
@@ -176,8 +176,8 @@ class Bot extends Pushable
                 super action
                 return
     
-        if not newPos.eql @position
-            # log 'bot.initAction', newPos
+        if not newPos.eql new Pos @position
+            log 'bot.initAction objectWillMoveToPos:', newPos
             world.objectWillMoveToPos @, newPos, action.getDuration()
     
     # 00000000   00000000  00000000   00000000   0000000   00000000   00     00

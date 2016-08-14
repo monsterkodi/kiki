@@ -113,11 +113,15 @@ class Vector
     @pointMappedToPlane: (point, planePos, planeNormal) ->
         point.minus(planeNormal).dot point.minus(planePos).dot(planeNormal)
 
-    @rayPlaneIntersectionFactor: (rayPos, rayDirection, planePos, planeNormal) ->
+    @rayPlaneIntersectionFactor: (rayPos, rayDir, planePos, planeNormal) ->
         # ((planePos - rayPos) * planeNormal) / (rayDirection * planeNormal);
-        r = planePos.minus(rayPos).dot(planeNormal) / rayDirection.dot(planeNormal)
+        r = planePos.minus(rayPos).dot(planeNormal) / rayDir.dot(planeNormal)
         # log 'rayPlaneIntersectionFactor', r
         if Number.isNaN r
+            log 'rayPos', rayPos
+            log 'rayDir', rayDir
+            log 'planePos', planePos
+            log 'planeNormal', planeNormal
             throw new Error
         r
 

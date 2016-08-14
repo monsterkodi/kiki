@@ -12,10 +12,10 @@ class Pos
 
     constructor: (x=0, y=0, z=0) ->
         
-        if (x instanceof Vector) or (x instanceof Pos)
+        if x.x? and x.y?
             @x = Math.round x.x
             @y = Math.round x.y
-            @z = Math.round x.z
+            @z = Math.round x.z ? 0
         else if Array.isArray x
             @x = Math.round x[0]
             @y = Math.round x[1]
@@ -24,11 +24,11 @@ class Pos
             @x = Math.round x
             @y = Math.round y
             @z = Math.round z
-        log "Pos #{x} #{y} #{z}", @
+        # log "Pos #{@x} #{@y} #{@z}"
         if Number.isNaN @x
             throw new Error
 
-    vector: () -> new Vector x, y, z 
+    vector:    -> new Vector @x, @y, @z 
     minus: (p) -> new Pos @x-p.x, @y-p.y, @z-p.z
     plus:  (p) -> new Pos @x+p.x, @y+p.y, @z+p.z
     mul:   (f) -> new Pos @x*f, @y*f, @z*f
@@ -36,15 +36,15 @@ class Pos
     eql:   (p) -> @x==p.x and @y==p.y and @z==p.z
     
     add: (p) -> 
-        @x = parseInt @x + p.x 
-        @y = parseInt @y + p.y 
-        @z = parseInt @z + p.z
+        @x = Math.round @x + p.x 
+        @y = Math.round @y + p.y 
+        @z = Math.round @z + p.z
         @
         
     sub: (p) -> 
-        @x = parseInt @x - p.x 
-        @y = parseInt @y - p.y 
-        @z = parseInt @z - p.z
+        @x = Math.round @x - p.x 
+        @y = Math.round @y - p.y 
+        @z = Math.round @z - p.z
         @
 
 module.exports = Pos

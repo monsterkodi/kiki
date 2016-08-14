@@ -67,8 +67,9 @@ class Player extends Bot
         
     updatePosition: () ->
         if @move_action
-            relTime = (world.getTime() - @move_action.start) / @move_action.duration
-            if relTime <= 1.0
+            relTime = (world.getTime()-@move_action.start) / @move_action.duration
+            # log "updatePosition #{@move_action.id} #{relTime} #{@move_action.start} #{world.getTime()}"
+            if 0 <= relTime <= 1.0
                 switch @move_action.id
                     when Action.FORWARD
                         @current_position = @position.plus @getDir().mul relTime
@@ -101,7 +102,7 @@ class Player extends Bot
         else
             # smooth camera rotation a little bit
             lookDelta = (2.0 - @projection.getZVector().dot playerDir) * world.getSpeed() / 50.0
-            newLookVector = @projection.getZVector().mul(1.0 - lookDelta).minus playerDir.mul lookDelta
+            newLookVector = @projection.getZVector().mul(1.0 - lookDelta).plus playerDir.mul lookDelta
             newLookVector.normalize()
             @projection.setXVector playerUp.cross(newLookVector).normal()
             @projection.setYVector playerUp
@@ -166,7 +167,6 @@ class Player extends Bot
         @updatePosition()
     
         playerPos   = @current_position        # desired look pos
-        # log 'getFollowProjection.current_position', @current_position
         playerDir   = @getCurrentDir()
         playerUp    = @current_orientation.rotate new Vector(0,1,0).normal()
         playerRight = playerDir.cross(playerUp).normal()
@@ -177,6 +177,8 @@ class Player extends Bot
         botToCamera = cameraPos.minus playerPos  # vector from bot to current pos
         cameraBotDistance = botToCamera.length() # distance from camera to bot
         
+        # log 'getFollowProjection 1', botToCamera, cameraPos, playerPos
+
         if cameraBotDistance >= desiredDistance
             difference = cameraBotDistance - desiredDistance
             delta = difference*difference/400.0        # weight for following speed
@@ -186,6 +188,8 @@ class Player extends Bot
             delta = difference/20.0                # weight for negative following speed
             cameraPos = cameraPos.mul(1.0-delta).plus (playerPos.plus botToCamera.normal().mul desiredDistance).mul delta
     
+        # log 'getFollowProjection 2', botToCamera, cameraPos, playerPos
+        
         # ____________________________________________________ refining camera position
         # second, rotate around bot
     
@@ -201,9 +205,11 @@ class Player extends Bot
             
             botToCamera = cameraPos.minus playerPos
             botToCameraNormal = botToCamera.normal()
+
+        # log 'getFollowProjection 3', botToCamera, cameraPos, playerPos
     
         rotFactor = 1.0
-        # log "playerPos", playerPos
+
         wall_distance = world.getWallDistanceForPos playerPos.plus botToCamera
         if wall_distance < 0.5
             # ____________________________________________________ piercing walls

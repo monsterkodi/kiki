@@ -384,7 +384,6 @@ class World extends Actor
 
     isValidPos: (pos) -> 
         p = new Pos pos
-        log 'isValidPos', p
         p.x >= 0 and p.x < @size.x and p.y >= 0 and p.y < @size.y and p.z >= 0 and p.z < @size.z
         
     isInvalidPos: (pos) -> not @isValidPos pos
@@ -810,7 +809,7 @@ class World extends Actor
         o.step?(step) for o in @objects
 
         switch @camera_mode 
-            when World.CAMERA_INSIDE then @projection = @player.getProjection()
+            when World.CAMERA_INSIDE then @projection = @player.getInsideProjection()
             when World.CAMERA_BEHIND then @projection = @player.getBehindProjection()
             when World.CAMERA_FOLLOW then @projection = @player.getFollowProjection()
         @projection.apply @camera
@@ -925,7 +924,6 @@ class World extends Actor
             f = Vector.rayPlaneIntersectionFactor pos, World.normals[w].neg(), planePos, World.normals[w]
             if f < delta
                 insidePos.add World.normals[w].mul delta-f
-        # log 'getInsideWallPosWithDelta', insidePos
         insidePos
     
     getWallDistanceForPos: (pos) -> # distance to the next wall (positive or negative)
@@ -934,19 +932,16 @@ class World extends Actor
             planePos = new Vector -0.5, -0.5, -0.5
             if w >= 3 then planePos.add @size
             f = Vector.rayPlaneIntersectionFactor pos, World.normals[w].neg(), planePos, World.normals[w]
-            # log "getWallDistanceForPos w #{w} min_f #{min_f} f #{f}"
             min_f = absMin min_f, f 
-        # log "getWallDistanceForPos #{min_f}", pos
         min_f
     
-    getWallDistanceForRay: (rayPos, rayDirection) -> # distance to the next wall in rayDirection 
+    getWallDistanceForRay: (rayPos, rayDir) -> # distance to the next wall in rayDir 
         min_f = 10000
         for w in [0..5]
             planePos = new Vector -0.5, -0.5, -0.5
             if w >= 3 then planePos.add @size
-            f = Vector.rayPlaneIntersectionFactor rayPos, rayDirection, planePos, World.normals[w]
+            f = Vector.rayPlaneIntersectionFactor rayPos, rayDir, planePos, World.normals[w]
             min_f = f if f >= 0.0 and f < min_f
-        # log "getWallDistanceForRay #{min_f}", rayDirection
         min_f
     
     displayLights: () ->

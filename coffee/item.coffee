@@ -35,15 +35,14 @@ class Item extends Actor
     isSlippery: -> false
     
     setPosition: (x,y,z) -> 
-        @position = @current_position = new Vector x, y, z
+        @position = new Vector x,y,z
         @mesh?.position.copy @position
 
     getPos: -> new Pos @current_position
+    setPos: (x,y,z) -> 
+        p = new Pos x,y,z
+        @position = @current_position = new Vector p
     
-    # getPosition: -> @position
-    # getOrientation: -> @orientation
-    # getCurrentPosition: -> @current_position
-    # getCurrentOrientation: -> @current_orientation
     setOrientation: (q) -> @current_orientation = @orientation = new Quaternion q
     setCurrentPosition: (p) -> @current_position = p
     setCurrentOrientation: (q) -> @current_orientation = q

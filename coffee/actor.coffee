@@ -28,9 +28,9 @@ class Actor extends Emitter
     #   00000000      0      00000000  000   000     000   
     
     addEventWithName: (eventName) ->
-        log "Actor.addEventWithName eventName:#{eventName}"
+        # log "Actor.addEventWithName eventName:#{eventName}"
         if @getEventWithName eventName # to be removed
-            log "Actor.addEventWithName '#{eventName}' already in use!"
+            log "Actor.addEventWithName [WARNING] '#{eventName}' already in use!"
             return -1; # shouldn't happen anyway :-)
         @events.push new Event @, eventName
         @events.length-1
@@ -94,7 +94,7 @@ class Actor extends Emitter
         
     startTimedAction: (action, duration) ->
         action.duration = duration if duration >= 0
-        log "Actor.startTimedAction #{action.name} duration: #{duration}"
+        # log "Actor.startTimedAction #{action.name} duration: #{duration}"
         Timer.addAction action        
   
 module.exports = Actor

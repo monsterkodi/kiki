@@ -62,14 +62,12 @@ class Perspective extends Matrix
         camPos = @getPosition()
         camera.position.copy camPos
         camera.up.copy @getYVector()
-        camera.lookAt camPos.minus @getZVector()
+        camera.lookAt camPos.plus @getZVector()
 
         if @light?
             pos = @getPosition().plus @light_offset
             @light.setDirection -@getZVector()
             @light.setPosition new Vector pos[X], pos[Y], pos[Z], 1.0 # positional light source
-    
-    focusOn: (pos) -> @setPosition pos.plus @getZVector().mul @eye_distance
     
     setEyeDistance: (distance) ->
         lookAtPos = @getLookAtPosition()

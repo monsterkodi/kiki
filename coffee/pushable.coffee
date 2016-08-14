@@ -15,6 +15,7 @@ class Pushable extends Item
         @pusher     = null
         @direction  = new Vector()
         
+        @addAction new Action @, Action.NOOP, "noop"
         @addAction new Action @, Action.PUSH, "push"
         @addAction new Action @, Action.FALL, "fall", 40
 
@@ -37,7 +38,7 @@ class Pushable extends Item
     performAction: (action) ->
         switch action.id
             when Action.PUSH, Action.FALL
-                @setCurrentPosition @position + action.getRelativeTime() * @direction
+                @setCurrentPosition @position.plus @direction.mul action.getRelativeTime()
 
     finishAction: (action) ->
         log "Pushable.finishAction #{action.name}"
@@ -48,13 +49,11 @@ class Pushable extends Item
                 log "Pushable.finishAction setPosition #{@current_position}"
                 @setPosition @current_position
 
-    actionFinished: (action) ->
-        actionId = action.id
-        
-        if actionId == Action.PUSH or actionId == Action.FALL
+    actionFinished: (action) ->        
+        if action.id == Action.PUSH or actionId == Action.FALL
             gravityDir = @direction
             
-            if actionId == Action.PUSH
+            if action.id == Action.PUSH
                 if @pusher instanceof Bot
                     gravityDir = pusher.getDown()
                 else if pusher instanceof Bomb
@@ -69,7 +68,7 @@ class Pushable extends Item
                         direction.reset()
                         return # objects pushed by bombs don't fall
             
-            if world.isUnoccupiedPos @position + gravityDir
+            if world.isUnoccupiedPos @position.plus gravityDir
                 @direction = gravityDir
                 @move_action = @getActionWithId Action.FALL
                 Timer.addAction @move_action

@@ -31,7 +31,7 @@ class Player extends Bot
     constructor: ->
         
         super
-        
+        @name = 'player'
         @key =
             forward:  'w'
             backward: 's'
@@ -71,13 +71,13 @@ class Player extends Bot
             if relTime <= 1.0
                 switch @move_action.id
                     when Action.FORWARD
-                        @current_position = @position + relTime * @getDir()
+                        @current_position = @position.plus @getDir().mul relTime
                     when Action.FALL
-                        @current_position = @position - relTime * @getUp() 
+                        @current_position = @position.minus @getUp().mul relTime
                     when Action.JUMP_FORWARD
-                        @current_position = @position  + (1.0 - Math.cos(Math.PI/2 * relTime)) * @getDir() + Math.cos(Math.PI/2 - Math.PI/2 * relTime) * @getUp()
+                        @current_position = @position.plus @getDir().mul(1.0 - Math.cos(Math.PI/2 * relTime)).plus @getUp().mul Math.cos(Math.PI/2 - Math.PI/2 * relTime)
                     when Action.FALL_FORWARD
-                        @current_position = @position + Math.cos(Math.PI/2 - Math.PI/2 * relTime) * @getDir() + (1.0 - Math.cos(Math.PI/2 * relTime)) * -@getUp()
+                        @current_position = @position.plus @getDir().mul(Math.cos(Math.PI/2 - Math.PI/2 * relTime)).plus @getUp().mul -(1.0 - Math.cos(Math.PI/2 * relTime))
     
     #   00000000   00000000    0000000         000  00000000   0000000  000000000  000   0000000   000   000
     #   000   000  000   000  000   000        000  000       000          000     000  000   000  0000  000
@@ -203,7 +203,7 @@ class Player extends Bot
             botToCameraNormal = botToCamera.normal()
     
         rotFactor = 1.0
-        log "playerPos", playerPos
+        # log "playerPos", playerPos
         wall_distance = world.getWallDistanceForPos playerPos.plus botToCamera
         if wall_distance < 0.5
             # ____________________________________________________ piercing walls
@@ -259,9 +259,8 @@ class Player extends Bot
     #   000   000   0000000     000     000   0000000   000   000
     
     initAction: (action) ->
-        log "initAction #{action.id} #{action.name}"
-        actionId = action.id
-        switch actionId
+        # log "initAction #{action.id} #{action.name}"
+        switch action.id
             when Action.CLIMB_DOWN, Action.FORWARD
                 # @status.addMoves 1 
                 log 'init action forward'
@@ -286,21 +285,13 @@ class Player extends Bot
 
     performAction: (action) ->
         relTime = action.getRelativeTime()
-    
         switch action.id
-            when Action.NOOP then return
-        
-            when Action.LOOK_UP
-                @look_angle = relTime * -90.0
-        
-            when Action.LOOK_DOWN
-                @look_angle = relTime * 90.0
-                
+            when Action.NOOP      then return
+            when Action.LOOK_UP   then @look_angle = relTime * 90.0
+            when Action.LOOK_DOWN then @look_angle = relTime * -90.0
             when Action.LOOK_RESET
-                if @look_angle > 0 
-                    @look_angle = Math.min @look_angle, (1.0-relTime) * 90.0
-                else 
-                    @look_angle = Math.max @look_angle, (1.0-relTime) * -90.0
+                if @look_angle > 0 then @look_angle = Math.min @look_angle, (1.0-relTime) * 90.0
+                else                    @look_angle = Math.max @look_angle, (1.0-relTime) * -90.0
             else
                 super action 
     
@@ -311,19 +302,18 @@ class Player extends Bot
     #   000       000  000   000  000  0000000   000   000
     
     finishAction: (action) ->
-        actionId = action.id
     
-        if actionId == Action.LOOK_RESET
+        if action.id == Action.LOOK_RESET
             @look_action = null
             @look_angle  = 0.0
         else
-            if action == @move_action # move finished, update direction
+            if action.id == @move_action # move finished, update direction
                 @dir_sgn = @new_dir_sgn
             
-            if actionId != Action.LOOK_UP and actionId != Action.LOOK_DOWN
+            if action.id != Action.LOOK_UP and action.id != Action.LOOK_DOWN
                 super action
             
-            if actionId == Action.TURN_LEFT or actionId == Action.TURN_RIGHT
+            if action.id == Action.TURN_LEFT or action.id == Action.TURN_RIGHT
                 if @rotate
                     @rotate_action = @getActionWithId @rotate
                     @rotate_action.reset()

@@ -78,7 +78,6 @@ class Bot extends Pushable
         
         super 
 
-        @addAction new Action @, Action.NOOP,         "noop",           0
         @addAction new Action @, Action.FORWARD,      "move forward",   200
         @addAction new Action @, Action.CLIMB_UP,     "climb up",       200
         @addAction new Action @, Action.CLIMB_DOWN,   "climb down",     500
@@ -101,7 +100,6 @@ class Bot extends Pushable
 
     addMoves:  (m) -> @moves += m
     addHealth: (h) -> @health = Math.max @health+h
-    
     
     # 0000000    000  00000000
     # 000   000  000  000     
@@ -157,7 +155,7 @@ class Bot extends Pushable
     # 000   000   0000000     000     000   0000000   000   000
     
     initAction: (action) ->
-        log "initAction #{action.name}"
+        # log "initAction #{action.name}"
         newPos = new Pos @position 
     
         switch action.id
@@ -179,7 +177,7 @@ class Bot extends Pushable
                 return
     
         if not newPos.eql @position
-            log 'bot.initAction', newPos
+            # log 'bot.initAction', newPos
             world.objectWillMoveToPos @, newPos, action.getDuration()
     
     # 00000000   00000000  00000000   00000000   0000000   00000000   00     00
@@ -189,14 +187,14 @@ class Bot extends Pushable
     # 000        00000000  000   000  000        0000000   000   000  000   000
     
     performAction: (action) ->
-        actionId = action.id
+        
         relTime  = action.getRelativeTime()
         dltTime  = action.getRelativeDelta()
     
-        # log "Bot.performAction #{action.name} #{action.current} #{action.last} #{action.duration} id #{actionId}"
-        # log "Bot.performAction #{action.name} #{relTime} #{dltTime} id #{actionId}"
+        # log "Bot.performAction #{action.name} #{action.current} #{action.last} #{action.duration} id #{action.id}"
+        # log "Bot.performAction #{action.name} #{relTime} #{dltTime} id #{action.id}"
         
-        switch actionId
+        switch action.id
             when Action.SHOOT
                 if relTime == 0
                     Bullet.shootFromBot @
@@ -254,7 +252,7 @@ class Bot extends Pushable
                     @current_position = @position.plus @getDir().plus @getDown().mul 0.5+(relTime-0.8)/0.2/2
                 else
                     @climb_orientation = Quaternion.rotationAroundVector @dir_sgn * (relTime-0.2)/0.6 * 90.0, new Vector 1,0,0  
-                    rotVec = (orientation.mul @climb_orientation).rotate new Vector 0,1,0
+                    rotVec = (@orientation.mul @climb_orientation).rotate new Vector 0,1,0
                     @current_position = @position.plus @getDir().plus(@getDown()).plus(rotVec).mul 0.5
                 break
         
@@ -262,14 +260,14 @@ class Bot extends Pushable
     
                 if @move_action == null and relTime == 0.0 # if not performing move action and start of rotation
                     # update @orientation now, so next move action will move in desired @direction
-                    if actionId == Action.TURN_LEFT
+                    if action.id == Action.TURN_LEFT
                         @orientation = @orientation.mul Quaternion.rotationAroundVector 90.0, new Vector 0,1,0
                         @rest_orientation = Quaternion.rotationAroundVector -90.0, new Vector 0,1,0
                     else
                         @orientation = @orientation.mul Quaternion.rotationAroundVector -90.0, new Vector 0,1,0
                         @rest_orientation = Quaternion.rotationAroundVector 90.0, new Vector 0,1,0
     
-                if actionId == Action.TURN_LEFT
+                if action.id == Action.TURN_LEFT
                     @left_tire_rot  += -dltTime
                     @right_tire_rot +=  dltTime
                     @rotate_orientation = Quaternion.rotationAroundVector relTime * 90.0, new Vector 0,1,0 
@@ -294,7 +292,7 @@ class Bot extends Pushable
     
     finishAction: (action) ->
     
-        # log "Bot.finishAction #{actionId} #{action.name}"
+        # log "Bot.finishAction #{action.id} #{action.name}"
         
         switch action.id
             when Action.NOOP, Action.SHOOT
@@ -349,7 +347,7 @@ class Bot extends Pushable
         # if @isDead()
             # log "DIE!"
             # @die() 
-            # if actionId != Action.PUSH and actionId != Action.FALL
+            # if action.id != Action.PUSH and action.id != Action.FALL
                 # # dead player may only fall, nothing else
                 # return
         

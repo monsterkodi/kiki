@@ -104,8 +104,8 @@ class World extends Actor
         @cells           = [] 
         @size            = new Pos()
         @depth           = -Number.MAX_SAFE_INTEGER
-        @camera_mode     = World.CAMERA_INSIDE
-        # @camera_mode     = World.CAMERA_BEHIND
+        # @camera_mode     = World.CAMERA_INSIDE
+        @camera_mode     = World.CAMERA_BEHIND
         # @camera_mode     = World.CAMERA_FOLLOW
         @edit_projection = null
         @raster_size     = 0.1
@@ -382,16 +382,17 @@ class World extends Actor
     
     decenter: (x,y,z) -> new Pos(x,y,z).plus @size.div 2
 
-    isValidPos: (pos) -> pos.x >= 0 and pos.x < @size.x and pos.y >= 0 and pos.y < @size.y and pos.z >= 0 and pos.z < @size.z
+    isValidPos: (pos) -> 
+        p = new Pos pos
+        p.x >= 0 and p.x < @size.x and p.y >= 0 and p.y < @size.y and p.z >= 0 and p.z < @size.z
+        
     isInvalidPos: (pos) -> not @isValidPos pos
-
 
     #    0000000   0000000          000  00000000   0000000  000000000        000      000  000   000  00000000
     #   000   000  000   000        000  000       000          000           000      000  0000  000  000     
     #   000   000  0000000          000  0000000   000          000           000      000  000 0 000  0000000 
     #   000   000  000   000  000   000  000       000          000           000      000  000  0000  000     
     #    0000000   0000000     0000000   00000000   0000000     000           0000000  000  000   000  00000000
-    
     
     addObjectLine: (object, sx,sy,sz, ex,ey,ez) ->
         if sx instanceof Pos
@@ -556,7 +557,10 @@ class World extends Actor
     getCellAtPos: (pos) -> return @cells[@posToIndex(pos)] if @isValidPos pos
     getBotAtPos:  (pos) -> @getObjectOfTypeAtPos KikiBot, pos
 
-    posToIndex:   (pos) -> pos.x * @size.z * @size.y + pos.y * @size.z + pos.z
+    posToIndex:   (pos) -> 
+        p = new Pos pos
+        p.x * @size.z * @size.y + p.y * @size.z + p.z
+        
     indexToPos:   (index) -> 
         lsize = @size.z * @size.y
         lrest = index % lsize
@@ -584,17 +588,14 @@ class World extends Actor
             log "World.setObjectAtPos invalid pos:", pos
             return
     
-        cell = @getCellAtPos pos    
-        if object.isSpaceEgoistic() and cell and cell.getOccupant()
-            objectAtNewPos = cell.getOccupant()
-            if objectAtNewPos instanceof TmpObject
-                if objectAtNewPos.time > 0
-                    log "WARNING World.setObject already occupied pos:", pos
-                    # "already occupied by %s with time %d!",
-                    # object.getClassName(), pos.x, pos.y, pos.z, 
-                    # cell.getOccupant().getClassName(),
-                    # ((TmpObject*)objectAtNewPos).time)
-            objectAtNewPos.del() # temporary object at new pos will vanish anyway . delete it
+        if object.isSpaceEgoistic()
+            if cell = @getCellAtPos pos
+                if occupant = cell.getOccupant()
+                    if occupant instanceof TmpObject
+                        if occupant.time > 0
+                            log "World.setObjectAtPos [WARNING] already occupied pos:", pos
+                            log "World.setObjectAtPos [WARNING] already occupied time:", occupant.time
+                    occupant.del() # temporary object at new pos will vanish anyway . delete it
         
         cell = @getCellAtPos pos
         if not cell?
@@ -606,11 +607,14 @@ class World extends Actor
 
     unsetObject: (object) ->
         pos = object.getPos()
-        if cell = @getCellAtPos pos 
+        # log "world.unsetObject #{object.name} pos:", pos
+        if cell = @getCellAtPos pos
             cell.removeObject object
             if cell.isEmpty()
-                # delete cell
+                # log 'world.unsetObject remove cell empty cell', pos
                 @cells[@posToIndex(pos)] = null
+        else 
+            log 'world.unsetObject [WARNING] no cell at pos:', pos
 
     newObject: (object) ->
         if _.isString object
@@ -699,7 +703,6 @@ class World extends Actor
     
     changeCameraMode: () -> @camera_mode = (@camera_mode+1) % (World.CAMERA_FOLLOW+1)
     
-    
     #    0000000   0000000          000        00     00   0000000   000   000  00000000
     #   000   000  000   000        000        000   000  000   000  000   000  000     
     #   000   000  0000000          000        000000000  000   000   000 000   0000000 
@@ -719,6 +722,7 @@ class World extends Actor
         
         if @isInvalidPos pos
             log "objectWillMoveToPos invalid pos:", pos
+            return
         
         if object.getPos().eql pos
             log "WARNING objectWillMoveToPos equal pos:", pos
@@ -736,12 +740,12 @@ class World extends Actor
                     log "World.objectWillMoveToPos already occupied:", pos 
     
         @unsetObject object # remove object from cell grid
-        
+        # log 'tmpObject at new pos', pos 
         tmpObject = new TmpObject object  # insert temporary objects at new pos
         tmpObject.setPosition pos 
         tmpObject.time = duration
         @addObjectAtPos tmpObject, pos 
-        
+        # log 'tmpObject at old pos', object.position
         tmpObject = new TmpObject object  # insert temporary objects at old pos
         tmpObject.setPosition object.position
         tmpObject.time = -duration
@@ -856,12 +860,13 @@ class World extends Actor
                     Math.min(size.y-1, Math.max(pos.y, 0)), 
                     Math.min(size.z-1, Math.max(pos.z, 0))
     
-    isUnoccupiedPos: (pos) ->
-        log 'world.isUnoccupiedPos', pos
-        return false if @isInvalidPos pos
-        not @getOccupantAtPos pos
-    
-    isOccupiedPos: (pos) -> not @isUnoccupiedPos pos
+    isUnoccupiedPos: (pos) -> not @isOccupiedPos pos
+    isOccupiedPos:   (pos) ->        
+        if @isInvalidPos pos
+            return true
+        if @getOccupantAtPos pos
+            log 'isOccupiedPos occupant!', pos
+            return true
     
     mayObjectPushToPos: (object, pos, duration) ->
         # returns true, if a pushable object is at pos and may be pushed
@@ -922,9 +927,9 @@ class World extends Actor
             planePos = new Vector -0.5, -0.5, -0.5
             if w >= 3 then planePos.add @size
             f = Vector.rayPlaneIntersectionFactor pos, World.normals[w].neg(), planePos, World.normals[w]
-            log "getWallDistanceForPos w #{w} min_f #{min_f} f #{f}"
+            # log "getWallDistanceForPos w #{w} min_f #{min_f} f #{f}"
             min_f = absMin min_f, f 
-        # log "getWallDistanceForPos #{min_f}", pos
+        log "getWallDistanceForPos #{min_f}", pos
         min_f
     
     getWallDistanceForRay: (rayPos, rayDirection) -> # distance to the next wall in rayDirection 
@@ -934,7 +939,7 @@ class World extends Actor
             if w >= 3 then planePos.add @size
             f = Vector.rayPlaneIntersectionFactor rayPos, rayDirection, planePos, World.normals[w]
             min_f = f if f >= 0.0 and f < min_f
-        log "getWallDistanceForRay #{min_f}", rayDirection
+        # log "getWallDistanceForRay #{min_f}", rayDirection
         min_f
     
     displayLights: () ->

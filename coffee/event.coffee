@@ -24,7 +24,7 @@ class Event
     
     addAction: (action) ->
         if action? and not @hasAction action
-            log "Event.addAction #{action.name}"
+            # log "Event.addAction #{action.name}"
             @actions.push action
             action.event = @
             action.init()

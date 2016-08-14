@@ -11,9 +11,7 @@ Vector      = require './vector'
 class Matrix
     
     constructor: (o) ->
-        
         @matrix = []
-        
         switch
             when not o? then @reset()
             when o instanceof Quaternion then @initQuat o
@@ -25,7 +23,6 @@ class Matrix
             when o?.x? and o?.y? and o?.z?
                 @initXYZ o.x, o.y, o.z
             else @reset()
-        log 'matrix.init', @matrix
     
     initXYZ: (x,y,z) ->  
         @matrix[0]  = x.x
@@ -306,7 +303,6 @@ class Matrix
         @matrix[12] = v.x 
         @matrix[13] = v.y
         @matrix[14] = v.z
-        # log 'Matrix.setPosition', @matrix
             
     setXVector: (v) ->
         @matrix[0] = v.x

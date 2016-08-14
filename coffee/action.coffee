@@ -42,7 +42,7 @@ class Action
             i ?= -1
             m ?= Action.ONCE
             d ?= 0
-        log "newAction #{i} #{n} #{d} #{m}"
+        # log "newAction #{i} #{n} #{d} #{m}"
         @object     = o
         @name       = n
         @id         = i

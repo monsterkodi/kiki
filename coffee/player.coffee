@@ -75,8 +75,9 @@ class Player extends Bot
         
         # smooth camera movement a little bit
         posDelta = world.getSpeed() / 10.0
-        @projection.setPosition @projection.getPosition().mul(1.0 - posDelta).plus @current_position.mul posDelta
         playerDir = @getCurrentDir()
+        camPos = @current_position.plus playerDir.mul 0.4
+        @projection.setPosition @projection.getPosition().mul(1.0 - posDelta).plus camPos.mul posDelta
         playerUp  = @current_orientation.rotate(new Vector(0,1,0)).normal()
             
         if @look_angle # player is looking up or down

@@ -45,10 +45,14 @@ class World extends Actor
     ]
     
     constructor: (@view) ->
-        
+                
+        @speed       = 6
+        @raster_size = 0.05
+        # @camera_mode     = World.CAMERA_INSIDE
+        @camera_mode     = World.CAMERA_BEHIND
+        # @camera_mode     = World.CAMERA_FOLLOW
+
         super
-        
-        @speed = 4
         
         @screenSize = new Size @view.clientWidth, @view.clientHeight
         # log "view @screenSize:", @screenSize
@@ -104,10 +108,6 @@ class World extends Actor
         @cells           = [] 
         @size            = new Pos()
         @depth           = -Number.MAX_SAFE_INTEGER
-        # @camera_mode     = World.CAMERA_INSIDE
-        @camera_mode     = World.CAMERA_BEHIND
-        # @camera_mode     = World.CAMERA_FOLLOW
-        @raster_size     = 0.1
             
     #    0000000   0000000    0000000   00000000
     #   000       000   000  000        000     
@@ -116,27 +116,47 @@ class World extends Actor
     #    0000000  000   000   0000000   00000000
     
     initCage: ->
+        boxMat  = new THREE.MeshPhongMaterial 
+            color:          0x333333
+            side:           THREE.BackSide
+            shading:        THREE.SmoothShading
+            transparent:    true
+            opacity:        0.5
+            shininess:      20
+            
+        boxGeom = new THREE.BoxGeometry @size.x*1.01, @size.y*1.01, @size.z*1.01
+
         mat  = new THREE.MeshPhongMaterial 
             color:          0x880000
-            side:           THREE.BackSide
+            side:           THREE.FrontSide
             shading:        THREE.SmoothShading
             transparent:    false
             opacity:        0.5
-            shininess:      2
-            
-        geom = new THREE.BoxGeometry @size.x, @size.y, @size.z
+            shininess:      10
+        
+        geom = new THREE.BufferGeometry
+        
+        faces     = @size.x * @size.y * 2 + @size.x * @size.z * 2 + @size.y * @size.z * 2
+        triangles = faces * 2    
+        positions = new Float32Array triangles * 3 * 3
+        normals   = new Float32Array triangles * 3 * 3
+        @wallTiles positions, normals, @raster_size                     
+        geom.addAttribute 'position', new THREE.BufferAttribute positions, 3 
+        geom.addAttribute 'normal',   new THREE.BufferAttribute normals,   3 
+
         @cage = new THREE.Mesh geom, mat
-        @cage.translateX @size.x/2-0.5
-        @cage.translateY @size.y/2-0.5 
-        @cage.translateZ @size.z/2-0.5
+        @cage.translateX -0.5
+        @cage.translateY -0.5 
+        @cage.translateZ -0.5
         @scene.add @cage
         
-        # l = @raster_size/2.0
-        # t = 1.0 - l
-        # for w in [0..width]
-            # for h in [0..height]
-                # log 'wall:', w+l, h+l, w+t, h+t
-
+        # @box = new THREE.Mesh boxGeom, boxMat
+        # @box.translateX @size.x/2-0.5
+        # @box.translateY @size.y/2-0.5 
+        # @box.translateZ @size.z/2-0.5
+        # @scene.add @box
+        
+        
     @init: (view) ->
         return if world?
                 
@@ -969,5 +989,150 @@ class World extends Actor
 
     modKeyComboEventDown: (mod, key, combo, event) ->
         @player?.modKeyComboEventDown mod, key, combo, event
+
+    wallTiles: (positions, normals, raster=0) ->
+        s = 1-raster
+        o = raster
+        i = -1
+        
+        z = 0
+        n = 1
+        for x in [0...@size.x]
+            for y in [0...@size.y]
+                positions[i+=1] = x+o;  normals[i] = 0  
+                positions[i+=1] = y+o;  normals[i] = 0
+                positions[i+=1] = z  ;  normals[i] = n
+                positions[i+=1] = x+s;  normals[i] = 0
+                positions[i+=1] = y+o;  normals[i] = 0
+                positions[i+=1] = z  ;  normals[i] = n
+                positions[i+=1] = x+o;  normals[i] = 0
+                positions[i+=1] = y+s;  normals[i] = 0
+                positions[i+=1] = z  ;  normals[i] = n
+                positions[i+=1] = x+s;  normals[i] = 0
+                positions[i+=1] = y+o;  normals[i] = 0
+                positions[i+=1] = z  ;  normals[i] = n
+                positions[i+=1] = x+s;  normals[i] = 0
+                positions[i+=1] = y+s;  normals[i] = 0
+                positions[i+=1] = z  ;  normals[i] = n
+                positions[i+=1] = x+o;  normals[i] = 0
+                positions[i+=1] = y+s;  normals[i] = 0
+                positions[i+=1] = z  ;  normals[i] = n
+
+        z = @size.z
+        n = -1
+        for x in [0...@size.x]
+            for y in [0...@size.y]
+                positions[i+=1] = x+o;  normals[i] = 0  
+                positions[i+=1] = y+o;  normals[i] = 0
+                positions[i+=1] = z  ;  normals[i] = n
+                positions[i+=1] = x+o;  normals[i] = 0
+                positions[i+=1] = y+s;  normals[i] = 0
+                positions[i+=1] = z  ;  normals[i] = n
+                positions[i+=1] = x+s;  normals[i] = 0
+                positions[i+=1] = y+o;  normals[i] = 0
+                positions[i+=1] = z  ;  normals[i] = n
+                positions[i+=1] = x+s;  normals[i] = 0
+                positions[i+=1] = y+o;  normals[i] = 0
+                positions[i+=1] = z  ;  normals[i] = n
+                positions[i+=1] = x+o;  normals[i] = 0
+                positions[i+=1] = y+s;  normals[i] = 0
+                positions[i+=1] = z  ;  normals[i] = n
+                positions[i+=1] = x+s;  normals[i] = 0
+                positions[i+=1] = y+s;  normals[i] = 0
+                positions[i+=1] = z  ;  normals[i] = n
+
+        y = 0
+        n = 1
+        for x in [0...@size.x]
+            for z in [0...@size.z]
+                positions[i+=1] = x+o;  normals[i] = 0  
+                positions[i+=1] = y  ;  normals[i] = n
+                positions[i+=1] = z+o;  normals[i] = 0
+                positions[i+=1] = x+o;  normals[i] = 0
+                positions[i+=1] = y  ;  normals[i] = n
+                positions[i+=1] = z+s;  normals[i] = 0
+                positions[i+=1] = x+s;  normals[i] = 0
+                positions[i+=1] = y  ;  normals[i] = n
+                positions[i+=1] = z+o;  normals[i] = 0
+                positions[i+=1] = x+s;  normals[i] = 0
+                positions[i+=1] = y  ;  normals[i] = n
+                positions[i+=1] = z+o;  normals[i] = 0
+                positions[i+=1] = x+o;  normals[i] = 0
+                positions[i+=1] = y  ;  normals[i] = n
+                positions[i+=1] = z+s;  normals[i] = 0
+                positions[i+=1] = x+s;  normals[i] = 0
+                positions[i+=1] = y  ;  normals[i] = n
+                positions[i+=1] = z+s;  normals[i] = 0
+
+        y = @size.y
+        n = -1
+        for x in [0...@size.x]
+            for z in [0...@size.z]
+                positions[i+=1] = x+o;  normals[i] = 0  
+                positions[i+=1] = y  ;  normals[i] = n
+                positions[i+=1] = z+o;  normals[i] = 0
+                positions[i+=1] = x+s;  normals[i] = 0
+                positions[i+=1] = y  ;  normals[i] = n
+                positions[i+=1] = z+o;  normals[i] = 0
+                positions[i+=1] = x+o;  normals[i] = 0
+                positions[i+=1] = y  ;  normals[i] = n
+                positions[i+=1] = z+s;  normals[i] = 0
+                
+                positions[i+=1] = x+s;  normals[i] = 0  
+                positions[i+=1] = y  ;  normals[i] = n
+                positions[i+=1] = z+s;  normals[i] = 0
+                positions[i+=1] = x+o;  normals[i] = 0
+                positions[i+=1] = y  ;  normals[i] = n
+                positions[i+=1] = z+s;  normals[i] = 0
+                positions[i+=1] = x+s;  normals[i] = 0
+                positions[i+=1] = y  ;  normals[i] = n
+                positions[i+=1] = z+o;  normals[i] = 0
+
+        x = 0
+        n = 1
+        for y in [0...@size.y]
+            for z in [0...@size.z]
+                positions[i+=1] = x  ;  normals[i] = n  
+                positions[i+=1] = y+o;  normals[i] = 0
+                positions[i+=1] = z+o;  normals[i] = 0
+                positions[i+=1] = x  ;  normals[i] = n
+                positions[i+=1] = y+s;  normals[i] = 0
+                positions[i+=1] = z+o;  normals[i] = 0
+                positions[i+=1] = x  ;  normals[i] = n
+                positions[i+=1] = y+o;  normals[i] = 0
+                positions[i+=1] = z+s;  normals[i] = 0
+                positions[i+=1] = x  ;  normals[i] = n
+                positions[i+=1] = y+s;  normals[i] = 0
+                positions[i+=1] = z+o;  normals[i] = 0
+                positions[i+=1] = x  ;  normals[i] = n
+                positions[i+=1] = y+s;  normals[i] = 0
+                positions[i+=1] = z+s;  normals[i] = 0
+                positions[i+=1] = x  ;  normals[i] = n
+                positions[i+=1] = y+o;  normals[i] = 0
+                positions[i+=1] = z+s;  normals[i] = 0
+
+        x = @size.x
+        n = -1
+        for y in [0...@size.y]
+            for z in [0...@size.z]
+                positions[i+=1] = x  ;  normals[i] = n  
+                positions[i+=1] = y+o;  normals[i] = 0
+                positions[i+=1] = z+o;  normals[i] = 0
+                positions[i+=1] = x  ;  normals[i] = n
+                positions[i+=1] = y+o;  normals[i] = 0
+                positions[i+=1] = z+s;  normals[i] = 0
+                positions[i+=1] = x  ;  normals[i] = n
+                positions[i+=1] = y+s;  normals[i] = 0
+                positions[i+=1] = z+o;  normals[i] = 0
+                positions[i+=1] = x  ;  normals[i] = n
+                positions[i+=1] = y+s;  normals[i] = 0
+                positions[i+=1] = z+o;  normals[i] = 0
+                positions[i+=1] = x  ;  normals[i] = n
+                positions[i+=1] = y+o;  normals[i] = 0
+                positions[i+=1] = z+s;  normals[i] = 0
+                positions[i+=1] = x  ;  normals[i] = n
+                positions[i+=1] = y+s;  normals[i] = 0
+                positions[i+=1] = z+s;  normals[i] = 0
+
 
 module.exports = World

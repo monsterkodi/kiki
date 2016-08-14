@@ -76,15 +76,18 @@ class Player extends Bot
         # smooth camera movement a little bit
         posDelta = world.getSpeed() / 10.0
         playerDir = @getCurrentDir()
-        camPos = @current_position.plus playerDir.mul 0.4
-        @projection.setPosition @projection.getPosition().mul(1.0 - posDelta).plus camPos.mul posDelta
         playerUp  = @current_orientation.rotate(new Vector(0,1,0)).normal()
+        camPos = @current_position.plus playerDir.mul 0.4*(1-Math.abs(@look_angle)/90)
+        if @look_angle < 0
+            camPos.add playerUp.mul -2*@look_angle/90
+        @projection.setPosition @projection.getPosition().mul(1.0-posDelta).plus camPos.mul posDelta
             
         if @look_angle # player is looking up or down
-            @projection.setXVector playerUp.cross(playerDir).normal()
-            @look_rot = Quaternion.rotationAroundVector @look_angle, @projection.getXVector()
-            @projection.setYVector @look_rot.rotate playerUp 
-            @projection.setZVector @look_rot.rotate playerDir.neg()
+            log "look_angle #{@look_angle}"
+            @projection.setXVector playerDir.cross(playerUp).normal()
+            rot = Quaternion.rotationAroundVector @look_angle, @projection.getXVector()
+            @projection.setYVector rot.rotate playerUp 
+            @projection.setZVector rot.rotate playerDir #.neg()
         else
             # smooth camera rotation a little bit
             lookDelta = (2.0 - @projection.getZVector().dot playerDir) * world.getSpeed() / 50.0
@@ -113,18 +116,22 @@ class Player extends Bot
         botToCamera.normalize()
         
         min_f = Math.min world.getWallDistanceForRay(@current_position, botToCamera), min_f
-        cameraPos = @current_position.plus botToCamera.mul Math.max min_f, 0.72 
-        cameraPos = world.getInsideWallPosWithDelta cameraPos, 0.2
+        camPos = @current_position.plus botToCamera.mul Math.max(min_f, 0.72) * (1-Math.abs(@look_angle)/90)
+        if @look_angle < 0
+            camPos.add playerUp.mul -2*@look_angle/90
+        
+        camPos = world.getInsideWallPosWithDelta camPos, 0.2
             
         # smooth camera movement a little bit
         posDelta = 0.2
-        @projection.setPosition @projection.getPosition().mul(1.0 - posDelta).plus cameraPos.mul posDelta
+        @projection.setPosition @projection.getPosition().mul(1.0 - posDelta).plus camPos.mul posDelta
                                                                                 
         if @look_angle
-            @projection.setXVector playerUp.cross(playerDir).normal() 
-            look_rot = Quaternion.rotationAroundVector @look_angle, @projection.getXVector() 
-            @projection.setYVector look_rot.rotate playerUp  
-            @projection.setZVector look_rot.rotate playerDir.neg()  
+            log "look_angle #{@look_angle}"
+            @projection.setXVector playerDir.cross(playerUp).normal() 
+            rot = Quaternion.rotationAroundVector @look_angle, @projection.getXVector() 
+            @projection.setYVector rot.rotate playerUp  
+            @projection.setZVector rot.rotate playerDir #.neg()  
         else
             # smooth camera rotation a little bit
             lookDelta = 0.3

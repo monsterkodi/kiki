@@ -48,7 +48,7 @@ class World extends Actor
         
         super
         
-        @speed = 5.0
+        @speed = 4
         
         @screenSize = new Size @view.clientWidth, @view.clientHeight
         # log "view @screenSize:", @screenSize
@@ -67,9 +67,9 @@ class World extends Actor
         #   000       000   000  000 0 000  000       000   000  000   000
         #    0000000  000   000  000   000  00000000  000   000  000   000
         
-        @fov    = 60
-        @near   = 0.1
-        @far    = 1000
+        @fov    = 70
+        @near   = 0.001
+        @far    = 500
         @aspect = @view.offsetWidth / @view.offsetHeight
         @dist   = 10
         
@@ -105,8 +105,8 @@ class World extends Actor
         @size            = new Pos()
         @depth           = -Number.MAX_SAFE_INTEGER
         # @camera_mode     = World.CAMERA_INSIDE
-        # @camera_mode     = World.CAMERA_BEHIND
-        @camera_mode     = World.CAMERA_FOLLOW
+        @camera_mode     = World.CAMERA_BEHIND
+        # @camera_mode     = World.CAMERA_FOLLOW
         @raster_size     = 0.1
             
     #    0000000   0000000    0000000   00000000
@@ -117,12 +117,13 @@ class World extends Actor
     
     initCage: ->
         mat  = new THREE.MeshPhongMaterial 
-            color:          0x440000
+            color:          0x880000
             side:           THREE.BackSide
             shading:        THREE.SmoothShading
-            transparent:    true
+            transparent:    false
             opacity:        0.5
-            shininess:      0.99
+            shininess:      2
+            
         geom = new THREE.BoxGeometry @size.x, @size.y, @size.z
         @cage = new THREE.Mesh geom, mat
         @cage.translateX @size.x/2-0.5

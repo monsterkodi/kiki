@@ -64,22 +64,7 @@ class Player extends Bot
         
         # @projection.getLight().setCutoff 90.0
         # @projection.getLight().setAttenuation 1.0, 0.0, 0.05
-        
-    updatePosition: () ->
-        if @move_action
-            relTime = (world.getTime()-@move_action.start) / @move_action.duration
-            # log "updatePosition #{@move_action.id} #{relTime} #{@move_action.start} #{world.getTime()}"
-            if 0 <= relTime <= 1.0
-                switch @move_action.id
-                    when Action.FORWARD
-                        @current_position = @position.plus @getDir().mul relTime
-                    when Action.FALL
-                        @current_position = @position.minus @getUp().mul relTime
-                    when Action.JUMP_FORWARD
-                        @current_position = @position.plus @getDir().mul(1.0 - Math.cos(Math.PI/2 * relTime)).plus @getUp().mul Math.cos(Math.PI/2 - Math.PI/2 * relTime)
-                    when Action.FALL_FORWARD
-                        @current_position = @position.plus @getDir().mul(Math.cos(Math.PI/2 - Math.PI/2 * relTime)).plus @getUp().mul -(1.0 - Math.cos Math.PI/2 * relTime)
-    
+            
     #   00000000   00000000    0000000         000  00000000   0000000  000000000  000   0000000   000   000
     #   000   000  000   000  000   000        000  000       000          000     000  000   000  0000  000
     #   00000000   0000000    000   000        000  0000000   000          000     000  000   000  000 0 000
@@ -117,7 +102,6 @@ class Player extends Bot
     #   0000000    00000000  000   000  000  000   000  0000000  
     
     getBehindProjection: () ->
-        @updatePosition()
     
         playerDir = @getCurrentDir()
         playerUp  = @current_orientation.rotate(new Vector(0,1,0)).normal()
@@ -163,8 +147,6 @@ class Player extends Bot
         
         cameraPos = @projection.getPosition()   
         desiredDistance = 2.0 # desired distance from camera to bot
-    
-        @updatePosition()
     
         playerPos   = @current_position # desired look pos
         playerDir   = @getCurrentDir()

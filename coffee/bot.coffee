@@ -56,15 +56,6 @@ class Bot extends Pushable
 
         geom = new THREE.TorusGeometry 0.5-tireRadius, tireRadius, 16, 16
         
-        tireMat = new THREE.MeshStandardMaterial
-            color:          0x2222ff
-            side:           THREE.FrontSide
-            shading:        THREE.FlatShading
-            roughness:      0.8
-            metalness:      1
-            transparent:    true
-            opacity:        0.7
-
         tireMat  = new THREE.MeshPhongMaterial 
             color:          0x000066
             specular:       0x222255

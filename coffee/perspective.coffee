@@ -11,12 +11,13 @@ Matrix = require './lib/matrix'
 
 class Perspective extends Matrix
     
-    constructor: (fov,near=0.1,far=10000) ->
+    constructor: (fov,near=0.01,far=1000) ->
         @znear = near
         @zfar  = far
         @fov   = fov
         @aspect_ratio = -1.0
-        @eye_distance = 5.0
+        @eye_distance = @znear
+        # @eye_distance = 5.0
         @border = [0,0,0,0]
         @setViewport 0.0, 0.0, 1.0, 1.0 
         super
@@ -28,36 +29,36 @@ class Perspective extends Matrix
         super
         @translate 0, 0, @eye_distance
     
-    rotate: (x,y,z) ->
-        savePos = @getLookAtPosition()
-        @translate -@getPosition()
-            
-        up   = @getYVector()
-        look = @getZVector()
-    
-        rotxz = KMatrix.rotation x, 0.0, z
-        roty  = KMatrix.rotation 0.0, y, 0.0
-    
-        yunit = new Vector 0.0, 1.0, 0.0
-        zunit = new Vector 0.0, 0.0, 1.0
-    
-        lookperp = @look.perpendicular yunit # y-axis rotation    
-        if lookperp.length() > 0
-            look = roty.transform lookperp.plus look.parallel(yunit) 
-            up   = roty.transform up.perpendicular(yunit).plus up.parallel(yunit) 
-        
-        # x & z-axis rotation 
-        transmat = new Matrix up.cross(look), up, look
-        
-        uprotxz   = rotxz.transform yunit
-        lookrotxz = rotxz.transform zunit
-    
-        up   = transmat.transform uprotxz
-        look = transmat.transform lookrotxz
-        
-        @.initXYZ up.cross(look), up, look
-        
-        @setPosition savePos.plus @getZVector().mul @eye_distance
+    # rotate: (x,y,z) ->
+        # savePos = @getLookAtPosition()
+        # @translate -@getPosition()
+#             
+        # up   = @getYVector()
+        # look = @getZVector()
+#     
+        # rotxz = Matrix.rotation x, 0.0, z
+        # roty  = Matrix.rotation 0.0, y, 0.0
+#     
+        # yunit = new Vector 0.0, 1.0, 0.0
+        # zunit = new Vector 0.0, 0.0, 1.0
+#     
+        # lookperp = @look.perpendicular yunit # y-axis rotation    
+        # if lookperp.length() > 0
+            # look = roty.transform lookperp.plus look.parallel(yunit) 
+            # up   = roty.transform up.perpendicular(yunit).plus up.parallel(yunit) 
+#         
+        # # x & z-axis rotation 
+        # transmat = new Matrix up.cross(look), up, look
+#         
+        # uprotxz   = rotxz.transform yunit
+        # lookrotxz = rotxz.transform zunit
+#     
+        # up   = transmat.transform uprotxz
+        # look = transmat.transform lookrotxz
+#         
+        # @.initXYZ up.cross(look), up, look
+#         
+        # @setPosition savePos.plus @getZVector().mul @eye_distance
 
     apply: (camera) ->
         camPos = @getPosition()
@@ -70,22 +71,23 @@ class Perspective extends Matrix
             @light.setDirection -@getZVector()
             @light.setPosition new Vector pos[X], pos[Y], pos[Z], 1.0 # positional light source
     
-    setEyeDistance: (distance) ->
-        lookAtPos = @getLookAtPosition()
-        @eye_distance = Math.min Math.max(@znear, distance), 0.9*@zfar
-        @setPosition lookAtPos.plus @getZVector().mul @eye_distance
-    
-    setLookAtPosition: (lookAtPos) ->
-        up       = @getYVector()
-        newLook  = lookAtPos.minus(@getPosition()).normal()
-        newRight = up.cross(newLook).normal()
-        newUp    = newLook.cross(newRight).normal()
-    
-        @setXVector newRight
-        @setYVector newUp
-        @setZVector newLook
-        log 'setLookAtPosition', @matrix
-        @eye_distance = lookAtPos.minus(@getPosition()).length()
+    # setEyeDistance: (distance) ->
+        # log 'setEyeDistance', distance
+        # lookAtPos = @getLookAtPosition()
+        # @eye_distance = Math.min Math.max(@znear, distance), 0.9*@zfar
+        # @setPosition lookAtPos.plus @getZVector().mul @eye_distance
+        
+    # setLookAtPosition: (lookAtPos) ->
+        # up       = @getYVector()
+        # newLook  = lookAtPos.minus(@getPosition()).normal()
+        # newRight = up.cross(newLook).normal()
+        # newUp    = newLook.cross(newRight).normal()
+#     
+        # @setXVector newRight
+        # @setYVector newUp
+        # @setZVector newLook
+        # # log 'setLookAtPosition', @matrix
+        # @eye_distance = lookAtPos.minus(@getPosition()).length()
     
     getLookAtPosition: -> @getZVector().mul(-@eye_distance).plus @getPosition()
             
@@ -112,8 +114,6 @@ class Perspective extends Matrix
         @updateViewport()
     
     setFov: (fov) -> @fov = Math.max(2.0, Math.min fov, 175.0)
-    
-    setEyeDistance: (distance) -> @eye_distance = clamp @znear, distance, 0.9 * @zfar
-    
+        
 module.exports = Perspective
     

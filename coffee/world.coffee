@@ -158,8 +158,8 @@ class World extends Actor
         
         @levelList = [
               # intro
-              # "start", 
-              "steps", 
+              "start", 
+              # "steps", 
               #"move", "electro", "elevate", 
               # "throw", 
               # easy
@@ -384,6 +384,7 @@ class World extends Actor
 
     isValidPos: (pos) -> 
         p = new Pos pos
+        log 'isValidPos', p
         p.x >= 0 and p.x < @size.x and p.y >= 0 and p.y < @size.y and p.z >= 0 and p.z < @size.z
         
     isInvalidPos: (pos) -> not @isValidPos pos
@@ -555,7 +556,7 @@ class World extends Actor
         @initCage()
 
     getCellAtPos: (pos) -> return @cells[@posToIndex(pos)] if @isValidPos pos
-    getBotAtPos:  (pos) -> @getObjectOfTypeAtPos KikiBot, pos
+    getBotAtPos:  (pos) -> @getObjectOfTypeAtPos KikiBot, new Pos pos
 
     posToIndex:   (pos) -> 
         p = new Pos pos
@@ -599,8 +600,10 @@ class World extends Actor
         
         cell = @getCellAtPos pos
         if not cell?
+            cellIndex = @posToIndex(pos)
             cell = new Cell()
-            @cells[@posToIndex(pos)] = cell
+            log "created cell at index #{cellIndex}"
+            @cells[cellIndex] = cell
         
         object.setPosition pos
         cell.addObject object
@@ -634,6 +637,7 @@ class World extends Actor
         pos = new Pos x, y, z
         object = @newObject object
         @setObjectAtPos object, pos
+        # log "addObjectAtPos #{object.name}", pos
         @addObject object
 
     removeObject: (object) ->
@@ -701,7 +705,10 @@ class World extends Actor
     
     setCameraMode: (mode) -> @camera_mode = clamp World.CAMERA_INSIDE, World.CAMERA_FOLLOW, mode
     
-    changeCameraMode: () -> @camera_mode = (@camera_mode+1) % (World.CAMERA_FOLLOW+1)
+    changeCameraMode: () -> 
+        @camera_mode = (@camera_mode+1) % (World.CAMERA_FOLLOW+1)
+        log "world.changeCameraMode #{@camera_mode}"
+        @camera_mode
     
     #    0000000   0000000          000        00     00   0000000   000   000  00000000
     #   000   000  000   000        000        000   000  000   000  000   000  000     
@@ -865,7 +872,7 @@ class World extends Actor
         if @isInvalidPos pos
             return true
         if @getOccupantAtPos pos
-            log 'isOccupiedPos occupant!', pos
+            log "isOccupiedPos occupant: #{@getOccupantAtPos(pos).name} at pos:", pos
             return true
     
     mayObjectPushToPos: (object, pos, duration) ->
@@ -947,10 +954,9 @@ class World extends Actor
             lignt.display()
         
     getProjection: () ->
-        # log "world.getProjection #{@camera_mode}"
         if not @projection
             switch @camera_mode 
-                when World.CAMERA_INSIDE then @projection = @player.getProjection()     
+                when World.CAMERA_INSIDE then @projection = @player.getInsideProjection()     
                 when World.CAMERA_BEHIND then @projection = @player.getBehindProjection()
                 when World.CAMERA_FOLLOW then @projection = @player.getFollowProjection()
         @projection

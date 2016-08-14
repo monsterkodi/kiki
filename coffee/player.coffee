@@ -77,7 +77,7 @@ class Player extends Bot
                     when Action.JUMP_FORWARD
                         @current_position = @position.plus @getDir().mul(1.0 - Math.cos(Math.PI/2 * relTime)).plus @getUp().mul Math.cos(Math.PI/2 - Math.PI/2 * relTime)
                     when Action.FALL_FORWARD
-                        @current_position = @position.plus @getDir().mul(Math.cos(Math.PI/2 - Math.PI/2 * relTime)).plus @getUp().mul -(1.0 - Math.cos(Math.PI/2 * relTime))
+                        @current_position = @position.plus @getDir().mul(Math.cos(Math.PI/2 - Math.PI/2 * relTime)).plus @getUp().mul -(1.0 - Math.cos Math.PI/2 * relTime)
     
     #   00000000   00000000    0000000         000  00000000   0000000  000000000  000   0000000   000   000
     #   000   000  000   000  000   000        000  000       000          000     000  000   000  0000  000
@@ -85,7 +85,7 @@ class Player extends Bot
     #   000        000   000  000   000  000   000  000       000          000     000  000   000  000  0000
     #   000        000   000   0000000    0000000   00000000   0000000     000     000   0000000   000   000
     
-    getProjection: () ->
+    getInsideProjection: () ->
         
         # smooth camera movement a little bit
         posDelta = world.getSpeed() / 10.0
@@ -142,7 +142,7 @@ class Player extends Bot
         else
             # smooth camera rotation a little bit
             lookDelta = 0.3
-            newLookVector = @projection.getZVector().mul(1.0 - lookDelta).minus playerDir.mul lookDelta
+            newLookVector = @projection.getZVector().mul(1.0 - lookDelta).plus playerDir.mul lookDelta
             newLookVector.normalize()
             
             @projection.setZVector newLookVector  
@@ -180,11 +180,11 @@ class Player extends Bot
         if cameraBotDistance >= desiredDistance
             difference = cameraBotDistance - desiredDistance
             delta = difference*difference/400.0        # weight for following speed
-            cameraPos = cameraPos.mul(1.0 - delta).plus playerPos.mul delta
+            cameraPos = cameraPos.mul(1.0-delta).plus playerPos.mul delta
         else
             difference = desiredDistance - cameraBotDistance
             delta = difference/20.0                # weight for negative following speed
-            cameraPos = cameraPos.mul(1.0 - delta).plus (playerPos.plus botToCamera.normal().mul desiredDistance).mul delta
+            cameraPos = cameraPos.mul(1.0-delta).plus (playerPos.plus botToCamera.normal().mul desiredDistance).mul delta
     
         # ____________________________________________________ refining camera position
         # second, rotate around bot
@@ -221,7 +221,7 @@ class Player extends Bot
         if botToCameraNormal.dot(playerRight) > 0
             horizontalAngle = -horizontalAngle
     
-        cameraPos = playerPos.plus Quaternion.rotationAroundVector(horizontalAngle / (rotFactor * 400.0), playerUp).rotate botToCamera
+        cameraPos = playerPos.plus Quaternion.rotationAroundVector(horizontalAngle/(rotFactor*400.0), playerUp).rotate botToCamera
     
         botToCamera = cameraPos.minus playerPos
         botToCameraNormal = botToCamera.normal()
@@ -235,7 +235,8 @@ class Player extends Bot
         # slowly adjust look direction by interpolating current and desired directions
         lookDelta = 2.0 - @projection.getZVector().dot botToCameraNormal
         lookDelta *= lookDelta / 30.0    
-        newLookVector = @projection.getZVector().mul(1.0 - lookDelta).plus botToCameraNormal.mul(lookDelta)
+        # newLookVector = @projection.getZVector().mul(1.0-lookDelta).plus botToCameraNormal.mul(lookDelta)
+        newLookVector = @projection.getZVector().mul(1.0-lookDelta).plus botToCameraNormal.neg().mul(lookDelta)
         newLookVector.normalize()
         
         # slowly adjust up vector by interpolating current and desired up vectors
@@ -307,7 +308,7 @@ class Player extends Bot
             @look_action = null
             @look_angle  = 0.0
         else
-            if action.id == @move_action # move finished, update direction
+            if action.id == @move_action?.id # move finished, update direction
                 @dir_sgn = @new_dir_sgn
             
             if action.id != Action.LOOK_UP and action.id != Action.LOOK_DOWN
@@ -356,10 +357,13 @@ class Player extends Bot
                 return true
         
             when @key.left, @key.right
+                log 'rotate', combo
                 @rotate = (combo == @key.left) and Action.TURN_LEFT or Action.TURN_RIGHT
                 if not @rotate_action? and not @spiked # player is not performing a rotation and unspiked
                     @rotate_action = @getActionWithId @rotate
                     Timer.addAction @rotate_action
+                else
+                    log 'already rotating!'
                 return true
             
             when @key.jump

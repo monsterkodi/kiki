@@ -35,7 +35,7 @@ class Item extends Actor
     isSlippery: -> false
     
     setPosition: (x,y,z) -> 
-        @position = new Vector x,y,z
+        @position = @current_position = new Vector x,y,z
         @mesh?.position.copy @position
 
     getPos: -> new Pos @current_position

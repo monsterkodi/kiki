@@ -62,10 +62,9 @@ class Action
     perform: () -> @object.performAction @
     finish: () ->  @object.finishAction @
     finished: () -> 
-        log "Action.finished #{@name} #{@object?.actionFinished?}"
+        # log "Action.finished #{@name} #{@object?.actionFinished?}"
         @object.actionFinished @
         return if @deleted
-    
         if @current == @getDuration() # if keepRest wasn't called -> reset start and current values
             @reset()
 

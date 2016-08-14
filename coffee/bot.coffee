@@ -292,7 +292,7 @@ class Bot extends Pushable
     
     finishAction: (action) ->
     
-        # log "Bot.finishAction #{action.id} #{action.name}"
+        log "Bot.finishAction #{action.id} #{action.name}"
         
         switch action.id
             when Action.NOOP, Action.SHOOT
@@ -300,8 +300,9 @@ class Bot extends Pushable
             when Action.PUSH
                 super action
                 return
-            when Action.TURN_LEFT or Action.TURN_RIGHT
+            when Action.TURN_LEFT, Action.TURN_RIGHT
                 @rotate_action = null
+                log 'rotate_action done'
                 if @move_action # bot currently performing a move action -> store rotation in @rest_orientation
                     @rest_orientation = @rest_orientation.mul @rotate_orientation
                     @rotate_orientation.reset()
@@ -357,8 +358,8 @@ class Bot extends Pushable
             @startTimedAction @getActionWithId(Action.NOOP), 0
             return
     
-        if action.id == Action.PUSH or not @direction.isZero()
-            log 'super action!'
+        if action.id == Action.PUSH #or action.id == Action.FALL # not @direction.isZero()
+            log 'super (Pushable) action!'
             super action
             return
     
@@ -384,7 +385,7 @@ class Bot extends Pushable
                     @move_action = @getActionWithId Action.CLIMB_UP
                     world.playSound 'BOT_LAND', @getPos(), 0.5
         else if world.isUnoccupiedPos @position.minus @getUp()  # below will be empty
-            log 'below will be empty'
+            log 'below will be empty!'
             if @move # sticky if moving
                 if world.isUnoccupiedPos @position.plus @getDir() 
                     # forward will be empty 

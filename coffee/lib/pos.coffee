@@ -13,18 +13,18 @@ class Pos
     constructor: (x=0, y=0, z=0) ->
         
         if (x instanceof Vector) or (x instanceof Pos)
-            @x = parseInt x.x
-            @y = parseInt x.y
-            @z = parseInt x.z
+            @x = Math.round x.x
+            @y = Math.round x.y
+            @z = Math.round x.z
         else if Array.isArray x
-            @x = parseInt x[0]
-            @y = parseInt x[1]
-            @z = parseInt x[2]
+            @x = Math.round x[0]
+            @y = Math.round x[1]
+            @z = Math.round x[2]
         else
-            @x = parseInt x
-            @y = parseInt y
-            @z = parseInt z
-        # log "Pos #{x} #{y} #{z}", @
+            @x = Math.round x
+            @y = Math.round y
+            @z = Math.round z
+        log "Pos #{x} #{y} #{z}", @
         if Number.isNaN @x
             throw new Error
 

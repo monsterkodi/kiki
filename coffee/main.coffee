@@ -23,13 +23,9 @@ class Kiki extends Stage
         @elem.style.bottom = '0'
         @elem.style.background = "#004"
         @view.appendChild @elem
-        log 'init KikiWorld', @view
         @world = World.init @view
-        
         @elem.appendChild @world.renderer.domElement
-        
-        log 'hello world'
-
+        @view.focus()
         @animate()
 
     #    0000000  000000000  00000000  00000000 

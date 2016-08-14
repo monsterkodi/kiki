@@ -67,18 +67,12 @@ class Event
                 @save_actions.pop()
     
     addFinishedAction: (action) -> 
-        log "Event.addFinishedAction #{action.name} #{@finished_actions.length}"
+        # log "Event.addFinishedAction #{action.name} #{@finished_actions.length}"
         @finished_actions.push action
     
     finishActions: () ->
         while @finished_actions.length
-            log "Event.finishActions pop:#{@finished_actions.length}", last(@finished_actions).name
+            # log "Event.finishActions pop:#{@finished_actions.length}", last(@finished_actions).name
             @finished_actions.pop().finished()
-            # action = last @finished_actions
-            # action.finished()
-            # if @finished_actions.length and action == last @finished_actions
-                # log 'pop finished'
-                # @finished_actions.pop()
-        # log "Event.finishActions actions:#{@actions.length}" if @actions.length > 1 or @actions[0]?.name != 'noop'
         
 module.exports = Event

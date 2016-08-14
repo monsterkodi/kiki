@@ -60,10 +60,7 @@ class Vector
         @    
 
     xyperp: -> new Vector -@y, @x
-    round:  -> new Vector @rint(@x), @rint(@y), @rint(@z), @w
-    rint: (n) -> 
-        if n < 0 then Math.floor(n - 0.5) 
-        else Math.round n
+    round:  -> new Vector Math.round(@x), Math.round(@y), Math.round(@z), @w
 
     xyangle: (v) ->
         thisXY  = new Vector(@x, @y).normal()

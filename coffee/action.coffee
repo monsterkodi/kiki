@@ -72,7 +72,7 @@ class Action
             # log 'keeping rest', @current
 
     reset: () ->
-        log "action.reset #{@name}"
+        # log "action.reset #{@name}"
         @start   = 0 # world time
         @rest    = 0 
         @last    = 0 # relative (ms since @start)

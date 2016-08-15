@@ -317,7 +317,7 @@ class Bot extends Pushable
     
     finishAction: (action) ->
     
-        log "Bot.finishAction #{action.id} #{action.name}"
+        log "Bot.finishAction #{action.id} #{action.name}" if action.name != 'noop'
         
         switch action.id
             when Action.NOOP, Action.SHOOT
@@ -327,7 +327,6 @@ class Bot extends Pushable
                 return
             when Action.TURN_LEFT, Action.TURN_RIGHT
                 @rotate_action = null
-                log 'rotate_action done'
                 if @move_action # bot currently performing a move action -> store rotation in @rest_orientation
                     @rest_orientation = @rest_orientation.mul @rotate_orientation
                     @rotate_orientation.reset()
@@ -368,7 +367,7 @@ class Bot extends Pushable
     # 000       000  000   000  000  0000000   000   000  00000000  0000000  
     
     actionFinished: (action) ->
-        log "bot.actionFinished #{action.name} #{action.id}"
+        # log "bot.actionFinished #{action.name} #{action.id}"a
     
         # if @isDead()
             # log "DIE!"
@@ -410,7 +409,7 @@ class Bot extends Pushable
                     @move_action = @getActionWithId Action.CLIMB_UP
                     world.playSound 'BOT_LAND', @getPos(), 0.5
         else if world.isUnoccupiedPos @position.plus @getDown()  # below will be empty
-            log 'below will be empty!'
+            # log 'below will be empty!'
             if @move # sticky if moving
                 if world.isUnoccupiedPos @position.plus @getDir() 
                     # forward will be empty 
@@ -425,26 +424,24 @@ class Bot extends Pushable
                         @move_action = @getActionWithId Action.CLIMB_UP
             
             if @move_action == null
-                log 'bot.actionFinished fall!'
+                # log 'bot.actionFinished fall!'
                 @move_action = @getActionWithId Action.FALL
                 # @move_action.takeRest action
                 
         else if action.id == Action.FALL or action.id == Action.FALL_FORWARD # landed
-            log 'fall|forward!'
             if @ == world.player
                 world.playSound 'BOT_LAND'
             else
                 world.playSound 'BOT_LAND', @getPos()
         
         if @move_action
-            log "add move_action! #{@move_action.name}"
+            # log "add move_action! #{@move_action.name}"
             Timer.addAction @move_action
             return
         
         return if @rotate_action 
         
         if @move or @jump
-            log '!move or jump!'
             @moveBot()
         else
             @dir_sgn = 1
@@ -471,7 +468,6 @@ class Bot extends Pushable
                         @move_action = @getActionWithId Action.JUMP
         else if @move 
             if world.isUnoccupiedPos forwardPos  # forward is empty
-                log 'forward is empty'
                 if world.isUnoccupiedPos forwardPos.plus @getDown()  
                     # below forward also empty
                     @move_action = @getActionWithId Action.CLIMB_DOWN

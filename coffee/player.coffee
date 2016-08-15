@@ -40,8 +40,8 @@ class Player extends Bot
             lookUp:   'up'
             lookDown: 'down'
             shoot:    'space'
-            jump:     'j'
-            view:     'v'
+            jump:     'enter'
+            view:     'c'
 
         @look_action = null
         @look_angle  = 0.0
@@ -127,7 +127,7 @@ class Player extends Bot
         @projection.setPosition @projection.getPosition().mul(1.0 - posDelta).plus camPos.mul posDelta
                                                                                 
         if @look_angle
-            log "look_angle #{@look_angle}"
+            # log "look_angle #{@look_angle}"
             @projection.setXVector playerDir.cross(playerUp).normal() 
             rot = Quaternion.rotationAroundVector @look_angle, @projection.getXVector() 
             @projection.setYVector rot.rotate playerUp  
@@ -135,7 +135,7 @@ class Player extends Bot
         else
             # smooth camera rotation a little bit
             lookDelta = 0.3
-            newLookVector = @projection.getZVector().mul(1.0 - lookDelta).plus playerDir.mul lookDelta
+            newLookVector = @projection.getZVector().mul(1.0 - lookDelta).plus (playerDir.minus(@getCurrentUp().mul(0.2)).normal()).mul lookDelta
             newLookVector.normalize()
             
             @projection.setZVector newLookVector  
@@ -181,11 +181,9 @@ class Player extends Bot
         botToCameraNormal = botToCamera.normal()
      
         # if camera below bot, rotate up
-        if botToCameraNormal.dot(playerUp) < 0
-            # calculate angle between player to camera vector and player up vector
+        if botToCameraNormal.dot(playerUp) < 0 # calculate angle between player to camera vector and player up vector
             verticalAngle = Vector.RAD2DEG Math.acos(clamp(-1.0, 1.0, botToCameraNormal.dot playerUp))
-            log "verticalAngle #{verticalAngle}"
-            rotQuat     = Quaternion.rotationAroundVector(verticalAngle/40.0, botToCameraNormal.cross(playerUp))
+            rotQuat     = Quaternion.rotationAroundVector(verticalAngle/400.0, botToCameraNormal.cross(playerUp))
             botToCamera = rotQuat.rotate botToCamera 
             botToCameraNormal = botToCamera.normal()
             camPos      = playerPos.plus botToCamera
@@ -199,7 +197,6 @@ class Player extends Bot
                 botToCamera = camPos.minus playerPos
                 botToCameraNormal = botToCamera.normal()
             rotFactor = 0.5 / (wall_distance-0.2)
-            log "rotFactor #{rotFactor}"
      
         # try view bot from behind
         # calculate horizontal angle between bot orientation and vector to camera
@@ -207,16 +204,13 @@ class Player extends Bot
         horizontalAngle = Vector.RAD2DEG Math.acos(clamp(-1.0, 1.0, -playerDir.dot mappedToXZ))
         if botToCameraNormal.dot(playerLeft) < 0
             horizontalAngle = -horizontalAngle
-        log "horizontalAngle #{horizontalAngle}"
         rotQuat = Quaternion.rotationAroundVector horizontalAngle/(rotFactor*400.0), playerUp 
         camPos = playerPos.plus rotQuat.rotate botToCamera
 
         botToCamera = camPos.minus playerPos
         botToCameraNormal = botToCamera.normal()
     
-        # finally, set the position
-        
-        @projection.setPosition camPos 
+        @projection.setPosition camPos # finally, set the position
         
         # slowly adjust look direction by interpolating current and desired directions
         lookDelta = @projection.getZVector().dot botToCameraNormal
@@ -225,7 +219,7 @@ class Player extends Bot
         newLookVector.normalize()
         
         # slowly adjust up vector by interpolating current and desired up vectors
-        upDelta = @projection.getYVector().dot playerUp
+        upDelta = 1.5-@projection.getYVector().dot playerUp
         upDelta *= upDelta / 100.0    
         newUpVector = @projection.getYVector().mul(1.0-upDelta).plus playerUp.mul(upDelta)
         newUpVector.normalize()
@@ -350,7 +344,6 @@ class Player extends Bot
                 return true
         
             when @key.left, @key.right
-                log 'rotate', combo
                 @rotate = (combo == @key.left) and Action.TURN_LEFT or Action.TURN_RIGHT
                 if not @rotate_action? and not @spiked # player is not performing a rotation and unspiked
                     @rotate_action = @getActionWithId @rotate

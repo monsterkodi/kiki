@@ -15,6 +15,7 @@ class Item extends Actor
 
     constructor: ->
         super
+        @name = @constructor.name
         world.scene.add @mesh if @mesh?
         @position         = new Vector
         @current_position = new Vector

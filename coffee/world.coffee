@@ -47,7 +47,7 @@ class World extends Actor
     
     constructor: (@view) ->
                 
-        @speed       = 4
+        @speed       = 6
         @raster_size = 0.05
         # @camera_mode     = World.CAMERA_INSIDE
         @camera_mode     = World.CAMERA_BEHIND
@@ -842,7 +842,7 @@ class World extends Actor
         if @isInvalidPos pos
             return true
         if @getOccupantAtPos pos
-            log "isOccupiedPos occupant: #{@getOccupantAtPos(pos).name} at pos:", pos
+            # log "isOccupiedPos occupant: #{@getOccupantAtPos(pos).name} at pos:", new Pos pos
             return true
     
     mayObjectPushToPos: (object, pos, duration) ->
@@ -935,10 +935,13 @@ class World extends Actor
     #   000  000   000          000   
     #   000   000  00000000     000   
     
-    modKeyComboEventUp: (mod, key, combo, event) ->
-        @player?.modKeyComboEventUp mod, key, combo, event
-
     modKeyComboEventDown: (mod, key, combo, event) ->
-        @player?.modKeyComboEventDown mod, key, combo, event
+        return if @player?.modKeyComboEventDown mod, key, combo, event
+        switch combo
+            when '=' then @speed = Math.min 10, @speed+1
+            when '-' then @speed = Math.max 1,  @speed-1
+
+    modKeyComboEventUp: (mod, key, combo, event) ->
+        return if @player?.modKeyComboEventUp mod, key, combo, event        
 
 module.exports = World

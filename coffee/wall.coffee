@@ -8,6 +8,8 @@
 Item = require './item'
 
 class Wall extends Item
+
+    isSpaceEgoistic: -> true
     
     constructor: ->
         

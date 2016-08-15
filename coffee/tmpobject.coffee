@@ -4,13 +4,13 @@
 #    000     000 0 000  000        000   000  000   000  000   000  000       000          000   
 #    000     000   000  000         0000000   0000000     0000000   00000000   0000000     000   
 
-log    = require '/Users/kodi/s/ko/js/tools/log'
-
+log  = require '/Users/kodi/s/ko/js/tools/log'
 Item = require './item'
 
 class TmpObject extends Item
     
     @tmpID = 0
+    isSpaceEgoistic: -> true
     
     constructor: (o) ->
         TmpObject.tmpID += 1

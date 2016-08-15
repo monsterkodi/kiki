@@ -19,6 +19,7 @@ Player      = require './player'
 Cage        = require './cage'
 Timer       = require './timer'
 Actor       = require './actor'
+Action      = require './action'
 TmpObject   = require './tmpobject'
 Quaternion  = require './lib/quaternion'
 Vector      = require './lib/vector'
@@ -106,7 +107,6 @@ class World extends Actor
         @preview         = false
         @objects         = []
         @lights          = []
-        @moved_objects   = []
         @cells           = [] 
         @size            = new Pos()
         @depth           = -Number.MAX_SAFE_INTEGER
@@ -149,8 +149,8 @@ class World extends Actor
         
         @levelList = [
             # intro
-            # "start", 
             "steps", 
+            "start", 
             #"move", "electro", "elevate", 
             # "throw", 
             # easy
@@ -203,7 +203,8 @@ class World extends Actor
             
         # ............................................................ appearance
         
-        @setSize @dict["size"]
+        @setSize @dict["size"] # this removes all objects
+        
         # log "world size set", @size
         
         # if "scheme" in @dict
@@ -243,7 +244,12 @@ class World extends Actor
 
                 # exit_action  = @once "exit #{exit_id}"
                 # delay_action = @once (a=exit_action) -> Timer.addAction a  
-                # exit_gate.getEventWithName("enter").addAction(delay_action)
+                exitAction = new Action 
+                    func: @exitLevel
+                    name: "exit #{exit_id}"
+                    mode: Action.ONCE
+
+                exit_gate.getEventWithName("enter").addAction exitAction
                 if entry.position?
                     pos = @decenter entry.position
                 else if entry.coordinates?
@@ -298,8 +304,9 @@ class World extends Actor
         @create()
 
     finish: () ->
+        log 'world.levelFinished'
         # saves the current level status in highscore file
-        highscore.levelFinished world.level_name, Controller.player.getStatus().getMoves()
+        # highscore.levelFinished world.level_name, Controller.player.getStatus().getMoves()
 
     # 00000000   00000000   0000000  00000000  000000000      00000000   000       0000000   000   000  00000000  00000000 
     # 000   000  000       000       000          000         000   000  000      000   000   000 000   000       000   000
@@ -328,22 +335,20 @@ class World extends Actor
     #   000   000  000          000     000  000   000  000  0000
     #   000   000   0000000     000     000   0000000   000   000
           
-    performAction: (name, time) ->
-        # log "world.performAction #{name}"
-        # action callback. used to exit current world
-        if /exit/.test name
-            @finish()
-            @player.status.setMoves 0
-            if "world" in @dict["exits"][parseInt name.slice 5]
-                w = @dict["exits"][parseInt name.slice 5]["world"]
-                if w instanceof World
-                    w.create()
-                else if _.isFunction w
-                    w()
-                # else
-                    # exec "World().create(" + world + ")"
-            else
-                world.create levelList[world.level_index+1]
+
+    exitLevel: (action) =>
+        log "world.exitLevel #{action}"       
+        @finish()
+        # @player.status.setMoves 0
+        exitIndex = parseInt action.name.slice 5
+        log "world.exitLevel exitIndex:#{exitIndex}"
+        # if @dict.exits[exitIndex]?.world?
+            # w = @dict.exits[exitIndex].world
+            # w() if _.isFunction w
+        # else
+            # world = world.create levelList[world.level_index+1]
+        log "world.level_index #{world.level_index} nextLevel #{World.levelList[world.level_index+1]}"
+        world.create World.levelList[world.level_index+1]
 
     activate: (objectName) ->
         # activates object with name objectName
@@ -537,11 +542,11 @@ class World extends Actor
         lrest = index % lsize
         new Pos index/lsize, lrest/@size.z, lrest%@size.z
     
-    #    0000000   0000000          000  00000000   0000000  000000000   0000000
-    #   000   000  000   000        000  000       000          000     000     
-    #   000   000  0000000          000  0000000   000          000     0000000 
-    #   000   000  000   000  000   000  000       000          000          000
-    #    0000000   0000000     0000000   00000000   0000000     000     0000000 
+    #  0000000   0000000          000  00000000   0000000  000000000   0000000
+    # 000   000  000   000        000  000       000          000     000     
+    # 000   000  0000000          000  0000000   000          000     0000000 
+    # 000   000  000   000  000   000  000       000          000          000
+    #  0000000   0000000     0000000   00000000   0000000     000     0000000 
         
     getObjectsOfType:      (clss) -> @objects.filter (o) -> o instanceof clss
     getObjectsOfTypeAtPos: (clss, pos) -> @getCellAtPos(pos)?.getObjectsOfType clss
@@ -566,7 +571,7 @@ class World extends Actor
                         if occupant.time > 0
                             log "World.setObjectAtPos [WARNING] already occupied pos:", pos
                             log "World.setObjectAtPos [WARNING] already occupied time:", occupant.time
-                    occupant.del() # temporary object at new pos will vanish anyway . delete it
+                        occupant.del() # temporary object at new pos will vanish anyway . delete it
         
         cell = @getCellAtPos pos
         if not cell?
@@ -630,6 +635,7 @@ class World extends Actor
     #   0000000    00000000  0000000  00000000     000     00000000
     
     deleteObject: (object) ->
+        log "world.deleteObject #{object.name}"
         if not object?
             log "WARNING: World.deleteObject null"
             return
@@ -637,8 +643,7 @@ class World extends Actor
         object.del()
     
     deleteAllObjects: () ->
-        @picked_pickable = null
-        @moved_objects = []
+        log 'world.deleteAllObjects'
     
         if @player?
             @player.finishRotateAction()
@@ -685,17 +690,9 @@ class World extends Actor
     #   000   000  0000000          000        000000000  000   000   000 000   0000000 
     #   000   000  000   000  000   000        000 0 000  000   000     000     000     
     #    0000000   0000000     0000000         000   000   0000000       0      00000000
-    
-    objectMovedFromPos: (object, pos) ->
-    
-        if cell = @getCellAtPos(pos)
-            if tmpObject = cell.getObjectOfType TmpObject 
-                if tmpObject.object == object
-                    tmpObject.del()
-        @moved_objects.push object 
-    
+        
     objectWillMoveToPos: (object, pos, duration) ->
-        # log "world.objectWillMoveToPos", pos
+        # log "world.objectWillMoveToPos #{object.name} #{duration}", pos
         
         if @isInvalidPos pos
             log "world.objectWillMoveToPos [WARNING] invalid pos:", pos
@@ -716,8 +713,8 @@ class World extends Actor
                 else
                     log "world.objectWillMoveToPos [WARNING] already occupied:", pos 
     
-        if object != @player
-            log '---------- tmpObjects'
+        if object.name != 'player'
+            log "---------- tmpObjects not player? #{object.name}"
             @unsetObject object # remove object from cell grid
             # log 'tmpObject at new pos', pos 
             tmpObject = new TmpObject object  # insert tmp object at new pos
@@ -729,27 +726,55 @@ class World extends Actor
             tmpObject.setPosition object.position
             tmpObject.time = -duration
             @addObjectAtPos tmpObject, object.getPos() 
+        else @player.targetPos = pos
     
-    updateStatus: () ->
+    objectMoved: (movedObject, from, to) ->
+        sourcePos = new Pos from
+        targetPos = new Pos to
+        
+        # log "world.objectMoved #{movedObject.name}", sourcePos
+        
+        # if cell = @getCellAtPos sourcePos 
+            # if tmpObject = cell.getObjectOfType TmpObject 
+                # if tmpObject.object == object
+                    # tmpObject.del()
 
-        while @moved_objects.length
-            movedObject = last @moved_objects
-            pos = new Pos movedObject.position
-    
-            if @isInvalidPos pos
-                 log "World.updateStatus invalid new pos"
-                 return
-    
-            if tmpObject = @getObjectOfTypeAtPos TmpObject, pos
-                if tmpObject.object == movedObject
-                    tmpObject.del()
-                else
-                    log "World.updateStatus wrong tmp object at pos:", pos
-            else if @isOccupiedPos pos
-                log "World.updateStatus object moved to occupied pos:", pos
-                    
-            @setObjectAtPos movedObject, pos 
-            @moved_objects.pop()
+        if @isInvalidPos targetPos
+             log "World.objectMoved invalid targetPos:", targetPos
+             return
+
+        # if tmpObject = @getObjectOfTypeAtPos TmpObject, pos
+            # if tmpObject.object == movedObject
+                # tmpObject.del()
+            # else
+                # log "World.updateStatus wrong tmp object at pos:", pos
+        # else 
+            
+        if @isOccupiedPos targetPos
+            log "World.objectMoved object moved to occupied pos:", targetPos
+            
+        # log 'World.objectMovedFromPos sourcePos:', sourcePos
+        # log 'World.objectMovedFromPos targetPos:', targetPos
+        
+        sourceCell = @getCellAtPos sourcePos
+        targetCell = @getCellAtPos targetPos
+        
+        if sourceCell?
+            sourceCell.removeObject movedObject
+            if sourceCell.isEmpty()
+                # log 'world.objectMoved remove empty cell at pos:', sourcePos
+                @cells[@posToIndex(sourcePos)] = null
+            
+        if not targetCell?
+            cellIndex = @posToIndex targetPos 
+            targetCell = new Cell()
+            # log "world.objectMoved created cell at index #{cellIndex}", targetPos 
+            @cells[cellIndex] = targetCell
+
+        if targetCell?
+            targetCell.addObject movedObject
+        else
+            log 'world.objectMoved [WARNING] no target cell?'
     
     setObjectColor: (color_name, color) ->
         if color_name == 'base'
@@ -768,11 +793,9 @@ class World extends Actor
     step: (step) ->
         if false
             quat = @camera.quaternion.clone()
-            quat.multiply (new THREE.Quaternion).setFromAxisAngle(new THREE.Vector3(1,0,0), step.dsecs*0.2)
-            quat.multiply (new THREE.Quaternion).setFromAxisAngle(new THREE.Vector3(0,1,0), step.dsecs*0.1)
-            # center = @decenter 0,0,0
+            quat.multiply new THREE.Quaternion().setFromAxisAngle new THREE.Vector3(1,0,0), step.dsecs*0.2
+            quat.multiply new THREE.Quaternion().setFromAxisAngle new THREE.Vector3(0,1,0), step.dsecs*0.1
             center = @size.div 2
-            # log center
             @camera.position.set(center.x,center.y,center.z+@dist).applyQuaternion quat
             @camera.quaternion.copy quat
 
@@ -786,7 +809,6 @@ class World extends Actor
             when World.CAMERA_BEHIND then @projection = @player.getBehindProjection()
             when World.CAMERA_FOLLOW then @projection = @player.getFollowProjection()
         @projection.apply @camera
-
         @sun.position.copy @camera.position
         @renderer.render @scene, @camera
     
@@ -799,12 +821,8 @@ class World extends Actor
     getTime: -> now().toFixed 0
     setSpeed: (s) -> @speed = s
     getSpeed: -> @speed
-    mapMsTime:  (unmapped) -> 
-        # log "mapMsTime #{unmapped} #{@speed} #{parseInt 10.0 * unmapped/@speed}"
-        parseInt 10.0 * unmapped/@speed
-    unmapMsTime: (mapped) -> 
-        # log "unmapMsTime #{mapped} #{@speed} #{parseInt mapped * @speed/10.0}"
-        parseInt mapped * @speed/10.0
+    mapMsTime:  (unmapped) -> parseInt 10.0 * unmapped/@speed
+    unmapMsTime: (mapped) -> parseInt mapped * @speed/10.0
         
     continuous: (cb) ->
         new Action 

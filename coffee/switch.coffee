@@ -12,6 +12,8 @@ Light      = require './light'
 Item       = require './item'
 
 class Switch extends Item
+
+    isSpaceEgoistic: -> true
     
     constructor: (active=false) ->
 
@@ -33,16 +35,13 @@ class Switch extends Item
         @setActive active
 
     createMesh: () ->
-        log 'switch createMesh'
         torusRadius = 0.05
         t1 = new THREE.TorusGeometry 0.5-torusRadius, torusRadius, 16, 32
         @mat  = new THREE.MeshPhongMaterial 
             color:          0x0000ff
             side:           THREE.FrontSide
             shading:        THREE.SmoothShading
-            transparent:    true
-            opacity:        0.9
-            shininess:      0.99
+            shininess:      5
         @mesh = new THREE.Mesh t1, @mat
      
         t2 = new THREE.TorusGeometry 0.5-torusRadius, torusRadius, 16, 32
@@ -54,7 +53,7 @@ class Switch extends Item
         @mesh.add @tors
         @mesh
         
-    bulletImpact: -> @setActive not @active   
+    bulletImpact: -> @setActive not @active
     
     del: () -> @light?.del()
     
@@ -70,7 +69,6 @@ class Switch extends Item
                 @startTimedAction @getActionWithId Action.ROTATE 
                 world.playSound @sound_on
                 @events[@SWITCH_ON_EVENT].triggerActions()
-                # log 'createLight at pos:', @position
                 @light = new Light @position, 10.0
                 @light.on 'deleted', @lightDeleted
             else
@@ -86,7 +84,6 @@ class Switch extends Item
             @events[@SWITCHED_EVENT].triggerActions()
     
     setPosition: (pos) ->
-        # log "setPosition #{@light?} pos:", pos
         super pos
         @light?.setPosition @position
     
@@ -104,10 +101,4 @@ class Switch extends Item
         else
             @animate action.getRelativeDelta()
     
-    # render: () ->
-    
-        # if (active)
-            # colors[KikiSwitch_sphere_color].glColor()
-            # kDisplaySolidSphere(0.3);
-        
 module.exports = Switch

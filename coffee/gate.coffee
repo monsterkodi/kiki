@@ -6,10 +6,13 @@
 
 log    = require "/Users/kodi/s/ko/js/tools/log"
 
+Vector = require './lib/vector'
 Switch = require './switch'
 Action = require './action'
 
 class Gate extends Switch
+    
+    isSpaceEgoistic: -> false
 
     constructor: (active) ->
         super active
@@ -19,12 +22,33 @@ class Gate extends Switch
         @sound_on  = 'GATE_OPEN'
         @sound_off = 'GATE_CLOSE'
         
-    createMesh: () -> super
-        # log 'gate.createMesh'
+    createMesh: () -> 
+        torusRadius = 0.05
+        t1 = new THREE.TorusGeometry 0.5-torusRadius, torusRadius, 16, 32
+        @mat  = new THREE.MeshPhongMaterial 
+            color:          0xff0000
+            side:           THREE.FrontSide
+            shading:        THREE.SmoothShading
+            shininess:      5
+            
+        @mesh = new THREE.Mesh t1, @mat
+     
+        t2 = new THREE.TorusGeometry 0.5-torusRadius, torusRadius, 16, 32
+        t3 = new THREE.TorusGeometry 0.5-torusRadius, torusRadius, 16, 32
+        t2.rotateY Vector.DEG2RAD 90 
+        t3.rotateX Vector.DEG2RAD 90 
+        t2.merge t3
+        @tors = new THREE.Mesh t2, @mat
+        @mesh.add @tors
+        @mesh
     
+    bulletImpact: ->
+
     newCellMate: (object) ->
-        if object == world.player and @active
+        log "gate.newCellMate --------------------------- #{object.name} #{@active}"
+        if object.name == 'player' and @active
             world.playSound 'GATE_WARP'
+            log "gate.newCellMate --------------------------- trigger enter event actions"
             @events[@ENTER_EVENT].triggerActions() 
     
     renderBar: (r,b,h) ->

@@ -4,16 +4,16 @@
 #      000     000     000   000  000  0000  000     
 # 0000000      000      0000000   000   000  00000000
 
-Item = require './item'
+Pushable = require './pushable'
 
-class Stone extends Item
+class Stone extends Pushable
     
-    constructor: ->
+    constructor: (@slippery=false) ->
         
         @geom = new THREE.BoxGeometry 1,1,1
         
         @mat  = new THREE.MeshPhongMaterial 
-            color:          0xffffff
+            color:          0xff8800
             side:           THREE.FrontSide
             shading:        THREE.SmoothShading
             transparent:    true
@@ -24,5 +24,7 @@ class Stone extends Item
         world.scene.add @mesh
         @mesh.matrixAutoUpdate = true
         super
+
+    isSlippery: -> return @slippery
     
 module.exports = Stone

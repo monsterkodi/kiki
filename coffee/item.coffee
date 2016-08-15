@@ -24,6 +24,7 @@ class Item extends Actor
         @move_action      = null
 
     del: -> 
+        log "item del!!!!!!!!!!!!!!!!!!!!!! #{@name}"
         world.scene.remove @mesh if @mesh?
         world.removeObject @
         @emit 'deleted'
@@ -33,7 +34,7 @@ class Item extends Actor
     bulletImpact: ->
     render: ->
         
-    isSpaceEgoistic: -> true
+    isSpaceEgoistic: -> false
     isSlippery: -> false
     
     setPosition: (x,y,z) -> 

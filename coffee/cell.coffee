@@ -21,13 +21,14 @@ class Cell
     getOccupant: -> _.find @objects, (o) -> o.isSpaceEgoistic()
 
     removeObject: (object) ->
-        # log 'cell.removeObject ', @objects.length
+        # log 'cell.removeObject', @objects.length
         for o in @objects
             o.cellMateLeft object if o != object
         _.remove @objects, (o) -> o == object or o.object == object
         # log 'cell.removedObject ', (o.name for o in @objects)
 
     addObject: (object) ->
+        # log "cell.addObject #{object.name}"
         for o in @objects
             o.newCellMate object
         @objects.push object

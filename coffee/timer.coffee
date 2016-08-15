@@ -16,6 +16,7 @@ class Timer
         @event   = world.getEventWithId @eventID
         # log "Timer.init @eventID:#{@eventID} #{@event.name}"
     
+    @removeAllActions: -> @event.removeAllActions()
     @removeActionsOfObject: (o) -> 
         # log "Timer.removeActionsOfObject"
         @event.removeActionsOfObject o

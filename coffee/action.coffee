@@ -60,12 +60,15 @@ class Action
         if @object? then @object.removeAction @
         @deleted = true
 
-    init: () ->    @object.initAction @
-    perform: () -> @object.performAction @
-    finish: () ->  @object.finishAction @
+    init: () ->    @object.initAction? @
+    perform: () -> @object.performAction? @
+    finish: () ->  @object.finishAction? @
     finished: () -> 
         # log "Action.finished #{@name} #{@object?.actionFinished?}"
-        @object.actionFinished @
+        if _.isFunction @object
+            @object @
+        else
+            @object.actionFinished @
         return if @deleted
         @reset()
         # if @current >= @getDuration() # if keepRest wasn't called -> reset start and current values
@@ -121,7 +124,7 @@ class Action
                 @last    = 0
                 
                 if @mode == Action.CONTINUOUS
-                    log 'Action.CONTINUOUS'
+                    log "action.performWithEvent #{@name} mode == Action.CONTINUOUS"
                     @current = @rest
                     @start = eventTime
                     @last  = 0

@@ -10,6 +10,8 @@ Action = require './action'
 Vector = require './lib/vector'
 
 class Pushable extends Item
+
+    isSpaceEgoistic: -> true
     
     constructor: () ->
         super
@@ -48,7 +50,7 @@ class Pushable extends Item
         switch action.id
             when Action.PUSH, Action.FALL
                 @move_action = null
-                world.objectMovedFromPos @, @position
+                world.objectMoved @, @position, @current_position
                 # log "Pushable.finishAction setPosition #{@current_position}"
                 @setPosition @current_position
 

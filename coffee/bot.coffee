@@ -14,7 +14,7 @@ Vector     = require './lib/vector'
 Quaternion = require './lib/quaternion'
 
 class Bot extends Pushable
-    
+        
     constructor: () ->
                 
         @direction           = new Vector
@@ -316,7 +316,7 @@ class Bot extends Pushable
     finishAction: (action) ->
     
         log "Bot.finishAction #{action.id} #{action.name}" if action.name != 'noop'
-        
+                
         switch action.id
             when Action.NOOP, Action.SHOOT
                 return
@@ -349,11 +349,12 @@ class Bot extends Pushable
             else
                 @orientation = @orientation.mul Quaternion.rotationAroundVector(-90.0, new Vector(0,1,0)).mul @rest_orientation
                 @rest_orientation = Quaternion.rotationAroundVector 90.0, new Vector 0,1,0  
-    
-        if action.id != Action.CLIMB_UP
-            world.objectMovedFromPos @, @position # update world @position
-            @position = @current_position.round()
                 
+        if action.id != Action.CLIMB_UP
+            targetPos = @current_position.round()
+            world.objectMoved @, @position, targetPos # update world @position
+            @position = targetPos
+                    
         if action.id != Action.JUMP_FORWARD and @rotate_action == null # if not jumping forward
             @orientation = @orientation.mul @rest_orientation # update rotation @orientation
             @rest_orientation.reset()
@@ -365,7 +366,7 @@ class Bot extends Pushable
     # 000       000  000   000  000  0000000   000   000  00000000  0000000  
     
     actionFinished: (action) ->
-        # log "bot.actionFinished #{action.name} #{action.id}"a
+        # log "bot.actionFinished #{action.name} #{action.id}"
     
         # if @isDead()
             # log "DIE!"
@@ -386,7 +387,7 @@ class Bot extends Pushable
             return
     
         if @move_action # action was not a move action -> return
-            log 'action was not a move action -> return'
+            # log 'bot.actionFinished was not a move action!'
             return 
         
         # find next action depending on type of finished action and surrounding environment

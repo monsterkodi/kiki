@@ -150,11 +150,12 @@ class World extends Actor
         @levelList = [
             # intro
             "steps", 
-            "start", 
+            # "start", 
             #"move", "electro", "elevate", 
             # "throw", 
             # easy
-            "gold", "jump", "escape", "gears", 
+            # "gold", 
+            "jump", "escape", "gears", 
             # "gamma", 
             "cube", "switch", "borg", 
             "mini", 

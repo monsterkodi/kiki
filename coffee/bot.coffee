@@ -408,11 +408,11 @@ class Bot extends Pushable
                 if world.isUnoccupiedPos @position.plus @getDir()  # forward will be empty 
                     if world.isOccupiedPos @position.plus @getDir().minus @getUp() # below forward is solid
                         occupant = world.getOccupantAtPos @position.plus @getDir().minus @getUp() 
-                        if occupant == null or not occupant.isSlippery()
+                        if not occupant? or not occupant?.isSlippery()
                             @move_action = @getActionWithId Action.FORWARD
                 else
                     occupant = world.getOccupantAtPos @position.plus @getDir() 
-                    if occupant == null or not occupant.isSlippery()
+                    if not occupant? or not occupant?.isSlippery()
                         @move_action = @getActionWithId Action.CLIMB_UP
             
             if @move_action == null

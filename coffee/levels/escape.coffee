@@ -28,9 +28,9 @@ module.exports =
     create: ->
 # 
         s = world.size
-        
-        exit_switch = KikiSwitch()
-        exit_switch.getEventWithName("switched").addAction(continuous(() -> world.toggle("exit")))
+        Switch = require '../switch'
+        exit_switch = new Switch()
+        exit_switch.getEventWithName("switched").addAction world.continuous () -> world.toggle "exit"
         world.addObjectAtPos(exit_switch, world.decenter( 0, -2, 0))
         
         world.addObjectAtPos('KikiStone', world.decenter( 0, s.y/2, 0))

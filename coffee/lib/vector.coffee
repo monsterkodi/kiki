@@ -24,7 +24,6 @@ class Vector
             @w = w
         if Number.isNaN @x
             throw new Error
-        # log "Vector #{x} #{y} #{z} #{w} -> #{@x} #{@y} #{@z} #{@w}"
 
     copy: (v) -> 
         @x = v.x
@@ -114,9 +113,7 @@ class Vector
         point.minus(planeNormal).dot point.minus(planePos).dot(planeNormal)
 
     @rayPlaneIntersectionFactor: (rayPos, rayDir, planePos, planeNormal) ->
-        # ((planePos - rayPos) * planeNormal) / (rayDirection * planeNormal);
         r = planePos.minus(rayPos).dot(planeNormal) / rayDir.dot(planeNormal)
-        # log 'rayPlaneIntersectionFactor', r
         if Number.isNaN r
             log 'rayPos', rayPos
             log 'rayDir', rayDir

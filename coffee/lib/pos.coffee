@@ -32,7 +32,7 @@ class Pos
     minus: (p) -> new Pos @x-p.x, @y-p.y, @z-p.z
     plus:  (p) -> new Pos @x+p.x, @y+p.y, @z+p.z
     mul:   (f) -> new Pos @x*f, @y*f, @z*f
-    div:   (d) -> new Pos @x/d, @y/d, @z/d
+    div:   (d) -> new Pos Math.floor(@x/d), Math.floor(@y/d), Math.floor(@z/d)
     eql:   (p) -> @x==p.x and @y==p.y and @z==p.z
     
     add: (p) -> 

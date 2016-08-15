@@ -12,6 +12,8 @@ class Action
     @NOOP         = 0
     @PUSH         = 1
     @EXPLODE      = 1
+    @TOGGLE       = 1
+    @ROTATE       = 2
     @FLY          = 2
     @FALL         = 2
     @FORWARD      = 3
@@ -121,6 +123,9 @@ class Action
                 if @mode == Action.CONTINUOUS
                     log 'Action.CONTINUOUS'
                     @current = @rest
+                    @start = eventTime
+                    @last  = 0
+                    @rest  = 0
                     return
                 event.removeAction @ if @mode == Action.ONCE
                 

@@ -11,7 +11,9 @@ World = require './world'
 
 class Kiki extends Stage
     
-    constructor: (@view) -> super @view
+    constructor: (@view) -> 
+        super @view
+        @view.focus()
     
     start: -> 
                 
@@ -37,11 +39,12 @@ class Kiki extends Stage
     animationStep: (step) => @world.step step
 
     reset: ->
-        @elem.style.display = 'block'
         @resume()
+        @start()
         
     stop: ->
-        @elem.style.display = 'none'
+        World.deinit()
+        @elem.remove()
         @pause()
         
     resized: (w,h) -> @world.resized w, h

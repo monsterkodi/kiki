@@ -9,38 +9,33 @@ Item = require './item'
 class Light extends Item
     
     constructor: (pos, radius) ->
-        @radius = radius ? 4.0
-        @setPosition pos if pos?
-        @setup()
-        # Controller.world->addObject @ if pos?
-
-    setup: ->
-        @halo_radius           = 1.0
-        @quadratic_attenuation = 1.0/(@radius*@radius)
-
+        @radius    = radius ? 4
+        @intensity = 1
         # @ambient_color  = colors[KikiLight_base_color]
         # @diffuse_color  = colors[KikiLight_diffuse_color]
         # @specular_color = colors[KikiLight_specular_color]
+        @point = new THREE.PointLight 0xffffff, @intensity, @radius, 2
+        geom   = new THREE.SphereGeometry 0.3, 16, 16
+        mat    = new THREE.MeshLambertMaterial 
+            color:          0xffffff
+            side:           THREE.FrontSide
+            shading:        THREE.SmoothShading
+            transparent:    true
+            opacity:        0.7
+            emissive:       0xffff00
+            emissiveIntensity: 0.9
+            
+        @mesh = new THREE.Mesh geom, mat
+        world.scene.add @point
+        @setPosition pos if pos?
+        super
 
-        @initialize()
-
-    setPosition: (pos) ->
-        # KLight::setPosition (KVector(pos[X], pos[Y], pos[Z], 1.0))
-        super pos
-
-    display: () ->
-        # if (light_number == 0) return
-#     
-        # KLight::setPosition (KVector(position[X], position[Y], position[Z], 1.0));
-#     
-        # glDepthMask (false);
-        # glPushMatrix();
-        # colors[KikiLight_halo_color].glColor();
-        # position.glTranslate();
-#         
-        # KikiBillBoard::displayTextureWithSize 
-                            # (Controller.world->getTextureId (KikiWorld::TEXTURE_GRADIENT), 1.0);
-        # glPopMatrix();
-        # glDepthMask (true);
+    del: -> 
+        world.scene.remove @point
+        super
         
+    setPosition: (pos) ->
+        super pos
+        @point.position.copy @position
+
 module.exports = Light

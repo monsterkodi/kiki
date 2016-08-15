@@ -39,8 +39,8 @@ class Player extends Bot
             right:    'd'
             lookUp:   'up'
             lookDown: 'down'
-            shoot:    'space'
-            jump:     'enter'
+            shoot:    'enter'
+            jump:     'space'
             view:     'c'
 
         @look_action = null

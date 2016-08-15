@@ -17,17 +17,13 @@ class Wall extends Item
             side:           THREE.FrontSide
             shading:        THREE.SmoothShading
             transparent:    true
-            opacity:        0.9
-            shininess:      0.99
-        
+            opacity:        0.85
+            shininess:      5
         @mesh = new THREE.Mesh @geom, @mat
-        world.scene.add @mesh
-        @mesh.matrixAutoUpdate = true
-        
-        s = 0.45
-        d = 0.5
-        
         super
+    
+      # s = 0.45
+      # d = 0.5
     
     # glDisable(GL_LIGHTING);
     # colors[KikiWall_base_color].glColor();

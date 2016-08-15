@@ -21,7 +21,7 @@ module.exports =
                 to turn, press "$key(turn left)" or "$key(turn right)"
                 """
     player:   
-        coordinates:     [3,0,6]
+        coordinates:     [4,4,8]
         nostatus:         0
     exits:      [
         name:         "exit"

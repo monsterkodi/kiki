@@ -18,12 +18,12 @@ class Bullet extends Item
         
         geom = new THREE.SphereGeometry 1, 16, 16
         mat  = new THREE.MeshPhongMaterial 
-            color:          0x222266
+            color:          0x2222ff
             side:           THREE.FrontSide
             shading:        THREE.SmoothShading
             transparent:    true
-            opacity:        0.9
-            shininess:      0.99
+            opacity:        0.8
+            shininess:      5
         @mesh = new THREE.Mesh geom, mat
         @mesh.scale.set @size, @size, @size
         super
@@ -36,7 +36,7 @@ class Bullet extends Item
         bullet.direction = bot.getCurrentDir()
         bullet.setPosition bot.position.plus bullet.direction.mul 1/2.0
         bullet.src_object = bot
-        log 'shootFromBot', bullet.direction, bullet.position
+        # log 'shootFromBot', bullet.direction, bullet.position
         world.playSound 'BULLET_SHOT', bot.getPos()
     
         return if bullet.hitObjectAtPos bullet.position.plus bullet.direction.mul 1/2.0
@@ -61,12 +61,13 @@ class Bullet extends Item
             if hitObject != @src_object
                 if hitObject?
                     hitObject.bulletImpact()
-                    if hitObject instanceof Mutant and not hitObject.isDead()
-                        world.playSound 'BULLET_HIT_MUTANT', pos
-                    else if hitObject == world.player
-                        world.playSound 'BULLET_HIT_PLAYER', pos
-                    else
-                        world.playSound 'BULLET_HIT_OBJECT', pos
+                    world.playSound hitObject.bulletHitSound?() ? 'BULLET_HIT_OBJECT'
+                    # if hitObject instanceof Mutant and not hitObject.isDead()
+                        # world.playSound 'BULLET_HIT_MUTANT', pos
+                    # else if hitObject == world.player
+                        # world.playSound 'BULLET_HIT_PLAYER', pos
+                    # else
+                        # world.playSound 'BULLET_HIT_OBJECT', pos
                 else
                     world.playSound 'BULLET_HIT_WALL', pos
                 Timer.addAction @getActionWithId Action.EXPLODE

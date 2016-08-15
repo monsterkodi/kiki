@@ -13,6 +13,7 @@ log         = require "/Users/kodi/s/ko/js/tools/log"
 Pos         = require './lib/pos'
 Size        = require './lib/size'
 Cell        = require './cell'
+Gate        = require './gate'
 Light       = require './light'
 Player      = require './player'
 Cage        = require './cage'
@@ -109,19 +110,36 @@ class World extends Actor
         @cells           = [] 
         @size            = new Pos()
         @depth           = -Number.MAX_SAFE_INTEGER
-            
+     
+    @deinit: () ->
+        world = null
+       
     @init: (view) ->
         return if world?
+        
+        @initGlobal()
+            
+        log "create world in view:", view
+        world = new World view
+        world.name = 'world'
+        global.world = world
+        Timer.init()
+        world.create first @levelList
+        world
+        
+    @initGlobal: () ->
+        
+        return if @levelList.length
                 
         global.rot0    = new Quaternion()
-        global.rotz180 = Quaternion.rotationAroundVector(180, Vector(0,0,1))
-        global.rotz90  = Quaternion.rotationAroundVector(90,  Vector(0,0,1))
-        global.roty270 = Quaternion.rotationAroundVector(270, Vector(0,1,0))
-        global.roty180 = Quaternion.rotationAroundVector(180, Vector(0,1,0))
-        global.roty90  = Quaternion.rotationAroundVector(90,  Vector(0,1,0))
-        global.roty0   = Quaternion.rotationAroundVector(0,   Vector(0,1,0))
-        global.rotx180 = Quaternion.rotationAroundVector(180, Vector(1,0,0))
-        global.rotx90  = Quaternion.rotationAroundVector(90,  Vector(1,0,0))
+        global.rotz180 = Quaternion.rotationAroundVector 180, new Vector 0,0,1
+        global.rotz90  = Quaternion.rotationAroundVector 90,  new Vector 0,0,1
+        global.roty270 = Quaternion.rotationAroundVector 270, new Vector 0,1,0
+        global.roty180 = Quaternion.rotationAroundVector 180, new Vector 0,1,0
+        global.roty90  = Quaternion.rotationAroundVector 90,  new Vector 0,1,0
+        global.roty0   = Quaternion.rotationAroundVector 0,   new Vector 0,1,0
+        global.rotx180 = Quaternion.rotationAroundVector 180, new Vector 1,0,0
+        global.rotx90  = Quaternion.rotationAroundVector 90,  new Vector 1,0,0
         
         # 000      00000000  000   000  00000000  000       0000000
         # 000      000       000   000  000       000      000     
@@ -164,15 +182,6 @@ class World extends Actor
         # import the levels
         for levelName in @levelList
             @levelDict[levelName] = require "./levels/#{levelName}"
-            
-        # log 'levelDict', @levelDict
-        log "create world in view:", view
-        world = new World view
-        world.name = 'world'
-        global.world = world
-        Timer.init()
-        world.create first @levelList
-        world
 
     #  0000000  00000000   00000000   0000000   000000000  00000000
     # 000       000   000  000       000   000     000     000     
@@ -224,24 +233,20 @@ class World extends Actor
 
         # ............................................................ exits
 
-        if @dict.exits? and false
-            log "exits"
+        if @dict.exits?
+            log "exits", @dict.exits
             exit_id = 0
             for entry in @dict.exits
                 exit_gate = new Gate entry["active"]
                 
-                if "name" in entry
-                    name = entry["name"]
-                else
-                    name = "exit "+str(exit_id)
-                exit_gate.setName name 
+                exit_gate.name = entry["name"] ? "exit #{exit_id}"
 
-                exit_action  = once "exit " + str(exit_id) 
-                delay_action = once (a=exit_action) -> Timer.addAction a  
+                # exit_action  = @once "exit #{exit_id}"
+                # delay_action = @once (a=exit_action) -> Timer.addAction a  
                 # exit_gate.getEventWithName("enter").addAction(delay_action)
                 if entry.position?
                     pos = @decenter entry.position
-                else if "coordinates" in entry
+                else if entry.coordinates?
                     pos = new Pos entry.coordinates
                 @addObjectAtPos exit_gate, pos
                 exit_id += 1
@@ -249,26 +254,23 @@ class World extends Actor
         # ............................................................ creation
 
         if @dict.create?
-            log "create"
             if _.isFunction @dict.create
+                log "@dict.create function"
                 @dict.create()
-            # else
+            else
+                log "@dict.create not a function!"
                 # exec @dict["create"] in globals()
 
         # ............................................................ player
 
         @player = new Player
-        player_dict = @dict.player
         # log "player_dict", player_dict
-        if player_dict.orientation?
-            @player.setOrientation player_dict.orientation
-        else
-            @player.setOrientation roty90
+        @player.setOrientation @dict.player.orientation ? roty90
 
-        if player_dict.position?
-            @addObjectAtPos @player, @decenter player_dict.position
-        else if player_dict.coordinates?
-            @addObjectAtPos @player, new Pos player_dict.coordinates
+        if @dict.player.position?
+            @addObjectAtPos @player, @decenter @dict.player.position
+        else if @dict.player.coordinates?
+            @addObjectAtPos @player, new Pos @dict.player.coordinates
 
         # if player_dict.nostatus?
             # if player_dict.nostatus or @preview
@@ -289,13 +291,13 @@ class World extends Actor
         # ............................................................ init
         # @init() # tell the world that we are finished
 
-    restart: (self) ->
+    restart: () ->
         # restores the player status and restarts the current level
         @player.status.setMoves 0
         @player.reborn()
         @create()
 
-    finish: (self) ->
+    finish: () ->
         # saves the current level status in highscore file
         highscore.levelFinished world.level_name, Controller.player.getStatus().getMoves()
 
@@ -305,24 +307,20 @@ class World extends Actor
     # 000   000  000            000  000          000         000        000      000   000     000     000       000   000
     # 000   000  00000000  0000000   00000000     000         000        0000000  000   000     000     00000000  000   000
     
-    resetPlayer: (self) ->
+    resetPlayer: () ->
         # reset the player to it's original position and orientation
-        
-        player_dict = @dict["player"]
-        player = Controller.getPlayer()
-        
-        if "reset orientation" in player_dict
-            player.setOrientation player_dict["reset orientation"]
-        else if "orientation" in player_dict
-            player.setOrientation player_dict["orientation"]
+        log 'world.resetPlayer', @dict.player
+        if @dict.player.resetOrientation?
+            @player.setOrientation @dict.player.resetOrientation
+        else if @dict.player.orientation?
+            @player.setOrientation @dict.player.orientation
         else
-            player.setOrientation rot0
+            @player.setOrientation rot0
             
-        if "reset position" in player_dict
-            world.moveObjectToPos player, world.decenter(player_dict["reset position"])
+        if @dict.player.resetPosition?
+            world.moveObjectToPos @player, world.decenter @dict.player.resetPosition 
         else
-            world.moveObjectToPos player, world.decenter(player_dict["position"])
-      
+            world.moveObjectToPos @player, world.decenter @dict.player.position 
 
     #    0000000    0000000  000000000  000   0000000   000   000
     #   000   000  000          000     000  000   000  0000  000

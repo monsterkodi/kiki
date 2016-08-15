@@ -241,9 +241,8 @@ class Player extends Bot
     initAction: (action) ->
         # log "initAction #{action.id} #{action.name}"
         switch action.id
-            when Action.CLIMB_DOWN, Action.FORWARD
+            # when Action.CLIMB_DOWN, Action.FORWARD
                 # @status.addMoves 1 
-                log 'init action forward'
             when Action.TURN_LEFT, Action.TURN_RIGHT
                 world.playSound 'BOT_MOVE'
             when Action.JUMP
@@ -348,8 +347,6 @@ class Player extends Bot
                 if not @rotate_action? and not @spiked # player is not performing a rotation and unspiked
                     @rotate_action = @getActionWithId @rotate
                     Timer.addAction @rotate_action
-                else
-                    log 'already rotating!'
                 return true
             
             when @key.jump
@@ -417,12 +414,13 @@ class Player extends Bot
             
             when @key.jump
                 @jump = false
-                if @jump_once
-                    if not @move_action? and world.isUnoccupiedPos @position.plus @getUp()
-                        @jump_once = false
-                        @move_action = @getActionWithId Action.JUMP
-                        world.playSound 'BOT_JUMP'
-                        Timer.addAction @move_action
+                @jump_once = false
+                # if @jump_once
+                    # if not @move_action? and world.isUnoccupiedPos @position.plus @getUp()
+                        # @jump_once = false
+                        # @move_action = @getActionWithId Action.JUMP
+                        # world.playSound 'BOT_JUMP'
+                        # Timer.addAction @move_action
                 return true
             
             when @key.left, @key.right

@@ -719,6 +719,7 @@ class World extends Actor
                     log "world.objectWillMoveToPos [WARNING] already occupied:", pos 
     
         if object != @player
+            log '---------- tmpObjects'
             @unsetObject object # remove object from cell grid
             # log 'tmpObject at new pos', pos 
             tmpObject = new TmpObject object  # insert tmp object at new pos

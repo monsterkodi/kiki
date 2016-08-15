@@ -43,8 +43,6 @@ class Bot extends Pushable
             color:          0x2222ff
             side:           THREE.FrontSide
             shading:        THREE.SmoothShading
-            roughness:      0.9
-            metalness:      1
             shininess:      5
 
         @mesh = new THREE.Mesh geom, botMat
@@ -248,7 +246,7 @@ class Bot extends Pushable
                 
             when Action.FALL_FORWARD
         
-                @current_position = @position.plus @getDir().mul(cosFac).plus @getDown().mul(cosFac)
+                @current_position = @position.plus @getDir().mul(relTime).plus @getDown().mul(relTime)
                 return
     
             when Action.FALL
@@ -382,7 +380,7 @@ class Bot extends Pushable
             @startTimedAction @getActionWithId(Action.NOOP), 0
             return
     
-        if action.id == Action.PUSH and not @direction.isZero() #or action.id == Action.FALL # not @direction.isZero()
+        if action.id == Action.PUSH and not @direction.isZero()
             log 'super (Pushable) action!'
             super action
             return
@@ -394,13 +392,9 @@ class Bot extends Pushable
         # find next action depending on type of finished action and surrounding environment
         if action.id == Action.JUMP_FORWARD
             forwardPos = @position.plus @getDir()
-            # log 'jump forwardPos', forwardPos
-            if world.isUnoccupiedPos forwardPos
-                # forward will be empty
-                if world.isUnoccupiedPos forwardPos.minus @getUp()  
-                    # below forward will also be empty
+            if world.isUnoccupiedPos forwardPos # forward will be empty
+                if world.isUnoccupiedPos forwardPos.minus @getUp() # below forward will also be empty
                     @move_action = @getActionWithId Action.FALL_FORWARD
-                    # @move_action.takeRwest action
                 else
                     @move_action = @getActionWithId Action.FORWARD
                     world.playSound 'BOT_LAND', @getPos(), 0.25 
@@ -409,24 +403,19 @@ class Bot extends Pushable
                     @move_action = @getActionWithId Action.CLIMB_UP
                     world.playSound 'BOT_LAND', @getPos(), 0.5
         else if world.isUnoccupiedPos @position.plus @getDown()  # below will be empty
-            # log 'below will be empty!'
             if @move # sticky if moving
-                if world.isUnoccupiedPos @position.plus @getDir() 
-                    # forward will be empty 
-                    if world.isOccupiedPos @position.plus @getDir().minus @getUp()
-                        # below forward is solid
+                if world.isUnoccupiedPos @position.plus @getDir()  # forward will be empty 
+                    if world.isOccupiedPos @position.plus @getDir().minus @getUp() # below forward is solid
                         occupant = world.getOccupantAtPos @position.plus @getDir().minus @getUp() 
                         if occupant == null or not occupant.isSlippery()
                             @move_action = @getActionWithId Action.FORWARD
                 else
-                    occupant = world.getOccupantAtPos position.plus @getDir() 
+                    occupant = world.getOccupantAtPos @position.plus @getDir() 
                     if occupant == null or not occupant.isSlippery()
                         @move_action = @getActionWithId Action.CLIMB_UP
             
             if @move_action == null
-                # log 'bot.actionFinished fall!'
                 @move_action = @getActionWithId Action.FALL
-                # @move_action.takeRest action
                 
         else if action.id == Action.FALL or action.id == Action.FALL_FORWARD # landed
             if @ == world.player
@@ -435,7 +424,6 @@ class Bot extends Pushable
                 world.playSound 'BOT_LAND', @getPos()
         
         if @move_action
-            # log "add move_action! #{@move_action.name}"
             Timer.addAction @move_action
             return
         
@@ -474,7 +462,6 @@ class Bot extends Pushable
                 else # forward down is solid
                     @move_action = @getActionWithId Action.FORWARD
             else # forward is not empty
-                log 'forward is not empty'
                 moveAction = @getActionWithId Action.FORWARD
                 if @push and world.mayObjectPushToPos @, forwardPos, moveAction.getDuration()
                     moveAction.reset()
@@ -507,12 +494,5 @@ class Bot extends Pushable
         @mesh.quaternion.copy @current_orientation
         @leftTire.rotation.set Vector.DEG2RAD(180*@left_tire_rot), Vector.DEG2RAD(90), 0
         @rightTire.rotation.set Vector.DEG2RAD(180*@right_tire_rot), Vector.DEG2RAD(-90), 0
-        # if (@move_action or @rotate_action) and not @died
-            # unsigned now = getTime()
-            # if ((int)(now - last_fume) > mapMsTime (40))
-                # fume = new KikiBotFume()
-                # world.addObject fume
-                # fume.setPosition @current_position - @getCurrentDir() * 0.4
-                # @last_fume = now
 
 module.exports = Bot

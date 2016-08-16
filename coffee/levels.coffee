@@ -11,12 +11,13 @@ class Levels
         @list = [
             # intro
             # "steps", 
-            "start", 
+            # "start", 
             #"move", "electro", "elevate", 
             # "throw", 
             # easy
             # "gold", 
-            "jump", "escape", "gears", 
+            # "jump", 
+            "escape", "gears", 
             # "gamma", 
             "cube", "switch", "borg", 
             "mini", 

@@ -6,25 +6,14 @@
 #   000        0000000  000   000     000     00000000  000   000
 {
 clamp
-}      = require '/Users/kodi/s/ko/js/tools/tools'
-log    = require '/Users/kodi/s/ko/js/tools/log'
-Bot    = require './bot'
-Action = require './action'
-Timer  = require './timer'
-Vector = require './lib/vector'
-Quaternion = require './lib/quaternion'
+}           = require '/Users/kodi/s/ko/js/tools/tools'
+log         = require '/Users/kodi/s/ko/js/tools/log'
+Bot         = require './bot'
+Action      = require './action'
+Timer       = require './timer'
+Vector      = require './lib/vector'
+Quaternion  = require './lib/quaternion'
 Perspective = require './perspective'
-
-forward_key    = "UP"
-backward_key   = "DOWN"
-turn_left_key  = "LEFT"
-turn_right_key = "RIGHT"
-shoot_key      = "SPACE"
-jump_key       = "CTRL"
-push_key       = "SHIFT"
-look_up_key    = "HOME"
-look_down_key  = "END"
-view_key       = "PAGEDOWN"
  
 class Player extends Bot
     
@@ -42,6 +31,7 @@ class Player extends Bot
             shoot:    'enter'
             jump:     'space'
             view:     'c'
+            push:     'shift'
 
         @look_action = null
         @look_angle  = 0.0
@@ -55,16 +45,11 @@ class Player extends Bot
         @addAction new Action @, Action.LOOK_DOWN,  "look down",  220
         @addAction new Action @, Action.LOOK_RESET, "look reset", 60
     
-        # @addEventWithName "keyset"
-        # @addEventWithName "keyset failed"
         @addEventWithName "landed"
     
         @projection = new Perspective 90.0
         @projection.updateViewport()
         
-        # @projection.getLight().setCutoff 90.0
-        # @projection.getLight().setAttenuation 1.0, 0.0, 0.05
-            
     #   00000000   00000000    0000000         000  00000000   0000000  000000000  000   0000000   000   000
     #   000   000  000   000  000   000        000  000       000          000     000  000   000  0000  000
     #   00000000   0000000    000   000        000  0000000   000          000     000  000   000  000 0 000
@@ -323,12 +308,15 @@ class Player extends Bot
     #   000   000  00000000     000   
         
     modKeyComboEventDown: (mod, key, combo, event) ->
+                    
         # log "player.modKeyComboEventDown mod:#{mod} key:#{key} combo:#{combo}"
-        switch combo
+        
+        switch key
             when @key.forward, @key.backward
+                @push = mod == @key.push
                 @move = true # try to move as long as the key is not released
                 if not @move_action?
-                    @new_dir_sgn = @dir_sgn = (combo == @key.backward) and -1 or 1 
+                    @new_dir_sgn = @dir_sgn = (key == @key.backward) and -1 or 1 
                     @moveBot() # perform new move action (depending on environment)
                 else
                     if @move_action.id == Action.JUMP and @move_action.getRelativeTime() < 1                        
@@ -339,11 +327,11 @@ class Player extends Bot
                                 Timer.removeAction @move_action
                                 @move_action = action
                                 Timer.addAction @move_action                          
-                    @new_dir_sgn = (combo == @key.backward) and -1 or 1
+                    @new_dir_sgn = (key == @key.backward) and -1 or 1
                 return true
         
             when @key.left, @key.right
-                @rotate = (combo == @key.left) and Action.TURN_LEFT or Action.TURN_RIGHT
+                @rotate = (key == @key.left) and Action.TURN_LEFT or Action.TURN_RIGHT
                 if not @rotate_action? and not @spiked # player is not performing a rotation and unspiked
                     @rotate_action = @getActionWithId @rotate
                     Timer.addAction @rotate_action
@@ -388,7 +376,7 @@ class Player extends Bot
             
             when @key.lookUp, @key.lookDown
                 if not @look_action
-                    @look_action = @getActionWithId (combo == @key.lookUp) and Action.LOOK_UP or Action.LOOK_DOWN
+                    @look_action = @getActionWithId (key == @key.lookUp) and Action.LOOK_UP or Action.LOOK_DOWN
                     @look_action.reset()
                     Timer.addAction @look_action
                 return true
@@ -406,8 +394,9 @@ class Player extends Bot
     #   000   000  00000000  0000000  00000000  000   000  0000000   00000000
     
     modKeyComboEventUp: (mod, key, combo, event) ->
+        @push = false if @key.push == 'shift'
         # log "player.modKeyComboEventUp mod:#{mod} key:#{key} combo:#{combo}"
-        switch combo    
+        switch key    
             when @key.shoot
                 Timer.removeAction @getActionWithId Action.SHOOT
                 @shoot = false

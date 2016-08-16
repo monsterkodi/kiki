@@ -5,9 +5,10 @@
 # 000         0000000   0000000   000   000  000   000  0000000    0000000  00000000
 
 log    = require '/Users/kodi/s/ko/js/tools/log'
+Vector = require './lib/vector'
 Item   = require './item'
 Action = require './action'
-Vector = require './lib/vector'
+Timer  = require './timer'
 
 class Pushable extends Item
 
@@ -36,7 +37,7 @@ class Pushable extends Item
         @move_action = pushAction
         @direction   = dir
         
-        pushAction.setDuration world.unmapMsTime duration
+        pushAction.duration = world.unmapMsTime duration
         Timer.addAction pushAction
 
     initAction: (action) ->

@@ -10,7 +10,7 @@ class Stone extends Pushable
     
     constructor: (@slippery=false) ->
         
-        @geom = new THREE.BoxGeometry 1,1,1
+        @geom = new THREE.BoxGeometry 0.99,0.99,0.99
         
         @mat  = new THREE.MeshPhongMaterial 
             color:          0xff8800
@@ -21,8 +21,6 @@ class Stone extends Pushable
             shininess:      0.9
         
         @mesh = new THREE.Mesh @geom, @mat
-        world.scene.add @mesh
-        @mesh.matrixAutoUpdate = true
         super
 
     isSlippery: -> return @slippery

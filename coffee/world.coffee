@@ -22,6 +22,7 @@ Timer       = require './timer'
 Actor       = require './actor'
 Action      = require './action'
 TmpObject   = require './tmpobject'
+Pushable    = require './pushable'
 Quaternion  = require './lib/quaternion'
 Vector      = require './lib/vector'
 Pos         = require './lib/pos'
@@ -817,12 +818,13 @@ class World extends Actor
             return true
     
     mayObjectPushToPos: (object, pos, duration) ->
+        log "world.mayObjectPushToPos object:#{object.name} duration:#{duration}", pos
         # returns true, if a pushable object is at pos and may be pushed
         return false if @isInvalidPos pos
         
         direction = pos.minus object.getPos() # direction from object to pushable object
         
-        return false if @isInvalidPos pos.plus @direction
+        return false if @isInvalidPos pos.plus direction
         
         objectAtNewPos = @getOccupantAtPos pos.plus direction
         if objectAtNewPos
@@ -836,9 +838,10 @@ class World extends Actor
             else return false
     
         pushableObject = @getOccupantAtPos pos
-    
-        if pushableObject? and pushableObject instanceof Pushable and
-                                pushableObject instanceof MotorGear # bad
+        log "pushableObject #{pushableObject?.name}"
+        if pushableObject? and pushableObject instanceof Pushable #and
+                                # pushableObject instanceof MotorGear # bad
+            log 'pushedByObjectInDirection'
             pushableObject.pushedByObjectInDirection object, direction, duration
             return true
     

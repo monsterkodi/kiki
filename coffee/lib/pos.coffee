@@ -17,13 +17,13 @@ class Pos
             @y = Math.round x.y
             @z = Math.round x.z ? 0
         else if Array.isArray x
-            @x = Math.round x[0]
-            @y = Math.round x[1]
-            @z = Math.round x[2]
+            @x = Math.floor x[0]
+            @y = Math.floor x[1]
+            @z = Math.floor x[2]
         else
-            @x = Math.round x
-            @y = Math.round y
-            @z = Math.round z
+            @x = Math.floor x
+            @y = Math.floor y
+            @z = Math.floor z
         # log "Pos #{@x} #{@y} #{@z}"
         if Number.isNaN @x
             throw new Error

@@ -22,7 +22,7 @@ module.exports =
                 """
     player:   
         position: [0,0,-5]
-        orientation: roty0
+        orientation: rot0
     exits:      [
         name:         "exit"
         active:       1

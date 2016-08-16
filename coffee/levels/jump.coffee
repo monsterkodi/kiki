@@ -1,3 +1,10 @@
+
+#       000  000   000  00     00  00000000 
+#       000  000   000  000   000  000   000
+#       000  000   000  000000000  00000000 
+# 000   000  000   000  000 0 000  000      
+#  0000000    0000000   000   000  000      
+
 module.exports =
     name:       "jump"
     scheme:     "red_scheme"
@@ -12,7 +19,9 @@ module.exports =
                 you can attach to a stone when falling
                 if you move into its direction
                 """
-    player:   position: [0,0,5]
+    player:   
+        position: [0,0,5]
+        orientation: rotx270
     exits:    [
         name:         "exit"
         active:       1

@@ -331,7 +331,7 @@ class Player extends Bot
                     @new_dir_sgn = @dir_sgn = (combo == @key.backward) and -1 or 1 
                     @moveBot() # perform new move action (depending on environment)
                 else
-                    if @move_action.name == 'jump' and @move_action.getRelativeTime() < 1                        
+                    if @move_action.id == Action.JUMP and @move_action.getRelativeTime() < 1                        
                         if world.isUnoccupiedPos(@position.plus(@getUp()).plus(@getDir())) and
                             world.isUnoccupiedPos(@position.plus(@getDir())) # forward and above forward also empty
                                 action = @getActionWithId Action.JUMP_FORWARD
@@ -353,12 +353,16 @@ class Player extends Bot
                 @jump = true # switch to jump mode until jump_key released
                 @jump_once = true
                 if not @move_action? 
-                    @moveBot() # perform new move action (depending on environment)
+                    @moveBot() # perform jump action (depending on environment)
                     @jump_once = false
                 else
-                    if @move_action.id == Action.MOVE and @move_action.getRelativeTime() < 0.6 or 
+                    # log 'jump:moving'
+                    if @move_action.id == Action.FORWARD and @move_action.getRelativeTime() < 0.6 or 
                         @move_action.id == Action.CLIMB_DOWN and @move_action.getRelativeTime() < 0.4
+                            # abort current move and jump instead
+                            # log 'jump:move or climb down'
                             if world.isUnoccupiedPos @position.plus @getUp()
+                                # log 'jump:can do'
                                 if world.isUnoccupiedPos @position.plus @getUp().plus @getDir()  
                                     action = @getActionWithId Action.JUMP_FORWARD
                                 else 
@@ -366,6 +370,7 @@ class Player extends Bot
                                 action.takeOver @move_action                                
                                 Timer.removeAction @move_action
                                 @move_action = action
+                                @jump_once = false
                                 Timer.addAction @move_action 
                     else if @move_action.id in [Action.JUMP, Action.JUMP_FORWARD]
                         @jump_once = false
@@ -414,13 +419,7 @@ class Player extends Bot
             
             when @key.jump
                 @jump = false
-                @jump_once = false
-                # if @jump_once
-                    # if not @move_action? and world.isUnoccupiedPos @position.plus @getUp()
-                        # @jump_once = false
-                        # @move_action = @getActionWithId Action.JUMP
-                        # world.playSound 'BOT_JUMP'
-                        # Timer.addAction @move_action
+                # @jump_once = false
                 return true
             
             when @key.left, @key.right
@@ -443,11 +442,11 @@ class Player extends Bot
             
         false
     
-    #     0000000    000   0000000  00000000   000       0000000   000   000
-    #     000   000  000  000       000   000  000      000   000   000 000 
-    #     000   000  000  0000000   00000000   000      000000000    00000  
-    #     000   000  000       000  000        000      000   000     000   
-    #     0000000    000  0000000   000        0000000  000   000     000   
+    # 0000000    000   0000000  00000000   000       0000000   000   000
+    # 000   000  000  000       000   000  000      000   000   000 000 
+    # 000   000  000  0000000   00000000   000      000000000    00000  
+    # 000   000  000       000  000        000      000   000     000   
+    # 0000000    000  0000000   000        0000000  000   000     000   
     
     step: (step) -> super step
     

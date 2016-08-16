@@ -107,7 +107,6 @@ class Bot extends Pushable
         @addEventWithName "died"
     
         @startTimedAction @getActionWithId(Action.NOOP), 500
-
     
     # 0000000    000  00000000   00000000   0000000  000000000  000   0000000   000   000
     # 000   000  000  000   000  000       000          000     000  000   000  0000  000
@@ -371,7 +370,7 @@ class Bot extends Pushable
     # 000       000  000   000  000  0000000   000   000  00000000  0000000  
     
     actionFinished: (action) ->
-        log "bot.actionFinished #{action.name} #{action.id}"
+        # log "bot.actionFinished #{action.name} #{action.id}"
     
         # if @isDead()
             # log "DIE!"
@@ -391,7 +390,7 @@ class Bot extends Pushable
             super action
             return
     
-        if @move_action # action was not a move action -> return
+        if @move_action? # action was not a move action -> return
             # log 'bot.actionFinished was not a move action!'
             return 
         
@@ -409,9 +408,10 @@ class Bot extends Pushable
                     @move_action = @getActionWithId Action.CLIMB_UP
                     world.playSound 'BOT_LAND', @getPos(), 0.5
         else if world.isUnoccupiedPos @position.plus @getDown()  # below will be empty
-            log 'below empty', world.isUnoccupiedPos(@position.plus @getDown()), @position.plus @getDown()
+            # log 'bot.actionFinished below empty', world.isUnoccupiedPos(@position.plus @getDown()), @position.plus @getDown()
             if @move # sticky if moving
-                if world.isUnoccupiedPos @position.plus @getDir()  # forward will be empty 
+                if world.isUnoccupiedPos @position.plus @getDir()  # forward will be empty
+                    log 'bot.actionFinished forward empty'
                     if world.isOccupiedPos @position.plus @getDir().minus @getUp() # below forward is solid
                         occupant = world.getOccupantAtPos @position.plus @getDir().minus @getUp() 
                         if not occupant? or not occupant?.isSlippery()
@@ -421,7 +421,7 @@ class Bot extends Pushable
                     if not occupant? or not occupant?.isSlippery()
                         @move_action = @getActionWithId Action.CLIMB_UP
             
-            if @move_action == null
+            if not @move_action?
                 @move_action = @getActionWithId Action.FALL
                 @direction = @getDown()
                 
@@ -431,19 +431,25 @@ class Bot extends Pushable
             else
                 world.playSound 'BOT_LAND', @getPos()
         
-        if @move_action
+        if @move_action?
             Timer.addAction @move_action
             return
         
-        return if @rotate_action 
+        return if @rotate_action? 
         
-        if @move or @jump
+        @fixOrientationAndPosition()
+
+        if @move or @jump or @jump_once
             @moveBot()
         else
             @dir_sgn = 1
             @jump_once = false if action.id != Action.NOOP
             # keep action chain flowinwg in order to detect environment changes
             # @startTimedAction @getActionWithId(Action.NOOP), 0
+
+    fixOrientationAndPosition: ->
+        @setPosition @current_position.round()
+        @setOrientation @current_orientation.round()
 
     # 00     00   0000000   000   000  00000000
     # 000   000  000   000  000   000  000     

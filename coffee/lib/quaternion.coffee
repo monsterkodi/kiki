@@ -9,7 +9,7 @@ log    = require '/Users/kodi/s/ko/js/tools/log'
 Vector = require './vector'
 
 class Quaternion
-    
+
     constructor: (w=1, x=0, y=0, z=0) ->
         if w instanceof Vector
             @x = w.x
@@ -33,13 +33,62 @@ class Quaternion
             @w = w
         if Number.isNaN @x
             throw new Error
-        
-    @rotationAroundVector: (theta, vector) ->
-        v = new Vector vector 
-        v.normalize()
-        t = Vector.DEG2RAD(theta)/2.0       
-        s = Math.sin t 
-        new Quaternion(Math.cos(t), v.x*s, v.y*s, v.z*s).normalize()
+            
+    copy: -> new Quaternion @
+    clone: (q) -> 
+        @x = q.x
+        @y = q.y
+        @z = q.z
+        @w = q.w
+        @
+    
+    round: ->
+        @normalize()
+        minDist = 1000
+        minQuat = null
+        up   = @rotate Vector.unitY
+        back = @rotate Vector.unitZ
+        for q in [  Quaternion.XupY
+                    Quaternion.XupZ
+                    Quaternion.XdownY
+                    Quaternion.XdownZ
+                    Quaternion.YupX
+                    Quaternion.YupZ
+                    Quaternion.YdownX
+                    Quaternion.YdownZ
+                    Quaternion.ZupX
+                    Quaternion.ZupY
+                    Quaternion.ZdownX
+                    Quaternion.ZdownY
+                    Quaternion.minusXupY
+                    Quaternion.minusXupZ
+                    Quaternion.minusXdownY
+                    Quaternion.minusXdownZ
+                    Quaternion.minusYupX
+                    Quaternion.minusYupZ
+                    Quaternion.minusYdownX
+                    Quaternion.minusYdownZ
+                    Quaternion.minusZupX
+                    Quaternion.minusZupY
+                    Quaternion.minusZdownX
+                    Quaternion.minusZdownY
+                    ]
+            upDiff   = 1 - up.dot q.rotate Vector.unitY
+            backDiff = 1 - back.dot q.rotate Vector.unitZ
+            l = upDiff + backDiff
+            # log "length #{upDiff} #{backDiff} #{q.name} #{l}"
+            if l < minDist
+                minDist = l
+                minQuat = q
+                if l < 0.0001
+                    break
+        log "differ a lot! #{minDist}" if minDist > 0.05
+        return @clone minQuat
+
+    euler: -> [
+        Vector.RAD2DEG Math.atan2 2*(@w*@x+@y*@z), 1-2*(@x*@x+@y*@y)
+        Vector.RAD2DEG Math.asin  2*(@w*@y-@z*@x)
+        Vector.RAD2DEG Math.atan2 2*(@w*@z+@x*@y), 1-2*(@y*@y+@z*@z)]
 
     add: (quat) ->
         @w += quat.w 
@@ -55,6 +104,10 @@ class Quaternion
         @z -= quat.z
         @
     
+    minus: (quat) -> @copy().sub quat
+
+    dot: (q) -> @x*q.x + @y*q.y + @z*q.z + @w*q.w
+
     rotate: (v) ->
         qv = new Quaternion v 
         rq = @mul qv.mul @getConjugate()
@@ -73,9 +126,9 @@ class Quaternion
         l = Math.sqrt @w*@w + @x*@x + @y*@y + @z*@z 
         if l != 0.0 
             @w /= l 
-            @x = -x/l
-            @y = -y/l
-            @z = -z/l 
+            @x = -@x/l
+            @y = -@y/l
+            @z = -@z/l 
         @
 
     isZero: -> @x==@y==@z==0 and @w==1
@@ -90,9 +143,9 @@ class Quaternion
         @z = -@z
         @ 
         
-    getNormal:     -> new Quaternion(@).normalize()
-    getConjugate:  -> new Quaternion(@).conjugate()
-    getInverse:    -> new Quaternion(@).invert()
+    getNormal:     -> @copy().normalize()
+    getConjugate:  -> @copy().conjugate()
+    getInverse:    -> @copy().invert()
     neg:           -> new Quaternion -@w,-@x,-@y,-@z
     vector:        -> new Vector @x, @y, @z
     length:        -> Math.sqrt @w*@w + @x*@x + @y*@y + @z*@z
@@ -152,4 +205,99 @@ class Quaternion
                        scale0 * @y + scale1 * to1[1],
                        scale0 * @z + scale1 * to1[2]
 
+    @rotationAroundVector: (theta, vector) ->
+        v = new Vector vector 
+        v.normalize()
+        t = Vector.DEG2RAD(theta)/2.0       
+        s = Math.sin t 
+        (new Quaternion Math.cos(t), v.x*s, v.y*s, v.z*s).normalize()
+
+    @rotationFromEuler: (x,y,z) ->
+        x = Vector.DEG2RAD x
+        y = Vector.DEG2RAD y
+        z = Vector.DEG2RAD z
+        q=new Quaternion  Math.cos(x/2) * Math.cos(y/2) * Math.cos(z/2) + Math.sin(x/2) * Math.sin(y/2) * Math.sin(z/2),
+                          Math.sin(x/2) * Math.cos(y/2) * Math.cos(z/2) - Math.cos(x/2) * Math.sin(y/2) * Math.sin(z/2),
+                          Math.cos(x/2) * Math.sin(y/2) * Math.cos(z/2) + Math.sin(x/2) * Math.cos(y/2) * Math.sin(z/2),
+                          Math.cos(x/2) * Math.cos(y/2) * Math.sin(z/2) - Math.sin(x/2) * Math.sin(y/2) * Math.cos(z/2)
+        q.normalize()
+
+    @rot_0     = new Quaternion()
+  
+    @rot_90_X  = @rotationAroundVector 90,  Vector.unitX
+    @rot_90_Y  = @rotationAroundVector 90,  Vector.unitY
+    @rot_90_Z  = @rotationAroundVector 90,  Vector.unitZ
+    @rot_180_X = @rotationAroundVector 180, Vector.unitX
+    @rot_180_Y = @rotationAroundVector 180, Vector.unitY
+    @rot_180_Z = @rotationAroundVector 180, Vector.unitZ
+    @rot_270_X = @rotationAroundVector 270, Vector.unitX
+    @rot_270_Y = @rotationAroundVector 270, Vector.unitY
+    @rot_270_Z = @rotationAroundVector 270, Vector.unitZ
+
+    @XupY        =                @rot_270_Y
+    @XupZ        = @rot_90_X.mul  @rot_270_Y
+    @XdownY      = @rot_180_X.mul @rot_270_Y
+    @XdownZ      = @rot_270_X.mul @rot_270_Y
+        
+    @YupX        = @rot_90_Y.mul  @rot_90_X
+    @YupZ        =                @rot_90_X
+    @YdownX      = @rot_270_Y.mul @rot_90_X
+    @YdownZ      = @rot_180_Y.mul @rot_90_X
+    
+    @ZupX        = @rot_90_Z.mul  @rot_180_X
+    @ZupY        = @rot_180_Z.mul @rot_180_X
+    @ZdownX      = @rot_270_Z.mul @rot_180_X
+    @ZdownY      =                @rot_180_X
+    
+    @minusXupY   =                @rot_90_Y
+    @minusXupZ   = @rot_90_X.mul  @rot_90_Y
+    @minusXdownY = @rot_180_X.mul @rot_90_Y
+    @minusXdownZ = @rot_270_X.mul @rot_90_Y
+        
+    @minusYupX   = @rot_270_Y.mul @rot_270_X
+    @minusYupZ   = @rot_180_Y.mul @rot_270_X
+    @minusYdownX = @rot_90_Y.mul  @rot_270_X
+    @minusYdownZ =                @rot_270_X
+    
+    @minusZupX   = @rot_270_Z
+    @minusZupY   = @rot_0
+    @minusZdownX = @rot_90_Z
+    @minusZdownY = @rot_180_Z
+        
+    @rot_0.name     = '@rot_0'
+    @rot_90_X.name  = '@rot_90_X'
+    @rot_90_Y.name  = '@rot_90_Y'
+    @rot_90_Z.name  = '@rot_90_Z'
+    @rot_180_X.name = '@rot_180_X'
+    @rot_180_Y.name = '@rot_180_Y'
+    @rot_180_Z.name = '@rot_180_Z'
+    @rot_270_X.name = '@rot_270_X'
+    @rot_270_Y.name = '@rot_270_Y'
+    @rot_270_Z.name = '@rot_270_Z'
+    
+    @XupY.name        = '@XupY'
+    @XupZ.name        = '@XupZ'
+    @XdownY.name      = '@XdownY'
+    @XdownZ.name      = '@XdownZ'
+    @YupX.name        = '@YupX'
+    @YupZ.name        = '@YupZ'
+    @YdownX.name      = '@YdownX'
+    @YdownZ.name      = '@YdownZ'
+    @ZupX.name        = '@ZupX'
+    @ZupY.name        = '@ZupY'
+    @ZdownX.name      = '@ZdownX'
+    @ZdownY.name      = '@ZdownY'
+    @minusXupY.name   = '@minusXupY'
+    @minusXupZ.name   = '@minusXupZ'
+    @minusXdownY.name = '@minusXdownY'
+    @minusXdownZ.name = '@minusXdownZ'
+    @minusYupX.name   = '@minusYupX'
+    @minusYupZ.name   = '@minusYupZ'
+    @minusYdownX.name = '@minusYdownX'
+    @minusYdownZ.name = '@minusYdownZ'
+    @minusZupX.name   = '@minusZupX'
+    @minusZupY.name   = '@minusZupY'
+    @minusZdownX.name = '@minusZdownX'
+    @minusZdownY.name = '@minusZdownY'
+    
 module.exports = Quaternion            

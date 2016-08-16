@@ -42,7 +42,7 @@ class Pushable extends Item
     initAction: (action) ->
         switch action.id
             when Action.FALL
-                log 'Pushable.initAction FALL direction:', @direction
+                # log 'Pushable.initAction FALL direction:', @direction
                 world.objectWillMoveToPos @, @position.plus(@direction), action.getDuration()
 
     performAction: (action) ->
@@ -58,7 +58,7 @@ class Pushable extends Item
                 @move_action = null
                 targetPos = @current_position.round()
                 world.objectMoved @, @position, targetPos
-                log "Pushable.finishAction setPosition:", targetPos
+                # log "Pushable.finishAction setPosition:", targetPos
                 @setPosition targetPos
 
     actionFinished: (action) ->        
@@ -83,7 +83,7 @@ class Pushable extends Item
             if world.isUnoccupiedPos @position.plus gravityDir
                 @direction = gravityDir
                 @move_action = @getActionWithId Action.FALL
-                log 'Pushable.actionFinished below empty, fall!'
+                # log 'Pushable.actionFinished below empty, fall!'
                 Timer.addAction @move_action
             else
                 @direction.reset()

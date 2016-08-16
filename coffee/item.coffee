@@ -51,7 +51,6 @@ class Item extends Actor
     setOrientation: (q) -> 
         @current_orientation = @orientation = new Quaternion q
         # log "item.setOrientation:", @orientation
-        @orientation
         
     setCurrentPosition: (p) -> @current_position = p
     setCurrentOrientation: (q) -> @current_orientation = q

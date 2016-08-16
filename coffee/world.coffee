@@ -131,17 +131,17 @@ class World extends Actor
     @initGlobal: () ->
         
         return if @levels?
-                
-        global.rot0    = new Quaternion()
-        global.rotz90  = Quaternion.rotationAroundVector 90,  Vector.unitZ
-        global.rotz180 = Quaternion.rotationAroundVector 180, Vector.unitZ
-        global.roty0   = Quaternion.rotationAroundVector 0,   Vector.unitY
-        global.roty90  = Quaternion.rotationAroundVector 90,  Vector.unitY
-        global.roty180 = Quaternion.rotationAroundVector 180, Vector.unitY
-        global.roty270 = Quaternion.rotationAroundVector 270, Vector.unitY
-        global.rotx90  = Quaternion.rotationAroundVector 90,  Vector.unitX
-        global.rotx180 = Quaternion.rotationAroundVector 180, Vector.unitX
-        global.rotx270 = Quaternion.rotationAroundVector 270, Vector.unitX
+              
+        global.rot0    = Quaternion.rot_0
+        global.rotx90  = Quaternion.rot_90_X
+        global.roty90  = Quaternion.rot_90_Y
+        global.rotz90  = Quaternion.rot_90_Z
+        global.rotx180 = Quaternion.rot_180_X
+        global.roty180 = Quaternion.rot_180_Y
+        global.rotz180 = Quaternion.rot_180_Z
+        global.rotx270 = Quaternion.rot_270_X
+        global.roty270 = Quaternion.rot_270_Y
+        global.rotz270 = Quaternion.rot_270_Z
 
         @levels = new Levels
         
@@ -269,27 +269,6 @@ class World extends Actor
         log 'world.levelFinished'
         # saves the current level status in highscore file
         # highscore.levelFinished world.level_name, Controller.player.getStatus().getMoves()
-
-    # 00000000   00000000   0000000  00000000  000000000      00000000   000       0000000   000   000  00000000  00000000 
-    # 000   000  000       000       000          000         000   000  000      000   000   000 000   000       000   000
-    # 0000000    0000000   0000000   0000000      000         00000000   000      000000000    00000    0000000   0000000  
-    # 000   000  000            000  000          000         000        000      000   000     000     000       000   000
-    # 000   000  00000000  0000000   00000000     000         000        0000000  000   000     000     00000000  000   000
-    
-    resetPlayer: () ->
-        # reset the player to it's original position and orientation
-        log 'world.resetPlayer', @dict.player
-        if @dict.player.resetOrientation?
-            @player.setOrientation @dict.player.resetOrientation
-        else if @dict.player.orientation?
-            @player.setOrientation @dict.player.orientation
-        else
-            @player.setOrientation rot0
-            
-        if @dict.player.resetPosition?
-            world.moveObjectToPos @player, world.decenter @dict.player.resetPosition 
-        else
-            world.moveObjectToPos @player, world.decenter @dict.player.position 
     
     #  000      000   0000000   000   000  000000000
     #  000      000  000        000   000     000   

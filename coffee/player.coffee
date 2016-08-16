@@ -408,7 +408,6 @@ class Player extends Bot
             
             when @key.jump
                 @jump = false
-                # @jump_once = false
                 return true
             
             when @key.left, @key.right

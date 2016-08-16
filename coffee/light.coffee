@@ -16,7 +16,7 @@ class Light extends Item
         # @specular_color = colors[KikiLight_specular_color]
         @point = new THREE.PointLight 0xffffff, @intensity, @radius, 2
         @point.castShadow = true
-        @point.shadowDarkness = 0.5
+        @point.shadow.darkness = 0.5
         @point.shadow.mapSize = new THREE.Vector2 2048, 2048
         @point.shadow.bias = 0.01
         geom   = new THREE.SphereGeometry 0.3, 16, 16

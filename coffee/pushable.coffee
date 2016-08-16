@@ -62,7 +62,8 @@ class Pushable extends Item
                 # log "Pushable.finishAction setPosition:", targetPos
                 @setPosition targetPos
 
-    actionFinished: (action) ->        
+    actionFinished: (action) ->    
+        Bot = require './bot'
         if action.id in [Action.PUSH, Action.FALL]
             gravityDir = @direction
             

@@ -125,11 +125,18 @@ class Vector
     @DEG2RAD: (d) -> Math.PI*d/180.0
     @RAD2DEG: (r) -> r*180.0/Math.PI
     
+    @unitX  = new Vector 1,0,0
+    @unitY  = new Vector 0,1,0
+    @unitZ  = new Vector 0,0,1
+    @minusX = new Vector -1,0,0
+    @minusY = new Vector 0,-1,0
+    @minusZ = new Vector 0,0,-1
+    
     @X  = 0
-    @SX = 0
     @Y  = 1
     @Z  = 2
     @W  = 3
+    @SX = 0
     @SY = 5
     @SZ = 10
     @TX = 12

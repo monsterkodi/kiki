@@ -251,10 +251,10 @@ class Player extends Bot
         
         super action
     
-    finishRotateAction: () ->
-        if @rotate_action
-            @rotate = false
-            @finishAction @rotate_action 
+    # finishRotateAction: () ->
+        # if @rotate_action
+            # @rotate = false
+            # @finishAction @rotate_action 
     
     #   00000000   00000000  00000000   00000000   0000000   00000000   00     00
     #   000   000  000       000   000  000       000   000  000   000  000   000
@@ -307,14 +307,14 @@ class Player extends Bot
     reborn: () ->
         @died = false
     
-    reset: () ->
-        super
-        Timer.removeActionsOfObject @
-        
-        @look_action = null
-        @look_angle  = 0.0
-        @new_dir_sgn = 1.0
-        @rotate      = 0
+    # reset: () ->
+        # super
+        # Timer.removeActionsOfObject @
+#         
+        # @look_action = null
+        # @look_angle  = 0.0
+        # @new_dir_sgn = 1.0
+        # @rotate      = 0
         
     #   000   000  00000000  000   000
     #   000  000   000        000 000 
@@ -356,8 +356,8 @@ class Player extends Bot
                     @moveBot() # perform new move action (depending on environment)
                     @jump_once = false
                 else
-                    if @move_action.name == 'move forward' and @move_action.getRelativeTime() < 0.6 or 
-                        @move_action.name == 'climb down' and @move_action.getRelativeTime() < 0.4
+                    if @move_action.id == Action.MOVE and @move_action.getRelativeTime() < 0.6 or 
+                        @move_action.id == Action.CLIMB_DOWN and @move_action.getRelativeTime() < 0.4
                             if world.isUnoccupiedPos @position.plus @getUp()
                                 if world.isUnoccupiedPos @position.plus @getUp().plus @getDir()  
                                     action = @getActionWithId Action.JUMP_FORWARD
@@ -367,8 +367,8 @@ class Player extends Bot
                                 Timer.removeAction @move_action
                                 @move_action = action
                                 Timer.addAction @move_action 
-                    else
-                        log "cant jump #{@move_action.name}"
+                    else if @move_action.id in [Action.JUMP, Action.JUMP_FORWARD]
+                        @jump_once = false
                 return true
             
             when @key.push

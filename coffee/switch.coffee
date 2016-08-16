@@ -34,6 +34,10 @@ class Switch extends Item
     
         @setActive active
 
+    del: () ->
+        super
+        @light?.del()
+
     createMesh: () ->
         torusRadius = 0.05
         t1 = new THREE.TorusGeometry 0.5-torusRadius, torusRadius, 16, 32
@@ -43,6 +47,7 @@ class Switch extends Item
             shading:        THREE.SmoothShading
             shininess:      5
         @mesh = new THREE.Mesh t1, @mat
+        @mesh.castShadow = true
      
         t2 = new THREE.TorusGeometry 0.5-torusRadius, torusRadius, 16, 32
         t3 = new THREE.TorusGeometry 0.5-torusRadius, torusRadius, 16, 32
@@ -50,13 +55,12 @@ class Switch extends Item
         t3.rotateX Vector.DEG2RAD 90 
         t2.merge t3
         @tors = new THREE.Mesh t2, @mat
+        @tors.castShadow = true
         @mesh.add @tors
         @mesh
         
     bulletImpact: -> @setActive not @active
-    
-    del: () -> @light?.del()
-    
+        
     lightDeleted: () -> @light = null
     
     setActive: (status) ->
@@ -89,9 +93,9 @@ class Switch extends Item
     
     animate: (f) ->
         @angle += f * 360
-        @mesh.quaternion.copy Quaternion.rotationAroundVector @angle, new Vector 0,1,0
-        @tors.quaternion.copy Quaternion.rotationAroundVector @angle/2, new Vector 0,0,1
-        # @tort.quaternion.copy Quaternion.rotationAroundVector @angle/2, new Vector 0,0,1
+        @mesh.quaternion.copy Quaternion.rotationAroundVector @angle, Vector.unitY
+        @tors.quaternion.copy Quaternion.rotationAroundVector @angle/2, Vector.unitZ
+        # @tort.quaternion.copy Quaternion.rotationAroundVector @angle/2, Vector.unitZ
         
     performAction: (action) ->
         

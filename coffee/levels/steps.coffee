@@ -21,8 +21,8 @@ module.exports =
                 to turn, press "$key(turn left)" or "$key(turn right)"
                 """
     player:   
-        coordinates:     [4,4,8]
-        nostatus:         0
+        position: [0,0,-5]
+        orientation: roty0
     exits:      [
         name:         "exit"
         active:       1

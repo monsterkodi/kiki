@@ -17,14 +17,13 @@ module.exports =
                 to get to the exit,
                 jump on the stone
                 to jump,
-                press "$key(jump)"
-                while movin
+                press "$key(jump)" while moving
                 to move, press "$key(move forward)" or "$key(move backward)"
                 to turn, press "$key(turn left)" or "$key(turn right)"
                 """
     player:   
-        coordinates:     [3,0,3]
-        nostatus:         0
+        position:     [0,0,4]
+        orientation:   rotx270
     exits:    [
         name:         "exit"
         active:       1

@@ -16,15 +16,21 @@ class Pushable extends Item
     constructor: () ->
         super
         @pusher     = null
-        @direction  = new Vector
+        @direction  = Vector.minusY
         
         @addAction new Action @, Action.NOOP, "noop"
         @addAction new Action @, Action.PUSH, "push"
         @addAction new Action @, Action.FALL, "fall", 40
 
+    setOrientation: (q) -> 
+        super q
+        if not @pusher?
+            @direction = @orientation.rotate Vector.minusZ
+            # log "Pushable.setOrientation direction:", @direction
+
     pushedByObjectInDirection: (object, dir, duration) ->
 
-        pushAction = @getActionWithId Action.PUSH
+        pushAction   = @getActionWithId Action.PUSH
         
         @pusher      = object
         @move_action = pushAction
@@ -50,12 +56,13 @@ class Pushable extends Item
         switch action.id
             when Action.PUSH, Action.FALL
                 @move_action = null
-                world.objectMoved @, @position, @current_position
-                # log "Pushable.finishAction setPosition #{@current_position}"
-                @setPosition @current_position
+                targetPos = @current_position.round()
+                world.objectMoved @, @position, targetPos
+                log "Pushable.finishAction setPosition:", targetPos
+                @setPosition targetPos
 
     actionFinished: (action) ->        
-        if action.id == Action.PUSH or actionId == Action.FALL
+        if action.id in [Action.PUSH, Action.FALL]
             gravityDir = @direction
             
             if action.id == Action.PUSH
@@ -76,6 +83,7 @@ class Pushable extends Item
             if world.isUnoccupiedPos @position.plus gravityDir
                 @direction = gravityDir
                 @move_action = @getActionWithId Action.FALL
+                log 'Pushable.actionFinished below empty, fall!'
                 Timer.addAction @move_action
             else
                 @direction.reset()

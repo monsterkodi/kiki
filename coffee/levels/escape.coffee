@@ -33,33 +33,33 @@ module.exports =
         exit_switch.getEventWithName("switched").addAction world.continuous () -> world.toggle "exit"
         world.addObjectAtPos(exit_switch, world.decenter( 0, -2, 0))
         
-        world.addObjectAtPos('KikiStone', world.decenter( 0, s.y/2, 0))
-        world.addObjectAtPos('KikiStone', world.decenter( 1, s.y/2, 0))
-        world.addObjectAtPos('KikiStone', world.decenter( 0, s.y/2, 1))
-        world.addObjectAtPos('KikiStone', world.decenter( 0, s.y/2,-1))
-        world.addObjectAtPos('KikiStone', world.decenter(-1, s.y/2, 0))
+        world.addObjectAtPos 'KikiStone', world.decenter  0, s.y/2, 0
+        world.addObjectAtPos 'KikiStone', world.decenter  1, s.y/2, 0
+        world.addObjectAtPos 'KikiStone', world.decenter  0, s.y/2, 1
+        world.addObjectAtPos 'KikiStone', world.decenter  0, s.y/2,-1
+        world.addObjectAtPos 'KikiStone', world.decenter -1, s.y/2, 0
         
-        world.addObjectLine('KikiStone', world.decenter(-2, s.y/2,-2), world.decenter( 2, s.y/2,-2))
-        world.addObjectLine('KikiStone', world.decenter( 2, s.y/2,-2), world.decenter( 2, s.y/2, 2))
-        world.addObjectLine('KikiStone', world.decenter( 2, s.y/2, 2), world.decenter(-2, s.y/2, 2))
-        world.addObjectLine('KikiStone', world.decenter(-2, s.y/2, 2), world.decenter(-2, s.y/2,-2))
+        world.addObjectLine 'KikiStone', world.decenter(-2, s.y/2,-2), world.decenter( 2, s.y/2,-2)
+        world.addObjectLine 'KikiStone', world.decenter( 2, s.y/2,-2), world.decenter( 2, s.y/2, 2)
+        world.addObjectLine 'KikiStone', world.decenter( 2, s.y/2, 2), world.decenter(-2, s.y/2, 2)
+        world.addObjectLine 'KikiStone', world.decenter(-2, s.y/2, 2), world.decenter(-2, s.y/2,-2)
         
-        world.addObjectAtPos('KikiWall', world.decenter( 1, 0, 0))
-        world.addObjectAtPos('KikiWall', world.decenter( 0, 0, 1))
-        world.addObjectAtPos('KikiWall', world.decenter(-1, 0, 0))
-        world.addObjectAtPos('KikiWall', world.decenter( 0, 0,-1))
-        
-        world.addObjectAtPos('KikiWall', world.decenter( 1,-1, 0))
-        world.addObjectAtPos('KikiWall', world.decenter( 0,-1, 1))
-        world.addObjectAtPos('KikiWall', world.decenter(-1,-1, 0))
-        world.addObjectAtPos('KikiWall', world.decenter( 0,-1,-1))
-        world.addObjectAtPos('KikiWall', world.decenter( 1,-1, 1))
-        world.addObjectAtPos('KikiWall', world.decenter(-1,-1, 1))
-        world.addObjectAtPos('KikiWall', world.decenter(-1,-1,-1))
-        world.addObjectAtPos('KikiWall', world.decenter( 1,-1,-1))
-        
-        world.addObjectAtPos('KikiWall', world.decenter( 1,-2, 0))
-        world.addObjectAtPos('KikiWall', world.decenter( 0,-2, 1))
-        world.addObjectAtPos('KikiWall', world.decenter(-1,-2, 0))
-        world.addObjectAtPos('KikiWall', world.decenter( 0,-2,-1))
-        
+        world.addObjectAtPos 'KikiWall', world.decenter  1, 0, 0
+        world.addObjectAtPos 'KikiWall', world.decenter  0, 0, 1
+        world.addObjectAtPos 'KikiWall', world.decenter -1, 0, 0
+        world.addObjectAtPos 'KikiWall', world.decenter  0, 0,-1
+                            
+        world.addObjectAtPos 'KikiWall', world.decenter  1,-1, 0
+        world.addObjectAtPos 'KikiWall', world.decenter  0,-1, 1
+        world.addObjectAtPos 'KikiWall', world.decenter -1,-1, 0
+        world.addObjectAtPos 'KikiWall', world.decenter  0,-1,-1
+        world.addObjectAtPos 'KikiWall', world.decenter  1,-1, 1
+        world.addObjectAtPos 'KikiWall', world.decenter -1,-1, 1
+        world.addObjectAtPos 'KikiWall', world.decenter -1,-1,-1
+        world.addObjectAtPos 'KikiWall', world.decenter  1,-1,-1
+                                                       
+        world.addObjectAtPos 'KikiWall', world.decenter  1,-2, 0
+        world.addObjectAtPos 'KikiWall', world.decenter  0,-2, 1
+        world.addObjectAtPos 'KikiWall', world.decenter -1,-2, 0
+        world.addObjectAtPos 'KikiWall', world.decenter  0,-2,-1
+                                                       

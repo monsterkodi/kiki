@@ -22,6 +22,8 @@ class Wall extends Item
             opacity:        0.85
             shininess:      5
         @mesh = new THREE.Mesh @geom, @mat
+        @mesh.castShadow = true
+        @mesh.receiveShadow = true
         super
     
       # s = 0.45

@@ -39,7 +39,9 @@ class Gate extends Switch
         t3.rotateX Vector.DEG2RAD 90 
         t2.merge t3
         @tors = new THREE.Mesh t2, @mat
+        @tors.castShadow = true
         @mesh.add @tors
+        @mesh.castShadow = true
         @mesh
     
     bulletImpact: ->

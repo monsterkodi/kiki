@@ -15,6 +15,7 @@ Size        = require './lib/size'
 Cell        = require './cell'
 Gate        = require './gate'
 Light       = require './light'
+Levels      = require './levels'
 Player      = require './player'
 Cage        = require './cage'
 Timer       = require './timer'
@@ -35,8 +36,7 @@ class World extends Actor
     @CAMERA_BEHIND = 1 
     @CAMERA_FOLLOW = 2
     
-    @levelList = []
-    @levelDict = []
+    @levels = null
     
     @normals = [
             new Vector 1, 0, 0
@@ -67,6 +67,7 @@ class World extends Actor
                     
         @renderer.setClearColor 0x000000        
         @renderer.setSize @view.offsetWidth, @view.offsetHeight
+        @renderer.shadowMap.type = THREE.PCFSoftShadowMap
         
         #    0000000   0000000   00     00  00000000  00000000    0000000 
         #   000       000   000  000   000  000       000   000  000   000
@@ -124,66 +125,26 @@ class World extends Actor
         world.name = 'world'
         global.world = world
         Timer.init()
-        world.create first @levelList
+        world.create first @levels.list
         world
         
     @initGlobal: () ->
         
-        return if @levelList.length
+        return if @levels?
                 
         global.rot0    = new Quaternion()
-        global.rotz180 = Quaternion.rotationAroundVector 180, new Vector 0,0,1
-        global.rotz90  = Quaternion.rotationAroundVector 90,  new Vector 0,0,1
-        global.roty270 = Quaternion.rotationAroundVector 270, new Vector 0,1,0
-        global.roty180 = Quaternion.rotationAroundVector 180, new Vector 0,1,0
-        global.roty90  = Quaternion.rotationAroundVector 90,  new Vector 0,1,0
-        global.roty0   = Quaternion.rotationAroundVector 0,   new Vector 0,1,0
-        global.rotx180 = Quaternion.rotationAroundVector 180, new Vector 1,0,0
-        global.rotx90  = Quaternion.rotationAroundVector 90,  new Vector 1,0,0
-        
-        # 000      00000000  000   000  00000000  000       0000000
-        # 000      000       000   000  000       000      000     
-        # 000      0000000    000 000   0000000   000      0000000 
-        # 000      000          000     000       000           000
-        # 0000000  00000000      0      00000000  0000000  0000000 
-        
-        @levelList = [
-            # intro
-            "steps", 
-            # "start", 
-            #"move", "electro", "elevate", 
-            # "throw", 
-            # easy
-            # "gold", 
-            "jump", "escape", "gears", 
-            # "gamma", 
-            "cube", "switch", "borg", 
-            "mini", 
-            # "blocks", 
-            "bombs", "sandbox", "energy", "maze", "love", 
-            # medium
-            "towers", "edge", "random", "plate", "nice", "entropy", 
-            # owen hay's levels (TODO: sort in)
-            "grasp", "fallen", "cheese", "invisimaze", "spiral", 
-            # difficult
-            "slick", "bridge", "flower", "stones", "walls", "grid", 
-            "rings", 
-            # "core", 
-            "bronze", "pool", 
-            # tough
-            "hidden", "church", 
-            # "strange", 
-            "mesh", "columns", "machine", 
-            # very hard
-            # "neutron", 
-            "captured", "circuit", "regal", "conductor", "evil", 
-            # outro
-            "mutants"]
-               
-        # import the levels
-        for levelName in @levelList
-            @levelDict[levelName] = require "./levels/#{levelName}"
+        global.rotz90  = Quaternion.rotationAroundVector 90,  Vector.unitZ
+        global.rotz180 = Quaternion.rotationAroundVector 180, Vector.unitZ
+        global.roty0   = Quaternion.rotationAroundVector 0,   Vector.unitY
+        global.roty90  = Quaternion.rotationAroundVector 90,  Vector.unitY
+        global.roty180 = Quaternion.rotationAroundVector 180, Vector.unitY
+        global.roty270 = Quaternion.rotationAroundVector 270, Vector.unitY
+        global.rotx90  = Quaternion.rotationAroundVector 90,  Vector.unitX
+        global.rotx180 = Quaternion.rotationAroundVector 180, Vector.unitX
+        global.rotx270 = Quaternion.rotationAroundVector 270, Vector.unitX
 
+        @levels = new Levels
+        
     #  0000000  00000000   00000000   0000000   000000000  00000000
     # 000       000   000  000       000   000     000     000     
     # 000       0000000    0000000   000000000     000     0000000 
@@ -196,9 +157,9 @@ class World extends Actor
         
         if worldDict
             if _.isString worldDict
-                @level_index = World.levelList.indexOf worldDict
+                @level_index = World.levels.list.indexOf worldDict
                 @level_name = worldDict
-                @dict = World.levelDict[worldDict]
+                @dict = World.levels.dict[worldDict]
             else
                 @dict = worldDict
             
@@ -272,7 +233,7 @@ class World extends Actor
 
         @player = new Player
         # log "player_dict", player_dict
-        @player.setOrientation @dict.player.orientation ? roty90
+        @player.setOrientation @dict.player.orientation ? rotx90
 
         if @dict.player.position?
             @addObjectAtPos @player, @decenter @dict.player.position
@@ -329,16 +290,32 @@ class World extends Actor
             world.moveObjectToPos @player, world.decenter @dict.player.resetPosition 
         else
             world.moveObjectToPos @player, world.decenter @dict.player.position 
+    
+    #  000      000   0000000   000   000  000000000
+    #  000      000  000        000   000     000   
+    #  000      000  000  0000  000000000     000   
+    #  000      000  000   000  000   000     000   
+    #  0000000  000   0000000   000   000     000   
+    
+    addLight: (light) ->
+        @lights.push light
+        @enableShadows true
+        
+    removeLight: (light) ->
+        _.pull @lights, light
+        @enableShadows false if not @lights.length
 
+    enableShadows: (enable) ->
+        @renderer.shadowMap.enabled = enable
+    
     #    0000000    0000000  000000000  000   0000000   000   000
     #   000   000  000          000     000  000   000  0000  000
     #   000000000  000          000     000  000   000  000 0 000
     #   000   000  000          000     000  000   000  000  0000
     #   000   000   0000000     000     000   0000000   000   000
           
-
     exitLevel: (action) =>
-        log "world.exitLevel #{action}"       
+        log "world.exitLevel", action       
         @finish()
         # @player.status.setMoves 0
         exitIndex = parseInt action.name.slice 5
@@ -347,9 +324,8 @@ class World extends Actor
             # w = @dict.exits[exitIndex].world
             # w() if _.isFunction w
         # else
-            # world = world.create levelList[world.level_index+1]
-        log "world.level_index #{world.level_index} nextLevel #{World.levelList[world.level_index+1]}"
-        world.create World.levelList[world.level_index+1]
+        log "world.level_index #{world.level_index} nextLevel #{World.levels.list[world.level_index+1]}"
+        world.create World.levels.list[world.level_index+1]
 
     activate: (objectName) ->
         # activates object with name objectName
@@ -645,13 +621,11 @@ class World extends Actor
     
     deleteAllObjects: () ->
         log 'world.deleteAllObjects'
+        
+        Timer.removeAllActions()
     
         if @player?
-            @player.finishRotateAction()
-            @removeObject @player # remove the player first, to keep it's state
-            Timer.removeAllActions()
-            # Controller.removeKeyHandler (Controller.player) # prevent keyboard input while building world
-            @player.reset()
+            @player.del()
     
         while @lights.length
             oldSize = @lights.length
@@ -664,7 +638,7 @@ class World extends Actor
             oldSize = @objects.length
             last(@objects).del() # destructor will call remove object
             if oldSize == @objects.length
-                log "WARNING World.deleteAllObjects object no auto remove"
+                log "WARNING World.deleteAllObjects object no auto remove #{last(@objects).name}"
                 @objects.pop()
     
     deleteObjectsWithClassName: (className) ->

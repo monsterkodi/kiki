@@ -124,7 +124,7 @@ class Action
                 @last    = 0
                 
                 if @mode == Action.CONTINUOUS
-                    log "action.performWithEvent #{@name} mode == Action.CONTINUOUS"
+                    # log "action.performWithEvent #{@name} mode == Action.CONTINUOUS"
                     @current = @rest
                     @start = eventTime
                     @last  = 0

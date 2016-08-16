@@ -67,6 +67,9 @@ class Bot extends Pushable
         @rightTire.rotation.set 0, Vector.DEG2RAD(-90), 0
         @mesh.add @rightTire
 
+        @mesh.castShadow = @rightTire.castShadow = @leftTire.castShadow = true
+        @mesh.receiveShadow = @leftTire.receiveShadow = @rightTire.receiveShadow = true 
+        
         @left_tire_rot   = 0.0
         @right_tire_rot  = 0.0
         @last_fume       = 0
@@ -112,13 +115,13 @@ class Bot extends Pushable
     # 000   000  000  000   000  000       000          000     000  000   000  000  0000
     # 0000000    000  000   000  00000000   0000000     000     000   0000000   000   000
 
-    getDown: -> @orientation.rotate new Vector 0,-1,0
-    getUp:   -> @orientation.rotate new Vector 0,1,0
+    getDown: -> @orientation.rotate Vector.minusY
+    getUp:   -> @orientation.rotate Vector.unitY
     getDir:  -> @orientation.rotate new Vector 0,0,@dir_sgn
     
-    getCurrentDir:  -> @current_orientation.rotate(new Vector 0,0,1).normal()
-    getCurrentUp:   -> @current_orientation.rotate(new Vector 0,1,0).normal()
-    getCurrentLeft: -> @current_orientation.rotate(new Vector 1,0,0).normal()
+    getCurrentDir:  -> @current_orientation.rotate(Vector.unitZ).normal()
+    getCurrentUp:   -> @current_orientation.rotate(Vector.unitY).normal()
+    getCurrentLeft: -> @current_orientation.rotate(Vector.unitX).normal()
 
     addMoves:  (m) -> @moves += m
     addHealth: (h) -> @health = Math.max @health+h
@@ -254,6 +257,7 @@ class Bot extends Pushable
                 if not @direction.isZero()
                     super action
                     return
+                log 'still needed?'
                 @current_position = @position.plus @getDown().mul(relTime)
                 return
         
@@ -261,7 +265,7 @@ class Bot extends Pushable
         
                 @left_tire_rot  += @dir_sgn * dltTime/2
                 @right_tire_rot += @dir_sgn * dltTime/2
-                @climb_orientation = Quaternion.rotationAroundVector @dir_sgn * relTime * -90.0, new Vector 1,0,0  
+                @climb_orientation = Quaternion.rotationAroundVector @dir_sgn * relTime * -90.0, Vector.unitX
                 break
             
             when Action.CLIMB_DOWN
@@ -271,11 +275,11 @@ class Bot extends Pushable
                 if relTime <= 0.2
                     @current_position = @position.plus @getDir().mul (relTime/0.2)/2
                 else if (relTime >= 0.8)
-                    @climb_orientation = Quaternion.rotationAroundVector @dir_sgn * 90.0, new Vector 1,0,0  
+                    @climb_orientation = Quaternion.rotationAroundVector @dir_sgn * 90.0, Vector.unitX
                     @current_position = @position.plus @getDir().plus @getDown().mul 0.5+(relTime-0.8)/0.2/2
                 else
-                    @climb_orientation = Quaternion.rotationAroundVector @dir_sgn * (relTime-0.2)/0.6 * 90.0, new Vector 1,0,0  
-                    rotVec = (@orientation.mul @climb_orientation).rotate new Vector 0,1,0
+                    @climb_orientation = Quaternion.rotationAroundVector @dir_sgn * (relTime-0.2)/0.6 * 90.0, Vector.unitX
+                    rotVec = (@orientation.mul @climb_orientation).rotate Vector.unitY
                     @current_position = @position.plus @getDir().plus(@getDown()).plus(rotVec).mul 0.5
                 break
         
@@ -284,20 +288,20 @@ class Bot extends Pushable
                 if @move_action == null and relTime == 0.0 # if not performing move action and start of rotation
                     # update @orientation now, so next move action will move in desired @direction
                     if action.id == Action.TURN_LEFT
-                        @orientation = @orientation.mul Quaternion.rotationAroundVector 90.0, new Vector 0,1,0
-                        @rest_orientation = Quaternion.rotationAroundVector -90.0, new Vector 0,1,0
+                        @orientation = @orientation.mul Quaternion.rotationAroundVector 90.0, Vector.unitY
+                        @rest_orientation = Quaternion.rotationAroundVector -90.0, Vector.unitY
                     else
-                        @orientation = @orientation.mul Quaternion.rotationAroundVector -90.0, new Vector 0,1,0
-                        @rest_orientation = Quaternion.rotationAroundVector 90.0, new Vector 0,1,0
+                        @orientation = @orientation.mul Quaternion.rotationAroundVector -90.0, Vector.unitY
+                        @rest_orientation = Quaternion.rotationAroundVector 90.0, Vector.unitY
     
                 if action.id == Action.TURN_LEFT
                     @left_tire_rot  += -dltTime
                     @right_tire_rot +=  dltTime
-                    @rotate_orientation = Quaternion.rotationAroundVector relTime * 90.0, new Vector 0,1,0 
+                    @rotate_orientation = Quaternion.rotationAroundVector relTime * 90.0, Vector.unitY 
                 else
                     @left_tire_rot  +=  dltTime
                     @right_tire_rot += -dltTime
-                    @rotate_orientation = Quaternion.rotationAroundVector relTime * -90.0, new Vector 0,1,0 
+                    @rotate_orientation = Quaternion.rotationAroundVector relTime * -90.0, Vector.unitY 
                 break
             
             else
@@ -315,12 +319,13 @@ class Bot extends Pushable
     
     finishAction: (action) ->
     
-        log "Bot.finishAction #{action.id} #{action.name}" if action.name != 'noop'
+        # log "Bot.finishAction #{action.id} #{action.name}" if action.name != 'noop'
                 
         switch action.id
             when Action.NOOP, Action.SHOOT
                 return
-            when Action.PUSH
+            when Action.PUSH, Action.FALL
+                @move_action = null
                 super action
                 return
             when Action.TURN_LEFT, Action.TURN_RIGHT
@@ -345,10 +350,10 @@ class Bot extends Pushable
             # take over result of rotation to prevent sliding
             if @rotate_action.id == Action.TURN_LEFT
                 @orientation = @orientation.mul Quaternion.rotationAroundVector(90.0, new Vector(0,1,0)).mul @rest_orientation
-                @rest_orientation = Quaternion.rotationAroundVector -90.0, new Vector 0,1,0  
+                @rest_orientation = Quaternion.rotationAroundVector -90.0, Vector.unitY  
             else
                 @orientation = @orientation.mul Quaternion.rotationAroundVector(-90.0, new Vector(0,1,0)).mul @rest_orientation
-                @rest_orientation = Quaternion.rotationAroundVector 90.0, new Vector 0,1,0  
+                @rest_orientation = Quaternion.rotationAroundVector 90.0, Vector.unitY  
                 
         if action.id != Action.CLIMB_UP
             targetPos = @current_position.round()
@@ -366,7 +371,7 @@ class Bot extends Pushable
     # 000       000  000   000  000  0000000   000   000  00000000  0000000  
     
     actionFinished: (action) ->
-        # log "bot.actionFinished #{action.name} #{action.id}"
+        log "bot.actionFinished #{action.name} #{action.id}"
     
         # if @isDead()
             # log "DIE!"
@@ -404,6 +409,7 @@ class Bot extends Pushable
                     @move_action = @getActionWithId Action.CLIMB_UP
                     world.playSound 'BOT_LAND', @getPos(), 0.5
         else if world.isUnoccupiedPos @position.plus @getDown()  # below will be empty
+            log 'below empty', world.isUnoccupiedPos(@position.plus @getDown()), @position.plus @getDown()
             if @move # sticky if moving
                 if world.isUnoccupiedPos @position.plus @getDir()  # forward will be empty 
                     if world.isOccupiedPos @position.plus @getDir().minus @getUp() # below forward is solid
@@ -417,9 +423,10 @@ class Bot extends Pushable
             
             if @move_action == null
                 @move_action = @getActionWithId Action.FALL
+                @direction = @getDown()
                 
-        else if action.id == Action.FALL or action.id == Action.FALL_FORWARD # landed
-            if @ == world.player
+        else if action.id in [Action.FALL_FORWARD, Action.FALL] # landed
+            if @name == 'player'
                 world.playSound 'BOT_LAND'
             else
                 world.playSound 'BOT_LAND', @getPos()

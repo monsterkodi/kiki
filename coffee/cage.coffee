@@ -27,6 +27,7 @@ class Cage
         @raster.translateX -0.5
         @raster.translateY -0.5 
         @raster.translateZ -0.5
+        @raster.receiveShadow = true
         world.scene.add @raster        
         
         geom = @wallTiles @gap                  
@@ -34,6 +35,7 @@ class Cage
         @cage.translateX -0.5
         @cage.translateY -0.5 
         @cage.translateZ -0.5
+        @cage.receiveShadow = true
         world.scene.add @cage        
      
     del: -> 

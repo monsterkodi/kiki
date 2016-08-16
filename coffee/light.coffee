@@ -15,6 +15,10 @@ class Light extends Item
         # @diffuse_color  = colors[KikiLight_diffuse_color]
         # @specular_color = colors[KikiLight_specular_color]
         @point = new THREE.PointLight 0xffffff, @intensity, @radius, 2
+        @point.castShadow = true
+        @point.shadowDarkness = 0.5
+        @point.shadow.mapSize = new THREE.Vector2 2048, 2048
+        @point.shadow.bias = 0.01
         geom   = new THREE.SphereGeometry 0.3, 16, 16
         mat    = new THREE.MeshLambertMaterial 
             color:          0xffffff
@@ -27,10 +31,12 @@ class Light extends Item
             
         @mesh = new THREE.Mesh geom, mat
         world.scene.add @point
+        world.addLight @
         @setPosition pos if pos?
         super
 
     del: -> 
+        world.removeLight @
         world.scene.remove @point
         super
         

@@ -23,8 +23,9 @@ class Item extends Actor
         @direction        = new Vector
         @move_action      = null
 
-    del: -> 
-        log "item del!!!!!!!!!!!!!!!!!!!!!! #{@name}"
+    del: ->
+        super 
+        log "item del !!!!!!!!!!!!!!!!!!!!!! #{@name}"        
         world.scene.remove @mesh if @mesh?
         world.removeObject @
         @emit 'deleted'
@@ -47,7 +48,11 @@ class Item extends Actor
         p = new Pos x,y,z
         @position = @current_position = new Vector p
     
-    setOrientation: (q) -> @current_orientation = @orientation = new Quaternion q
+    setOrientation: (q) -> 
+        @current_orientation = @orientation = new Quaternion q
+        # log "item.setOrientation:", @orientation
+        @orientation
+        
     setCurrentPosition: (p) -> @current_position = p
     setCurrentOrientation: (q) -> @current_orientation = q
     

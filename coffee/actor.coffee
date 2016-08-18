@@ -60,10 +60,10 @@ class Actor extends Emitter
             
     removeAction: (action) -> @actions[action.id] = null
  
-    getActionWithId: (actionId) ->
-        if @actions[actionId]?.id? and @actions[actionId].id != actionId
-            throw new Error
-        @actions[actionId]
+    getActionWithId: (actionId) -> _.find @actions, (a) -> a?.id == actionId
+        # if @actions[actionId]?.id? and @actions[actionId].id != actionId
+            # throw new Error
+        # @actions[actionId]
         # if actionId < @actions.length and @actions[actionId].id == actionId
             # return @actions[actionId]
 #     

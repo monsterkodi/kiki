@@ -30,7 +30,7 @@ class Pushable extends Item
             # log "Pushable.setOrientation direction:", @direction
 
     pushedByObjectInDirection: (object, dir, duration) ->
-        log "pushedByObjectInDirection #{object.name} duration:#{duration}"
+        # log "pushedByObjectInDirection #{object.name} duration:#{duration}"
         pushAction   = @getActionWithId Action.PUSH
         
         @pusher      = object
@@ -63,10 +63,10 @@ class Pushable extends Item
                 @setPosition targetPos
 
     actionFinished: (action) ->    
-        Bot = require './bot'
+        Bot  = require './bot'
+        Bomb = require './bomb'
         if action.id in [Action.PUSH, Action.FALL]
             gravityDir = @direction
-            
             if action.id == Action.PUSH
                 if @pusher instanceof Bot
                     gravityDir = @pusher.getDown()

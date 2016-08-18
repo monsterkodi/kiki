@@ -26,18 +26,18 @@ module.exports =
         
         num = 4
         for i in [1..num]
-            world.addObjectPoly(KikiWall, [[s.x/2-i, s.y/2-i, i-1],
-                                           [s.x/2+i, s.y/2-i, i-1],
-                                           [s.x/2+i, s.y/2+i, i-1],
-                                           [s.x/2-i, s.y/2+i, i-1]])
+            world.addObjectPoly 'Wall', [[s.x/2-i, s.y/2-i, i-1],
+                                         [s.x/2+i, s.y/2-i, i-1],
+                                         [s.x/2+i, s.y/2+i, i-1],
+                                         [s.x/2-i, s.y/2+i, i-1]]
         
-        world.addObjectAtPos(KikiStone(), s.x/2-2, s.y/2, 3)
-        world.addObjectAtPos(KikiStone(), s.x/2+2, s.y/2, 3)
-        world.addObjectAtPos(KikiStone(), s.x/2, s.y/2+2, 3)
-        world.addObjectAtPos(KikiStone(), s.x/2, s.y/2-2, 3)
-        
-        world.addObjectAtPos(KikiStone(), s.x/2-1, s.y/2, 2)
-        world.addObjectAtPos(KikiStone(), s.x/2+1, s.y/2, 2)
-        world.addObjectAtPos(KikiStone(), s.x/2, s.y/2+1, 2)
-        world.addObjectAtPos(KikiStone(), s.x/2, s.y/2-1, 2)
+        world.addObjectAtPos 'Stone', s.x/2-2, s.y/2, 3
+        world.addObjectAtPos 'Stone', s.x/2+2, s.y/2, 3
+        world.addObjectAtPos 'Stone', s.x/2, s.y/2+2, 3
+        world.addObjectAtPos 'Stone', s.x/2, s.y/2-2, 3
+                                  
+        world.addObjectAtPos 'Stone', s.x/2-1, s.y/2, 2
+        world.addObjectAtPos 'Stone', s.x/2+1, s.y/2, 2
+        world.addObjectAtPos 'Stone', s.x/2, s.y/2+1, 2
+        world.addObjectAtPos 'Stone', s.x/2, s.y/2-1, 2
         

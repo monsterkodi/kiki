@@ -71,7 +71,7 @@ module.exports =
         world.addObjectAtPos('KikiWall', 2,2,3)
         world.addObjectAtPos('KikiWall', 1,3,3)
            
-        world.addObjectAtPos(KikiLight(), 3,0,0)
+        world.addObjectAtPos('KikiLight', 3,0,0)
             
-        world.setCameraMode(world.CAMERA_INSIDE)
+        # world.setCameraMode(world.CAMERA_INSIDE)
         

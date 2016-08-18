@@ -28,8 +28,8 @@ class Levels
             # "bombs", 
             # "sandbox", 
             # "energy", 
-            "maze", 
-            "love", 
+            # "maze", 
+            # "love", 
             # medium
             "towers", "edge", "random", "plate", "nice", "entropy", 
             # owen hay's levels (TODO: sort in)

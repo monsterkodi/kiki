@@ -479,7 +479,6 @@ class Bot extends Pushable
                         @move_action = @getActionWithId Action.JUMP
         else if @move 
             if world.isUnoccupiedPos forwardPos  # forward is empty
-                log 'forwardEmpty:', forwardPos
                 if world.isUnoccupiedPos forwardPos.plus @getDown()  
                     # below forward also empty
                     @move_action = @getActionWithId Action.CLIMB_DOWN

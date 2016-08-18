@@ -65,7 +65,7 @@ class World extends Actor
         
         @renderer = new THREE.WebGLRenderer 
             antialias:              true
-            logarithmicDepthBuffer: false
+            logarithmicDepthBuffer: true
             autoClear:              true
             sortObjects:            true
                     
@@ -519,9 +519,9 @@ class World extends Actor
     #   0000000    00000000  0000000  00000000     000     00000000
     
     deleteObject: (object) ->
-        log "world.deleteObject #{object.name}"
+        # log "world.deleteObject #{object.name}"
         if not object?
-            log "WARNING: World.deleteObject null"
+            log "world.deleteObject [WARNING] no object?"
             return
         @removeObject object
         object.del()

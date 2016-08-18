@@ -25,6 +25,7 @@ class Wall extends Item
         geom.translate -0.5, -0.5, -0.5
         @raster = new THREE.Mesh geom, Wall.rasterMat
         @raster.receiveShadow = true
+        @raster.castShadow = true
         
         geom = Cage.wallTiles new Pos(1,1,1), 'outside', Cage.gap                  
         geom.translate -0.5, -0.5, -0.5

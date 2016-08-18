@@ -10,24 +10,25 @@ _   = require 'lodash'
 class Action
     
     @NOOP         = 0
-    @PUSH         = 1
-    @EXPLODE      = 1
-    @TOGGLE       = 1
-    @ROTATE       = 2
-    @FLY          = 2
-    @FALL         = 2
-    @FORWARD      = 3
-    @CLIMB_UP     = 4
-    @CLIMB_DOWN   = 5
-    @TURN_LEFT    = 6
-    @TURN_RIGHT   = 7
-    @JUMP         = 8
-    @JUMP_FORWARD = 9
-    @FALL_FORWARD = 10
-    @SHOOT        = 11
-    @LOOK_UP      = 12
-    @LOOK_DOWN    = 13
-    @LOOK_RESET   = 14
+    @ROTATE       = 1 # switch, gate, bomb
+    @FLY          = 2 # bullet
+    @TOGGLE       = 3 # switch, gate
+    @FALL         = 4 # pushable
+    @PUSH         = 5 # pushable
+    @EXPLODE      = 6 # bomb
+    @IMPLODE      = 7 # bomb
+    @FORWARD      = 8 # bot
+    @CLIMB_UP     = 9 # bot
+    @CLIMB_DOWN   = 10 # ...
+    @TURN_LEFT    = 11
+    @TURN_RIGHT   = 12
+    @JUMP         = 13
+    @JUMP_FORWARD = 14
+    @FALL_FORWARD = 15
+    @SHOOT        = 16
+    @LOOK_UP      = 17
+    @LOOK_DOWN    = 18
+    @LOOK_RESET   = 19
     
     @ONCE       = 0
     @CONTINUOUS = 1
@@ -44,7 +45,7 @@ class Action
             i ?= -1
             m ?= Action.ONCE
             d ?= 0
-        # log "newAction #{i} #{n} #{d} #{m}"
+        log "newAction #{i} #{n} #{d} #{m}"
         @object     = o
         @name       = n
         @id         = i
@@ -55,7 +56,7 @@ class Action
         @reset()
 
     del: ->
-        log "Action.del #{@name} #{@event?} #{@object?}"
+        # log "Action.del #{@name} #{@event?} #{@object?}"
         if @event?  then @event.removeAction @
         if @object? then @object.removeAction @
         @deleted = true

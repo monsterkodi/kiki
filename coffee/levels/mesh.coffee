@@ -32,5 +32,5 @@ module.exports =
             for j in [0...s.y]
                 for l in [0...s.z]
                     if (i+1)%2 and (j+1)%2 and (l+1)%2
-                        world.addObjectAtPos(KikiStone(KColor(0.1*i,0.1*j,0.1*l,middlemin(i,j,l)), true) , KikiPos(i,j,l))
+                        world.addObjectAtPos(KikiStone(KColor(0.1*i,0.1*j,0.1*l,middlemin(i,j,l)), true) , i,j,l)
             

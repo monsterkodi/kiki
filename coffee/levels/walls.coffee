@@ -40,5 +40,5 @@ module.exports =
             for j in [0...s.y]
                 for l in [0...s.z]
                     if i==s.x/2 or i==s.x/2-2 or i==s.x/2+2
-                        world.addObjectAtPos(KikiStone(KColor(0.1*i,0.1*j,0.1*l,0.6) , false) , KikiPos(i,j,l))
+                        world.addObjectAtPos(KikiStone(KColor(0.1*i,0.1*j,0.1*l,0.6) , false) , i,j,l)
     

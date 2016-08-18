@@ -25,19 +25,19 @@ module.exports =
     create: ->
         s = world.size
         
-        world.addObjectLine('KikiWireStone', KikiPos(0, 0, 0), KikiPos(0, s.y-2, 0))
-        world.addObjectLine('KikiWireStone', KikiPos(s.x-1, 0, 0), KikiPos(s.x-1, s.y-2, 0))
-        world.addObjectLine('KikiWireStone', KikiPos(s.x-1, 0, s.z-1), KikiPos(s.x-1, s.y-2, s.z-1))
-        world.addObjectLine('KikiWireStone', KikiPos(0, 0, s.z-1), KikiPos(0, s.y-2, s.z-1))
+        world.addObjectLine 'KikiWireStone', 0, 0, 0, 0, s.y-2, 0
+        world.addObjectLine 'KikiWireStone', s.x-1, 0, 0, s.x-1, s.y-2, 0
+        world.addObjectLine 'KikiWireStone', s.x-1, 0, s.z-1, s.x-1, s.y-2, s.z-1
+        world.addObjectLine 'KikiWireStone', 0, 0, s.z-1, 0, s.y-2, s.z-1
         
-        world.addObjectAtPos('KikiBomb', KikiPos(s.x/2, s.y-2, s.z/2))
-        world.addObjectAtPos(KikiGenerator(KikiFace.PY), KikiPos(s.x/2, s.y/2, s.z/2))
+        world.addObjectAtPos 'KikiBomb', s.x/2, s.y-2, s.z/2
+        world.addObjectAtPos 'KikiGenerator(KikiFace.PY)', s.x/2, s.y/2, s.z/2
         
-        world.addObjectAtPos('KikiWireStone', KikiPos(1,      s.y-2,  1))
-        world.addObjectAtPos('KikiWireStone', KikiPos(s.x-2,  s.y-2,  1))
-        world.addObjectAtPos('KikiWireStone', KikiPos(1,      s.y-2,  s.z-2))
-        world.addObjectAtPos('KikiWireStone', KikiPos(s.x-2,  s.y-2,  s.z-2))
-        world.addObjectAtPos('KikiWireStone', KikiPos(s.x/2,  s.y-1,  s.z/2))
+        world.addObjectAtPos 'KikiWireStone', 1,      s.y-2,  1
+        world.addObjectAtPos 'KikiWireStone', s.x-2,  s.y-2,  1
+        world.addObjectAtPos 'KikiWireStone', 1,      s.y-2,  s.z-2
+        world.addObjectAtPos 'KikiWireStone', s.x-2,  s.y-2,  s.z-2
+        world.addObjectAtPos 'KikiWireStone', s.x/2,  s.y-1,  s.z/2
         
-        world.addObjectAtPos(KikiMotorGear(KikiFace.PY), KikiPos(s.x/2, 0, 0))
-        world.addObjectAtPos(KikiMotorCylinder(KikiFace.PY), KikiPos(s.x/2, 1, 0))
+        world.addObjectAtPos 'KikiMotorGear(KikiFace.PY)', s.x/2, 0, 0
+        world.addObjectAtPos 'KikiMotorCylinder(KikiFace.PY)', s.x/2, 1, 0

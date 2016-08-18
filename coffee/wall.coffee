@@ -11,13 +11,19 @@ Cage = require './cage'
 
 class Wall extends Item
 
+    @rasterMat = new THREE.MeshPhongMaterial 
+        color:          0x770000
+        side:           THREE.FrontSide
+        shading:        THREE.SmoothShading
+        shininess:      10
+
     isSpaceEgoistic: -> true
     
     constructor: ->
-        
+                
         geom = Cage.wallTiles new Pos(1,1,1), 'outside', 0
         geom.translate -0.5, -0.5, -0.5
-        @raster = new THREE.Mesh geom, Cage.rasterMat
+        @raster = new THREE.Mesh geom, Wall.rasterMat
         @raster.receiveShadow = true
         
         geom = Cage.wallTiles new Pos(1,1,1), 'outside', Cage.gap                  

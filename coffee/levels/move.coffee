@@ -44,4 +44,4 @@ module.exports =
         
         # exit_switch = KikiSwitch()
         # exit_switch.getEventWithName("switched").addAction(continuous(()-> world.toggle("exit")))
-        # world.addObjectAtPos(exit_switch, KikiPos(s.x/2,  s.y/2, 0))
+        # world.addObjectAtPos(exit_switch, s.x/2,  s.y/2, 0))

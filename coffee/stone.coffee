@@ -17,10 +17,10 @@ class Stone extends Pushable
             side:           THREE.DoubleSide
             shading:        THREE.SmoothShading
             transparent:    true
-            opacity:        0.8
+            opacity:        0.7
             shininess:      20
             # alphaTest:      0.05
-            depthWrite:     false
+            # depthWrite:     false
         
         @mesh = new THREE.Mesh @geom, @mat
         super

@@ -31,13 +31,13 @@ module.exports =
         sy=s.y-1
         sz=s.z-1
      
-        p=[ [KikiPos( 0, 0, 0+1),KikiPos( 0, 0,mz),KikiPos( 0,my,mz), KikiFace.X,  KikiFace.X],
-            [KikiPos( 0,my,mz+1),KikiPos( 0,my,sz),KikiPos(mx,my,sz), KikiFace.X,  KikiFace.NZ],
-            [KikiPos(mx,my-1,sz),KikiPos(mx, 0,sz),KikiPos(my, 0,mz), KikiFace.NZ, KikiFace.Y],
-            [KikiPos(mx+1, 0,mz),KikiPos(sx, 0,mz),KikiPos(sx,my,mz), KikiFace.Y,  KikiFace.NX],
-            [KikiPos(sx,my,mz-1),KikiPos(sx,my, 0),KikiPos(mx,my, 0), KikiFace.NX, KikiFace.Z],
-            [KikiPos(mx,my+1, 0),KikiPos(mx,sy, 0),KikiPos(mx,sy,my), KikiFace.Z,  KikiFace.NY],
-            [KikiPos(mx+1,sy,my),KikiPos(sx,sy,mz),KikiPos(sx,sy,sz), KikiFace.NY, KikiFace.NY],
+        p=[ [ 0, 0, 0+1,  0, 0,mz,  0,my,mz, KikiFace.X,  KikiFace.X],
+            [ 0,my,mz+1,  0,my,sz, mx,my,sz, KikiFace.X,  KikiFace.NZ],
+            [mx,my-1,sz, mx, 0,sz, my, 0,mz, KikiFace.NZ, KikiFace.Y],
+            [mx+1, 0,mz, sx, 0,mz, sx,my,mz, KikiFace.Y,  KikiFace.NX],
+            [sx,my,mz-1, sx,my, 0, mx,my, 0, KikiFace.NX, KikiFace.Z],
+            [mx,my+1, 0, mx,sy, 0, mx,sy,my, KikiFace.Z,  KikiFace.NY],
+            [mx+1,sy,my, sx,sy,mz, sx,sy,sz, KikiFace.NY, KikiFace.NY],
             ]
         for k in p            
             stone= () -> KikiWire(k[3], 15)
@@ -56,14 +56,14 @@ module.exports =
         world.addObjectAtPos 'KikiWireStone', world.decenter(0,0,2)
         world.addObjectAtPos 'KikiWireStone', world.decenter(0,0,-2)
         
-        world.addObjectAtPos(KikiWire(KikiFace.X), KikiPos(0,0,0))
-        world.addObjectAtPos(KikiWire(KikiFace.Z), KikiPos(0,0,0))
-        world.addObjectAtPos(KikiWire(KikiFace.Z), KikiPos(1,0,0))
+        world.addObjectAtPos(KikiWire(KikiFace.X), 0,0,0)
+        world.addObjectAtPos(KikiWire(KikiFace.Z), 0,0,0)
+        world.addObjectAtPos(KikiWire(KikiFace.Z), 1,0,0)
         
-        world.addObjectAtPos(KikiWire(KikiFace.NY), KikiPos(sx,sy,sz))
+        world.addObjectAtPos(KikiWire(KikiFace.NY), sx,sy,sz)
         
-        world.addObjectAtPos(KikiMotorGear(KikiFace.Z), KikiPos(2,0,0))
-        world.addObjectAtPos(KikiMotorCylinder(KikiFace.Z), KikiPos(2,0,1))
+        world.addObjectAtPos(KikiMotorGear(KikiFace.Z), 2,0,0)
+        world.addObjectAtPos(KikiMotorCylinder(KikiFace.Z), 2,0,1)
         g=KikiGenerator(KikiFace.Z)
-        world.addObjectAtPos(g, KikiPos(mx,my,mz))
+        world.addObjectAtPos(g, mx,my,mz)
     

@@ -25,33 +25,33 @@ module.exports =
         
         switched = ->
             unoccupied = false
-            # for (i,j) in [ (i,j) for i in range(3,6) for j in range(3,6) ]
             for i in [3...6]
                 for j in [3...6]
-                    if world.isUnoccupiedPos(KikiPos(i,j,0))
+                    if world.isUnoccupiedPos i,j,0
                         unoccupied=true
                 
-            world.toggle("exit") if not unoccupied
+            world.toggle "exit" if not unoccupied
             
-        swtch = KikiSwitch()
-        swtch.getEventWithName("switched").addAction(continuous(switched))
+        Switch = require '../switch'    
+        swtch = new Switch
+        swtch.getEventWithName("switched").addAction world.continuous switched
            
-        world.addObjectAtPos(swtch , KikiPos(0,5,0))
-        world.addObjectPoly(KikiWall, [ KikiPos(2,2,0),KikiPos(2,6,0),KikiPos(6,6,0),KikiPos(6,2,0)], 1)
+        world.addObjectAtPos swtch , 0,5,0
+        world.addObjectPoly 'KikiWall', [ [2,2,0], [2,6,0], [6,6,0], [6,2,0] ], 1
         
         #inside    
-        world.addObjectAtPos(KikiStone() , KikiPos(3,4,2))
-        world.addObjectAtPos(KikiStone() , KikiPos(3,5,1))
-        world.addObjectAtPos(KikiStone() , KikiPos(5,3,1))
-        world.addObjectAtPos(KikiStone() , KikiPos(5,4,2))
+        world.addObjectAtPos 'KikiStone', 3,4,2
+        world.addObjectAtPos 'KikiStone', 3,5,1
+        world.addObjectAtPos 'KikiStone', 5,3,1
+        world.addObjectAtPos 'KikiStone', 5,4,2
         #border
-        world.addObjectAtPos(KikiStone() , KikiPos(3,6,1))
-        world.addObjectAtPos(KikiStone() , KikiPos(4,6,1))
-        world.addObjectAtPos(KikiStone() , KikiPos(3,2,1))
-        world.addObjectAtPos(KikiStone() , KikiPos(5,2,1))
-        world.addObjectAtPos(KikiStone() , KikiPos(6,4,1))
-        world.addObjectAtPos(KikiStone() , KikiPos(6,3,1))
+        world.addObjectAtPos 'KikiStone', 3,6,1
+        world.addObjectAtPos 'KikiStone', 4,6,1
+        world.addObjectAtPos 'KikiStone', 3,2,1
+        world.addObjectAtPos 'KikiStone', 5,2,1
+        world.addObjectAtPos 'KikiStone', 6,4,1
+        world.addObjectAtPos 'KikiStone', 6,3,1
         #outside
-        world.addObjectAtPos(KikiStone() , KikiPos(5,1,0))
-        world.addObjectAtPos(KikiStone() , KikiPos(1,7,0))
+        world.addObjectAtPos 'KikiStone', 5,1,0
+        world.addObjectAtPos 'KikiStone', 1,7,0
         

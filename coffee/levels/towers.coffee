@@ -16,10 +16,10 @@ module.exports =
     ], 
     create: ->
         s = world.size
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2-1, s.y/2+1, 0))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2-1, s.y/2+1, 1))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2-1, s.y/2+1, 2))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2+1, s.y/2+1, 0))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2+1, s.y/2+1, 1))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2+1, s.y/2+1, 2))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2+1, s.y/2+1, 3))
+        world.addObjectAtPos(KikiStone(), s.x/2-1, s.y/2+1, 0)
+        world.addObjectAtPos(KikiStone(), s.x/2-1, s.y/2+1, 1)
+        world.addObjectAtPos(KikiStone(), s.x/2-1, s.y/2+1, 2)
+        world.addObjectAtPos(KikiStone(), s.x/2+1, s.y/2+1, 0)
+        world.addObjectAtPos(KikiStone(), s.x/2+1, s.y/2+1, 1)
+        world.addObjectAtPos(KikiStone(), s.x/2+1, s.y/2+1, 2)
+        world.addObjectAtPos(KikiStone(), s.x/2+1, s.y/2+1, 3)

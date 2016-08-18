@@ -28,5 +28,5 @@ module.exports =
             for j in [0...s.y]
                 for o in [0...s.z]
                     if Math.pow(-1, i+j+l)==1  and not (d<=i<=s.x-d-1 and d<=j<=s.y-d-1 and d<=l<=s.z-d-1)
-                        world.addObjectAtPos(KikiStone(KColor(0,0.8,0.2,0.8), true), KikiPos(i,j,l))
+                        world.addObjectAtPos(KikiStone(KColor(0,0.8,0.2,0.8), true), i,j,l)
 

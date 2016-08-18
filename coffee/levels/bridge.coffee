@@ -35,10 +35,10 @@ module.exports =
         world.addObjectAtPos KikiMotorGear(KikiFace.NY),     KikiPos s.x/2-1, s.y-1, s.z/2
         world.addObjectAtPos KikiMotorCylinder(KikiFace.NY), KikiPos s.x/2-1, s.y-2, s.z/2
         world.addObjectAtPos KikiGenerator(KikiFace.NY),     KikiPos s.x/2+1, s.y-1, s.z/2
-        world.addObjectLine  "KikiWire (KikiFace.NY, KikiWire.VERTICAL)", KikiPos(s.x/2, s.y-1, 0), KikiPos s.x/2, s.y-1, s.z
-        world.addObjectLine  "KikiWire (KikiFace.PY, KikiWire.VERTICAL)", KikiPos(s.x/2, 0, 0),     KikiPos s.x/2, 0, s.z
-        world.addObjectLine  "KikiWire (KikiFace.PZ, KikiWire.VERTICAL)", KikiPos(s.x/2, 0, 0),     KikiPos s.x/2, s.y, 0
-        world.addObjectLine  "KikiWire (KikiFace.NZ, KikiWire.VERTICAL)", KikiPos(s.x/2, 0, s.z-1), KikiPos s.x/2, s.y, s.z-1
+        world.addObjectLine  "KikiWire (KikiFace.NY, KikiWire.VERTICAL)", s.x/2, s.y-1, 0, s.x/2, s.y-1, s.z
+        world.addObjectLine  "KikiWire (KikiFace.PY, KikiWire.VERTICAL)", s.x/2, 0, 0,     s.x/2, 0, s.z
+        world.addObjectLine  "KikiWire (KikiFace.PZ, KikiWire.VERTICAL)", s.x/2, 0, 0,     s.x/2, s.y, 0
+        world.addObjectLine  "KikiWire (KikiFace.NZ, KikiWire.VERTICAL)", s.x/2, 0, s.z-1, s.x/2, s.y, s.z-1
         
         world.addObjectAtPos 'KikiWireStone', KikiPos s.x/2+3, 0, s.z/2
         world.addObjectAtPos 'KikiWireStone', KikiPos s.x/2-3, 0, s.z/2

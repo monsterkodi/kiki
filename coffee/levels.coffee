@@ -23,11 +23,13 @@ class Levels
             # "cube", 
             # "switch", 
             # "borg", 
-            "mini", 
+            # "mini", 
             # "blocks", 
             # "bombs", 
-            "sandbox", 
-            "energy", "maze", "love", 
+            # "sandbox", 
+            # "energy", 
+            "maze", 
+            "love", 
             # medium
             "towers", "edge", "random", "plate", "nice", "entropy", 
             # owen hay's levels (TODO: sort in)

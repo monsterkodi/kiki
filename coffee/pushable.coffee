@@ -30,7 +30,7 @@ class Pushable extends Item
             # log "Pushable.setOrientation direction:", @direction
 
     pushedByObjectInDirection: (object, dir, duration) ->
-
+        log "pushedByObjectInDirection #{object.name} duration:#{duration}"
         pushAction   = @getActionWithId Action.PUSH
         
         @pusher      = object
@@ -42,7 +42,7 @@ class Pushable extends Item
 
     initAction: (action) ->
         switch action.id
-            when Action.FALL
+            when Action.PUSH, Action.FALL
                 # log 'Pushable.initAction FALL direction:', @direction
                 world.objectWillMoveToPos @, @position.plus(@direction), action.getDuration()
 

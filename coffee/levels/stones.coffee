@@ -31,13 +31,13 @@ module.exports =
                                            [s.x/2+i, s.y/2+i, i-1],
                                            [s.x/2-i, s.y/2+i, i-1]])
         
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2-2, s.y/2, 3))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2+2, s.y/2, 3))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2, s.y/2+2, 3))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2, s.y/2-2, 3))
+        world.addObjectAtPos(KikiStone(), s.x/2-2, s.y/2, 3)
+        world.addObjectAtPos(KikiStone(), s.x/2+2, s.y/2, 3)
+        world.addObjectAtPos(KikiStone(), s.x/2, s.y/2+2, 3)
+        world.addObjectAtPos(KikiStone(), s.x/2, s.y/2-2, 3)
         
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2-1, s.y/2, 2))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2+1, s.y/2, 2))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2, s.y/2+1, 2))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2, s.y/2-1, 2))
+        world.addObjectAtPos(KikiStone(), s.x/2-1, s.y/2, 2)
+        world.addObjectAtPos(KikiStone(), s.x/2+1, s.y/2, 2)
+        world.addObjectAtPos(KikiStone(), s.x/2, s.y/2+1, 2)
+        world.addObjectAtPos(KikiStone(), s.x/2, s.y/2-1, 2)
         

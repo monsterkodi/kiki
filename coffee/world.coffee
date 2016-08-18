@@ -6,6 +6,7 @@
 #   00     00   0000000   000   000  0000000  0000000  
 {
 absMin,
+randrange,
 clamp,
 first,
 last}       = require "/Users/kodi/s/ko/js/tools/tools"
@@ -20,6 +21,7 @@ Player      = require './player'
 Cage        = require './cage'
 Timer       = require './timer'
 Actor       = require './actor'
+Item        = require './item'
 Action      = require './action'
 TmpObject   = require './tmpobject'
 Pushable    = require './pushable'
@@ -364,19 +366,23 @@ class World extends Actor
         @addObject object
 
     addObjectLine: (object, sx,sy,sz, ex,ey,ez) ->
-        if sx instanceof Pos
+        log "world.addObjectLine sx:#{sx} sy:#{sy} sz:#{sz} ex:#{ex} ey:#{ey} ez:#{ez}"
+        if sx instanceof Pos or Array.isArray sx
             start = sx
             end   = sy
         else
             start = new Pos sx,sy,sz
             end   = new Pos ex,ey,ez
         # adds a line of objects of type to the world. start and end should be 3-tuples or Pos objects
-        if start instanceof Pos
-            start = [start.x, start.y, start.z]
-        [sx, sy, sz] = start
         if end instanceof Pos
             end = [end.x, end.y, end.z]
         [ex, ey, ez] = end
+
+        if start instanceof Pos
+            start = [start.x, start.y, start.z]
+        [sx, sy, sz] = start
+        
+        log "world.addObjectLine sx:#{sx} sy:#{sy} sz:#{sz} ex:#{ex} ey:#{ey} ez:#{ez}"
         
         diff = [ex-sx, ey-sy, ez-sz]
         maxdiff = _.max diff.map Math.abs
@@ -384,24 +390,21 @@ class World extends Actor
         for i in [0...maxdiff]
             # pos = apply(Pos, (map (lambda a, b: int(a+i*b), start, deltas)))
             pos = new Pos (start[j]+i*deltas[j] for j in [0..2])
+            log "addObjectLine #{i}:", pos
             if @isUnoccupiedPos pos
                 @addObjectAtPos object, pos
-                # if _.isString object
-                    # @addObjectAtPos eval(object), pos
-                # else
-                    # @addObjectAtPos object(), pos
        
     addObjectPoly: (object, points, close=1) ->
         # adds a polygon of objects of type to the world. points should be 3-tuples or Pos objects
         if close
-            points.append (points[0])
-        for index in range(1, len(points))
+            points.push points[0]
+        for index in [1...points.length]
             @addObjectLine object, points[index-1], points[index]
        
     addObjectRandom: (object, number) ->
         # adds number objects of type at random positions to the world
         for i in [0...number]
-            if type (object) == types.StringType
+            if _.isString object
                 @setObjectRandom eval object 
             else
                 @setObjectRandom object()
@@ -410,9 +413,9 @@ class World extends Actor
         # adds number objects of type at random positions to the world
         object_set = 0
         while not object_set                                   # hack alert!
-            random_pos = Pos random.randrange(@size.x),
-                             random.randrange(@size.y),
-                             random.randrange(@size.z)
+            random_pos = Pos randrange(@size.x),
+                             randrange(@size.y),
+                             randrange(@size.z)
             if not object.isSpaceEgoistic() or @isUnoccupiedPos(random_pos)
                 @addObjectAtPos object, random_pos
                 object_set = 1
@@ -426,7 +429,9 @@ class World extends Actor
     getObjectsOfType:      (clss) -> @objects.filter (o) -> o instanceof clss
     getObjectsOfTypeAtPos: (clss, pos) -> @getCellAtPos(pos)?.getObjectsOfType clss
     getObjectOfTypeAtPos:  (clss, pos) -> @getCellAtPos(pos)?.getRealObjectOfType clss
-    getOccupantAtPos:            (pos) -> @getCellAtPos(pos)?.getOccupant()
+    getOccupantAtPos:            (pos) -> 
+        # log "getOccupantAtPos cell? #{@getCellAtPos(pos)?}", pos
+        @getCellAtPos(pos)?.getOccupant()
     getRealOccupantAtPos: (pos) ->
         occupant = @getOccupantAtPos pos
         if occupant and occupant instanceof TmpObject
@@ -435,8 +440,9 @@ class World extends Actor
             occupant
 
     setObjectAtPos: (object, pos) ->
+        pos = new Pos pos
         if @isInvalidPos pos
-            log "World.setObjectAtPos invalid pos:", pos
+            log "World.setObjectAtPos [WARNING] invalid pos:", pos
             return
     
         if object.isSpaceEgoistic()
@@ -471,10 +477,13 @@ class World extends Actor
 
     newObject: (object) ->
         if _.isString object
-            # log "newObject:", object
             if object.startsWith 'Kiki'
                 return new (require "./#{object.slice(4).toLowerCase()}")()
-        object
+            return new (require "./#{object.toLowerCase()}")()
+        if object instanceof Item
+            return object
+        else
+            return object()
         
     addObject: (object) ->
         object = @newObject object
@@ -565,79 +574,80 @@ class World extends Actor
     #    0000000   0000000     0000000         000   000   0000000       0      00000000
         
     objectWillMoveToPos: (object, pos, duration) ->
-        # log "world.objectWillMoveToPos #{object.name} #{duration}", pos
         
-        if @isInvalidPos pos
-            log "world.objectWillMoveToPos [WARNING] #{object.name} invalid pos:", pos
+        sourcePos = object.getPos()
+        targetPos = new Pos pos
+        
+        # log "world.objectWillMoveToPos #{object.name} #{duration}", targetPos
+        
+        if @isInvalidPos targetPos
+            log "world.objectWillMoveToPos [WARNING] #{object.name} invalid targetPos:", targetPos
             return
         
-        if object.getPos().eql pos
-            log "world.objectWillMoveToPos [WARNING] #{object.name} equal pos:", pos
+        if sourcePos.eql targetPos
+            log "world.objectWillMoveToPos [WARNING] #{object.name} equal pos:", targetPos
             return
         
-        if cell = @getCellAtPos pos
-            if objectAtNewPos = cell.getOccupant()
+        targetCell = @getCellAtPos pos
+        if targetCell
+            if objectAtNewPos = targetCell.getOccupant()
                 if objectAtNewPos instanceof TmpObject
                     if objectAtNewPos.time < 0 and -objectAtNewPos.time <= duration
                         # temporary object at new pos will vanish before object will arrive . delete it
                         objectAtNewPos.del()
                     else
-                        log "world.objectWillMoveToPos [WARNING] #{object.name} timing conflict at pos:", pos
+                        log "world.objectWillMoveToPos [WARNING] #{object.name} timing conflict at pos:", targetPos
                 else
-                    log "world.objectWillMoveToPos [WARNING] #{object.name} already occupied:", pos 
+                    log "world.objectWillMoveToPos [WARNING] #{object.name} already occupied:", targetPos 
     
         if object.name != 'player'
-            log "---------- tmpObjects not player? #{object.name}"
+            # log "---------- tmpObjects not player? #{object.name}"
             @unsetObject object # remove object from cell grid
-            # log 'tmpObject at new pos', pos 
-            tmpObject = new TmpObject object  # insert tmp object at new pos
-            tmpObject.setPosition pos 
-            tmpObject.time = duration
-            @addObjectAtPos tmpObject, pos 
-            # log 'tmpObject at old pos', object.position
+            
+            # log 'tmpObject at old pos', sourcePos
             tmpObject = new TmpObject object  # insert tmp object at old pos
-            tmpObject.setPosition object.position
+            tmpObject.setPosition sourcePos
             tmpObject.time = -duration
-            @addObjectAtPos tmpObject, object.getPos() 
-        else @player.targetPos = pos
-    
+            @addObjectAtPos tmpObject, sourcePos 
+
+            # log 'tmpObject at new pos', targetPos 
+            tmpObject = new TmpObject object  # insert tmp object at new pos
+            tmpObject.setPosition targetPos 
+            tmpObject.time = duration
+            @addObjectAtPos tmpObject, targetPos 
+
     objectMoved: (movedObject, from, to) ->
         sourcePos = new Pos from
         targetPos = new Pos to
-        
-        # log "world.objectMoved #{movedObject.name}", sourcePos
-        
-        # if cell = @getCellAtPos sourcePos 
-            # if tmpObject = cell.getObjectOfType TmpObject 
-                # if tmpObject.object == object
-                    # tmpObject.del()
 
         if @isInvalidPos targetPos
              log "World.objectMoved [WARNING] #{movedObject.name} invalid targetPos:", targetPos
              return
-
-        # if tmpObject = @getObjectOfTypeAtPos TmpObject, pos
-            # if tmpObject.object == movedObject
-                # tmpObject.del()
-            # else
-                # log "World.updateStatus wrong tmp object at pos:", pos
-        # else 
-            
-        if @isOccupiedPos targetPos
-            log "World.objectMoved [WARNING] #{movedObject.name} moved to occupied pos:", targetPos
-            
-        # log 'World.objectMovedFromPos sourcePos:', sourcePos
-        # log 'World.objectMovedFromPos targetPos:', targetPos
+        
+        # log "world.objectMoved #{movedObject.name}", sourcePos
         
         sourceCell = @getCellAtPos sourcePos
         targetCell = @getCellAtPos targetPos
         
+        if tmpObject = sourceCell?.getObjectOfType TmpObject 
+            tmpObject.del() if tmpObject.object == movedObject
+
+        if tmpObject = targetCell?.getObjectOfType TmpObject 
+            tmpObject.del() if tmpObject.object == movedObject
+            
+        if @isOccupiedPos targetPos
+            log "World.objectMoved [WARNING] #{movedObject.name} occupied target pos:", targetPos
+            
+        # log 'World.objectMovedFromPos sourcePos:', sourcePos
+        # log 'World.objectMovedFromPos targetPos:', targetPos
+                
         if sourceCell?
             sourceCell.removeObject movedObject
             if sourceCell.isEmpty()
                 # log 'world.objectMoved remove empty cell at pos:', sourcePos
                 @cells[@posToIndex(sourcePos)] = null
-            
+        
+        targetCell = @getCellAtPos targetPos    
         if not targetCell?
             cellIndex = @posToIndex targetPos 
             targetCell = new Cell()
@@ -645,6 +655,7 @@ class World extends Actor
             @cells[cellIndex] = targetCell
 
         if targetCell?
+            # log "add #{movedObject.name} to targetCell at pos", targetPos
             targetCell.addObject movedObject
         else
             log "world.objectMoved [WARNING] #{movedObject.name} no target cell?"

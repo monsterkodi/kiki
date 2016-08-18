@@ -60,8 +60,13 @@ class Action
         if @object? then @object.removeAction @
         @deleted = true
 
+    perform: () -> 
+        if @object.performAction? 
+            @object.performAction @
+        else if _.isFunction @object
+            @object()
+    
     init: () ->    @object.initAction? @
-    perform: () -> @object.performAction? @
     finish: () ->  @object.finishAction? @
     finished: () -> 
         # log "Action.finished #{@name} #{@object?.actionFinished?}"

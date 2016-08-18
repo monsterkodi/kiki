@@ -8,6 +8,7 @@ log    = require "/Users/kodi/s/ko/js/tools/log"
 
 Vector = require './lib/vector'
 Switch = require './switch'
+Light  = require './light'
 Action = require './action'
 
 class Gate extends Switch
@@ -21,7 +22,13 @@ class Gate extends Switch
         @getActionWithId(Action.ROTATE).duration = 3000 
         @sound_on  = 'GATE_OPEN'
         @sound_off = 'GATE_CLOSE'
-        
+
+    createLight: -> 
+        @light = new Light 
+            pos:    @position
+            radius: 12.0
+            shadow: true
+            
     createMesh: () -> 
         torusRadius = 0.05
         t1 = new THREE.TorusGeometry 0.5-torusRadius, torusRadius, 16, 32

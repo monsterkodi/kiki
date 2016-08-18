@@ -27,4 +27,4 @@ module.exports =
             for j in [0...5]
                 for l in [0...5]
                     if Math.pow(-1, i+j+l) == -1
-                        world.addObjectAtPos('KikiStone', KikiPos(i,j,l))
+                        world.addObjectAtPos 'KikiStone', i,j,l 

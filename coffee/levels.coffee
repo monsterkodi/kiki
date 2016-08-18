@@ -17,12 +17,17 @@ class Levels
             # easy
             # "gold", 
             # "jump", 
-            "escape", "gears", 
+            # "escape", 
+            # "gears", 
             # "gamma", 
-            "cube", "switch", "borg", 
+            # "cube", 
+            # "switch", 
+            # "borg", 
             "mini", 
             # "blocks", 
-            "bombs", "sandbox", "energy", "maze", "love", 
+            # "bombs", 
+            "sandbox", 
+            "energy", "maze", "love", 
             # medium
             "towers", "edge", "random", "plate", "nice", "entropy", 
             # owen hay's levels (TODO: sort in)

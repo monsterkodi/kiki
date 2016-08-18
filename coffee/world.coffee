@@ -76,9 +76,9 @@ class World extends Actor
         #   000       000   000  000 0 000  000       000   000  000   000
         #    0000000  000   000  000   000  00000000  000   000  000   000
         
-        @fov    = 70
-        @near   = 0.001
-        @far    = 500
+        @fov    = 90
+        @near   = 0.1
+        @far    = 20
         @aspect = @view.offsetWidth / @view.offsetHeight
         @dist   = 10
         
@@ -279,11 +279,13 @@ class World extends Actor
     
     addLight: (light) ->
         @lights.push light
-        @enableShadows true
+        @enableShadows true if light.shadow
         
     removeLight: (light) ->
         _.pull @lights, light
-        @enableShadows false if not @lights.length
+        for l in @lights
+            shadow = true if l.shadow
+        @enableShadows shadow
 
     enableShadows: (enable) ->
         @renderer.shadowMap.enabled = enable
@@ -298,8 +300,8 @@ class World extends Actor
         log "world.exitLevel", action       
         @finish()
         # @player.status.setMoves 0
-        exitIndex = parseInt action.name.slice 5
-        log "world.exitLevel exitIndex:#{exitIndex}"
+        # exitIndex = parseInt action.name?.slice 5
+        # log "world.exitLevel exitIndex:#{exitIndex}"
         # if @dict.exits[exitIndex]?.world?
             # w = @dict.exits[exitIndex].world
             # w() if _.isFunction w
@@ -319,158 +321,6 @@ class World extends Actor
         p.x >= 0 and p.x < @size.x and p.y >= 0 and p.y < @size.y and p.z >= 0 and p.z < @size.z
         
     isInvalidPos: (pos) -> not @isValidPos pos
-
-    #    0000000   0000000          000  00000000   0000000  000000000        000      000  000   000  00000000
-    #   000   000  000   000        000  000       000          000           000      000  0000  000  000     
-    #   000   000  0000000          000  0000000   000          000           000      000  000 0 000  0000000 
-    #   000   000  000   000  000   000  000       000          000           000      000  000  0000  000     
-    #    0000000   0000000     0000000   00000000   0000000     000           0000000  000  000   000  00000000
-    
-    addObjectLine: (object, sx,sy,sz, ex,ey,ez) ->
-        if sx instanceof Pos
-            start = sx
-            end   = sy
-        else
-            start = new Pos sx,sy,sz
-            end   = new Pos ex,ey,ez
-        # adds a line of objects of type to the world. start and end should be 3-tuples or Pos objects
-        if start instanceof Pos
-            start = [start.x, start.y, start.z]
-        [sx, sy, sz] = start
-        if end instanceof Pos
-            end = [end.x, end.y, end.z]
-        [ex, ey, ez] = end
-        
-        diff = [ex-sx, ey-sy, ez-sz]
-        maxdiff = _.max diff.map Math.abs
-        deltas = diff.map (a) -> a/maxdiff
-        for i in [0...maxdiff]
-            # pos = apply(Pos, (map (lambda a, b: int(a+i*b), start, deltas)))
-            pos = new Pos (start[j]+i*deltas[j] for j in [0..2])
-            if @isUnoccupiedPos pos
-                if type(object) == types.StringType
-                    @addObjectAtPos eval(object), pos
-                else
-                    @addObjectAtPos object(), pos
-       
-    addObjectPoly: (object, points, close=1) ->
-        # adds a polygon of objects of type to the world. points should be 3-tuples or Pos objects
-        if close
-            points.append (points[0])
-        for index in range(1, len(points))
-            @addObjectLine object, points[index-1], points[index]
-       
-    addObjectRandom: (object, number) ->
-        # adds number objects of type at random positions to the world
-        for i in [0...number]
-            if type (object) == types.StringType
-                @setObjectRandom eval object 
-            else
-                @setObjectRandom object()
-        
-    setObjectRandom: (object) ->
-        # adds number objects of type at random positions to the world
-        object_set = 0
-        while not object_set                                   # hack alert!
-            random_pos = Pos random.randrange(@size.x),
-                             random.randrange(@size.y),
-                             random.randrange(@size.z)
-            if not object.isSpaceEgoistic() or @isUnoccupiedPos(random_pos)
-                @addObjectAtPos object, random_pos
-                object_set = 1
-
-    #   000   000  00000000  000      00000000 
-    #   000   000  000       000      000   000
-    #   000000000  0000000   000      00000000 
-    #   000   000  000       000      000      
-    #   000   000  00000000  0000000  000      
-    
-    help: (index=0) ->
-        # displays help messages
-
-        # text_list = @dict["help"]
-        # more_text = index < len (text_list) - 1
-        # less_text = index > 0
-#         
-        # list = text_list[index].split("$key(")     
-        # for i in range (1, len(list))
-            # close = list[i].find(")")
-            # list[i] = Controller.player.getKeyForAction (list[i][:close]) + list[i][close+1:]
-#                          
-        # list.append ("\n\n$scale(0.5)(%d/%d)" % (index+1, len (text_list)))
-        # help_text = KikiPageText ("".join(list), more_text, less_text)
-#             
-        # if more_text:
-            # help_text.getEventWithName ("next").addAction (once (lambda i=index+1: @help (i)))
-        # if less_text:
-            # help_text.getEventWithName ("previous").addAction (once (lambda i=index-1: @help (i)))
- 
-    outro: (index=0) ->
-        # well hidden outro :-)
-        outro_text = """
-                    $scale(1.5)congratulations!\n\n$scale(1)you rescued\nthe nano world!
-                    
-                    the last dumb mutant bot\nhas been destroyed.\n\nthe maker is functioning again.
-                    kiki will go now\nand see all his new friends.\n\nyou should maybe\ndo the same?
-                    the maker wants to thank you!\n\n(btw.: you thought\nyou didn't see\nkiki's maker in the game?
-                    you are wrong!\nyou saw him\nall the time,\nbecause kiki\nlives inside him!)\n\n$scale(1.5)the end
-                    p.s.: the maker of the game\nwants to thank you as well!\n\ni definitely want your feedback:
-                    please send me a mail (monsterkodi@users.sf.net)\nwith your experiences,
-                    which levels you liked, etc.\n\nthanks in advance and have a nice day,\n\nyours kodi
-                    """
-        
-        more_text = index < outro_text.length-1
-        less_text = index > 0
-        
-        page_text = outro_text[index]
-        page_text += "\n\n$scale(0.5)(#{index+1}/#{outro_text.length})"
-    
-        page = KikiPageText(page_text, more_text, less_text)
-        page.getEventWithName("hide").addAction(once(display_main_menu))
-        
-        if more_text
-            page.getEventWithName("next").addAction (i=index+1) => @outro i
-        if less_text
-            page.getEventWithName("previous").addAction (i=index-1) => @outro i
-        
-    resetProjection: -> world.getProjection().setViewport 0.0, 0.0, 1.0, 1.0
-
-    toggle: (objectName) ->
-        # toggles object with name objectName
-        @startTimedAction(@getObjectWithName(objectName).getActionWithName("toggle"))
-    
-    #   00000000   0000000   0000000
-    #   000       000       000     
-    #   0000000   0000000   000     
-    #   000            000  000     
-    #   00000000  0000000    0000000
-    
-    escape: (self) -> # handles an ESC key event
-        
-        @resetProjection()
-        
-        if "escape" in @dict
-            if _.isFunction @dict["escape"]
-                @dict["escape"]()
-            else
-                exec @dict["escape"] in globals()
-            return
-
-        menu = new Menu()
-        menu.getEventWithName("hide").addAction once @resetProjection 
-        
-        # if Controller.isDebugVersion()
-            # menu.addItem (Controller.getLocalizedString("next level"), once(lambda w=self: w.performAction("exit 0",0)))
-        # if "help" in @dict
-            # menu.addItem (Controller.getLocalizedString("help"), once(@help))
-        menu.addItem(Controller.getLocalizedString("restart"), once(@restart))
-        
-        esc_menu_action = once @escape
-        log "level_index #{world.level_index}"
-        menu.addItem(Controller.getLocalizedString("load level"), (i=world.level_index,a=esc_menu_action) -> levelSelection(i, a))
-        menu.addItem(Controller.getLocalizedString("setup"), once @quickSetup)        
-        menu.addItem(Controller.getLocalizedString("about"), once @display_about)
-        menu.addItem(Controller.getLocalizedString("quit"), once world.quit)
 
     #    0000000  00000000  000      000       0000000
     #   000       000       000      000      000     
@@ -499,6 +349,73 @@ class World extends Actor
         lrest = index % lsize
         new Pos index/lsize, lrest/@size.z, lrest%@size.z
     
+    #  0000000   0000000    0000000         0000000   0000000          000  00000000   0000000  000000000
+    # 000   000  000   000  000   000      000   000  000   000        000  000       000          000   
+    # 000000000  000   000  000   000      000   000  0000000          000  0000000   000          000   
+    # 000   000  000   000  000   000      000   000  000   000  000   000  000       000          000   
+    # 000   000  0000000    0000000         0000000   0000000     0000000   00000000   0000000     000   
+    
+    addObjectAtPos: (object, x, y, z) ->
+        pos = new Pos x, y, z
+        object = @newObject object
+        @setObjectAtPos object, pos
+        # log "addObjectAtPos #{object.name}", pos
+        @addObject object
+
+    addObjectLine: (object, sx,sy,sz, ex,ey,ez) ->
+        if sx instanceof Pos
+            start = sx
+            end   = sy
+        else
+            start = new Pos sx,sy,sz
+            end   = new Pos ex,ey,ez
+        # adds a line of objects of type to the world. start and end should be 3-tuples or Pos objects
+        if start instanceof Pos
+            start = [start.x, start.y, start.z]
+        [sx, sy, sz] = start
+        if end instanceof Pos
+            end = [end.x, end.y, end.z]
+        [ex, ey, ez] = end
+        
+        diff = [ex-sx, ey-sy, ez-sz]
+        maxdiff = _.max diff.map Math.abs
+        deltas = diff.map (a) -> a/maxdiff
+        for i in [0...maxdiff]
+            # pos = apply(Pos, (map (lambda a, b: int(a+i*b), start, deltas)))
+            pos = new Pos (start[j]+i*deltas[j] for j in [0..2])
+            if @isUnoccupiedPos pos
+                @addObjectAtPos object, pos
+                # if _.isString object
+                    # @addObjectAtPos eval(object), pos
+                # else
+                    # @addObjectAtPos object(), pos
+       
+    addObjectPoly: (object, points, close=1) ->
+        # adds a polygon of objects of type to the world. points should be 3-tuples or Pos objects
+        if close
+            points.append (points[0])
+        for index in range(1, len(points))
+            @addObjectLine object, points[index-1], points[index]
+       
+    addObjectRandom: (object, number) ->
+        # adds number objects of type at random positions to the world
+        for i in [0...number]
+            if type (object) == types.StringType
+                @setObjectRandom eval object 
+            else
+                @setObjectRandom object()
+        
+    setObjectRandom: (object) ->
+        # adds number objects of type at random positions to the world
+        object_set = 0
+        while not object_set                                   # hack alert!
+            random_pos = Pos random.randrange(@size.x),
+                             random.randrange(@size.y),
+                             random.randrange(@size.z)
+            if not object.isSpaceEgoistic() or @isUnoccupiedPos(random_pos)
+                @addObjectAtPos object, random_pos
+                object_set = 1
+
     #  0000000   0000000          000  00000000   0000000  000000000   0000000
     # 000   000  000   000        000  000       000          000     000     
     # 000   000  0000000          000  0000000   000          000     0000000 
@@ -565,13 +482,6 @@ class World extends Actor
         else
             @objects.push object # if objects.indexOf(object) < 0 
 
-    addObjectAtPos: (object, x, y, z) ->
-        pos = new Pos x, y, z
-        object = @newObject object
-        @setObjectAtPos object, pos
-        # log "addObjectAtPos #{object.name}", pos
-        @addObject object
-
     removeObject: (object) ->
         @unsetObject object
         _.pull @lights, object
@@ -584,6 +494,13 @@ class World extends Actor
         @setObjectAtPos object, pos
         world.playSound 'BOT_LAND'
         true
+        
+    toggle: (objectName) ->
+        # toggles object with name objectName
+        object = @getObjectWithName objectName 
+        log "world.toggle #{objectName} #{object?}"
+        # @startTimedAction object.getActionWithName "toggle"  
+        object.getActionWithName("toggle").perform()
     
     #   0000000    00000000  000      00000000  000000000  00000000
     #   000   000  000       000      000          000     000     
@@ -628,7 +545,7 @@ class World extends Actor
     
     getObjectWithName: (objectName) ->
         for o in @objects
-            if objectName == o.getName()
+            if objectName == o.name
                 return o
         log "World.getObjectWithName :: no object found with name #{objectName}"
         null
@@ -650,11 +567,11 @@ class World extends Actor
         # log "world.objectWillMoveToPos #{object.name} #{duration}", pos
         
         if @isInvalidPos pos
-            log "world.objectWillMoveToPos [WARNING] invalid pos:", pos
+            log "world.objectWillMoveToPos [WARNING] #{object.name} invalid pos:", pos
             return
         
         if object.getPos().eql pos
-            log "world.objectWillMoveToPos [WARNING] equal pos:", pos
+            log "world.objectWillMoveToPos [WARNING] #{object.name} equal pos:", pos
             return
         
         if cell = @getCellAtPos pos
@@ -664,9 +581,9 @@ class World extends Actor
                         # temporary object at new pos will vanish before object will arrive . delete it
                         objectAtNewPos.del()
                     else
-                        log "world.objectWillMoveToPos [WARNING] timing conflict at pos:", pos
+                        log "world.objectWillMoveToPos [WARNING] #{object.name} timing conflict at pos:", pos
                 else
-                    log "world.objectWillMoveToPos [WARNING] already occupied:", pos 
+                    log "world.objectWillMoveToPos [WARNING] #{object.name} already occupied:", pos 
     
         if object.name != 'player'
             log "---------- tmpObjects not player? #{object.name}"
@@ -695,7 +612,7 @@ class World extends Actor
                     # tmpObject.del()
 
         if @isInvalidPos targetPos
-             log "World.objectMoved invalid targetPos:", targetPos
+             log "World.objectMoved [WARNING] #{movedObject.name} invalid targetPos:", targetPos
              return
 
         # if tmpObject = @getObjectOfTypeAtPos TmpObject, pos
@@ -706,7 +623,7 @@ class World extends Actor
         # else 
             
         if @isOccupiedPos targetPos
-            log "World.objectMoved object moved to occupied pos:", targetPos
+            log "World.objectMoved [WARNING] #{movedObject.name} moved to occupied pos:", targetPos
             
         # log 'World.objectMovedFromPos sourcePos:', sourcePos
         # log 'World.objectMovedFromPos targetPos:', targetPos
@@ -729,7 +646,7 @@ class World extends Actor
         if targetCell?
             targetCell.addObject movedObject
         else
-            log 'world.objectMoved [WARNING] no target cell?'
+            log "world.objectMoved [WARNING] #{movedObject.name} no target cell?"
     
     setObjectColor: (color_name, color) ->
         if color_name == 'base'
@@ -818,7 +735,7 @@ class World extends Actor
             return true
     
     mayObjectPushToPos: (object, pos, duration) ->
-        log "world.mayObjectPushToPos object:#{object.name} duration:#{duration}", pos
+        # log "world.mayObjectPushToPos object:#{object.name} duration:#{duration}", pos
         # returns true, if a pushable object is at pos and may be pushed
         return false if @isInvalidPos pos
         
@@ -838,10 +755,9 @@ class World extends Actor
             else return false
     
         pushableObject = @getOccupantAtPos pos
-        log "pushableObject #{pushableObject?.name}"
+        # log "pushableObject #{pushableObject?.name}"
         if pushableObject? and pushableObject instanceof Pushable #and
                                 # pushableObject instanceof MotorGear # bad
-            log 'pushedByObjectInDirection'
             pushableObject.pushedByObjectInDirection object, direction, duration
             return true
     
@@ -854,6 +770,95 @@ class World extends Actor
         
         # Spikes::initialize()
         # Text::reinit()
+        
+    #   000   000  00000000  000      00000000 
+    #   000   000  000       000      000   000
+    #   000000000  0000000   000      00000000 
+    #   000   000  000       000      000      
+    #   000   000  00000000  0000000  000      
+    
+    help: (index=0) ->
+        # displays help messages
+
+        # text_list = @dict["help"]
+        # more_text = index < len (text_list) - 1
+        # less_text = index > 0
+#         
+        # list = text_list[index].split("$key(")     
+        # for i in range (1, len(list))
+            # close = list[i].find(")")
+            # list[i] = Controller.player.getKeyForAction (list[i][:close]) + list[i][close+1:]
+#                          
+        # list.append ("\n\n$scale(0.5)(%d/%d)" % (index+1, len (text_list)))
+        # help_text = KikiPageText ("".join(list), more_text, less_text)
+#             
+        # if more_text:
+            # help_text.getEventWithName ("next").addAction (once (lambda i=index+1: @help (i)))
+        # if less_text:
+            # help_text.getEventWithName ("previous").addAction (once (lambda i=index-1: @help (i)))
+ 
+    outro: (index=0) ->
+        # well hidden outro :-)
+        outro_text = """
+                    $scale(1.5)congratulations!\n\n$scale(1)you rescued\nthe nano world!
+                    
+                    the last dumb mutant bot\nhas been destroyed.\n\nthe maker is functioning again.
+                    kiki will go now\nand see all his new friends.\n\nyou should maybe\ndo the same?
+                    the maker wants to thank you!\n\n(btw.: you thought\nyou didn't see\nkiki's maker in the game?
+                    you are wrong!\nyou saw him\nall the time,\nbecause kiki\nlives inside him!)\n\n$scale(1.5)the end
+                    p.s.: the maker of the game\nwants to thank you as well!\n\ni definitely want your feedback:
+                    please send me a mail (monsterkodi@users.sf.net)\nwith your experiences,
+                    which levels you liked, etc.\n\nthanks in advance and have a nice day,\n\nyours kodi
+                    """
+        
+        more_text = index < outro_text.length-1
+        less_text = index > 0
+        
+        page_text = outro_text[index]
+        page_text += "\n\n$scale(0.5)(#{index+1}/#{outro_text.length})"
+    
+        page = KikiPageText(page_text, more_text, less_text)
+        page.getEventWithName("hide").addAction(once(display_main_menu))
+        
+        if more_text
+            page.getEventWithName("next").addAction (i=index+1) => @outro i
+        if less_text
+            page.getEventWithName("previous").addAction (i=index-1) => @outro i
+        
+    resetProjection: -> world.getProjection().setViewport 0.0, 0.0, 1.0, 1.0
+    
+    #   00000000   0000000   0000000
+    #   000       000       000     
+    #   0000000   0000000   000     
+    #   000            000  000     
+    #   00000000  0000000    0000000
+    
+    escape: (self) -> # handles an ESC key event
+        
+        @resetProjection()
+        
+        if "escape" in @dict
+            if _.isFunction @dict["escape"]
+                @dict["escape"]()
+            else
+                exec @dict["escape"] in globals()
+            return
+
+        menu = new Menu()
+        menu.getEventWithName("hide").addAction once @resetProjection 
+        
+        # if Controller.isDebugVersion()
+            # menu.addItem (Controller.getLocalizedString("next level"), once(lambda w=self: w.performAction("exit 0",0)))
+        # if "help" in @dict
+            # menu.addItem (Controller.getLocalizedString("help"), once(@help))
+        menu.addItem(Controller.getLocalizedString("restart"), once(@restart))
+        
+        esc_menu_action = once @escape
+        log "level_index #{world.level_index}"
+        menu.addItem(Controller.getLocalizedString("load level"), (i=world.level_index,a=esc_menu_action) -> levelSelection(i, a))
+        menu.addItem(Controller.getLocalizedString("setup"), once @quickSetup)        
+        menu.addItem(Controller.getLocalizedString("about"), once @display_about)
+        menu.addItem(Controller.getLocalizedString("quit"), once world.quit)
     
     #   000   000   0000000   000      000    
     #   000 0 000  000   000  000      000    

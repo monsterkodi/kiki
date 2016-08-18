@@ -8,14 +8,15 @@ Item = require './item'
 
 class Light extends Item
     
-    constructor: (pos, radius) ->
-        @radius    = radius ? 4
-        @intensity = 1
+    constructor: (opt) ->
+        @radius    = opt?.radius ? 4
+        @shadow    = opt?.shadow ? false
+        @intensity = opt?.intensity ? 0.5
         # @ambient_color  = colors[KikiLight_base_color]
         # @diffuse_color  = colors[KikiLight_diffuse_color]
         # @specular_color = colors[KikiLight_specular_color]
         @point = new THREE.PointLight 0xffffff, @intensity, @radius, 2
-        @point.castShadow = true
+        @point.castShadow = @shadow
         @point.shadow.darkness = 0.5
         @point.shadow.mapSize = new THREE.Vector2 2048, 2048
         @point.shadow.bias = 0.01
@@ -32,7 +33,7 @@ class Light extends Item
         @mesh = new THREE.Mesh geom, mat
         world.scene.add @point
         world.addLight @
-        @setPosition pos if pos?
+        @setPosition opt.pos if opt?.pos?
         super
 
     del: -> 

@@ -62,10 +62,16 @@ class Switch extends Item
     bulletImpact: -> @setActive not @active
         
     lightDeleted: () -> @light = null
+    createLight: -> 
+        @light = new Light 
+            pos:    @position
+            radius: 6.0
+    
+    toggle: -> @setActive not @active
     
     setActive: (status) ->
-        log "switch #{@name} active:#{status}"
         if @active != status
+            log "switch #{@name} active:#{status}"
             @active = status
             
             if @active
@@ -73,7 +79,7 @@ class Switch extends Item
                 @startTimedAction @getActionWithId Action.ROTATE 
                 world.playSound @sound_on
                 @events[@SWITCH_ON_EVENT].triggerActions()
-                @light = new Light @position, 10.0
+                @createLight()
                 @light.on 'deleted', @lightDeleted
             else
                 @stopAction @getActionWithId Action.ROTATE
@@ -84,7 +90,7 @@ class Switch extends Item
                 if @light 
                     @light.del()
                     @light = null
-            
+            log 'trigger SWITCHED_EVENT'
             @events[@SWITCHED_EVENT].triggerActions()
     
     setPosition: (pos) ->

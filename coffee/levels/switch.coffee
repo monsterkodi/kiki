@@ -34,53 +34,54 @@ module.exports =
         h = 0
         # bomb and stones
         
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2, s.y/2, s.z/2))
-        world.addObjectAtPos(KikiStone(), KikiPos(s.x/2, s.y-2, s.z/2))
+        world.addObjectAtPos 'KikiStone', s.x/2, s.y/2, s.z/2
+        world.addObjectAtPos 'KikiStone', s.x/2, s.y-2, s.z/2
         
-        world.addObjectAtPos(KikiBomb(), KikiPos(s.x/2, 1, s.z/2))
+        # world.addObjectAtPos 'KikiBomb', s.x/2, 1, s.z/2
         
         # stone frames for switches
         
-        world.addObjectAtPos(KikiWall(), world.decenter( 0,  h-1, s.z/2))
-        world.addObjectAtPos(KikiWall(), world.decenter( 0,  h+1, s.z/2))
-        world.addObjectAtPos(KikiWall(), world.decenter( 1,  h, s.z/2))
-        world.addObjectAtPos(KikiWall(), world.decenter(-1,  h, s.z/2))
+        world.addObjectAtPos 'KikiWall', world.decenter  0,  h-1, s.z/2
+        world.addObjectAtPos 'KikiWall', world.decenter  0,  h+1, s.z/2
+        world.addObjectAtPos 'KikiWall', world.decenter  1,  h, s.z/2
+        world.addObjectAtPos 'KikiWall', world.decenter -1,  h, s.z/2
         
-        world.addObjectAtPos(KikiWall(), world.decenter(s.x/2, h-1, 0))
-        world.addObjectAtPos(KikiWall(), world.decenter(s.x/2, h+1, 0))
-        world.addObjectAtPos(KikiWall(), world.decenter(s.x/2, h,  1))
-        world.addObjectAtPos(KikiWall(), world.decenter(s.x/2, h, -1))
+        world.addObjectAtPos 'KikiWall', world.decenter s.x/2, h-1, 0
+        world.addObjectAtPos 'KikiWall', world.decenter s.x/2, h+1, 0
+        world.addObjectAtPos 'KikiWall', world.decenter s.x/2, h,  1
+        world.addObjectAtPos 'KikiWall', world.decenter s.x/2, h, -1
         
-        world.addObjectAtPos(KikiWall(), world.decenter( 0,  h-1, -s.z/2+1))
-        world.addObjectAtPos(KikiWall(), world.decenter( 0,  h+1, -s.z/2+1))
-        world.addObjectAtPos(KikiWall(), world.decenter( 1,  h, -s.z/2+1))
-        world.addObjectAtPos(KikiWall(), world.decenter(-1,  h, -s.z/2+1))
+        world.addObjectAtPos 'KikiWall', world.decenter  0,  h-1, -s.z/2+1
+        world.addObjectAtPos 'KikiWall', world.decenter  0,  h+1, -s.z/2+1
+        world.addObjectAtPos 'KikiWall', world.decenter  1,  h, -s.z/2+1
+        world.addObjectAtPos 'KikiWall', world.decenter -1,  h, -s.z/2+1
         
-        world.addObjectAtPos(KikiWall(), world.decenter(-s.x/2+1, h-1, 0))
-        world.addObjectAtPos(KikiWall(), world.decenter(-s.x/2+1, h+1, 0))
-        world.addObjectAtPos(KikiWall(), world.decenter(-s.x/2+1, h,  1))
-        world.addObjectAtPos(KikiWall(), world.decenter(-s.x/2+1, h, -1))
+        world.addObjectAtPos 'KikiWall', world.decenter -s.x/2+1, h-1, 0
+        world.addObjectAtPos 'KikiWall', world.decenter -s.x/2+1, h+1, 0
+        world.addObjectAtPos 'KikiWall', world.decenter -s.x/2+1, h,  1
+        world.addObjectAtPos 'KikiWall', world.decenter -s.x/2+1, h, -1
         
         # switches
         
         world.switch_counter = 0
         
         switched = (swtch) ->
-            world.switch_counter += swtch.isActive() and 1 or -1
-            exit = kikiObjectToGate(world.getObjectWithName("exit"))
-            exit.setActive(world.switch_counter == 4)
+            world.switch_counter += swtch.active and 1 or -1
+            exit = world.getObjectWithName "exit" 
+            exit.setActive world.switch_counter == 4 
         
-        switch1 = KikiSwitch()
-        switch1.getEventWithName("switched").addAction(continuous((s=switch1) -> switched(s)))
-        switch2 = KikiSwitch()
-        switch2.getEventWithName("switched").addAction(continuous((s=switch2) -> switched(s)))
-        switch3 = KikiSwitch()
-        switch3.getEventWithName("switched").addAction(continuous((s=switch3) -> switched(s)))
-        switch4 = KikiSwitch()
-        switch4.getEventWithName("switched").addAction(continuous((s=switch4) -> switched(s)))
+        Switch = require '../switch'
+        switch1 = new Switch()
+        switch1.getEventWithName("switched").addAction(world.continuous((s=switch1) -> switched(s)))
+        switch2 = new Switch()
+        switch2.getEventWithName("switched").addAction(world.continuous((s=switch2) -> switched(s)))
+        switch3 = new Switch()
+        switch3.getEventWithName("switched").addAction(world.continuous((s=switch3) -> switched(s)))
+        switch4 = new Switch()
+        switch4.getEventWithName("switched").addAction(world.continuous((s=switch4) -> switched(s)))
         
-        world.addObjectAtPos(switch1, world.decenter(-s.x/2+1, 0, 0))
-        world.addObjectAtPos(switch2, world.decenter( s.x/2, 0, 0))
-        world.addObjectAtPos(switch3, world.decenter(0, 0, -s.z/2+1))
-        world.addObjectAtPos(switch4, world.decenter(0, 0,  s.z/2))
+        world.addObjectAtPos switch1, world.decenter -s.x/2+1, 0, 0
+        world.addObjectAtPos switch2, world.decenter  s.x/2, 0, 0
+        world.addObjectAtPos switch3, world.decenter 0, 0, -s.z/2+1
+        world.addObjectAtPos switch4, world.decenter 0, 0,  s.z/2
         

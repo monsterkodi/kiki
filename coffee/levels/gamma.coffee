@@ -1,7 +1,7 @@
 # level design by Michael Abel
 
-schemes=[test_scheme, tron_scheme,candy_scheme, default_scheme,
-         green_scheme, yellow_scheme, blue_scheme, red_scheme, metal_scheme, bronze_scheme]
+# schemes=[test_scheme, tron_scheme,candy_scheme, default_scheme,
+         # green_scheme, yellow_scheme, blue_scheme, red_scheme, metal_scheme, bronze_scheme]
 
 module.exports =
     name:       "gamma"
@@ -28,21 +28,21 @@ module.exports =
         world.switch_counter = 0
         
         aswitched = () ->
-            applyColorScheme (schemes[world.switch_countera])
+            # applyColorScheme(schemes[world.switch_countera])
             if world.switch_countera==schemes.length-1
                  world.switch_countera=0
             else
                 world.switch_countera+=1
         switched = (swtch) ->
-            world.switch_counter += swtch.isActive() and 1 or -1
+            world.switch_counter += swtch.active and 1 or -1
             exit = kikiObjectToGate(world.getObjectWithName("exit"))
             exit.setActive(world.switch_counter == 4)
                 
-        aswitch = KikiSwitch()
-        bswitch = KikiSwitch()
-        cswitch = KikiSwitch()
-        dswitch = KikiSwitch()
-        eswitch = KikiSwitch()
+        aswitch = new Switch()
+        bswitch = new Switch()
+        cswitch = new Switch()
+        dswitch = new Switch()
+        eswitch = new Switch()
         
         aswitch.getEventWithName("switched").addAction(continuous(aswitched))
         bswitch.getEventWithName("switched").addAction(continuous((s=bswitch) -> switched(s)))

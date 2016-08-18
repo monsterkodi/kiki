@@ -11,15 +11,16 @@ class Stone extends Pushable
     constructor: (@slippery=false) ->
         
         @geom = new THREE.BoxGeometry 0.98,0.98,0.98
-        # @geom.translate 0.01, 0.01, 0.01
         
         @mat  = new THREE.MeshPhongMaterial 
             color:          0xff8800
             side:           THREE.DoubleSide
-            shading:        THREE.FlatShading
+            shading:        THREE.SmoothShading
             transparent:    true
             opacity:        0.8
-            shininess:      15
+            shininess:      20
+            # alphaTest:      0.05
+            depthWrite:     false
         
         @mesh = new THREE.Mesh @geom, @mat
         super

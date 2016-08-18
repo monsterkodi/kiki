@@ -63,8 +63,9 @@ class World extends Actor
         
         @renderer = new THREE.WebGLRenderer 
             antialias:              true
-            logarithmicDepthBuffer: true
+            logarithmicDepthBuffer: false
             autoClear:              true
+            sortObjects:            true
                     
         @renderer.setClearColor 0x000000        
         @renderer.setSize @view.offsetWidth, @view.offsetHeight
@@ -680,6 +681,7 @@ class World extends Actor
             when World.CAMERA_INSIDE then @projection = @player.getInsideProjection()
             when World.CAMERA_BEHIND then @projection = @player.getBehindProjection()
             when World.CAMERA_FOLLOW then @projection = @player.getFollowProjection()
+        @player.setOpacity clamp 0, 1, @projection.getPosition().minus(@player.current_position).length()-0.4
         @projection.apply @camera
         @sun.position.copy @camera.position
         @renderer.render @scene, @camera

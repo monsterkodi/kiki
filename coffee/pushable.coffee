@@ -59,7 +59,7 @@ class Pushable extends Item
                 @move_action = null
                 targetPos = @current_position.round()
                 world.objectMoved @, @position, targetPos
-                # log "Pushable.finishAction setPosition:", targetPos
+                log "Pushable.finishAction setPosition:", targetPos
                 @setPosition targetPos
 
     actionFinished: (action) ->    

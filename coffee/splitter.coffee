@@ -18,5 +18,6 @@ class Splitter extends Bomb
         @direction = dir
     
         @startTimedAction @getActionWithId Action.EXPLODE
+        @updateMesh()
 
 module.exports = Splitter

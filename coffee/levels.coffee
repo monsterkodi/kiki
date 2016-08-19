@@ -25,13 +25,13 @@ class Levels
             # "borg", 
             # "mini", 
             # "blocks", 
-            # "bombs", 
+            "bombs", 
             # "sandbox", 
             # "energy", 
             # "maze", 
             # "love", 
             # medium
-            "towers", "edge", "random", "plate", "nice", "entropy", 
+            # "towers", "edge", "random", "plate", "nice", "entropy", 
             # owen hay's levels (TODO: sort in)
             "grasp", "fallen", "cheese", "invisimaze", "spiral", 
             # difficult

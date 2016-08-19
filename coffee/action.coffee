@@ -62,6 +62,7 @@ class Action
         @deleted = true
 
     perform: () -> 
+        # log "action.perform #{@name} action? #{@object.performAction?} #{@object.name}"
         if @object.performAction? 
             @object.performAction @
         else if _.isFunction @object
@@ -108,7 +109,7 @@ class Action
 
     performWithEvent: (event) ->
         eventTime = event.getTime()
-        # log "action.performWithEvent #{@name} eventTime #{eventTime}" if @name != 'noop'
+        # log "action.performWithEvent #{@name} eventTime #{eventTime} start #{@start}" if @name != 'noop'
         if @start == 0
             @start   = eventTime
             @current = 0

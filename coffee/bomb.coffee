@@ -4,6 +4,8 @@
 # 000   000  000   000  000 0 000  000   000
 # 0000000     0000000   000   000  0000000  
 
+log    = require '/Users/kodi/s/ko/js/tools/log'
+
 Pushable = require './pushable'
 Action   = require './action'
 Vector   = require './lib/vector'
@@ -11,21 +13,17 @@ Vector   = require './lib/vector'
 class Bomb extends Pushable
     
     isSpaceEgoistic: -> true
+    
     constructor: () ->
         
         @angle    = 0.0
         @size     = 0.55
         @splitted = false
 
-        # glScalef(size*0.3, size*0.3, size*0.3);
-        # glRotatef(angle, 1.0, 0.0, 0.0);
-        # glRotatef(90, 0.0, 1.0, 0.0);
-        # glRotatef(angle, 1.0, 0.0, 0.0);
-        # glutSolidDodecahedron ();
-        # glRotatef(90, 1.0, 0.0, 0.0);
-        # glutSolidDodecahedron ();
-
-        @geom = new THREE.DodecahedronGeometry @size
+        geom = new THREE.DodecahedronGeometry @size
+        geom2 = new THREE.DodecahedronGeometry @size
+        geom2.rotateX Vector.DEG2RAD 90
+        geom.merge geom2
         
         @mat  = new THREE.MeshPhongMaterial 
             color:          0xff0000
@@ -35,7 +33,7 @@ class Bomb extends Pushable
             opacity:        0.7
             shininess:      20
         
-        @mesh = new THREE.Mesh @geom, @mat
+        @mesh = new THREE.Mesh geom, @mat
         super
     
         @addEventWithName 'explode'
@@ -45,6 +43,11 @@ class Bomb extends Pushable
         @addAction new Action @, Action.EXPLODE, "explode", 100
         
         @startTimedAction @getActionWithId Action.ROTATE
+
+    updateMesh: -> 
+        a = Vector.DEG2RAD @angle 
+        @mesh.rotation.set a, a/2, a/4
+        @mesh.scale.set @size, @size, @size
         
     splitterInDirection: (dir) ->
         
@@ -64,7 +67,7 @@ class Bomb extends Pushable
             
         if splitter
             Splitter = require './splitter'
-            world.addObjectAtPos new Splitter(dir), pos
+            world.addObjectAtPos new Splitter(dir), pos        
     
     bulletImpact: ->
         if not @splitted
@@ -78,12 +81,15 @@ class Bomb extends Pushable
             @getEventWithName("explode").triggerActions()
     
     performAction: (action) ->
+        # log "bomb.performAction #{action.id}"
         switch action.id
             when Action.ROTATE  then @angle += action.getRelativeDelta() * 360
             when Action.IMPLODE then @size = 1.0 - action.getRelativeTime()
             when Action.EXPLODE then @size = action.getRelativeTime()
             else
                 super action
+                return
+        @updateMesh()
     
     actionFinished: (action) ->
         switch action.id

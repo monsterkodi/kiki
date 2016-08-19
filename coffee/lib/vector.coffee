@@ -15,14 +15,14 @@ class Vector
         else if Array.isArray x
             @x = x[0]
             @y = x[1]
-            @z = x[2]
+            @z = x[2] ? 0
             @w = x[3] ? 0
         else
             @x = x
             @y = y
-            @z = z
-            @w = w
-        if Number.isNaN @x
+            @z = z ? 0
+            @w = w ? 0
+        if Number.isNaN @x or Number.isNaN @w
             throw new Error
 
     copy: (v) -> 
@@ -69,13 +69,13 @@ class Vector
         -Vector.RAD2DEG(Math.acos(thisXY.dot otherXY))
 
     length:    -> Math.sqrt @x*@x+@y*@y+@z*@z+@w*@w
-    angle: (v) -> Vector.RAD2DEG Math.acos @normal().dot v.normal()  
-    dot:   (v) -> @x*v.x + @y*v.y + @z*v.z + @w*v.w
+    angle: (v) -> Vector.RAD2DEG Math.acos @normal().dot v.normal()
+    dot:   (v) -> @x*v.x + @y*v.y + @z*v.z + @w*(v.w ? 0)
     
     mul:   (f) -> new Vector @x*f, @y*f, @z*f, @w*f
     div:   (d) -> new Vector @x/d, @y/d, @z/d, @w/d
-    plus:  (v) -> new Vector @x+v.x, @y+v.y, @z+v.z, @w+v.w
-    minus: (v) -> new Vector @x-v.x, @y-v.y, @z-v.z, @w-v.w
+    plus:  (v) -> new Vector(v).add @
+    minus: (v) -> new Vector(v).neg().add @
     neg:       -> new Vector -@x, -@y, -@z, -@w
      
     add: (v) ->
@@ -113,7 +113,11 @@ class Vector
         point.minus(planeNormal).dot point.minus(planePos).dot(planeNormal)
 
     @rayPlaneIntersectionFactor: (rayPos, rayDir, planePos, planeNormal) ->
-        r = planePos.minus(rayPos).dot(planeNormal) / rayDir.dot(planeNormal)
+        rayDot = rayDir.dot planeNormal
+        if Number.isNaN rayDot
+            throw new Error
+        return 0 if rayDot == 0
+        r = planePos.minus(rayPos).dot(planeNormal) / rayDot
         if Number.isNaN r
             log 'rayPos', rayPos
             log 'rayDir', rayDir

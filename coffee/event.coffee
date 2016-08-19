@@ -7,6 +7,7 @@
 last
 }      = require '/Users/kodi/s/ko/js/tools/tools'
 log    = require '/Users/kodi/s/ko/js/tools/log'
+Action = require './action'
 _      = require 'lodash'
 
 class Event
@@ -25,6 +26,7 @@ class Event
     addAction: (action) ->
         if action? and not @hasAction action
             # log "Event.addAction #{action.name}"
+            return if world.noRotations and action.id == Action.ROTATE
             @actions.push action
             action.event = @
             action.init()
@@ -32,7 +34,7 @@ class Event
             console.log 'Event.addAction no action?'
             throw new Error
         else
-            log "Event.addAction  has action #{action.name}"
+            log "Event.addAction has action #{action.name}"
     
     removeAllActions: () ->
         while @actions.length
@@ -58,11 +60,11 @@ class Event
     triggerActions: () ->
         return if not @actions.length
         @time = world.getTime()
-        # log "trigger actions #{@name}", @actions.length
+        # log "event.triggerActions event name: #{@name} num actions: #{@actions.length}"
         @save_actions = _.clone @actions
         while @save_actions.length
             action = last @save_actions
-            # log "event.performAction #{action.name}" if action.name != 'noop'
+            # log "event.triggerActions action #{action.name}" if action.name != 'noop'
             action.performWithEvent @
             if @save_actions.length and action == last @save_actions
                 @save_actions.pop()

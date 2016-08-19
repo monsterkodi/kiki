@@ -20,8 +20,8 @@ class Bomb extends Pushable
         @size     = 0.55
         @splitted = false
 
-        geom = new THREE.DodecahedronGeometry @size
-        geom2 = new THREE.DodecahedronGeometry @size
+        geom = new THREE.DodecahedronGeometry 1
+        geom2 = new THREE.DodecahedronGeometry 1
         geom2.rotateX Vector.DEG2RAD 90
         geom.merge geom2
         
@@ -34,6 +34,7 @@ class Bomb extends Pushable
             shininess:      20
         
         @mesh = new THREE.Mesh geom, @mat
+        @updateMesh()
         super
     
         @addEventWithName 'explode'

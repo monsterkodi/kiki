@@ -21,8 +21,8 @@ class Timer
         # log "Timer.removeActionsOfObject"
         @event.removeActionsOfObject o
         
-    @addAction:    (a) -> 
-        log "Timer.addAction #{a.name}"
+    @addAction: (a) -> 
+        # log "Timer.addAction #{a.name} duration: #{a.duration}"
         @event.addAction a
         
     @removeAction: (a) -> 

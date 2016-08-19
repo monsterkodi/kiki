@@ -61,7 +61,7 @@ class World extends Actor
 
         super
         
-        @noRotations = false
+        @noRotations = true
         
         @screenSize = new Size @view.clientWidth, @view.clientHeight
         # log "view @screenSize:", @screenSize
@@ -365,7 +365,7 @@ class World extends Actor
         pos = new Pos x, y, z
         object = @newObject object
         @setObjectAtPos object, pos
-        log "addObjectAtPos #{object.name}", pos
+        # log "addObjectAtPos #{object.name}", pos
         @addObject object
 
     addObjectLine: (object, sx,sy,sz, ex,ey,ez) ->

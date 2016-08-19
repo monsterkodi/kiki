@@ -43,23 +43,19 @@ class Pushable extends Item
     initAction: (action) ->
         switch action.id
             when Action.PUSH, Action.FALL
-                # log 'Pushable.initAction FALL direction:', @direction
                 world.objectWillMoveToPos @, @position.plus(@direction), action.getDuration()
 
     performAction: (action) ->
-        # log "Pushable.performAction action #{action.name}"
         switch action.id
             when Action.PUSH, Action.FALL
                 @setCurrentPosition @position.plus @direction.mul action.getRelativeTime()
 
     finishAction: (action) ->
-        # log "Pushable.finishAction #{action.name}"
         switch action.id
             when Action.PUSH, Action.FALL
                 @move_action = null
                 targetPos = @current_position.round()
                 world.objectMoved @, @position, targetPos
-                log "Pushable.finishAction setPosition:", targetPos
                 @setPosition targetPos
 
     actionFinished: (action) ->    

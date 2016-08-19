@@ -1,7 +1,13 @@
-# level design by Owen Hay
+
+#    0000000   00000000    0000000    0000000  00000000 
+#   000        000   000  000   000  000       000   000
+#   000  0000  0000000    000000000  0000000   00000000 
+#   000   000  000   000  000   000       000  000      
+#    0000000   000   000  000   000  0000000   000      
 
 module.exports =
     name:       "grasp"
+    design:     "Owen Hay"
     scheme:     "blue_scheme"
     intro:      "grasp"
     size:       [11,11,11]
@@ -39,7 +45,8 @@ module.exports =
         world.addObjectAtPos('KikiStone', s.x/2+2, s.y/2,   4)
         world.addObjectAtPos('KikiStone', s.x/2-2, s.y/2,   4)
         
-        exit_switch = KikiSwitch()
-        exit_switch.getEventWithName("switched").addAction(continuous(() -> world.toggle("exit")))
-        world.addObjectAtPos(exit_switch, s.x/2,  s.y/2, 0)
+        Switch = require '../switch'
+        exit_switch = new Switch
+        exit_switch.getEventWithName("switched").addAction continuous -> world.toggle "exit"   
+        world.addObjectAtPos exit_switch, s.x/2, s.y/2, 0 
         

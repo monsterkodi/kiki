@@ -45,7 +45,7 @@ class Action
             i ?= -1
             m ?= Action.ONCE
             d ?= 0
-        log "newAction #{i} #{n} #{d} #{m}"
+        # log "Action.constructor #{i} #{n} #{d} #{m}"
         @object     = o
         @name       = n
         @id         = i
@@ -62,7 +62,7 @@ class Action
         @deleted = true
 
     perform: () -> 
-        # log "action.perform #{@name} action? #{@object.performAction?} #{@object.name}"
+        # log "Action.perform #{@name} action? #{@object.performAction?} #{@object.name}" if @name == 'push'
         if @object.performAction? 
             @object.performAction @
         else if _.isFunction @object

@@ -40,19 +40,18 @@ class Item extends Actor
     
     setPosition: (x,y,z) -> 
         @position = new Vector x,y,z
-        @current_position = new Vector x,y,z
-        @mesh?.position.copy @position
+        @setCurrentPosition @position
 
     getPos: -> new Pos @current_position
-    setPos: (x,y,z) -> 
-        p = new Pos x,y,z
-        @position = @current_position = new Vector p
+    setPos: (x,y,z) -> @setPosition new Pos x,y,z
     
     setOrientation: (q) -> 
         @current_orientation = @orientation = new Quaternion q
-        # log "item.setOrientation:", @orientation
         
-    setCurrentPosition: (p) -> @current_position = p
+    setCurrentPosition: (p) -> 
+        @current_position = new Vector p
+        @mesh?.position.copy @current_position
+        
     setCurrentOrientation: (q) -> @current_orientation = q
     
 module.exports = Item

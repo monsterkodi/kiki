@@ -52,7 +52,7 @@ class World extends Actor
     
     constructor: (@view) ->
                 
-        @speed       = 2
+        @speed       = 6
         
         @raster_size = 0.05
         # @camera_mode     = World.CAMERA_INSIDE

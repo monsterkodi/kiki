@@ -23,7 +23,7 @@ class Levels
             # "cube", 
             # "switch", 
             # "borg", 
-            "mini", 
+            # "mini", 
             # "blocks", 
             # "bombs", 
             # "sandbox", 
@@ -33,7 +33,11 @@ class Levels
             # medium
             # "towers", "edge", "random", "plate", "nice", "entropy", 
             # owen hay's levels (TODO: sort in)
-            "grasp", "fallen", "cheese", "invisimaze", "spiral", 
+            # "grasp", 
+            # "fallen", 
+            # "cheese", 
+            # "invisimaze", 
+            "spiral", 
             # difficult
             "slick", "bridge", "flower", "stones", "walls", "grid", 
             "rings", 

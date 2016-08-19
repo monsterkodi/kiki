@@ -205,8 +205,8 @@ class Quaternion
                        scale0 * @y + scale1 * to1[1],
                        scale0 * @z + scale1 * to1[2]
 
-    @rotationAroundVector: (theta, vector) ->
-        v = new Vector vector 
+    @rotationAroundVector: (theta, x,y,z) ->
+        v = new Vector x,y,z 
         v.normalize()
         t = Vector.DEG2RAD(theta)/2.0       
         s = Math.sin t 

@@ -22,13 +22,14 @@ module.exports =
     ],
     create: ->
         s = world.size
+        Switch = require '../switch'
         
         world.addObjectAtPos('KikiStone', 0,0,1)
         world.addObjectAtPos('KikiStone', 0,1,0)
         world.addObjectAtPos('KikiStone', 1,0,1)
         world.addObjectAtPos('KikiStone', 1,1,0)
         world.addObjectAtPos('KikiStone', 2,0,0)
-        switch1 = KikiSwitch()
+        switch1 = new Switch
         world.addObjectAtPos(switch1, 1,0,0)
         
         world.addObjectAtPos('KikiStone', s.x-1,0,1)
@@ -36,7 +37,7 @@ module.exports =
         world.addObjectAtPos('KikiStone', s.x-2,0,1)
         world.addObjectAtPos('KikiStone', s.x-2,1,0)
         world.addObjectAtPos('KikiStone', s.x-3,0,0)
-        switch2 = KikiSwitch()
+        switch2 = new Switch
         world.addObjectAtPos(switch2, s.x-2,0,0)
         
         world.addObjectAtPos('KikiStone', 0,0,s.z-2)
@@ -44,7 +45,7 @@ module.exports =
         world.addObjectAtPos('KikiStone', 1,0,s.z-2)
         world.addObjectAtPos('KikiStone', 1,1,s.z-1)
         world.addObjectAtPos('KikiStone', 2,0,s.z-1)
-        switch3 = KikiSwitch()
+        switch3 = new Switch
         world.addObjectAtPos(switch3, 1,0,s.z-1)
         
         world.addObjectAtPos('KikiStone', s.x-1,0,s.z-2)
@@ -52,11 +53,11 @@ module.exports =
         world.addObjectAtPos('KikiStone', s.x-2,0,s.z-2)
         world.addObjectAtPos('KikiStone', s.x-2,1,s.z-1)
         world.addObjectAtPos('KikiStone', s.x-3,0,s.z-1)
-        switch4 = KikiSwitch()
+        switch4 = new Switch
         world.addObjectAtPos(switch4, s.x-2,0,s.z-1)
         
         world.addObjectPoly('KikiStone', [ [s.x/2-1,s.y-1,s.z/2-1], [s.x/2-1,s.y-1,s.z/2+1], [s.x/2+1,s.y-1,s.z/2+1], [s.x/2+1,s.y-1,s.z/2-1]])
-        switch5 = KikiSwitch()                              
+        switch5 = new Switch
         world.addObjectAtPos('KikiStone', s.x/2,s.y-2,s.z/2)
         world.addObjectAtPos(switch5, s.x/2,s.y-1,s.z/2)
         

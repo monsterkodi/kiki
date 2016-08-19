@@ -116,7 +116,7 @@ class Vector
         rayDot = rayDir.dot planeNormal
         if Number.isNaN rayDot
             throw new Error
-        return 0 if rayDot == 0
+        return 2 if rayDot == 0
         r = planePos.minus(rayPos).dot(planeNormal) / rayDot
         if Number.isNaN r
             log 'rayPos', rayPos

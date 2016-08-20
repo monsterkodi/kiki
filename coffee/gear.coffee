@@ -4,7 +4,7 @@
 # 000   000  000       000   000  000   000
 #  0000000   00000000  000   000  000   000
 
-log = require '/Users/kodi/s/ko/js/tools/log'
+log    = require '/Users/kodi/s/ko/js/tools/log'
 Valve  = require './valve'
 Action = require './action'
 Pos    = require './lib/pos'
@@ -12,9 +12,10 @@ Cage   = require './cage'
 Geom   = require './geom'
 
 class Gear extends Valve
+        
+    @neighbors = [ [[0,1,0], [0,-1,0], [0,0,1], [0,0,-1]], [[1,0,0], [-1,0,0], [0,0,1], [0,0,-1]], [[1,0,0], [-1,0,0], [0,1,0], [0,-1,0]] ]
     
     constructor: (@face) -> 
-                
         super @face
         @updateMesh()
 
@@ -23,16 +24,8 @@ class Gear extends Valve
         @mesh.add new THREE.Mesh Geom.valve(), Cage.rasterMat
         @mesh.receiveShadow = true
         
-    getNeighborDirections: (face) ->
-        neighbors = [
-            [[0,1,0], [0,-1,0], [0,0,1], [0,0,-1]]
-            [[1,0,0], [-1,0,0], [0,0,1], [0,0,-1]]
-            [[1,0,0], [-1,0,0], [0,1,0], [0,-1,0]]
-        ]
-        neighbors[face % 3]
-    
     getNeighborGears: ->
-        dirs = @getNeighborDirections @face
+        dirs = Gear.neighbors[@face % 3]
         pos = @getPos()
         gears = []
         for i in [0...4]
@@ -74,16 +67,4 @@ class Gear extends Valve
                 else
                     gear.updateActive()
      
-    render: ->
-        # if (@active)
-            # glRotatef (clockwise ? angle : -angle, 0.0, 0.0, 1.0);
-#         
-        # KikiValve::colors[0].glColor();
-        # render_valve;
-#         
-        # glTranslatef (0.0, 0.0, 0.4);
-#     
-        # colors[0].glColor();
-        # render_gear;
-        
 module.exports = Gear

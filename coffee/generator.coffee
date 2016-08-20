@@ -16,7 +16,7 @@ class Generator extends Gear
         
     createMesh: ->
         @mesh = new THREE.Mesh Geom.generator(), Cage.cageMat
-        # @mesh.add new THREE.Mesh Geom.gear(), Cage.rasterMat
+        @mesh.add new THREE.Mesh Geom.gear(), Cage.rasterMat
         @mesh.receiveShadow = true
         
     activateWires: ->
@@ -30,19 +30,5 @@ class Generator extends Gear
             super active
             @activateWires()
             world.playSound @active and 'GENERATOR_ON' or 'GENERATOR_OFF'
-    
-    render: ->
-        # if (active)
-            # glRotatef (clockwise ? angle : -angle, 0.0, 0.0, 1.0);
-#     
-        # colors[0].glColor();
-#     
-        # render_generator;
-#     
-        # KikiGear::colors[0].glColor();
-#             
-        # glTranslatef (0.0, 0.0, 0.4);
-#     
-        # render_gear;
-        
+            
 module.exports = Generator

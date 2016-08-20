@@ -4,11 +4,11 @@
 #    000     000   000  000         000     000     
 #     0      000   000  0000000      0      00000000
 
-log = require '/Users/kodi/s/ko/js/tools/log'
+log        = require '/Users/kodi/s/ko/js/tools/log'
 Quaternion = require './lib/quaternion'
-Pushable = require './pushable'
-Action   = require './action'
-Face     = require './face'
+Pushable   = require './pushable'
+Action     = require './action'
+Face       = require './face'
 
 class Valve extends Pushable
     
@@ -18,7 +18,7 @@ class Valve extends Pushable
         @active    = false
         @clockwise = false
         @addAction new Action @, Action.ROTATE, "rotation", 2000, Action.REPEAT
-        @startTimedAction @getActionWithId Action.ROTATE
+        # @startTimedAction @getActionWithId Action.ROTATE
     
     updateMesh: ->
         # log "Valve.updateMesh #{@angle} #{@face}"
@@ -31,7 +31,7 @@ class Valve extends Pushable
         dir = @face % 3
         sum = ((dir == Face.Y or dir == Face.Z) and p.x or 0) + ((dir == Face.X or dir == Face.Z) and p.y or 0) + ((dir == Face.X or dir == Face.Y) and p.z or 0)
         @clockwise = sum % 2
-        log "Valve.setPosition sum #{sum} @clockwise #{@clockwise}", pos
+        # log "Valve.setPosition sum #{sum} @clockwise #{@clockwise}", pos
                
     performAction: (action) ->
         switch action.id

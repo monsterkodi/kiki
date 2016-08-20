@@ -19,15 +19,13 @@ module.exports =
 
         s = world.size
         {Gear,Generator,MotorCylinder,MotorGear,Face} = require '../items'
-        world.addObjectAtPos new Generator(Face.NX), 4, 5, 0
-        world.addObjectAtPos new Generator(Face.X), 6, 5, 0
-        # world.addObjectAtPos new Gear(Face.NZ), 6, 5, 0
-        # world.addObjectAtPos new Gear(Face.Z), 4, 5, 0
-        return            
+        world.addObjectAtPos new Generator(Face.Z), 5, 5, 0
+
         world.addObjectAtPos new Gear(Face.Z), 4, 5, 0
+        world.addObjectAtPos new Gear(Face.Z), 6, 5, 0
         world.addObjectAtPos new Gear(Face.Z), 5, 6, 0
         world.addObjectAtPos new Gear(Face.Z), 5, 4, 0
-        
+
         world.addObjectAtPos new Gear(Face.Z), 6, 6, 0
         world.addObjectAtPos new Gear(Face.Z), 4, 4, 0
         world.addObjectAtPos new Gear(Face.Z), 4, 6, 0

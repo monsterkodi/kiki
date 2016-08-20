@@ -71,7 +71,6 @@ class Switch extends Item
     
     setActive: (status) ->
         if @active != status
-            log "switch #{@name} active:#{status}"
             @active = status
             
             if @active
@@ -90,7 +89,7 @@ class Switch extends Item
                 if @light 
                     @light.del()
                     @light = null
-            log 'trigger SWITCHED_EVENT'
+                    
             @events[@SWITCHED_EVENT].triggerActions()
     
     setPosition: (pos) ->
@@ -101,13 +100,11 @@ class Switch extends Item
         @angle += f * 360
         @mesh.quaternion.copy Quaternion.rotationAroundVector @angle, Vector.unitY
         @tors.quaternion.copy Quaternion.rotationAroundVector @angle/2, Vector.unitZ
-        # @tort.quaternion.copy Quaternion.rotationAroundVector @angle/2, Vector.unitZ
         
     performAction: (action) ->
         
         if action.id == Action.TOGGLE
             @toggle()
-            log "Switch.performAction 'toggle'"
         else
             @animate action.getRelativeDelta()
     

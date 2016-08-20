@@ -61,7 +61,7 @@ class World extends Actor
 
         super
         
-        @noRotations = true
+        @noRotations = false
         
         @screenSize = new Size @view.clientWidth, @view.clientHeight
         # log "view @screenSize:", @screenSize
@@ -127,7 +127,6 @@ class World extends Actor
         
         @initGlobal()
             
-        log "create world in view:", view
         world = new World view
         world.name = 'world'
         global.world = world
@@ -204,15 +203,10 @@ class World extends Actor
         # ............................................................ exits
 
         if @dict.exits?
-            log "exits", @dict.exits
             exit_id = 0
             for entry in @dict.exits
                 exit_gate = new Gate entry["active"]
-                
                 exit_gate.name = entry["name"] ? "exit #{exit_id}"
-
-                # exit_action  = @once "exit #{exit_id}"
-                # delay_action = @once (a=exit_action) -> Timer.addAction a  
                 exitAction = new Action 
                     func: @exitLevel
                     name: "exit #{exit_id}"
@@ -230,10 +224,9 @@ class World extends Actor
 
         if @dict.create?
             if _.isFunction @dict.create
-                log "@dict.create function"
                 @dict.create()
             else
-                log "@dict.create not a function!"
+                log "World.create [WARNING] @dict.create not a function!"
                 # exec @dict["create"] in globals()
 
         # ............................................................ player
@@ -369,7 +362,7 @@ class World extends Actor
         @addObject object
 
     addObjectLine: (object, sx,sy,sz, ex,ey,ez) ->
-        log "world.addObjectLine sx:#{sx} sy:#{sy} sz:#{sz} ex:#{ex} ey:#{ey} ez:#{ez}"
+        # log "world.addObjectLine sx:#{sx} sy:#{sy} sz:#{sz} ex:#{ex} ey:#{ey} ez:#{ez}"
         if sx instanceof Pos or Array.isArray sx
             start = sx
             end   = sy
@@ -385,7 +378,7 @@ class World extends Actor
             start = [start.x, start.y, start.z]
         [sx, sy, sz] = start
         
-        log "world.addObjectLine sx:#{sx} sy:#{sy} sz:#{sz} ex:#{ex} ey:#{ey} ez:#{ez}"
+        # log "world.addObjectLine sx:#{sx} sy:#{sy} sz:#{sz} ex:#{ex} ey:#{ey} ez:#{ez}"
         
         diff = [ex-sx, ey-sy, ez-sz]
         maxdiff = _.max diff.map Math.abs
@@ -393,7 +386,7 @@ class World extends Actor
         for i in [0...maxdiff]
             # pos = apply(Pos, (map (lambda a, b: int(a+i*b), start, deltas)))
             pos = new Pos (start[j]+i*deltas[j] for j in [0..2])
-            log "addObjectLine #{i}:", pos
+            # log "addObjectLine #{i}:", pos
             if @isUnoccupiedPos pos
                 @addObjectAtPos object, pos
        
@@ -530,7 +523,7 @@ class World extends Actor
         object.del()
     
     deleteAllObjects: () ->
-        log 'world.deleteAllObjects'
+        # log 'world.deleteAllObjects'
         
         Timer.removeAllActions()
     

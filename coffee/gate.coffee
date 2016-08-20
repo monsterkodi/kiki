@@ -54,10 +54,10 @@ class Gate extends Switch
     bulletImpact: ->
 
     newCellMate: (object) ->
-        log "gate.newCellMate --------------------------- #{object.name} #{@active}"
+        # log "gate.newCellMate --------------------------- #{object.name} #{@active}"
         if object.name == 'player' and @active
             world.playSound 'GATE_WARP'
-            log "gate.newCellMate --------------------------- trigger enter event actions"
+            # log "gate.newCellMate --------------------------- trigger enter event actions"
             @events[@ENTER_EVENT].triggerActions() 
     
     renderBar: (r,b,h) ->

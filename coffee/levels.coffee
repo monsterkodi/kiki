@@ -9,6 +9,7 @@ class Levels
     constructor: () ->
         @dict = {}
         @list = [
+            "test",
             # intro
             # "steps", 
             # "start", 

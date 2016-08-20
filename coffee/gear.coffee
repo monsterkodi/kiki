@@ -4,6 +4,7 @@
 # 000   000  000       000   000  000   000
 #  0000000   00000000  000   000  000   000
 
+log = require '/Users/kodi/s/ko/js/tools/log'
 Valve  = require './valve'
 Action = require './action'
 Pos    = require './lib/pos'
@@ -12,13 +13,15 @@ Geom   = require './geom'
 
 class Gear extends Valve
     
-    constructor: (face) -> 
+    constructor: (@face) -> 
         
         geom = Geom.gear()
         @mesh = new THREE.Mesh geom, Cage.cageMat
         @mesh.receiveShadow = true
         
-        super face
+        super @face
+        # log "gear.constructor #{@face}"
+        @updateMesh()
         
     getNeighborDirections: (face) ->
         neighbors = [

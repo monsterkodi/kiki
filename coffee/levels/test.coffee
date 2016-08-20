@@ -9,7 +9,7 @@ module.exports =
     name:       "test"
     size:       [11,11,11]
     player:     
-        coordinates: [5,5,0]
+        coordinates: [5,5,1]
     exits:    [
         name:         "exit"
         active:       0
@@ -19,8 +19,11 @@ module.exports =
 
         s = world.size
         {Gear,Generator,MotorCylinder,MotorGear,Face} = require '../items'
-                    
-        world.addObjectAtPos new Gear(Face.Z), 6, 5, 0
+        # world.addObjectAtPos new Generator(Face.NZ), 5, 5, 0
+        # world.addObjectAtPos new Generator(Face.NZ), 5, 5, 10
+        world.addObjectAtPos new Gear(Face.NZ), 6, 5, 0
+        world.addObjectAtPos new Gear(Face.Z), 4, 5, 0
+        return            
         world.addObjectAtPos new Gear(Face.Z), 4, 5, 0
         world.addObjectAtPos new Gear(Face.Z), 5, 6, 0
         world.addObjectAtPos new Gear(Face.Z), 5, 4, 0

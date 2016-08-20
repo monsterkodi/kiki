@@ -14,13 +14,14 @@ Geom   = require './geom'
 class Gear extends Valve
     
     constructor: (@face) -> 
-        
+                
+        super @face
+        @updateMesh()
+
+    createMesh: ->
         @mesh = new THREE.Mesh Geom.gear(), Cage.cageMat
         @mesh.add new THREE.Mesh Geom.valve(), Cage.rasterMat
         @mesh.receiveShadow = true
-        
-        super @face
-        @updateMesh()
         
     getNeighborDirections: (face) ->
         neighbors = [

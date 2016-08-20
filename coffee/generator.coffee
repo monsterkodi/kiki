@@ -15,8 +15,8 @@ class Generator extends Gear
         super face
         
     createMesh: ->
-        @mesh = new THREE.Mesh Geom.gear(), Cage.cageMat
-        @mesh.add new THREE.Mesh Geom.generator(), Cage.rasterMat
+        @mesh = new THREE.Mesh Geom.generator(), Cage.cageMat
+        # @mesh.add new THREE.Mesh Geom.gear(), Cage.rasterMat
         @mesh.receiveShadow = true
         
     activateWires: ->

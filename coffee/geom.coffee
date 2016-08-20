@@ -21,14 +21,14 @@ class Geom
         pi = @quadStrip positions, normals, pi, @generatorQuadStrip2
         pi = @quadStrip positions, normals, pi, @generatorQuadStrip3
         pi = @quadStrip positions, normals, pi, @generatorQuadStrip4
-        pi = @quadStrip positions, normals, pi, @generatorQuadStrip5
-        pi = @quadStrip positions, normals, pi, @generatorQuadStrip6
-        pi = @quadStrip positions, normals, pi, @generatorQuadStrip7
-        pi = @quadStrip positions, normals, pi, @generatorQuadStrip8
-        pi = @quadStrip positions, normals, pi, @generatorQuadStrip9
-        pi = @quadStrip positions, normals, pi, @generatorQuadStrip10
-        pi = @quadStrip positions, normals, pi, @generatorQuadStrip11
-        pi = @quadStrip positions, normals, pi, @generatorQuadStrip12
+        # pi = @quadStrip positions, normals, pi, @generatorQuadStrip5
+        # pi = @quadStrip positions, normals, pi, @generatorQuadStrip6
+        # pi = @quadStrip positions, normals, pi, @generatorQuadStrip7
+        # pi = @quadStrip positions, normals, pi, @generatorQuadStrip8
+        # pi = @quadStrip positions, normals, pi, @generatorQuadStrip9
+        # pi = @quadStrip positions, normals, pi, @generatorQuadStrip10
+        # pi = @quadStrip positions, normals, pi, @generatorQuadStrip11
+        # pi = @quadStrip positions, normals, pi, @generatorQuadStrip12
             
         geom = new THREE.BufferGeometry
         geom.addAttribute 'position', new THREE.BufferAttribute positions, 3 
@@ -144,18 +144,18 @@ class Geom
         0, 0, 1, 0, 0.100, 0.500,
         0, 0, 1,-0.071, 0.071, 0.500,
         0, 0, 1, 0, -0.100, 0.500,
-        0, 0, -1, 0.100, 0, -0.500,
-        0, 0, -1, 0.071, -0.071, -0.500,
-        0, 0, -1, 0, -0.100, -0.500,
-        0, 0, -1, 0.071, 0.071, -0.500,
-        0, 0, -1,-0.100, 0, -0.500,
-        0, 0, -1,-0.071, 0.071, -0.500,
-        0, 0, -1, 0, 0.100, -0.500,
-        0, 0, -1,-0.071, -0.071, -0.500,
-        0, 0, -1, 0.071, 0.071, -0.500,
-        0, 0, -1, 0, -0.100, -0.500,
-        0, 0, -1,-0.071, -0.071, -0.500,
-        0, 0, -1, 0, 0.100, -0.500,
+        0, 0, -1, 0.2, 0, -0.076,
+        0, 0, -1, 0.141, -0.141, -0.076,
+        0, 0, -1, 0, -0.2, -0.076,
+        0, 0, -1, 0.141, 0.141, -0.076,
+        0, 0, -1,-0.2, 0, -0.076,
+        0, 0, -1,-0.141, 0.141, -0.076,
+        0, 0, -1, 0, 0.2, -0.076,
+        0, 0, -1,-0.141, -0.141, -0.076,
+        0, 0, -1, 0.141, 0.141, -0.076,
+        0, 0, -1, 0, -0.2, -0.076,
+        0, 0, -1,-0.141, -0.141, -0.076,
+        0, 0, -1, 0, 0.2, -0.076,
         ]
 
     @generatorQuadStrip1 = [
@@ -177,8 +177,6 @@ class Geom
         0,  1,  0, 0,  0.200,  0.078, 
         0.707,  0.707,  0,  0.141,  0.141, -0.076, 
         0.707,  0.707,  0,  0.141,  0.141,  0.078, 
-        1,  0, 0,  0.200,  0, -0.076, 
-        1,  0, 0,  0.200,  0,  0.078
     ]
     @generatorQuadStrip2 = [
         0,  0.710,  0.704, 0,  0.200,  0.078, 
@@ -199,8 +197,6 @@ class Geom
         -0.502,  0.502,  0.704, -0.042,  0.042,  0.220, 
         0,  0.710,  0.704, 0,  0.200,  0.078, 
         0,  0.710,  0.704, 0,  0.059,  0.220, 
-        0.502,  0.502,  0.704,  0.141,  0.141,  0.078, 
-        0.502,  0.502,  0.704,  0.042,  0.042,  0.220
     ]
     @generatorQuadStrip3 = [
         0,  1,  0, 0,  0.100,  0.354, 
@@ -221,8 +217,6 @@ class Geom
         -0.707,  0.707,  0, -0.071,  0.071,  0.500, 
         0,  1,  0, 0,  0.100,  0.354, 
         0,  1,  0, 0,  0.100,  0.500, 
-        0.707,  0.707,  0,  0.071,  0.071,  0.354, 
-        0.707,  0.707,  0,  0.071,  0.071,  0.500
     ]
     @generatorQuadStrip4 = [
         0.676,  0.676, -0.291,  0.042,  0.042,  0.220,  
@@ -243,8 +237,6 @@ class Geom
         0,  0.957, -0.291, 0,  0.100,  0.354, 
         0.676,  0.676, -0.291,  0.042,  0.042,  0.220, 
         0.676,  0.676, -0.291,  0.071,  0.071,  0.354, 
-        0.957,  0, -0.291,  0.059, 0,  0.220, 
-        0.957,  0, -0.291,  0.100, 0,  0.354
     ]
     @generatorQuadStrip5 = [
         0.756,  0.295,  0.585, -0.044, -0.498,  0.155,  

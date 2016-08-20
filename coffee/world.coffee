@@ -61,7 +61,7 @@ class World extends Actor
 
         super
         
-        @noRotations = false
+        @noRotations = true
         
         @screenSize = new Size @view.clientWidth, @view.clientHeight
         # log "view @screenSize:", @screenSize

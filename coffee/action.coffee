@@ -29,6 +29,7 @@ class Action
     @LOOK_UP      = 17
     @LOOK_DOWN    = 18
     @LOOK_RESET   = 19
+    @TUCKER       = 20
     
     @ONCE       = 0
     @CONTINUOUS = 1

@@ -6,10 +6,12 @@
 
 Pushable = require './pushable'
 Action   = require './action'
+Face     = require './face'
 
 class Valve extends Pushable
     
     constructor: (face) ->
+        super
         @face      = face
         @angle     = 0.0
         @active    = false

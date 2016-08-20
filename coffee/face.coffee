@@ -26,4 +26,11 @@ class Face
             when 2 then return new Vector 0, 0, o
         new Vector
     
+    @X  = 0
+    @Y  = 1
+    @Z  = 2
+    @NX = 3
+    @NY = 4
+    @NZ = 5
+    
 module.exports = Face

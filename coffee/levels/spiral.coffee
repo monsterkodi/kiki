@@ -23,6 +23,7 @@ module.exports =
     create: ->
 
         s = world.size
+        {Gear,Generator,MotorCylinder,MotorGear,Face} = require '../items'
         
         for y in [ -7, -3, 1, 5]
             x = 1
@@ -36,14 +37,12 @@ module.exports =
             x = 2
             world.addObjectPoly 'WireStone', [world.decenter(-x, y, -x), world.decenter(-x, y, x), world.decenter(x, y, x), world.decenter(x, y, -x)]
             
-        # KEY GEAR
-        world.addObjectAtPos 'KikiGear(KikiFace.NY)',       world.decenter 0, -10, 0  
-        # LOCK MECHANISM
-        world.addObjectAtPos 'Generator(KikiFace.NY)',      world.decenter -1, 12, 0
-        world.addObjectAtPos 'Generator(KikiFace.NY)',      world.decenter -1, 11, 0
+        world.addObjectAtPos new Gear(Face.NY),           world.decenter 0, -10, 0  
+        world.addObjectAtPos new Generator(Face.NY),      world.decenter -1, 12, 0
+        world.addObjectAtPos new Generator(Face.NY),      world.decenter -1, 11, 0
                                                                          
-        world.addObjectAtPos 'MotorCylinder(KikiFace.NY)',  world.decenter 1, 11, 0
-        world.addObjectAtPos 'MotorGear(KikiFace.NY)',      world.decenter 1, 12, 0
+        world.addObjectAtPos new MotorCylinder(Face.NY),  world.decenter 1, 11, 0
+        world.addObjectAtPos new MotorGear(Face.NY),      world.decenter 1, 12, 0
         
         world.addObjectAtPos 'WireStone',  world.decenter 0, 11, 1
         world.addObjectAtPos 'WireStone',  world.decenter 0, 12, 1

@@ -10,6 +10,7 @@ class Wire extends Item
     
     constructor: (@face, @connections) ->
             
+        super 
         @active = false
         @value  = 1.0
     

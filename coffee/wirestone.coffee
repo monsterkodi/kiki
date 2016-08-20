@@ -7,6 +7,7 @@
 Stone     = require './stone'
 Wall      = require './wall'
 Face      = require './face'
+Wire      = require './wire'
 Generator = require './generator'
 
 class WireStone extends Stone
@@ -26,17 +27,17 @@ class WireStone extends Stone
                         @wires[i].setActive false
                 
                 for generator in world.getObjectsOfType Generator
-                    if generator.isActive()
+                    if generator.active
                         generator.activateWires()
         
         super action
     
     setPosition: (pos) ->      
         for i in [0...6]
-            newPos = pos - Face.normalVectorForFace (i);
+            newPos = pos.minus Face.normalVectorForFace i
             if @isFreePos newPos
                 if not @wires[i]?
-                    @wires[i] = new KikiWire i
+                    @wires[i] = new Wire i
                     world.addObjectAtPos @wires[i], newPos
                 else
                     world.setObjectAtPos @wires[i], newPos
@@ -46,7 +47,7 @@ class WireStone extends Stone
                 @wires[i] = null
     
         for generator in world.getObjectsOfType Generator
-            if generator.isActive()
+            if generator.active
                 generator.activateWires()
         
         super pos

@@ -4,26 +4,36 @@
 # 000   000  000       000   000  000   000
 #  0000000   00000000  000   000  000   000
 
-Valve = require './valve'
+Valve  = require './valve'
+Action = require './action'
+Pos    = require './lib/pos'
+Cage   = require './cage'
+Geom   = require './geom'
 
 class Gear extends Valve
     
-    constructor: (face) -> super face
+    constructor: (face) -> 
+        
+        geom = Geom.gear()
+        @mesh = new THREE.Mesh geom, Cage.cageMat
+        @mesh.receiveShadow = true
+        
+        super face
         
     getNeighborDirections: (face) ->
         neighbors = [
-            [0,1,0], [0,-1,0], [0,0,1], [0,0,-1]
-            [1,0,0], [-1,0,0], [0,0,1], [0,0,-1]
-            [1,0,0], [-1,0,0], [0,1,0], [0,-1,0]
+            [[0,1,0], [0,-1,0], [0,0,1], [0,0,-1]]
+            [[1,0,0], [-1,0,0], [0,0,1], [0,0,-1]]
+            [[1,0,0], [-1,0,0], [0,1,0], [0,-1,0]]
         ]
         neighbors[face % 3]
     
     getNeighborGears: ->
-        neighbor_dirs = @getNeighborDirections()
+        dirs = @getNeighborDirections @face
         pos = @getPos()
         gears = []
         for i in [0...4]
-            neighbor = world.getOccupantAtPos pos.plus neighbor_dirs[i]
+            neighbor = world.getOccupantAtPos pos.plus new Pos dirs[i]
             if neighbor? and neighbor instanceof Gear
                 if neighbor.face == face
                     gears.push neighbor

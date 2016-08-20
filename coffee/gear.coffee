@@ -15,12 +15,11 @@ class Gear extends Valve
     
     constructor: (@face) -> 
         
-        geom = Geom.gear()
-        @mesh = new THREE.Mesh geom, Cage.cageMat
+        @mesh = new THREE.Mesh Geom.gear(), Cage.cageMat
+        @mesh.add new THREE.Mesh Geom.valve(), Cage.rasterMat
         @mesh.receiveShadow = true
         
         super @face
-        # log "gear.constructor #{@face}"
         @updateMesh()
         
     getNeighborDirections: (face) ->

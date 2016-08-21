@@ -18,6 +18,8 @@ class Pushable extends Item
         super
         @pusher     = null
         @direction  = Vector.minusY
+        @landing_sound = 'STONE_LAND'
+        @pushing_sound = 'STONE_MOVE'
         
         @addAction new Action @, Action.NOOP, "noop"
         @addAction new Action @, Action.PUSH, "push"
@@ -43,6 +45,7 @@ class Pushable extends Item
     initAction: (action) ->
         switch action.id
             when Action.PUSH, Action.FALL
+                world.playSound @pushing_sound if action.id == Action.PUSH
                 world.objectWillMoveToPos @, @position.plus(@direction), action.getDuration()
 
     performAction: (action) ->

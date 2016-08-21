@@ -222,12 +222,8 @@ class Bot extends Pushable
         relTime  = action.getRelativeTime()
         dltTime  = action.getRelativeDelta()
     
-        # log "Bot.performAction #{action.name} #{action.current} #{action.last} #{action.duration} id #{action.id}"
-        # log "Bot.performAction #{action.name} #{relTime} #{dltTime} id #{action.id}"
-        # cosFac = 1.0 - Math.cos(Math.PI/2 * relTime)
         cosFac = Math.cos Math.PI/2 - Math.PI/2 * relTime
         sinFac = Math.sin Math.PI/2 * relTime
-        # log "bot.performAction peform #{action.name} #{relTime} #{action.current} #{action.getDuration()}"
         switch action.id
             when Action.SHOOT
                 if relTime == 0
@@ -240,7 +236,6 @@ class Bot extends Pushable
                 @left_tire_rot  += @dir_sgn * dltTime
                 @right_tire_rot += @dir_sgn * dltTime
                 @current_position = @position.plus @getDir().mul(relTime)
-                # log 'bot.forward', @current_position
                 return
             
             when Action.JUMP

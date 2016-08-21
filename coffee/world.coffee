@@ -18,6 +18,7 @@ Gate        = require './gate'
 Light       = require './light'
 Levels      = require './levels'
 Player      = require './player'
+Sound       = require './sound'
 Cage        = require './cage'
 Timer       = require './timer'
 Actor       = require './actor'
@@ -898,7 +899,7 @@ class World extends Actor
                 when World.CAMERA_FOLLOW then @projection = @player.getFollowProjection()
         @projection
        
-    playSound: (sound, pos, time) -> # log "World.playSound #{sound} #{time}", pos 
+    playSound: (sound, pos, time) -> Sound.play sound, pos, time
     
     #   000   000  00000000  000   000
     #   000  000   000        000 000 

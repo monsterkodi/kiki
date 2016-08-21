@@ -1,10 +1,16 @@
-# level design by Michael Abel
+
+#  0000000    0000000   00     00  00     00   0000000 
+# 000        000   000  000   000  000   000  000   000
+# 000  0000  000000000  000000000  000000000  000000000
+# 000   000  000   000  000 0 000  000 0 000  000   000
+#  0000000   000   000  000   000  000   000  000   000
 
 # schemes=[test_scheme, tron_scheme,candy_scheme, default_scheme,
          # green_scheme, yellow_scheme, blue_scheme, red_scheme, metal_scheme, bronze_scheme]
 
 module.exports =
     name:       "gamma"
+    design:     'Michael Abel'
     scheme:     "tron_scheme"
     size:       [10,10,10]
     intro:      "gamma"
@@ -35,8 +41,8 @@ module.exports =
                 world.switch_countera+=1
         switched = (swtch) ->
             world.switch_counter += swtch.active and 1 or -1
-            exit = kikiObjectToGate(world.getObjectWithName("exit"))
-            exit.setActive(world.switch_counter == 4)
+            exit = world.getObjectWithName "exit"
+            exit.setActive world.switch_counter == 4 
                 
         aswitch = new Switch()
         bswitch = new Switch()
@@ -44,33 +50,33 @@ module.exports =
         dswitch = new Switch()
         eswitch = new Switch()
         
-        aswitch.getEventWithName("switched").addAction(continuous(aswitched))
-        bswitch.getEventWithName("switched").addAction(continuous((s=bswitch) -> switched(s)))
-        cswitch.getEventWithName("switched").addAction(continuous((s=cswitch) -> switched(s)))
-        dswitch.getEventWithName("switched").addAction(continuous((s=dswitch) -> switched(s)))
-        eswitch.getEventWithName("switched").addAction(continuous((s=eswitch) -> switched(s)))
+        aswitch.getEventWithName("switched").addAction(world.continuous(aswitched))
+        bswitch.getEventWithName("switched").addAction(world.continuous((s=bswitch) -> switched(s)))
+        cswitch.getEventWithName("switched").addAction(world.continuous((s=cswitch) -> switched(s)))
+        dswitch.getEventWithName("switched").addAction(world.continuous((s=dswitch) -> switched(s)))
+        eswitch.getEventWithName("switched").addAction(world.continuous((s=eswitch) -> switched(s)))
  
-        world.addObjectAtPos(aswitch ,      s.x-1,0,0))
-        world.addObjectAtPos(bswitch ,      0,0,0))
+        world.addObjectAtPos aswitch,      s.x-1,0,0
+        world.addObjectAtPos bswitch,      0,0,0
            
-        world.addObjectAtPos('KikiMutant',  s.x/2,0,0))
-        world.addObjectLine('KikiWall',     0,0,1), s.x,0,1))
-        world.addObjectLine('KikiWall',     0,1,0), s.x,1,0))
+        world.addObjectAtPos 'Mutant',  s.x/2,0,0
+        world.addObjectLine 'Wall',     0,0,1, s.x,0,1
+        world.addObjectLine 'Wall',     0,1,0, s.x,1,0
         
-        world.addObjectLine('KikiWall',     0,2,2), s.x-3,2,2))
-        world.addObjectAtPos('KikiSwitch',  s.x-3,2,2))
-        world.addObjectLine('KikiWall',     2,2,2), 2,2,s.z-3))
-        world.addObjectAtPos('KikiSwitch',  2,2,s.z-3))
-        world.addObjectLine('KikiWall',     2,2,4), 2,s.y-3,4))
+        world.addObjectLine 'Wall',     0,2,2, s.x-3,2,2
+        world.addObjectAtPos 'Switch',  s.x-3,2,2
+        world.addObjectLine 'Wall',     2,2,2, 2,2,s.z-3
+        world.addObjectAtPos 'Switch',  2,2,s.z-3
+        world.addObjectLine 'Wall',     2,2,4, 2,s.y-3,4
         #exit 
-        world.addObjectAtPos('KikiSwitch' , 2,s.y-3,4))
+        world.addObjectAtPos 'Switch' , 2,s.y-3,4
            
-        world.addObjectLine('KikiWall',     2,4,4), s.x-4,4,4))
-        world.addObjectAtPos(cswitch ,      s.x-3,4,4))
+        world.addObjectLine 'Wall',     2,4,4, s.x-4,4,4
+        world.addObjectAtPos cswitch ,  s.x-3,4,4
            
-        world.addObjectLine('KikiWall',     4,4,4), 4,4,s.z-4))
-        world.addObjectAtPos(dswitch ,      4,4,s.z-3))
+        world.addObjectLine 'Wall',     4,4,4, 4,4,s.z-4
+        world.addObjectAtPos dswitch ,  4,4,s.z-3
            
-        world.addObjectLine('KikiWall',     4,4,6), 4,s.y-4,6))
-        world.addObjectAtPos(eswitch ,      4,s.y-3,6))
+        world.addObjectLine 'Wall',     4,4,6, 4,s.y-4,6
+        world.addObjectAtPos eswitch ,  4,s.y-3,6
         

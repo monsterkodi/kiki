@@ -1,3 +1,10 @@
+
+#    0000000  000   000  000   000  00000000    0000000  000   000
+#   000       000   000  000   000  000   000  000       000   000
+#   000       000000000  000   000  0000000    000       000000000
+#   000       000   000  000   000  000   000  000       000   000
+#    0000000  000   000   0000000   000   000   0000000  000   000
+
 module.exports =
     name:       "church"
     scheme:     "yellow_scheme"
@@ -24,20 +31,21 @@ module.exports =
     ]
     create: ->
         s = world.size
+        {Generator, MotorCylinder, MotorGear, Face} = require '../items'
         
-        world.addObjectLine 'KikiWireStone', 0, 0, 0, 0, s.y-2, 0
-        world.addObjectLine 'KikiWireStone', s.x-1, 0, 0, s.x-1, s.y-2, 0
-        world.addObjectLine 'KikiWireStone', s.x-1, 0, s.z-1, s.x-1, s.y-2, s.z-1
-        world.addObjectLine 'KikiWireStone', 0, 0, s.z-1, 0, s.y-2, s.z-1
+        world.addObjectLine 'WireStone', 0, 0, 0, 0, s.y-2, 0
+        world.addObjectLine 'WireStone', s.x-1, 0, 0, s.x-1, s.y-2, 0
+        world.addObjectLine 'WireStone', s.x-1, 0, s.z-1, s.x-1, s.y-2, s.z-1
+        world.addObjectLine 'WireStone', 0, 0, s.z-1, 0, s.y-2, s.z-1
         
-        world.addObjectAtPos 'KikiBomb', s.x/2, s.y-2, s.z/2
-        world.addObjectAtPos 'KikiGenerator(KikiFace.PY)', s.x/2, s.y/2, s.z/2
+        world.addObjectAtPos 'Bomb', s.x/2, s.y-2, s.z/2
+        world.addObjectAtPos new Generator(Face.Y), s.x/2, s.y/2, s.z/2
         
-        world.addObjectAtPos 'KikiWireStone', 1,      s.y-2,  1
-        world.addObjectAtPos 'KikiWireStone', s.x-2,  s.y-2,  1
-        world.addObjectAtPos 'KikiWireStone', 1,      s.y-2,  s.z-2
-        world.addObjectAtPos 'KikiWireStone', s.x-2,  s.y-2,  s.z-2
-        world.addObjectAtPos 'KikiWireStone', s.x/2,  s.y-1,  s.z/2
+        world.addObjectAtPos 'WireStone', 1,      s.y-2,  1
+        world.addObjectAtPos 'WireStone', s.x-2,  s.y-2,  1
+        world.addObjectAtPos 'WireStone', 1,      s.y-2,  s.z-2
+        world.addObjectAtPos 'WireStone', s.x-2,  s.y-2,  s.z-2
+        world.addObjectAtPos 'WireStone', s.x/2,  s.y-1,  s.z/2
         
-        world.addObjectAtPos 'KikiMotorGear(KikiFace.PY)', s.x/2, 0, 0
-        world.addObjectAtPos 'KikiMotorCylinder(KikiFace.PY)', s.x/2, 1, 0
+        world.addObjectAtPos new MotorGear(Face.Y), s.x/2, 0, 0
+        world.addObjectAtPos new MotorCylinder(Face.Y), s.x/2, 1, 0

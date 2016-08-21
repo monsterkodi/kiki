@@ -1,3 +1,10 @@
+
+#    0000000   0000000   000      000   000  00     00  000   000   0000000
+#   000       000   000  000      000   000  000   000  0000  000  000     
+#   000       000   000  000      000   000  000000000  000 0 000  0000000 
+#   000       000   000  000      000   000  000 0 000  000  0000       000
+#    0000000   0000000   0000000   0000000   000   000  000   000  0000000 
+
 module.exports =
     name:       "columns"
     scheme:     "green_scheme"
@@ -10,8 +17,8 @@ module.exports =
                 to get to the exit,
                 use the stones
                 """
-    player:   position:         [0,-1,0]
-                
+    player:   
+        position: [0,-1,0]
     exits:    [
         name:         "exit"
         active:       1
@@ -21,12 +28,12 @@ module.exports =
 
         s = world.size
         
-        for y in range(-s.y/2+1, s.y/2+1)
-            for x in range(-s.x/2+1, s.x/2+1, 2)
-                for z in range(-s.z/2+1, s.z/2+1, 2)
-                    world.addObjectAtPos('KikiStone', world.decenter(x, y, z))
+        for y in [-4...6]
+            for x in [-3, -1, 1, 3]
+                for z in [-3, -1, 1, 3 ]
+                    world.addObjectAtPos 'Stone', world.decenter x, y, z  
                     
-        world.deleteObject(world.getOccupantAtPos(world.decenter(-1, 0, 1)))
-        world.deleteObject(world.getOccupantAtPos(world.decenter( 1, 0,-1)))
-        world.deleteObject(world.getOccupantAtPos(world.decenter( 1, 0, 1)))
-        world.deleteObject(world.getOccupantAtPos(world.decenter(-1, 0,-1)))
+        world.deleteObject world.getOccupantAtPos world.decenter -1, 0, 1
+        world.deleteObject world.getOccupantAtPos world.decenter  1, 0,-1
+        world.deleteObject world.getOccupantAtPos world.decenter  1, 0, 1
+        world.deleteObject world.getOccupantAtPos world.decenter -1, 0,-1

@@ -1,7 +1,13 @@
-# level design by Owen Hay
+
+#   00000000   0000000   000      000      00000000  000   000
+#   000       000   000  000      000      000       0000  000
+#   000000    000000000  000      000      0000000   000 0 000
+#   000       000   000  000      000      000       000  0000
+#   000       000   000  0000000  0000000  00000000  000   000
 
 module.exports =
     name:       "fallen"
+    deisgn:     'Owen Hay'
     scheme:     "blue_scheme"
     size:       [13,15,13]
     intro:      "fallen"
@@ -34,29 +40,28 @@ module.exports =
         s = world.size
         
         #hop back on
-        world.addObjectAtPos('KikiWall', 2, 12, 12)
+        world.addObjectAtPos('Wall', 2, 12, 12)
         
         #orient world
-        world.addObjectAtPos('KikiStone', s.x/2, s.y/2+2, s.z/2)
-        world.addObjectAtPos('KikiStone', s.x/2+2, s.y/2+2, s.z/2)
+        world.addObjectAtPos('Stone', s.x/2, s.y/2+2, s.z/2)
+        world.addObjectAtPos('Stone', s.x/2+2, s.y/2+2, s.z/2)
         
-        #some Hops
-        world.addObjectAtPos('KikiStone', s.x/2+2, s.y/2-2, s.z/2+2)
-        world.addObjectAtPos('KikiStone', s.x/2+2, s.y/2-2, s.z/2+4)
-        world.addObjectAtPos('KikiStone', s.x/2, s.y/2-2, s.z/2+4)
-        world.addObjectAtPos('KikiStone', s.x/2+2, s.y/2-2, s.z/2+4)
-        world.addObjectAtPos('KikiStone', s.x/2, s.y/2-4, s.z/2+4)
-        world.addObjectAtPos('KikiStone', s.x/2-2, s.y/2-4, s.z/2+4)
-        world.addObjectAtPos('KikiStone', s.x/2-4, s.y/2-4, s.z/2+4)
+        #some hops
+        world.addObjectAtPos('Stone', s.x/2+2, s.y/2-2, s.z/2+2)
+        world.addObjectAtPos('Stone', s.x/2+2, s.y/2-2, s.z/2+4)
+        world.addObjectAtPos('Stone', s.x/2, s.y/2-2, s.z/2+4)
+        world.addObjectAtPos('Stone', s.x/2+2, s.y/2-2, s.z/2+4)
+        world.addObjectAtPos('Stone', s.x/2, s.y/2-4, s.z/2+4)
+        world.addObjectAtPos('Stone', s.x/2-2, s.y/2-4, s.z/2+4)
+        world.addObjectAtPos('Stone', s.x/2-4, s.y/2-4, s.z/2+4)
         
         #long fall and strip1
-        
-        world.addObjectAtPos('KikiStone', s.x/2-4, s.y/2+4, s.z/2+2)
-        world.addObjectAtPos('KikiStone', s.x/2-3, s.y/2+4, s.z/2+2)
+        world.addObjectAtPos('Stone', s.x/2-4, s.y/2+4, s.z/2+2)
+        world.addObjectAtPos('Stone', s.x/2-3, s.y/2+4, s.z/2+2)
         
         #short fall and strip2
-        world.addObjectAtPos('KikiStone', s.x/2-4, s.y/2+1, s.z/2-2)
-        world.addObjectAtPos('KikiStone', s.x/2-4, s.y/2+1, s.z/2-1)
+        world.addObjectAtPos('Stone', s.x/2-4, s.y/2+1, s.z/2-2)
+        world.addObjectAtPos('Stone', s.x/2-4, s.y/2+1, s.z/2-1)
         
-        world.addObjectAtPos('KikiStone', 0, 0, 0)
+        world.addObjectAtPos('Stone', 0, 0, 0)
         

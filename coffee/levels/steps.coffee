@@ -30,8 +30,8 @@ module.exports =
     ]
     create: ->
 
-        world.addObjectAtPos 'KikiStone', world.decenter 0,0,3
-        world.addObjectAtPos 'KikiWall',  world.decenter 0,-1,1
-        world.addObjectAtPos 'KikiWall',  world.decenter 0,-2,-1
-        world.addObjectAtPos 'KikiWall',  world.decenter 0,-3,-3
+        world.addObjectAtPos 'Stone', world.decenter 0,0,3
+        world.addObjectAtPos 'Wall',  world.decenter 0,-1,1
+        world.addObjectAtPos 'Wall',  world.decenter 0,-2,-1
+        world.addObjectAtPos 'Wall',  world.decenter 0,-3,-3
         

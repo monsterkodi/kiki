@@ -377,7 +377,7 @@ class World extends Actor
             if @isUnoccupiedPos pos
                 @addObjectAtPos object, pos
        
-    addObjectPoly: (object, points, close=1) ->
+    addObjectPoly: (object, points, close=true) ->
         # adds a polygon of objects of type to the world. points should be 3-tuples or Pos objects
         if close
             points.push points[0]

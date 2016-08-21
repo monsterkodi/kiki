@@ -24,24 +24,25 @@ module.exports =
     create: ->
 # 
         s = world.size
+        {Mutant} = require '../items'
         
-        world.addObjectLine(KikiWall, [2, 2, 2], [s.x - 3, 2, 2])
-        world.addObjectLine(KikiWall, [s.x - 3, 2, 2], [s.x - 3, s.y - 3, 2])
-        world.addObjectLine(KikiWall, [s.x - 3, s.y - 3, 2], [s.x - 3, s.y - 3, s.z - 3])
-        world.addObjectLine(KikiWall, [s.x - 3, s.y - 3, s.z - 3], [2, s.y - 3, s.z - 3])
-        world.addObjectLine(KikiWall, [2, s.y - 3, s.z - 3], [2, 2, s.z - 3])
-        world.addObjectLine(KikiWall, [2, 2, s.z - 3], [2, 2, 2])
+        world.addObjectLine('Wall', [2, 2, 2], [s.x - 3, 2, 2])
+        world.addObjectLine('Wall', [s.x - 3, 2, 2], [s.x - 3, s.y - 3, 2])
+        world.addObjectLine('Wall', [s.x - 3, s.y - 3, 2], [s.x - 3, s.y - 3, s.z - 3])
+        world.addObjectLine('Wall', [s.x - 3, s.y - 3, s.z - 3], [2, s.y - 3, s.z - 3])
+        world.addObjectLine('Wall', [2, s.y - 3, s.z - 3], [2, 2, s.z - 3])
+        world.addObjectLine('Wall', [2, 2, s.z - 3], [2, 2, 2])
         
         world.num_mutants   = 5
         world.death_counter = 0
         
-        botDied =() ->
+        botDied = ->
             world.death_counter += 1
             if world.death_counter >= world.num_mutants
                 world.activate("exit")
         
-        for i in range(world.num_mutants)
-            mutant = KikiMutant()
-            mutant.getEventWithName("died").addAction(once(botDied))
+        for i in [0...world.num_mutants]
+            mutant = new Mutant()
+            mutant.getEventWithName("died").addAction world.once botDied  
             world.setObjectRandom(mutant)
             

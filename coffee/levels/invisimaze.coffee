@@ -1,7 +1,13 @@
-# level design by Owen Hay
+
+#   000  000   000  000   000  000   0000000  000  00     00   0000000   0000000  00000000
+#   000  0000  000  000   000  000  000       000  000   000  000   000     000   000     
+#   000  000 0 000   000 000   000  0000000   000  000000000  000000000    000    0000000 
+#   000  000  0000     000     000       000  000  000 0 000  000   000   000     000     
+#   000  000   000      0      000  0000000   000  000   000  000   000  0000000  00000000
 
 module.exports =
     name:       "invisimaze"
+    design:     'Owen Hay'
     scheme:     "yellow_scheme"
     size:       [9,5,5]
     intro:      "invisimaze"
@@ -38,7 +44,6 @@ module.exports =
         
         #randomly assign the switches to different locations
         tup_array = [[0,0,0], [2,1,-2], [-2,-2,0], [-1,2,1], [-2,-2,-1], [1,-1,2]]
-        # random.shuffle(tup_array)
              
         i0 = tup_array[0]
         i1 = tup_array[1]
@@ -69,61 +74,57 @@ module.exports =
         
         # Invisimaze
         for y in [0, 1]
-             world.addObjectLine('KikiStone', 4, y, 2, 4, y, 5)
-             world.addObjectLine('KikiStone', 5, y, 2, 7, y, 2)
+             world.addObjectLine('Stone', 4, y, 2, 4, y, 5)
+             world.addObjectLine('Stone', 5, y, 2, 7, y, 2)
         
-        # for y in [0]
-            # for x in [2] 
-        world.addObjectPoly 'KikiStone', [world.decenter(-2, 0, -2), world.decenter(-2, 0, 2), world.decenter(2, 0, 2), world.decenter(2, 0, -2)]
+        world.addObjectPoly 'Stone', [world.decenter(-2, 0, -2), world.decenter(-2, 0, 2), world.decenter(2, 0, 2), world.decenter(2, 0, -2)]
+        world.addObjectPoly 'Stone', [[2, 4, 2], [2, 4, 4], [4, 4, 4], [4, 4, 2]]
         
-        world.addObjectPoly 'KikiStone', [[2, 4, 2], [2, 4, 4], [4, 4, 4], [4, 4, 2]]
+        world.addObjectAtPos 'Stone', 2, 3, 2
+        world.addObjectAtPos 'Stone', 6, 3, 1
+        world.addObjectAtPos 'Stone', 6, 3, 3
+        world.addObjectAtPos 'Stone', 2, 1, 1
+        world.addObjectAtPos 'Stone', 3, 0, 1
+        world.addObjectAtPos 'Stone', 2, 1, 2
+        world.addObjectAtPos 'Stone', 2, 0, 2
+        world.addObjectAtPos 'Stone', 4, 2, 3
+        world.addObjectAtPos 'Stone', 5, 2, 2
+        world.addObjectAtPos 'Stone', 5, 2, 1
+        world.addObjectAtPos 'Stone', 4, 2, 1
+        world.addObjectAtPos 'Stone', 3, 2, 2
+        world.addObjectAtPos 'Stone', 3, 2, 3
+        world.addObjectAtPos 'Stone', 5, 3, 0
         
-        world.addObjectAtPos 'KikiStone', 2, 3, 2
-        world.addObjectAtPos 'KikiStone', 6, 3, 1
-        world.addObjectAtPos 'KikiStone', 6, 3, 3
-        world.addObjectAtPos 'KikiStone', 2, 1, 1
-        world.addObjectAtPos 'KikiStone', 3, 0, 1
-        world.addObjectAtPos 'KikiStone', 2, 1, 2
-        world.addObjectAtPos 'KikiStone', 2, 0, 2
-        world.addObjectAtPos 'KikiStone', 4, 2, 3
-        world.addObjectAtPos 'KikiStone', 5, 2, 2
-        world.addObjectAtPos 'KikiStone', 5, 2, 1
-        world.addObjectAtPos 'KikiStone', 4, 2, 1
-        world.addObjectAtPos 'KikiStone', 3, 2, 2
-        world.addObjectAtPos 'KikiStone', 3, 2, 3
-        world.addObjectAtPos 'KikiStone', 5, 3, 0
-        
-        world.addObjectAtPos 'KikiStone', 6, 4, 0
+        world.addObjectAtPos 'Stone', 6, 4, 0
         
         #the bombLock
-        world.addObjectAtPos 'KikiStone', 7, 1, 2
-        world.addObjectAtPos 'KikiStone', 7, 1, 3
-        world.addObjectAtPos 'KikiStone', 7, 3, 2
-        world.addObjectAtPos 'KikiStone', 7, 2, 1
-        world.addObjectAtPos 'KikiStone', 7, 2, 2
-        world.addObjectAtPos 'KikiBomb', 7, 2, 2
+        world.addObjectAtPos 'Stone', 7, 1, 2
+        world.addObjectAtPos 'Stone', 7, 1, 3
+        world.addObjectAtPos 'Stone', 7, 3, 2
+        world.addObjectAtPos 'Stone', 7, 2, 1
+        world.addObjectAtPos 'Stone', 7, 2, 2
+        world.addObjectAtPos 'Bomb', 7, 2, 2
         
         # Exit 1 is blocked!!!
-        # world.addObjectAtPos 'KikiMotorCylinder', 1, 2, 2
         
         # Walls
         # for y in [-4,]
         y = -4
         for x in [1, -1]
-            world.addObjectPoly 'KikiWall', [world.decenter(y, -x, -x), world.decenter(y, -x, x), world.decenter(y, x, x), world.decenter(y, x, -x)]
+            world.addObjectPoly 'Wall', [world.decenter(y, -x, -x), world.decenter(y, -x, x), world.decenter(y, x, x), world.decenter(y, x, -x)]
         # for y in [-3]
         y = -3
         for x in [2, -2]
-            world.addObjectPoly 'KikiWall', [world.decenter(y, -x, -x), world.decenter(y, -x, x), world.decenter(y, x, x), world.decenter(y, x, -x)]
+            world.addObjectPoly 'Wall', [world.decenter(y, -x, -x), world.decenter(y, -x, x), world.decenter(y, x, x), world.decenter(y, x, -x)]
         
         # for y in [4,]
         y = 4
         for x in [1, -1]
-            world.addObjectPoly 'KikiWall', [world.decenter(y, -x, -x), world.decenter(y, -x, x), world.decenter(y, x, x), world.decenter(y, x, -x)]
+            world.addObjectPoly 'Wall', [world.decenter(y, -x, -x), world.decenter(y, -x, x), world.decenter(y, x, x), world.decenter(y, x, -x)]
             
         # for y in [3]
         y = 3
         for x in [2, -2]
-            world.addObjectPoly 'KikiWall', [world.decenter(y, -x, -x), world.decenter(y, -x, x), world.decenter(y, x, x), world.decenter(y, x, -x)]
+            world.addObjectPoly 'Wall', [world.decenter(y, -x, -x), world.decenter(y, -x, x), world.decenter(y, x, x), world.decenter(y, x, -x)]
         
         

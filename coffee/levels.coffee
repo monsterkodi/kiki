@@ -46,16 +46,23 @@ class Levels
             # "stones", 
             # "walls", 
             # "grid", 
-            "rings", 
+            # "rings", 
             # "core", 
-            "bronze", "pool", 
+            # "browanze", 
+            # "pool", 
             # tough
-            "hidden", "church", 
+            # "hidden", 
+            # "church", 
             # "strange", 
-            "mesh", "columns", "machine", 
+            # "mesh", 
+            # "columns", 
+            # "machine", 
             # very hard
             # "neutron", 
-            "captured", "circuit", "regal", "conductor", "evil", 
+            # "captured", 
+            # "circuit", 
+            # "regal", 
+            "conductor", "evil", 
             # outro
             "mutants"]
                

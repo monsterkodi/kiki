@@ -31,18 +31,18 @@ module.exports =
 
         s = world.size
         
-        world.addObjectAtPos('KikiStone', s.x/2-1, s.y/2+1, 0)
-        world.addObjectAtPos('KikiStone', s.x/2+1, s.y/2+1, 0)
-        world.addObjectAtPos('KikiStone', s.x/2+1, s.y/2-1, 0)
-        world.addObjectAtPos('KikiStone', s.x/2-1, s.y/2-1, 0)
-        world.addObjectAtPos('KikiStone', s.x/2-1, s.y/2,   0)
-        world.addObjectAtPos('KikiStone', s.x/2+1, s.y/2,   0)
-        world.addObjectAtPos('KikiStone', s.x/2,   s.y/2-1, 0)
-        world.addObjectAtPos('KikiStone', s.x/2,   s.y/2+1, 0)
+        world.addObjectAtPos('Stone', s.x/2-1, s.y/2+1, 0)
+        world.addObjectAtPos('Stone', s.x/2+1, s.y/2+1, 0)
+        world.addObjectAtPos('Stone', s.x/2+1, s.y/2-1, 0)
+        world.addObjectAtPos('Stone', s.x/2-1, s.y/2-1, 0)
+        world.addObjectAtPos('Stone', s.x/2-1, s.y/2,   0)
+        world.addObjectAtPos('Stone', s.x/2+1, s.y/2,   0)
+        world.addObjectAtPos('Stone', s.x/2,   s.y/2-1, 0)
+        world.addObjectAtPos('Stone', s.x/2,   s.y/2+1, 0)
         
-        world.addObjectAtPos('KikiStone', s.x/2,   s.y/2,   1)
+        world.addObjectAtPos('Stone', s.x/2,   s.y/2,   1)
         
-        # Switch = require '../switch'
-        # exit_switch = new Switch
-        # exit_switch.getEventWithName("switched").addAction(continuous(()-> world.toggle("exit")))
-        # world.addObjectAtPos(exit_switch, s.x/2,  s.y/2, 0))
+        Switch = require '../switch'
+        exit_switch = new Switch
+        exit_switch.getEventWithName("switched").addAction world.continuous -> world.toggle "exit"
+        world.addObjectAtPos exit_switch, s.x/2,  s.y/2, 0

@@ -1,3 +1,10 @@
+
+#    0000000  000   000  000  000000000   0000000  000   000
+#   000       000 0 000  000     000     000       000   000
+#   0000000   000000000  000     000     000       000000000
+#        000  000   000  000     000     000       000   000
+#   0000000   00     00  000     000      0000000  000   000
+
 module.exports =
     name:       "switch"
     scheme:     "yellow_scheme"
@@ -34,32 +41,32 @@ module.exports =
         h = 0
         # bomb and stones
         
-        world.addObjectAtPos 'KikiStone', s.x/2, s.y/2, s.z/2
-        world.addObjectAtPos 'KikiStone', s.x/2, s.y-2, s.z/2
+        world.addObjectAtPos 'Stone', s.x/2, s.y/2, s.z/2
+        world.addObjectAtPos 'Stone', s.x/2, s.y-2, s.z/2
         
-        # world.addObjectAtPos 'KikiBomb', s.x/2, 1, s.z/2
+        # world.addObjectAtPos 'Bomb', s.x/2, 1, s.z/2
         
         # stone frames for switches
         
-        world.addObjectAtPos 'KikiWall', world.decenter  0,  h-1, s.z/2
-        world.addObjectAtPos 'KikiWall', world.decenter  0,  h+1, s.z/2
-        world.addObjectAtPos 'KikiWall', world.decenter  1,  h, s.z/2
-        world.addObjectAtPos 'KikiWall', world.decenter -1,  h, s.z/2
+        world.addObjectAtPos 'Wall', world.decenter  0,  h-1, s.z/2
+        world.addObjectAtPos 'Wall', world.decenter  0,  h+1, s.z/2
+        world.addObjectAtPos 'Wall', world.decenter  1,  h, s.z/2
+        world.addObjectAtPos 'Wall', world.decenter -1,  h, s.z/2
         
-        world.addObjectAtPos 'KikiWall', world.decenter s.x/2, h-1, 0
-        world.addObjectAtPos 'KikiWall', world.decenter s.x/2, h+1, 0
-        world.addObjectAtPos 'KikiWall', world.decenter s.x/2, h,  1
-        world.addObjectAtPos 'KikiWall', world.decenter s.x/2, h, -1
+        world.addObjectAtPos 'Wall', world.decenter s.x/2, h-1, 0
+        world.addObjectAtPos 'Wall', world.decenter s.x/2, h+1, 0
+        world.addObjectAtPos 'Wall', world.decenter s.x/2, h,  1
+        world.addObjectAtPos 'Wall', world.decenter s.x/2, h, -1
         
-        world.addObjectAtPos 'KikiWall', world.decenter  0,  h-1, -s.z/2+1
-        world.addObjectAtPos 'KikiWall', world.decenter  0,  h+1, -s.z/2+1
-        world.addObjectAtPos 'KikiWall', world.decenter  1,  h, -s.z/2+1
-        world.addObjectAtPos 'KikiWall', world.decenter -1,  h, -s.z/2+1
+        world.addObjectAtPos 'Wall', world.decenter  0,  h-1, -s.z/2+1
+        world.addObjectAtPos 'Wall', world.decenter  0,  h+1, -s.z/2+1
+        world.addObjectAtPos 'Wall', world.decenter  1,  h, -s.z/2+1
+        world.addObjectAtPos 'Wall', world.decenter -1,  h, -s.z/2+1
         
-        world.addObjectAtPos 'KikiWall', world.decenter -s.x/2+1, h-1, 0
-        world.addObjectAtPos 'KikiWall', world.decenter -s.x/2+1, h+1, 0
-        world.addObjectAtPos 'KikiWall', world.decenter -s.x/2+1, h,  1
-        world.addObjectAtPos 'KikiWall', world.decenter -s.x/2+1, h, -1
+        world.addObjectAtPos 'Wall', world.decenter -s.x/2+1, h-1, 0
+        world.addObjectAtPos 'Wall', world.decenter -s.x/2+1, h+1, 0
+        world.addObjectAtPos 'Wall', world.decenter -s.x/2+1, h,  1
+        world.addObjectAtPos 'Wall', world.decenter -s.x/2+1, h, -1
         
         # switches
         

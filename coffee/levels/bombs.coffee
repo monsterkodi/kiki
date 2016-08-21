@@ -25,6 +25,6 @@ module.exports =
         position: [0,2,0]
     ],
     create: ->
-        world.addObjectAtPos 'KikiBomb', world.decenter 0,-4,2
-        world.addObjectAtPos 'KikiBomb', world.decenter 0,-4,-2
-        world.addObjectAtPos 'KikiBomb', world.decenter -3,-2,0
+        world.addObjectAtPos 'Bomb', world.decenter 0,-4,2
+        world.addObjectAtPos 'Bomb', world.decenter 0,-4,-2
+        world.addObjectAtPos 'Bomb', world.decenter -3,-2,0

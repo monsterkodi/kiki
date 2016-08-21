@@ -1,8 +1,14 @@
-# level design by Michael Abel
+
+#    0000000  000      000   0000000  000   000
+#   000       000      000  000       000  000 
+#   0000000   000      000  000       0000000  
+#        000  000      000  000       000  000 
+#   0000000   0000000  000   0000000  000   000
 
 module.exports =
 
     name:       "slick"
+    design:     'Michael Abel'
     scheme:     "tron_scheme"
     size:       [9,11,15]
     intro:      "slick"
@@ -26,8 +32,8 @@ module.exports =
             # for (k,l) in [ (i,j) for i in range(b+1,s.x-b-1) for j in range(b+1,s.y-b-1) ]
             for k in [b+1..s.x-b]
                 for j in [b+1..s.y-b]
-                    world.addObjectAtPos(KikiStone(KColor(0,1,0,0.5), true), k,l,b*3)
+                    world.addObjectAtPos('new Stone(color:[0,1,0,0.5], slippery:true)', k,l,b*3)
     
-        world.addObjectAtPos(KikiWall(), s.x/2,s.y/2,0)
-        world.addObjectAtPos(KikiStone(KColor(0,1,0,0.5), true), s.x/2,s.y/2,2)
+        world.addObjectAtPos('Wall', s.x/2,s.y/2,0)
+        world.addObjectAtPos('new Stone(color:[0,1,0,0.5], slippery:true)', s.x/2,s.y/2,2)
         

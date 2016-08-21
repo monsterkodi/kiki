@@ -1,7 +1,13 @@
-# level design by Michael Abel
+
+#    0000000   0000000   000   000  0000000    000   000   0000000  000000000   0000000   00000000 
+#   000       000   000  0000  000  000   000  000   000  000          000     000   000  000   000
+#   000       000   000  000 0 000  000   000  000   000  000          000     000   000  0000000  
+#   000       000   000  000  0000  000   000  000   000  000          000     000   000  000   000
+#    0000000   0000000   000   000  0000000     0000000    0000000     000      0000000   000   000
     
 module.exports =
     name:       "conductor"
+    deisgn:     "Michael Abel"
     scheme:     "default_scheme"
     size:       [11,9,11]
     intro:      "conductor"
@@ -28,52 +34,48 @@ module.exports =
     ],
     create: ->
         
-        KikiWireWall = (c , p) ->
-            if world.isUnoccupiedPos(p.x,p.y,p.z)
-                world.addObjectAtPos('KikiWall', p.x,p.y,p.z)
-                world.addObjectAtPos(KikiWire(KikiFace.X,  c), p.x+1,p.y  ,p.z  )
-                world.addObjectAtPos(KikiWire(KikiFace.NX, c), p.x-1,p.y  ,p.z  )
-                world.addObjectAtPos(KikiWire(KikiFace.Y,  c), p.x  ,p.y+1,p.z  )
-                world.addObjectAtPos(KikiWire(KikiFace.NY, c), p.x  ,p.y-1,p.z  )
-                world.addObjectAtPos(KikiWire(KikiFace.Z,  c), p.x  ,p.y  ,p.z+1)
-                world.addObjectAtPos(KikiWire(KikiFace.NZ, c), p.x  ,p.y  ,p.z-1)
+        {MotorCylinder, MotorGear, Generator, Wire, WireStone, Face} = require '../items'
+        WireWall = (c , x,y,z) ->
+            if world.isUnoccupiedPos x,y,z
+                world.addObjectAtPos 'Wall', x,y,z
+                world.addObjectAtPos new Wire(Face.X,  c), x+1, y  , z  
+                world.addObjectAtPos new Wire(Face.NX, c), x-1, y  , z  
+                world.addObjectAtPos new Wire(Face.Y,  c), x  , y+1, z  
+                world.addObjectAtPos new Wire(Face.NY, c), x  , y-1, z  
+                world.addObjectAtPos new Wire(Face.Z,  c), x  , y  , z+1
+                world.addObjectAtPos new Wire(Face.NZ, c), x  , y  , z-1
             
         for h in [2,4,6]
-            world.addObjectLine(KikiWall, 5,2,h, 5,6,h)
-            world.addObjectAtPos('KikiWireStone', 5,1,h)
-            world.addObjectAtPos('KikiWireStone', 5,6,h)
+            world.addObjectLine 'Wall', 5,2,h, 5,6,h
+            world.addObjectAtPos 'WireStone', 5,1,h
+            world.addObjectAtPos 'WireStone', 5,6,h
     
-        wire_u= -> KikiWire(KikiFace.Z, 4+1 )
-        wire_d= -> KikiWire(KikiFace.NZ, 4+1 )
-        
-        world.addObjectLine(wire_d, 5,2,1, 5,6,1)
-        world.addObjectLine(wire_u, 5,2,3, 5,6,3)
-        world.addObjectAtPos(       KikiWire(KikiFace.NY, 5), 5,1,2)
-        world.addObjectAtPos(       KikiWire(KikiFace.Y,  5), 5,6,2)
+        world.addObjectLine 'new Wire(Face.NZ, 5)', 5,2,1, 5,6,1
+        world.addObjectLine 'new Wire(Face.Z, 5)', 5,2,3, 5,6,3
+        world.addObjectAtPos new Wire(Face.NY, 5), 5,1,2
+        world.addObjectAtPos new Wire(Face.Y,  5), 5,6,2
     
+        world.addObjectAtPos new MotorGear(Face.Z), 5,0,0
+        world.addObjectAtPos new MotorCylinder(Face.Z),  5,0,1
+        world.addObjectAtPos new MotorCylinder(Face.NX), 4,0,0
+        world.addObjectAtPos new MotorCylinder(Face.X),  6,0,0
         
-        world.addObjectAtPos(KikiMotorGear(KikiFace.Z), 5,0,0)
-        world.addObjectAtPos(KikiMotorCylinder(KikiFace.Z),  5,0,1)
-        world.addObjectAtPos(KikiMotorCylinder(KikiFace.NX), 4,0,0)
-        world.addObjectAtPos(KikiMotorCylinder(KikiFace.X),  6,0,0)
-        
-        
-        g = KikiGenerator(KikiFace.Z) #set to Active as last command in LevelS
+        g = new Generator Face.Z 
         world.addObjectAtPos(g, 5,1,0)
     
-        world.addObjectAtPos('KikiWireStone', 5,2,0)
-        world.addObjectAtPos('KikiWireStone', 5,2,1)
+        world.addObjectAtPos('WireStone', 5,2,0)
+        world.addObjectAtPos('WireStone', 5,2,1)
          
-        world.addObjectAtPos('KikiWireStone', 5,5,3)
-        world.addObjectAtPos('KikiWireStone', 5,5,5)
+        world.addObjectAtPos('WireStone', 5,5,3)
+        world.addObjectAtPos('WireStone', 5,5,5)
         
-        KikiWireWall(15, 5,4,8)
+        WireWall(15,5,4,8)
     
-        world.addObjectAtPos('KikiWall', 0,0,0)
-        world.addObjectAtPos('KikiWall', 10,0,0)
-        world.addObjectAtPos('KikiWall', 10,8,0)
-        world.addObjectAtPos('KikiWall', 0,8,0)
+        world.addObjectAtPos('Wall', 0,0,0)
+        world.addObjectAtPos('Wall', 10,0,0)
+        world.addObjectAtPos('Wall', 10,8,0)
+        world.addObjectAtPos('Wall', 0,8,0)
         
-        g.setActive(True)
+        g.setActive true
             
     

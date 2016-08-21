@@ -1,3 +1,10 @@
+
+#    0000000  000   000   0000000   000  000   000
+#   000       000   000  000   000  000  0000  000
+#   000       000000000  000000000  000  000 0 000
+#   000       000   000  000   000  000  000  0000
+#    0000000  000   000  000   000  000  000   000
+
 module.exports =
     name:       "chain"
     scheme:     "candy_scheme"
@@ -27,12 +34,12 @@ module.exports =
         s = world.size
         d = s.z/2
         
-        world.addObjectAtPos 'KikiWall', 0, 0, d
-        world.addObjectAtPos 'KikiBomb', 0, 1, d
-        world.addObjectAtPos 'KikiBomb', 1, 0, d
-        world.addObjectAtPos 'KikiBomb', 0, 7, d
-        world.addObjectAtPos 'KikiBomb', 5, 7, d
-        world.addObjectAtPos 'KikiBomb', 1, 3, d
-        world.addObjectAtPos 'KikiBomb', 5, 3, d
-        world.addObjectAtPos 'KikiWireStone', 1, 5, d
+        world.addObjectAtPos 'Wall', 0, 0, d
+        world.addObjectAtPos 'Bomb', 0, 1, d
+        world.addObjectAtPos 'Bomb', 1, 0, d
+        world.addObjectAtPos 'Bomb', 0, 7, d
+        world.addObjectAtPos 'Bomb', 5, 7, d
+        world.addObjectAtPos 'Bomb', 1, 3, d
+        world.addObjectAtPos 'Bomb', 5, 3, d
+        world.addObjectAtPos 'WireStone', 1, 5, d
         

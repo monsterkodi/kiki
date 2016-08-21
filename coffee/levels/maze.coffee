@@ -1,8 +1,14 @@
-# level design by Michael Abel
+
+#   00     00   0000000   0000000  00000000
+#   000   000  000   000     000   000     
+#   000000000  000000000    000    0000000 
+#   000 0 000  000   000   000     000     
+#   000   000  000   000  0000000  00000000
 
 module.exports =
 
     name:       "maze"
+    deisgn:     'Michael Abel'
     scheme:     "default_scheme"
     size:       [4,4,4]
     intro:      "maze"
@@ -26,52 +32,52 @@ module.exports =
         #       |   #| |
         #       | ##k|  -> x
             
-        world.addObjectAtPos('KikiWall', 1,0,0)
-        world.addObjectAtPos('KikiWall', 2,0,0)
-        world.addObjectAtPos('KikiWall', 3,1,0)
-        world.addObjectAtPos('KikiWall', 1,2,0)
-        world.addObjectAtPos('KikiWall', 2,3,0)
+        world.addObjectAtPos('Wall', 1,0,0)
+        world.addObjectAtPos('Wall', 2,0,0)
+        world.addObjectAtPos('Wall', 3,1,0)
+        world.addObjectAtPos('Wall', 1,2,0)
+        world.addObjectAtPos('Wall', 2,3,0)
            
        #level 1|# # |
        #       |# ##|
        #       |## #|
        #       |  # |
-        world.addObjectAtPos('KikiWall', 2,0,1)
-        world.addObjectAtPos('KikiWall', 0,1,1)
-        world.addObjectAtPos('KikiWall', 1,1,1)
-        world.addObjectAtPos('KikiWall', 3,1,1)
-        world.addObjectAtPos('KikiWall', 0,2,1)
-        world.addObjectAtPos('KikiWall', 2,2,1)
-        world.addObjectAtPos('KikiWall', 3,2,1)
-        world.addObjectAtPos('KikiWall', 0,3,1)
-        world.addObjectAtPos('KikiWall', 2,3,1)
+        world.addObjectAtPos('Wall', 2,0,1)
+        world.addObjectAtPos('Wall', 0,1,1)
+        world.addObjectAtPos('Wall', 1,1,1)
+        world.addObjectAtPos('Wall', 3,1,1)
+        world.addObjectAtPos('Wall', 0,2,1)
+        world.addObjectAtPos('Wall', 2,2,1)
+        world.addObjectAtPos('Wall', 3,2,1)
+        world.addObjectAtPos('Wall', 0,3,1)
+        world.addObjectAtPos('Wall', 2,3,1)
            
        #level 2| ###|
        #       |# ##|
        #       | #e#|
        #       |### |
-        world.addObjectAtPos('KikiWall', 0,0,2)
-        world.addObjectAtPos('KikiWall', 1,0,2)
-        world.addObjectAtPos('KikiWall', 2,0,2)
-        world.addObjectAtPos('KikiWall', 1,1,2)
-        world.addObjectAtPos('KikiWall', 3,1,2)
-        world.addObjectAtPos('KikiWall', 0,2,2)
-        world.addObjectAtPos('KikiWall', 2,2,2)
-        world.addObjectAtPos('KikiWall', 3,2,2)
-        world.addObjectAtPos('KikiWall', 1,3,2)
-        world.addObjectAtPos('KikiWall', 2,3,2)
-        world.addObjectAtPos('KikiWall', 3,3,2)
+        world.addObjectAtPos('Wall', 0,0,2)
+        world.addObjectAtPos('Wall', 1,0,2)
+        world.addObjectAtPos('Wall', 2,0,2)
+        world.addObjectAtPos('Wall', 1,1,2)
+        world.addObjectAtPos('Wall', 3,1,2)
+        world.addObjectAtPos('Wall', 0,2,2)
+        world.addObjectAtPos('Wall', 2,2,2)
+        world.addObjectAtPos('Wall', 3,2,2)
+        world.addObjectAtPos('Wall', 1,3,2)
+        world.addObjectAtPos('Wall', 2,3,2)
+        world.addObjectAtPos('Wall', 3,3,2)
            
        #level 3| #  |
        #       |  # |
        #       | ## |
        #       |    |
-        world.addObjectAtPos('KikiWall', 1,1,3)
-        world.addObjectAtPos('KikiWall', 2,1,3)
-        world.addObjectAtPos('KikiWall', 2,2,3)
-        world.addObjectAtPos('KikiWall', 1,3,3)
+        world.addObjectAtPos('Wall', 1,1,3)
+        world.addObjectAtPos('Wall', 2,1,3)
+        world.addObjectAtPos('Wall', 2,2,3)
+        world.addObjectAtPos('Wall', 1,3,3)
            
-        world.addObjectAtPos('KikiLight', 3,0,0)
+        world.addObjectAtPos('Light', 3,0,0)
             
-        # world.setCameraMode(world.CAMERA_INSIDE)
+        world.setCameraMode(world.CAMERA_INSIDE)
         

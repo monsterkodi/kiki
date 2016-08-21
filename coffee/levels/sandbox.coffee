@@ -1,6 +1,13 @@
-# level design by Michael Abel
+
+#    0000000   0000000   000   000  0000000    0000000     0000000   000   000
+#   000       000   000  0000  000  000   000  000   000  000   000   000 000 
+#   0000000   000000000  000 0 000  000   000  0000000    000   000    00000  
+#        000  000   000  000  0000  000   000  000   000  000   000   000 000 
+#   0000000   000   000  000   000  0000000    0000000     0000000   000   000
+
 module.exports =    
     name:       "sandbox"
+    design:     'Michael Abel'
     scheme:     "bronze_scheme"
     size:       [9,9,6]
     intro:      "sandbox"
@@ -37,21 +44,21 @@ module.exports =
         swtch.getEventWithName("switched").addAction world.continuous switched
            
         world.addObjectAtPos swtch , 0,5,0
-        world.addObjectPoly 'KikiWall', [ [2,2,0], [2,6,0], [6,6,0], [6,2,0] ], 1
+        world.addObjectPoly 'Wall', [ [2,2,0], [2,6,0], [6,6,0], [6,2,0] ], 1
         
         #inside    
-        world.addObjectAtPos 'KikiStone', 3,4,2
-        world.addObjectAtPos 'KikiStone', 3,5,1
-        world.addObjectAtPos 'KikiStone', 5,3,1
-        world.addObjectAtPos 'KikiStone', 5,4,2
+        world.addObjectAtPos 'Stone', 3,4,2
+        world.addObjectAtPos 'Stone', 3,5,1
+        world.addObjectAtPos 'Stone', 5,3,1
+        world.addObjectAtPos 'Stone', 5,4,2
         #border
-        world.addObjectAtPos 'KikiStone', 3,6,1
-        world.addObjectAtPos 'KikiStone', 4,6,1
-        world.addObjectAtPos 'KikiStone', 3,2,1
-        world.addObjectAtPos 'KikiStone', 5,2,1
-        world.addObjectAtPos 'KikiStone', 6,4,1
-        world.addObjectAtPos 'KikiStone', 6,3,1
+        world.addObjectAtPos 'Stone', 3,6,1
+        world.addObjectAtPos 'Stone', 4,6,1
+        world.addObjectAtPos 'Stone', 3,2,1
+        world.addObjectAtPos 'Stone', 5,2,1
+        world.addObjectAtPos 'Stone', 6,4,1
+        world.addObjectAtPos 'Stone', 6,3,1
         #outside
-        world.addObjectAtPos 'KikiStone', 5,1,0
-        world.addObjectAtPos 'KikiStone', 1,7,0
+        world.addObjectAtPos 'Stone', 5,1,0
+        world.addObjectAtPos 'Stone', 1,7,0
         

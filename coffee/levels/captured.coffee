@@ -1,8 +1,14 @@
-# Level design of 'captured' by Niko Boehm
+
+#    0000000   0000000   00000000   000000000  000   000  00000000   00000000  0000000  
+#   000       000   000  000   000     000     000   000  000   000  000       000   000
+#   000       000000000  00000000      000     000   000  0000000    0000000   000   000
+#   000       000   000  000           000     000   000  000   000  000       000   000
+#    0000000  000   000  000           000      0000000   000   000  00000000  0000000  
 
 module.exports =
 
     name:       "captured"
+    design:     'Niko Boehm'
     scheme:     "default_scheme"
     size:       [9,9,9]
     intro:      "captured"
@@ -23,11 +29,11 @@ module.exports =
         s = world.size
         
         for i in [-2, 2]
-            world.addObjectPoly('KikiStone', [world.decenter(1, 1, i), world.decenter(1, -1, i), world.decenter(-1, -1, i), world.decenter(-1, 1, i)])
-            world.addObjectPoly('KikiStone', [world.decenter(1, i, 1), world.decenter(1, i, -1), world.decenter(-1, i, -1), world.decenter(-1, i, 1)])
-            world.addObjectPoly('KikiStone', [world.decenter(i, 1, 1), world.decenter(i, 1, -1), world.decenter(i, -1, -1), world.decenter(i, -1, 1)])
+            world.addObjectPoly 'Stone', [world.decenter(1, 1, i), world.decenter(1, -1, i), world.decenter(-1, -1, i), world.decenter(-1, 1, i)]
+            world.addObjectPoly 'Stone', [world.decenter(1, i, 1), world.decenter(1, i, -1), world.decenter(-1, i, -1), world.decenter(-1, i, 1)]
+            world.addObjectPoly 'Stone', [world.decenter(i, 1, 1), world.decenter(i, 1, -1), world.decenter(i, -1, -1), world.decenter(i, -1, 1)]
         
         for i in [-4, -2, 2, 4]
-            world.addObjectAtPos('KikiStone', world.decenter(i, 0, 0))
-            world.addObjectAtPos('KikiStone', world.decenter(0, i, 0))
-            world.addObjectAtPos('KikiStone', world.decenter(0, 0, i))
+            world.addObjectAtPos 'Stone', world.decenter i, 0, 0
+            world.addObjectAtPos 'Stone', world.decenter 0, i, 0
+            world.addObjectAtPos 'Stone', world.decenter 0, 0, i

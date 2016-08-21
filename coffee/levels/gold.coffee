@@ -1,3 +1,10 @@
+
+#    0000000    0000000   000      0000000  
+#   000        000   000  000      000   000
+#   000  0000  000   000  000      000   000
+#   000   000  000   000  000      000   000
+#    0000000    0000000   0000000  0000000  
+
 module.exports =
     name:       "gold"
     scheme:     "yellow_scheme"
@@ -21,4 +28,4 @@ module.exports =
         for y in [2,4,6,8]
             for x in [0...3]
                 for z in [0...3]
-                    world.addObjectAtPos('KikiStone', x, y, z)
+                    world.addObjectAtPos 'Stone', x, y, z 

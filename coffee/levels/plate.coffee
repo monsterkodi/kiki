@@ -24,14 +24,13 @@ module.exports =
     ]
     create: ->
     
-        stone = () -> KikiStone(KColor(0.6,0.6,0.6),true)
-        world.addObjectAtPos(KikiStone(KColor(0.8,0.8,0.3),true), world.decenter(0,0,0))
+        world.addObjectAtPos 'new Stone(color:[0.8,0.8,0.3],slippery:true', world.decenter(0,0,0)
         
-        world.addObjectPoly(stone, [world.decenter(1,1,0),world.decenter(1,-1,0), world.decenter(-1,-1,0),world.decenter(-1,1,0)], 1)
+        world.addObjectPoly 'new Stone(color:[0.6,0.6,0.6],slippery:true)', [world.decenter(1,1,0),world.decenter(1,-1,0), world.decenter(-1,-1,0),world.decenter(-1,1,0)], 1
         
-        world.addObjectAtPos 'KikiBomb', world.decenter 0,1,-4
-        world.addObjectAtPos 'KikiBomb', world.decenter 0,-1,-4
-        world.addObjectAtPos 'KikiBomb', world.decenter 1,0,-4
-        world.addObjectAtPos 'KikiBomb', world.decenter -1,0,-4
+        world.addObjectAtPos 'Bomb', world.decenter 0,1,-4
+        world.addObjectAtPos 'Bomb', world.decenter 0,-1,-4
+        world.addObjectAtPos 'Bomb', world.decenter 1,0,-4
+        world.addObjectAtPos 'Bomb', world.decenter -1,0,-4
         
-        world.addObjectAtPos 'KikiBomb', world.decenter 0,0,-2
+        world.addObjectAtPos 'Bomb', world.decenter 0,0,-2

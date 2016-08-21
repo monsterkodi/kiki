@@ -1,4 +1,3 @@
-# level design by Michael Abel
 
 #   0000000     0000000   00000000    0000000 
 #   000   000  000   000  000   000  000      
@@ -8,6 +7,7 @@
 
 module.exports = 
     name:       'borg'
+    disgn:      'Michael Abel'
     scheme:     "default_scheme"
     size:       [9,9,9]
     intro:      "borg"
@@ -26,7 +26,7 @@ module.exports =
         position: [0,0,0]
     ]
     create: ->
-        world.addObjectAtPos 'KikiLight', 7,7,7
+        world.addObjectAtPos 'Light', 7,7,7
         for i in [0...150] 
-            world.setObjectRandom KikiMutant()
+            world.setObjectRandom 'Mutant'
             

@@ -24,14 +24,15 @@ class Gear extends Valve
         @mesh.add new THREE.Mesh Geom.valve(), Material.plate
         @mesh.receiveShadow = true
         
-    getNeighborGears: ->
+    neighborGears: ->
         dirs = Gear.neighbors[@face % 3]
         pos = @getPos()
         gears = []
         for i in [0...4]
             neighbor = world.getOccupantAtPos pos.plus new Pos dirs[i]
+            # log "gear.neighborGears #{neighbor?} #{neighbor instanceof Gear} #{neighbor?.face}", pos.plus new Pos dirs[i]
             if neighbor? and neighbor instanceof Gear
-                if neighbor.face == face
+                if neighbor.face == @face
                     gears.push neighbor
         gears
     
@@ -49,22 +50,30 @@ class Gear extends Valve
                 @updateActive()
     
     updateActive: ->
-        @setActive false
-        for gear in @getNeighborGears()
+        # log "gear.updateActive #{@active}"
+        for gear in @neighborGears()
+            log "gear.updateActive neighbor active #{gear.active}"
             if gear.active
                 @setActive true
                 return
+        @setActive false
      
     setActive: (active) ->
         if @active != active
             @active = active
                     
             world.playSound @active and 'GEAR_ON' or 'GEAR_OFF'
-            
-            for gear in @getNeighborGears()
+            if @active
+                @startTimedAction @getActionWithId Action.ROTATE
+            else
+                @stopAction @getActionWithId Action.ROTATE
+            log "gear.setActive neighborGears #{@neighborGears().length}"
+            for gear in @neighborGears()
                 if @active
+                    log 'gear.setActive activate neighbor'
                     gear.setActive true
                 else
+                    log 'gear.setActive update neighbor'
                     gear.updateActive()
      
 module.exports = Gear

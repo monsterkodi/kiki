@@ -243,21 +243,7 @@ class World extends Actor
         else if @dict.player.coordinates?
             @addObjectAtPos @player, new Pos @dict.player.coordinates
 
-        # if player_dict.nostatus?
-            # if player_dict.nostatus or @preview
-                # @player_status.hide()
-            # else
-                # @player_status.show()
-        # else
-            # if @preview
-                # Controller.player_status.hide()
-            # else
-                # Controller.player_status.show()
-#         
         @getProjection().setPosition new Vector 0,0,0
-
-        # @player.getStatus().setMinMoves (highscore.levelParMoves (@level_name))
-        # @player.getStatus().setMoves (0)
 
         # ............................................................ init
         # @init() # tell the world that we are finished
@@ -301,7 +287,6 @@ class World extends Actor
     exitLevel: (action) =>
         log "world.exitLevel", action       
         @finish()
-        # @player.status.setMoves 0
         # exitIndex = parseInt action.name?.slice 5
         # log "world.exitLevel exitIndex:#{exitIndex}"
         # if @dict.exits[exitIndex]?.world?
@@ -311,10 +296,7 @@ class World extends Actor
         log "world.level_index #{world.level_index} nextLevel #{World.levels.list[world.level_index+1]}"
         world.create World.levels.list[world.level_index+1]
 
-    activate: (objectName) ->
-        # activates object with name objectName
-        object = @getObjectWithName objectName 
-        object?.setActive? 1
+    activate: (objectName) -> @getObjectWithName(objectName)?.setActive? true
     
     decenter: (x,y,z) -> new Pos(x,y,z).plus @size.div 2
 
@@ -493,7 +475,6 @@ class World extends Actor
     
     moveObjectToPos: (object, pos) ->
         return false if @isInvalidPos(pos) or @isOccupiedPos(pos)
-    
         @unsetObject    object
         @setObjectAtPos object, pos
         world.playSound 'BOT_LAND'
@@ -517,7 +498,6 @@ class World extends Actor
         object.del()
     
     deleteAllObjects: () ->
-        # log 'world.deleteAllObjects'
         Timer.removeAllActions()
     
         if @player?
@@ -551,10 +531,7 @@ class World extends Actor
     
     setCameraMode: (mode) -> @camera_mode = clamp World.CAMERA_INSIDE, World.CAMERA_FOLLOW, mode
     
-    changeCameraMode: () -> 
-        @camera_mode = (@camera_mode+1) % (World.CAMERA_FOLLOW+1)
-        # log "world.changeCameraMode #{@camera_mode}"
-        @camera_mode
+    changeCameraMode: -> @camera_mode = (@camera_mode+1) % (World.CAMERA_FOLLOW+1)
     
     #    0000000   0000000          000        00     00   0000000   000   000  00000000
     #   000   000  000   000        000        000   000  000   000  000   000  000     
@@ -766,7 +743,6 @@ class World extends Actor
             if o instanceof Light
                 o.initialize()
         
-        # Spikes::initialize()
         # Text::reinit()
         
     #   000   000  00000000  000      00000000 

@@ -16,7 +16,7 @@ class Face
     @NY = 4
     @NZ = 5
     
-    @orientationForFace: (face) ->
+    @orientation: (face) ->
         switch face % 6
            when 0 then return Quaternion.rot_90_Y
            when 1 then return Quaternion.rot_270_X
@@ -25,12 +25,15 @@ class Face
            when 4 then return Quaternion.rot_90_X
            when 5 then return Quaternion.rot_180_X
 
-    @normalVectorForFace: (face) ->
+    @normal: (face) ->
         o = (face < 3) and 1 or -1
         switch face % 3 
             when 0 then return new Vector o, 0, 0
             when 1 then return new Vector 0, o, 0
             when 2 then return new Vector 0, 0, o
         new Vector
+
+    @orientationForFace: (face) -> @orientation face
+    @normalVectorForFace: (face) -> @normal face
         
 module.exports = Face

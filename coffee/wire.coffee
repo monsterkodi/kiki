@@ -54,21 +54,21 @@ class Wire extends Item
             plane.translate 0, -w/2, -s+o
             geom.merge plane
     
-        @wire = new THREE.Mesh geom, Material.wire            
+        @wire = new THREE.Mesh geom,        Material.wire            
         @mesh = new THREE.Mesh Geom.wire(), Material.plate
         @mesh.add @wire
         @mesh.receiveShadow = true
-        @mesh.position.copy Face.normalVectorForFace(@face).mul -(0.5+o)
-        @mesh.quaternion.copy Face.orientationForFace @face
+        @mesh.position.copy Face.normal(@face).mul -(0.5+o)
+        @mesh.quaternion.copy Face.orientation @face
         
     updateActive: ->
-        for wire in @getNeighborWires()
+        for wire in @neighborWires()
             @setActive true if wire.active
     
     setActive: (active) ->
         if @active != active
             @active = active
-            neighbors = @getNeighborWires()
+            neighbors = @neighborWires()
     
             active_neighbor = false
             if @active
@@ -87,9 +87,9 @@ class Wire extends Item
             @events[@active and @SWITCH_ON_EVENT or @SWITCH_OFF_EVENT].triggerActions()
             @events[@SWITCHED_EVENT].triggerActions()
     
-    getNeighborWires: ->
+    neighborWires: ->
         wires = []
-        points = @getConnectionPoints()
+        points = @connectionPoints()
         neighbor_dirs = []
          
         rot = Face.orientationForFace @face
@@ -114,14 +114,14 @@ class Wire extends Item
             neighbors = world.getObjectsOfTypeAtPos Wire, @position.plus neighbor_dirs[i]
             for iter in neighbors
                 continue if iter == @
-                neighbor_points = iter.getConnectionPoints()
+                neighbor_points = iter.connectionPoints()
                 for point in points
                     for neighbor_point in neighbor_points
                         if (neighbor_point.minus point).length() < 0.1
                             wires.push iter
         wires
     
-    getConnectionPoints: ->
+    connectionPoints: ->
         points = []
         to_border = Face.normalVectorForFace(@face).mul 0.5
         rot = Face.orientationForFace @face

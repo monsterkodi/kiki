@@ -53,10 +53,13 @@ class Sound
                 src: ["#{__dirname}/../sound/#{v.file}"]
                 volume: v.volume
             @sounds[k].pannerAttr 
-                maxDistance:   10
-                refDistance:   1
-                rolloffFactor: 4
-                distanceModel: 'exponential'
+                coneInnerAngle: 360
+                coneOuterAngle: 360
+                coneOuterGain:  0
+                maxDistance:    10
+                refDistance:    1
+                rolloffFactor:  4
+                distanceModel:  'exponential'
     
     @setMatrix: (m) -> 
         p = m.getPosition()
@@ -67,7 +70,7 @@ class Sound
     
     @play: (sound, pos, time) ->
         pos ?= world.player?.current_position 
-        # log "Sound.play #{sound} #{time}", pos 
+        log "Sound.play #{sound} #{time}", pos 
         id = @sounds[sound].play()
         @sounds[sound].pos pos.x, pos.y, pos.z, id if pos?
         

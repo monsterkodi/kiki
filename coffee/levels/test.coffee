@@ -38,11 +38,11 @@ module.exports =
         # world.addObjectAtPos new Gear(Face.Z), 6, 5, 0
         # world.addObjectAtPos new Gear(Face.Z), 5, 6, 0
         # world.addObjectAtPos new Gear(Face.Z), 5, 4, 0
-        return
         world.addObjectAtPos new Gear(Face.Z), 6, 6, 0
         world.addObjectAtPos new Gear(Face.Z), 4, 4, 0
         world.addObjectAtPos new Gear(Face.Z), 4, 6, 0
         world.addObjectAtPos new Gear(Face.Z), 6, 4, 0
+        return
 
         world.addObjectAtPos new Gear(Face.NZ), 6, 5, 4
         world.addObjectAtPos new Gear(Face.NZ), 4, 5, 4

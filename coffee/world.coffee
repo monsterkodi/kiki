@@ -69,14 +69,14 @@ class World extends Actor
         
         @renderer = new THREE.WebGLRenderer 
             antialias:              true
-            logarithmicDepthBuffer: true
+            logarithmicDepthBuffer: false
             autoClear:              true
             sortObjects:            true
-                    
+
         @renderer.setClearColor 0x000000        
         @renderer.setSize @view.offsetWidth, @view.offsetHeight
         @renderer.shadowMap.type = THREE.PCFSoftShadowMap
-        
+                
         #    0000000   0000000   00     00  00000000  00000000    0000000 
         #   000       000   000  000   000  000       000   000  000   000
         #   000       000000000  000000000  0000000   0000000    000000000
@@ -140,7 +140,7 @@ class World extends Actor
         return if @levels?
           
         Sound.init()
-              
+        global.log = log
         global.rot0    = Quaternion.rot_0
         global.rotx90  = Quaternion.rot_90_X
         global.roty90  = Quaternion.rot_90_Y
@@ -409,7 +409,7 @@ class World extends Actor
         
     getObjectsOfType:      (clss)      -> @objects.filter (o) -> o instanceof clss
     getObjectsOfTypeAtPos: (clss, pos) -> @getCellAtPos(pos)?.getObjectsOfType(clss) ? []
-    getObjectOfTypeAtPos:  (clss, pos) -> @getCellAtPos(pos)?.getRealObjectOfType(clss) ? []
+    getObjectOfTypeAtPos:  (clss, pos) -> @getCellAtPos(pos)?.getRealObjectOfType(clss)
     getOccupantAtPos:            (pos) -> @getCellAtPos(pos)?.getOccupant()
     getRealOccupantAtPos: (pos) ->
         occupant = @getOccupantAtPos pos

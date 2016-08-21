@@ -11,7 +11,8 @@ Material = require './material'
 
 class Generator extends Gear
     
-    constructor: (face) -> super face
+    constructor: (face) -> 
+        super face
         
     createMesh: ->
         @mesh = new THREE.Mesh Geom.generator(), Material.plate
@@ -21,7 +22,7 @@ class Generator extends Gear
     activateWires: ->
         wires = world.getObjectsOfTypeAtPos Wire, @getPos()
         for wire in wires
-            wire.setActive active
+            wire.setActive @active
     
     setActive: (active) ->
         if @active != active

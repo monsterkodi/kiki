@@ -60,7 +60,7 @@ class Bot extends Pushable
             transparent:    true
             opacity:        1
             shininess:      4
-            alphaTest:      0.1
+            # alphaTest:      0.1
             
         @leftTire = new THREE.Mesh geom, @tireMat
         @leftTire.position.set 0.35,0,0 

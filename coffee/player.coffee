@@ -164,9 +164,10 @@ class Player extends Bot
         botToCamera = camPos.minus playerPos
         botToCameraNormal = botToCamera.normal()
      
-        # if camera below bot, rotate up
-        if botToCameraNormal.dot(playerUp) < 0 # calculate angle between player to camera vector and player up vector
-            verticalAngle = Vector.RAD2DEG Math.acos(clamp(-1.0, 1.0, botToCameraNormal.dot playerUp))
+        # rotate camera vertically
+        verticalAngle = Vector.RAD2DEG Math.acos(clamp(-1.0, 1.0, botToCameraNormal.dot playerUp))
+        if verticalAngle > 45
+            # log "verticalAngle #{verticalAngle}"
             rotQuat     = Quaternion.rotationAroundVector(verticalAngle/400.0, botToCameraNormal.cross(playerUp))
             botToCamera = rotQuat.rotate botToCamera 
             botToCameraNormal = botToCamera.normal()

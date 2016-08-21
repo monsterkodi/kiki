@@ -7,6 +7,7 @@
 Item     = require './item'
 Geom     = require './geom'
 Face     = require './face'
+Gate     = require './gate'
 Vector   = require './lib/vector'
 Material = require './material'
 
@@ -21,9 +22,11 @@ class Wire extends Item
     @ALL        =15
     
     constructor: (@face=Face.Z, @connections=Wire.ALL) ->
-        super 
+        @glow   = null
         @active = false
         @value  = 1.0
+        
+        super 
     
         @SWITCH_OFF_EVENT = @addEventWithName "off"
         @SWITCH_ON_EVENT  = @addEventWithName "on"
@@ -53,9 +56,9 @@ class Wire extends Item
             plane = new THREE.PlaneGeometry h, w
             plane.translate 0, -w/2, -s+o
             geom.merge plane
-    
+        
         @wire = new THREE.Mesh geom,        Material.wire            
-        @mesh = new THREE.Mesh Geom.wire(), Material.plate
+        @mesh = new THREE.Mesh Geom.wire(), Material.wire_plate
         @mesh.add @wire
         @mesh.receiveShadow = true
         @mesh.position.copy Face.normal(@face).mul -(0.5+o)
@@ -68,21 +71,63 @@ class Wire extends Item
     setActive: (active) ->
         if @active != active
             @active = active
+            log "wire active #{active}"
             neighbors = @neighborWires()
+        
+            for wire in neighbors
+                wire.setActive @active
+                
+            # active_neighbor = false
+            # if @active
+                # for wire in neighbors
+                    # if wire.active
+                        # active_neighbor = true
+                        # break
+#              
+            # for wire in wires
+                # wire.setActive active
     
-            active_neighbor = false
+            gate = world.getObjectOfTypeAtPos Gate, @getPos()
+            gate?.setActive @active
+            
             if @active
-                for wire in neighbors
-                    if wire.active
-                        active_neighbor = true
-                        break
-             
-            for wire in wires
-                wire.setActive active
-    
-            cellSwitch = world.getObjectOfTypeAtPos KikiSwitch, @getPos()
-            if cellSwitch?
-                cellSwitch.setActive active
+                if not @glow?
+                    map = new THREE.TextureLoader().load "#{__dirname}/../img/wire.png"
+                    # map.offset.set -0.5, -0.5 
+                    # map.repeat.set 2, 2
+                    material = new THREE.SpriteMaterial 
+                        map: map
+                        color: 0xffff00
+                        transparent: false
+                        # opacity: 0.95
+                        blending: THREE.AdditiveBlending
+                        fog: true
+                        id: 999
+                        lights: true
+                        # side: THREE.DoubleSide
+                        # depthTest: false
+                        # depthWrite: true
+                        
+                    @glow = new THREE.Sprite material
+                    # @glow.scale.set 0.1, 0.1, 0.1
+                    log 'glow position', @position
+                    @glow.position.set 0, 0, -0.3
+                    @glow.scale.set .5, .5, 1
+                    @glow.renderOrder = 999
+                    # @glow.position.normalize()
+                    # @glow.position.multiplyScalar 2
+                    @mesh.add @glow
+                    
+                    # @glow2 = new THREE.Sprite material
+                    # @glow2.scale.set 1, 1, 1
+                    # @glow2.renderOrder = 999
+                    # @glow2.position.set @position.x, @position.y, @position.z-0.3
+                    # world.scene.add @glow2
+            else if @glow
+                @mesh.remove @glow
+                log 'remove glow'
+                # @world.scene.remove @glow
+                @glow = null
     
             @events[@active and @SWITCH_ON_EVENT or @SWITCH_OFF_EVENT].triggerActions()
             @events[@SWITCHED_EVENT].triggerActions()

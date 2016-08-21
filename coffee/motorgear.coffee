@@ -8,15 +8,19 @@ log           = require '/Users/kodi/s/ko/js/tools/log'
 Gear          = require './gear'
 Geom          = require './geom'
 Face          = require './face'
+Action        = require './action'
 Material      = require './material'
 Quaternion    = require './lib/quaternion'
 MotorCylinder = require './motorcylinder'
 
 class MotorGear extends Gear
     
-    constructor: (face) -> 
-        super face
-        @setActive true
+    constructor: (@face) -> 
+        super @face
+        
+    setPosition: (pos) ->
+        super pos
+        @updateActive()
 
     createMesh: ->
         @mesh = new THREE.Mesh Geom.motor(), Material.plate
@@ -24,14 +28,27 @@ class MotorGear extends Gear
         @mesh.add @gear
         @mesh.receiveShadow = true
 
+    initAction: (action) ->
+        # log "MotorGear.initAction action #{action.name}"
+        if action.id in [Action.PUSH, Action.FALL]
+            pos = @position.plus Face.normal @face
+            occupant = world.getOccupantAtPos pos 
+            isCylinder = occupant instanceof MotorCylinder and occupant.face == @face
+            occupant.setActive false if isCylinder
+        super action
+        
     updateMesh: ->
         # log "Valve.updateMesh #{@angle} #{@face}"
         rot = Quaternion.rotationAroundVector (@clockwise and 1 or -1) * @angle, 0,0,1
-        @gear.quaternion.copy Face.orientationForFace(@face).mul rot
+        @gear.quaternion.copy rot #Face.orientationForFace(@face).mul rot
+        @mesh.quaternion.copy Face.orientation @face
         
     updateActive: ->
         pos = @position.plus Face.normal @face
         # log "MotorGear.updateActive #{@active}", pos, world.getOccupantAtPos(pos) instanceof MotorCylinder
-        @setActive world.getOccupantAtPos(pos) instanceof MotorCylinder
+        occupant = world.getOccupantAtPos pos 
+        isCylinder = occupant instanceof MotorCylinder and occupant.face == @face and not occupant.move_action
+        @setActive isCylinder
+        occupant.setActive true if isCylinder
         
 module.exports = MotorGear

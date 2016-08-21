@@ -18,6 +18,12 @@ module.exports =
         side:           THREE.DoubleSide
         shading:        THREE.SmoothShading
         shininess:      40
+
+    wire_plate: new THREE.MeshPhongMaterial 
+        color:          0x880000
+        side:           THREE.DoubleSide
+        shading:        THREE.SmoothShading
+        shininess:      10
         
     raster: new THREE.MeshPhongMaterial 
         color:          0x880000

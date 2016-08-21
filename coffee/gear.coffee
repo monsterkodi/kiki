@@ -51,12 +51,12 @@ class Gear extends Valve
     
     updateActive: ->
         # log "gear.updateActive #{@active}"
+        @setActive false
         for gear in @neighborGears()
-            log "gear.updateActive neighbor active #{gear.active}"
+            # log "gear.updateActive neighbor active #{gear.active}"
             if gear.active
                 @setActive true
                 return
-        @setActive false
      
     setActive: (active) ->
         if @active != active
@@ -67,13 +67,13 @@ class Gear extends Valve
                 @startTimedAction @getActionWithId Action.ROTATE
             else
                 @stopAction @getActionWithId Action.ROTATE
-            log "gear.setActive neighborGears #{@neighborGears().length}"
+            # log "gear.setActive neighborGears #{@neighborGears().length}"
             for gear in @neighborGears()
                 if @active
-                    log 'gear.setActive activate neighbor'
+                    # log 'gear.setActive activate neighbor'
                     gear.setActive true
                 else
-                    log 'gear.setActive update neighbor'
+                    # log 'gear.setActive update neighbor'
                     gear.updateActive()
      
 module.exports = Gear

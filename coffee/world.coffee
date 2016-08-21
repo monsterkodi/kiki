@@ -138,6 +138,8 @@ class World extends Actor
     @initGlobal: () ->
         
         return if @levels?
+          
+        Sound.init()
               
         global.rot0    = Quaternion.rot_0
         global.rotx90  = Quaternion.rot_90_X
@@ -672,6 +674,9 @@ class World extends Actor
             when World.CAMERA_INSIDE then @projection = @player.getInsideProjection()
             when World.CAMERA_BEHIND then @projection = @player.getBehindProjection()
             when World.CAMERA_FOLLOW then @projection = @player.getFollowProjection()
+        
+        Sound.setMatrix @projection
+            
         @player.setOpacity clamp 0, 1, @projection.getPosition().minus(@player.current_position).length()-0.4
         @projection.apply @camera
         @sun.position.copy @camera.position

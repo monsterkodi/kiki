@@ -9,8 +9,9 @@ Howler = require 'howler'
 Howl   = Howler.Howl
 
 class Sound
-
-    @sounds =
+    
+    @sounds = Object.create null
+    @files = 
         BOT_MOVE:          file: "bot_move.wav",            volume: 0.2
         BOT_JUMP:          file: "bot_jump.wav",            volume: 0.7
         BOT_LAND:          file: "bot_land.wav",            volume: 0.7
@@ -45,25 +46,29 @@ class Sound
         GENERATOR_OFF:     file: "generator_off.wav",       volume: 1.0
         MOTOR:             file: "bomb_splitter.wav",       volume: 1.0
     
+    @init: -> 
+        return if _.size @sounds
+        for k,v of @files
+            @sounds[k] = new Howl 
+                src: ["#{__dirname}/../sound/#{v.file}"]
+                volume: v.volume
+            @sounds[k].pannerAttr 
+                maxDistance:   10
+                refDistance:   1
+                rolloffFactor: 4
+                distanceModel: 'exponential'
+    
+    @setMatrix: (m) -> 
+        p = m.getPosition()
+        f = m.getZVector()
+        u = m.getYVector()
+        Howler.Howler.pos p.x, p.y, p.z
+        Howler.Howler.orientation f.x, f.y, f.z, u.x, u.y, u.z
+    
     @play: (sound, pos, time) ->
-        log "Sound.playSound #{sound} #{time}", pos  
-        # Howler.volume 1
-        howl = new Howl src: ["#{__dirname}/../sound/#{@sounds[sound].file}"]
-        if world.projection?
-            p = world.projection.getPosition()
-            Howler.Howler.pos p.x, p.y, p.z
-            f = world.projection.getZVector()
-            u = world.projection.getYVector()
-            Howler.Howler.orientation f.x, f.y, f.z, u.x, u.y, u.z
-        howl.pannerAttr 
-            maxDistance: 10
-            refDistance: 1
-            rolloffFactor: 1
-            distanceModel: 'exponential'
-        id = howl.play()
-        # log "sound id #{id}"
-        howl.volume @sounds[sound].volume, id
-        if pos?
-            howl.pos pos.x, pos.y, pos.z, id
+        pos ?= world.player?.current_position 
+        # log "Sound.play #{sound} #{time}", pos 
+        id = @sounds[sound].play()
+        @sounds[sound].pos pos.x, pos.y, pos.z, id if pos?
         
 module.exports = Sound

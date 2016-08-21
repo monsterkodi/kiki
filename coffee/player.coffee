@@ -68,7 +68,6 @@ class Player extends Bot
         @projection.setPosition @projection.getPosition().mul(1.0-posDelta).plus camPos.mul posDelta
             
         if @look_angle # player is looking up or down
-            log "look_angle #{@look_angle}"
             @projection.setXVector playerDir.cross(playerUp).normal()
             rot = Quaternion.rotationAroundVector @look_angle, @projection.getXVector()
             @projection.setYVector rot.rotate playerUp 

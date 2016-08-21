@@ -62,7 +62,7 @@ class Player extends Bot
         posDelta = world.getSpeed() / 10.0
         playerDir = @getCurrentDir()
         playerUp  = @current_orientation.rotate(new Vector(0,1,0)).normal()
-        camPos = @current_position.plus playerDir.mul 0.4*(1-Math.abs(@look_angle)/90)
+        camPos = @current_position.clone()
         if @look_angle < 0
             camPos.add playerUp.mul -2*@look_angle/90
         @projection.setPosition @projection.getPosition().mul(1.0-posDelta).plus camPos.mul posDelta

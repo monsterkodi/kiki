@@ -8,6 +8,8 @@
 module.exports = 
     Gear:          require './gear'
     Stone:         require './stone'
+    Wire:          require './wire'
+    WireStone:     require './wirestone'
     Wall:          require './wall'
     MotorGear:     require './motorgear'
     MotorCylinder: require './motorcylinder'

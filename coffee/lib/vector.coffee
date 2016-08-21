@@ -24,7 +24,8 @@ class Vector
             @w = w ? 0
         if Number.isNaN @x or Number.isNaN @w
             throw new Error
-
+            
+    clone: -> new Vector @
     copy: (v) -> 
         @x = v.x
         @y = v.y 

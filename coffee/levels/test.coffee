@@ -18,17 +18,26 @@ module.exports =
     create: ->
 
         s = world.size
-        {Gear,Generator,MotorCylinder,MotorGear,Face,Wall} = require '../items'
+        {Gear,Generator,MotorCylinder,MotorGear,Face,Wall,Wire,WireStone,Stone} = require '../items'
+        
+        # world.addObjectAtPos new Wire(Face.Z,  Wire.ALL), 7, 5, 0
+        # world.addObjectAtPos new Wire(Face.NZ, Wire.ALL), 7, 5, 0
+        # world.addObjectAtPos new Wire(Face.Y,  Wire.ALL), 7, 5, 0
+        # world.addObjectAtPos new Wire(Face.NY, Wire.ALL), 7, 5, 0
+        # world.addObjectAtPos new Wire(Face.X,  Wire.ALL), 7, 5, 0
+        # world.addObjectAtPos new Wire(Face.NX, Wire.ALL), 7, 5, 0
+        
         world.addObjectAtPos new Generator(Face.Z), 5, 7, 0
-        world.addObjectAtPos new Wall(), 6, 7, 0
-        world.addObjectAtPos new Wall(), 6, 7, 1
-        world.addObjectAtPos new Wall(), 6, 7, 2
+        world.addObjectAtPos new Stone(), 6, 7, 0
+        world.addObjectAtPos new Stone(), 6, 7, 2
+        world.addObjectAtPos new WireStone(), 6, 7, 1
+        world.addObjectAtPos new WireStone(), 3, 7, 1
 
         world.addObjectAtPos new MotorCylinder(Face.Z), 4, 5, 1
         world.addObjectAtPos new MotorGear(Face.Z), 4, 5, 0
-        world.addObjectAtPos new Gear(Face.Z), 6, 5, 0
-        world.addObjectAtPos new Gear(Face.Z), 5, 6, 0
-        world.addObjectAtPos new Gear(Face.Z), 5, 4, 0
+        # world.addObjectAtPos new Gear(Face.Z), 6, 5, 0
+        # world.addObjectAtPos new Gear(Face.Z), 5, 6, 0
+        # world.addObjectAtPos new Gear(Face.Z), 5, 4, 0
         return
         world.addObjectAtPos new Gear(Face.Z), 6, 6, 0
         world.addObjectAtPos new Gear(Face.Z), 4, 4, 0

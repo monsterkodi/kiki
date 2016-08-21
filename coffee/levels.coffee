@@ -38,9 +38,10 @@ class Levels
             # "fallen", 
             # "cheese", 
             # "invisimaze", 
-            "spiral", 
+            # "spiral", 
             # difficult
-            "slick", "bridge", "flower", "stones", "walls", "grid", 
+            # "slick", 
+            "bridge", "flower", "stones", "walls", "grid", 
             "rings", 
             # "core", 
             "bronze", "pool", 

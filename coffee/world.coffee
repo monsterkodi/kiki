@@ -422,12 +422,10 @@ class World extends Actor
     # 000   000  000   000  000   000  000       000          000          000
     #  0000000   0000000     0000000   00000000   0000000     000     0000000 
         
-    getObjectsOfType:      (clss) -> @objects.filter (o) -> o instanceof clss
-    getObjectsOfTypeAtPos: (clss, pos) -> @getCellAtPos(pos)?.getObjectsOfType clss
-    getObjectOfTypeAtPos:  (clss, pos) -> @getCellAtPos(pos)?.getRealObjectOfType clss
-    getOccupantAtPos:            (pos) -> 
-        # log "getOccupantAtPos cell? #{@getCellAtPos(pos)?}", pos
-        @getCellAtPos(pos)?.getOccupant()
+    getObjectsOfType:      (clss)      -> @objects.filter (o) -> o instanceof clss
+    getObjectsOfTypeAtPos: (clss, pos) -> @getCellAtPos(pos)?.getObjectsOfType(clss) ? []
+    getObjectOfTypeAtPos:  (clss, pos) -> @getCellAtPos(pos)?.getRealObjectOfType(clss) ? []
+    getOccupantAtPos:            (pos) -> @getCellAtPos(pos)?.getOccupant()
     getRealOccupantAtPos: (pos) ->
         occupant = @getOccupantAtPos pos
         if occupant and occupant instanceof TmpObject
@@ -454,7 +452,6 @@ class World extends Actor
         if not cell?
             cellIndex = @posToIndex(pos)
             cell = new Cell()
-            # log "created cell at index #{cellIndex}"
             @cells[cellIndex] = cell
         
         object.setPosition pos
@@ -462,11 +459,9 @@ class World extends Actor
 
     unsetObject: (object) ->
         pos = object.getPos()
-        # log "world.unsetObject #{object.name} pos:", pos
         if cell = @getCellAtPos pos
             cell.removeObject object
             if cell.isEmpty()
-                # log 'world.unsetObject remove cell empty cell', pos
                 @cells[@posToIndex(pos)] = null
         else 
             log 'world.unsetObject [WARNING] no cell at pos:', pos
@@ -502,10 +497,7 @@ class World extends Actor
         true
         
     toggle: (objectName) ->
-        # toggles object with name objectName
         object = @getObjectWithName objectName 
-        log "world.toggle #{objectName} #{object?}"
-        # @startTimedAction object.getActionWithName "toggle"  
         object.getActionWithName("toggle").perform()
     
     #   0000000    00000000  000      00000000  000000000  00000000
@@ -515,7 +507,6 @@ class World extends Actor
     #   0000000    00000000  0000000  00000000     000     00000000
     
     deleteObject: (object) ->
-        # log "world.deleteObject #{object.name}"
         if not object?
             log "world.deleteObject [WARNING] no object?"
             return
@@ -524,7 +515,6 @@ class World extends Actor
     
     deleteAllObjects: () ->
         # log 'world.deleteAllObjects'
-        
         Timer.removeAllActions()
     
         if @player?
@@ -553,14 +543,14 @@ class World extends Actor
         for o in @objects
             if objectName == o.name
                 return o
-        log "World.getObjectWithName :: no object found with name #{objectName}"
+        log "World.getObjectWithName [WARNING] no object with name #{objectName}"
         null
     
     setCameraMode: (mode) -> @camera_mode = clamp World.CAMERA_INSIDE, World.CAMERA_FOLLOW, mode
     
     changeCameraMode: () -> 
         @camera_mode = (@camera_mode+1) % (World.CAMERA_FOLLOW+1)
-        log "world.changeCameraMode #{@camera_mode}"
+        # log "world.changeCameraMode #{@camera_mode}"
         @camera_mode
     
     #    0000000   0000000          000        00     00   0000000   000   000  00000000
@@ -597,16 +587,15 @@ class World extends Actor
                     log "world.objectWillMoveToPos [WARNING] #{object.name} already occupied:", targetPos 
     
         if object.name != 'player'
-            # log "---------- tmpObjects not player? #{object.name}"
             @unsetObject object # remove object from cell grid
             
-            # log 'tmpObject at old pos', sourcePos
+            # log 'world.objectWillMoveToPos tmpObject at old pos', sourcePos
             tmpObject = new TmpObject object  # insert tmp object at old pos
             tmpObject.setPosition sourcePos
             tmpObject.time = -duration
             @addObjectAtPos tmpObject, sourcePos 
 
-            # log 'tmpObject at new pos', targetPos 
+            # log 'world.objectWillMoveToPos tmpObject at new pos', targetPos 
             tmpObject = new TmpObject object  # insert tmp object at new pos
             tmpObject.setPosition targetPos 
             tmpObject.time = duration
@@ -634,24 +623,18 @@ class World extends Actor
         if @isOccupiedPos targetPos
             log "World.objectMoved [WARNING] #{movedObject.name} occupied target pos:", targetPos
             
-        # log 'World.objectMovedFromPos sourcePos:', sourcePos
-        # log 'World.objectMovedFromPos targetPos:', targetPos
-                
         if sourceCell?
             sourceCell.removeObject movedObject
             if sourceCell.isEmpty()
-                # log 'world.objectMoved remove empty cell at pos:', sourcePos
                 @cells[@posToIndex(sourcePos)] = null
         
         targetCell = @getCellAtPos targetPos    
         if not targetCell?
             cellIndex = @posToIndex targetPos 
             targetCell = new Cell()
-            # log "world.objectMoved created cell at index #{cellIndex}", targetPos 
             @cells[cellIndex] = targetCell
 
         if targetCell?
-            # log "add #{movedObject.name} to targetCell at pos", targetPos
             targetCell.addObject movedObject
         else
             log "world.objectMoved [WARNING] #{movedObject.name} no target cell?"

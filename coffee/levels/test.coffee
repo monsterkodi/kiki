@@ -20,28 +20,26 @@ module.exports =
         s = world.size
         {Gear,Generator,MotorCylinder,MotorGear,Face,Wall,Wire,WireStone,Stone} = require '../items'
         
-        world.addObjectAtPos new Wire(Face.Z, Wire.ALL), 5, 7, 0
-        world.addObjectAtPos new Wire(Face.Z, Wire.ALL), 5, 8, 0
-        world.addObjectAtPos new Wire(Face.Z, Wire.ALL), 6, 7, 0
-        world.addObjectAtPos new Wire(Face.Z, Wire.ALL), 5, 6, 0
-        world.addObjectAtPos new Wire(Face.Z, Wire.ALL), 4, 7, 0
-        world.addObjectAtPos new Wire(Face.Z, Wire.ALL), 5, 8, 0
-        world.addObjectAtPos new Wire(Face.Z, Wire.ALL), 5, 5, 0
+        world.addObjectAtPos new Wire(Face.Z, Wire.HORIZONTAL), 5, 5, 0
+        # world.addObjectAtPos new Wire(Face.Z, Wire.ALL), 5, 6, 0
+        # world.addObjectAtPos new Wire(Face.Z, Wire.ALL), 5, 7, 0
+        # world.addObjectAtPos new Wire(Face.Z, Wire.ALL), 5, 8, 0
+        # world.addObjectAtPos new Wire(Face.Z, Wire.ALL), 4, 7, 0
+        # world.addObjectAtPos new Wire(Face.Z, Wire.ALL), 6, 7, 0
         
         world.addObjectAtPos new Generator(Face.Z), 5, 6, 0
         # world.addObjectAtPos new MotorGear(Face.NZ), 8, 7, 0
         # world.addObjectAtPos new Stone(), 6, 7, 0
         # world.addObjectAtPos new Stone(), 6, 7, 2
-        # world.addObjectAtPos new WireStone(), 6, 7, 1
-        # world.addObjectAtPos new WireStone(), 3, 7, 1
+        world.addObjectAtPos new WireStone(), 6, 5, 0
+        # world.addObjectAtPos new WireStone(), 3, 7, 0
 
-        world.addObjectAtPos new Gear(Face.Z), 6, 5, 0
-        # world.addObjectAtPos new Gear(Face.Z), 5, 6, 0
-        # world.addObjectAtPos new Gear(Face.Z), 5, 4, 0
-        # world.addObjectAtPos new Gear(Face.Z), 6, 6, 0
-        world.addObjectAtPos new Gear(Face.Z), 4, 4, 0
-        # world.addObjectAtPos new Gear(Face.Z), 4, 6, 0
-        world.addObjectAtPos new Gear(Face.Z), 6, 4, 0
+        # world.addObjectAtPos new Gear(Face.Z), 6, 5, 0
+        # world.addObjectAtPos new Gear(Face.Z), 4, 4, 0
+        # # world.addObjectAtPos new Gear(Face.Z), 5, 6, 0
+        # # world.addObjectAtPos new Gear(Face.Z), 5, 4, 0
+        # # world.addObjectAtPos new Gear(Face.Z), 6, 6, 0
+        # # world.addObjectAtPos new Gear(Face.Z), 4, 6, 0
         world.addObjectAtPos new MotorCylinder(Face.Z), 4, 5, 1
         world.addObjectAtPos new MotorGear(Face.Z), 4, 5, 0
         return

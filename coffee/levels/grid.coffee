@@ -20,19 +20,19 @@ module.exports =
         s = world.size
         
         for y in [-1, 1]
-            for x in range(-s.x/2+3, s.x/2-1, 2)
-                for z in range(-s.z/2+3, s.z/2-1, 2)
-                    world.addObjectAtPos('KikiWall', world.decenter(x, y, z))
+            for x in [-1,1,3]
+                for z in [-1,1,3]
+                    world.addObjectAtPos 'Wall', world.decenter x, y, z  
                     
         for y in [-4, 4]
-            for x in range(-s.x/2+1, s.x/2+1, 2)
-                for z in range(-s.z/2+1, s.z/2+1, 2)
-                    world.addObjectAtPos('KikiWall', world.decenter(x, y, z))
+            for x in [-3, -1, 1, 3]
+                for z in [-3, -1, 1, 3]
+                    world.addObjectAtPos 'Wall', world.decenter x, y, z  
                     
-        world.addObjectAtPos('KikiStone', world.decenter(3,-3,0))
-        world.addObjectAtPos('KikiStone', world.decenter(-3,-3,0))
-        world.addObjectAtPos('KikiStone', world.decenter(3,3,0))
-        world.addObjectAtPos('KikiStone', world.decenter(-3,3,0))
-        world.addObjectAtPos('KikiStone', world.decenter(0,-3,0))
-        world.addObjectAtPos('KikiStone', world.decenter(0,3,0))
+        world.addObjectAtPos 'Stone', world.decenter 3,-3,0
+        world.addObjectAtPos 'Stone', world.decenter -3,-3,0
+        world.addObjectAtPos 'Stone', world.decenter 3,3,0
+        world.addObjectAtPos 'Stone', world.decenter -3,3,0
+        world.addObjectAtPos 'Stone', world.decenter 0,-3,0
+        world.addObjectAtPos 'Stone', world.decenter 0,3,0
         

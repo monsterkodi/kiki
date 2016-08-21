@@ -71,9 +71,8 @@ class Wire extends Item
     setActive: (active) ->
         if @active != active
             @active = active
-            log "wire active #{active}"
             neighbors = @neighborWires()
-        
+            # log "wire active:#{active} face:#{@face} neighbors:#{neighbors.length} pos:", @getPos()
             for wire in neighbors
                 wire.setActive @active
                 
@@ -92,41 +91,13 @@ class Wire extends Item
             
             if @active
                 if not @glow?
-                    map = new THREE.TextureLoader().load "#{__dirname}/../img/wire.png"
-                    # map.offset.set -0.5, -0.5 
-                    # map.repeat.set 2, 2
-                    material = new THREE.SpriteMaterial 
-                        map: map
-                        color: 0xffff00
-                        transparent: false
-                        # opacity: 0.95
-                        blending: THREE.AdditiveBlending
-                        fog: true
-                        id: 999
-                        lights: true
-                        # side: THREE.DoubleSide
-                        # depthTest: false
-                        # depthWrite: true
-                        
-                    @glow = new THREE.Sprite material
-                    # @glow.scale.set 0.1, 0.1, 0.1
-                    log 'glow position', @position
+                    @glow = new THREE.Sprite Material.glow
                     @glow.position.set 0, 0, -0.3
                     @glow.scale.set .5, .5, 1
                     @glow.renderOrder = 999
-                    # @glow.position.normalize()
-                    # @glow.position.multiplyScalar 2
                     @mesh.add @glow
-                    
-                    # @glow2 = new THREE.Sprite material
-                    # @glow2.scale.set 1, 1, 1
-                    # @glow2.renderOrder = 999
-                    # @glow2.position.set @position.x, @position.y, @position.z-0.3
-                    # world.scene.add @glow2
-            else if @glow
+            else if @glow?
                 @mesh.remove @glow
-                log 'remove glow'
-                # @world.scene.remove @glow
                 @glow = null
     
             @events[@active and @SWITCH_ON_EVENT or @SWITCH_OFF_EVENT].triggerActions()
@@ -135,25 +106,26 @@ class Wire extends Item
     neighborWires: ->
         wires = []
         points = @connectionPoints()
+        # log 'points', points
         neighbor_dirs = []
          
         rot = Face.orientationForFace @face
         n   = Face.normalVectorForFace @face
     
-        neighbor_dirs.push new Vector 
+        neighbor_dirs.push new Vector 0,0,0 
          
         if @connections & Wire.RIGHT 
             neighbor_dirs.push rot.rotate new Vector(1,0,0)
-            neighbor_dirs.push rot.rotate new Vector(1,0,0).plus n
+            neighbor_dirs.push rot.rotate(new Vector(1,0,0)).minus n
         if @connections & Wire.LEFT  
             neighbor_dirs.push rot.rotate new Vector(-1,0,0)
-            neighbor_dirs.push rot.rotate new Vector(-1,0,0).plus n
+            neighbor_dirs.push rot.rotate(new Vector(-1,0,0)).minus n
         if @connections & Wire.UP    
             neighbor_dirs.push rot.rotate new Vector(0,1,0)
-            neighbor_dirs.push rot.rotate new Vector(0,1,0).plus n
+            neighbor_dirs.push rot.rotate(new Vector(0,1,0)).minus n
         if @connections & Wire.DOWN
             neighbor_dirs.push rot.rotate new Vector(0,-1,0)
-            neighbor_dirs.push rot.rotate new Vector(0,-1,0).plus n
+            neighbor_dirs.push rot.rotate(new Vector(0,-1,0)).minus n
          
         for i in [0...neighbor_dirs.length]
             neighbors = world.getObjectsOfTypeAtPos Wire, @position.plus neighbor_dirs[i]
@@ -162,14 +134,14 @@ class Wire extends Item
                 neighbor_points = iter.connectionPoints()
                 for point in points
                     for neighbor_point in neighbor_points
-                        if (neighbor_point.minus point).length() < 0.1
+                        if neighbor_point.minus(point).length() < 0.1
                             wires.push iter
         wires
     
     connectionPoints: ->
         points = []
-        to_border = Face.normalVectorForFace(@face).mul 0.5
-        rot = Face.orientationForFace @face
+        to_border = Face.normal(@face).mul -0.5
+        rot = Face.orientation @face
         if @connections & Wire.RIGHT 
             points.push @position.plus to_border.plus rot.rotate new Vector 0.5, 0, 0
         if @connections & Wire.LEFT
@@ -179,7 +151,5 @@ class Wire extends Item
         if @connections & Wire.DOWN
             points.push @position.plus to_border.plus rot.rotate new Vector 0, -0.5, 0
         points
-        
-    # KikiBillBoard::displayTextureWithSize 0.15 
         
 module.exports = Wire

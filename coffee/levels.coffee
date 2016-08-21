@@ -9,7 +9,7 @@ class Levels
     constructor: () ->
         @dict = {}
         @list = [
-            "test",
+            # "test",
             # intro
             # "steps", 
             # "start", 
@@ -41,7 +41,11 @@ class Levels
             # "spiral", 
             # difficult
             # "slick", 
-            "bridge", "flower", "stones", "walls", "grid", 
+            # "bridge", 
+            # "flower", 
+            # "stones", 
+            # "walls", 
+            # "grid", 
             "rings", 
             # "core", 
             "bronze", "pool", 

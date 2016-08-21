@@ -26,11 +26,13 @@ Item        = require './item'
 Action      = require './action'
 TmpObject   = require './tmpobject'
 Pushable    = require './pushable'
+Material    = require './material'
 Quaternion  = require './lib/quaternion'
 Vector      = require './lib/vector'
 Pos         = require './lib/pos'
 _           = require 'lodash'
 now         = require 'performance-now'
+{Wire,Gear,MotorGear,MotorCylinder,Face} = require './items'
 
 world       = null
 
@@ -455,6 +457,8 @@ class World extends Actor
         if _.isString object
             if object.startsWith 'Kiki'
                 return new (require "./#{object.slice(4).toLowerCase()}")()
+            else if object.startsWith 'new'
+                return eval object 
             return new (require "./#{object.toLowerCase()}")()
         if object instanceof Item
             return object
@@ -654,6 +658,7 @@ class World extends Actor
         
         Sound.setMatrix @projection
             
+        # Material.tire.visible = @camera_mode != World.CAMERA_INSIDE
         @player.setOpacity clamp 0, 1, @projection.getPosition().minus(@player.current_position).length()-0.4
         @projection.apply @camera
         @sun.position.copy @camera.position

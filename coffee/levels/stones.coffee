@@ -14,7 +14,7 @@ module.exports =
                 """
     player:    
         position:         [0,-1,-1]
-        orientation:      rotx90 * roty180
+        orientation:      rotx90.mul roty180
     exits:    [
         name:         "exit"
         active:       1

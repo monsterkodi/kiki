@@ -12,6 +12,7 @@ Bullet     = require './bullet'
 Pos        = require './lib/pos'
 Vector     = require './lib/vector'
 Quaternion = require './lib/quaternion'
+Material   = require './material'
 
 class Bot extends Pushable
         
@@ -39,35 +40,17 @@ class Bot extends Pushable
         geom.rotateX Vector.DEG2RAD -90
         geom.scale 0.7, 0.7, 0.7
                     
-        @botMat = new THREE.MeshPhongMaterial
-            color:          0x2222ff
-            side:           THREE.FrontSide
-            shading:        THREE.SmoothShading
-            transparent:    true
-            opacity:        1
-            shininess:      5
-
-        @mesh = new THREE.Mesh geom, @botMat
+        @mesh = new THREE.Mesh geom, Material.bot
 
         geom = new THREE.TorusGeometry 0.5-tireRadius, tireRadius, 16, 32
         geom.scale 1,1,2.5
         
-        @tireMat = new THREE.MeshPhongMaterial 
-            color:          0x000066
-            specular:       0x222255
-            side:           THREE.FrontSide
-            shading:        THREE.FlatShading
-            transparent:    true
-            opacity:        1
-            shininess:      4
-            # alphaTest:      0.1
-            
-        @leftTire = new THREE.Mesh geom, @tireMat
+        @leftTire = new THREE.Mesh geom, Material.tire
         @leftTire.position.set 0.35,0,0 
         @leftTire.rotation.set 0, Vector.DEG2RAD(90), 0
         @mesh.add @leftTire
 
-        @rightTire = new THREE.Mesh geom, @tireMat
+        @rightTire = new THREE.Mesh geom, Material.tire
         @rightTire.position.set -0.35,0,0 
         @rightTire.rotation.set 0, Vector.DEG2RAD(-90), 0
         @mesh.add @rightTire
@@ -114,8 +97,11 @@ class Bot extends Pushable
         @startTimedAction @getActionWithId(Action.NOOP), 500
     
     setOpacity: (opacity) -> 
-        @botMat.opacity = opacity
-        @tireMat.opacity = opacity
+        Material.tire.visible = opacity > 0
+        Material.tire.depthWrite = opacity > 0.5
+        Material.bot.depthWrite = opacity > 0.5
+        Material.bot.opacity = opacity
+        Material.tire.opacity = opacity
     
     # 0000000    000  00000000   00000000   0000000  000000000  000   0000000   000   000
     # 000   000  000  000   000  000       000          000     000  000   000  0000  000

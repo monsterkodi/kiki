@@ -1,3 +1,10 @@
+
+#   00000000   000  000   000   0000000    0000000
+#   000   000  000  0000  000  000        000     
+#   0000000    000  000 0 000  000  0000  0000000 
+#   000   000  000  000  0000  000   000       000
+#   000   000  000  000   000   0000000   0000000 
+
 module.exports =
     name:       "rings"
     scheme:     "default_scheme"
@@ -21,9 +28,9 @@ module.exports =
         
         for y in [-1, 1]
             x = 3
-            world.addObjectPoly(KikiStone, [world.decenter(-x, y, -x), world.decenter(-x, y, x), world.decenter(x, y, x), world.decenter(x, y, -x)])
+            world.addObjectPoly 'Stone', [world.decenter(-x, y, -x), world.decenter(-x, y, x), world.decenter(x, y, x), world.decenter(x, y, -x)]
         
         for y in [-3, 3]
             for x in [-3, -1, 1, 3]
-                world.addObjectPoly(KikiStone, [world.decenter(-x, y, -x), world.decenter(-x, y, x), world.decenter(x, y, x), world.decenter(x, y, -x)])
+                world.addObjectPoly 'Stone', [world.decenter(-x, y, -x), world.decenter(-x, y, x), world.decenter(x, y, x), world.decenter(x, y, -x)]
                                                  

@@ -24,16 +24,14 @@ module.exports =
     ]
     create: ->
         s = world.size
-        Stone = require './stone'
+        {Stone} = require '../items'   
         for m in [[1,'Wall'], [2,'Stone']]
             for k in [-1*m[0],1*m[0]] 
                 for l in [-1*m[0],1*m[0]]
                     world.addObjectLine m[1], s.x/2+k, s.y/2+l ,0, s.x/2+k, s.y/2+l ,3
                     world.addObjectLine m[1], s.x/2+k, s.y/2+l ,8, s.x/2+k, s.y/2+l ,s.z
-               
-        
-        world.addObjectAtPos new Stone(KColor(0,1,0,0.5), true), world.decenter(1,0,0)
-        world.addObjectAtPos new Stone(KColor(0,1,0,0.5), true), world.decenter(-1,0,0)
-        world.addObjectAtPos new Stone(KColor(0,1,0,0.5), true), world.decenter(0,1,0)
-        world.addObjectAtPos new Stone(KColor(0,1,0,0.5), true), world.decenter(0,-1,0)
+        world.addObjectAtPos new Stone(color:[0,1,0,0.5], slippery:true), world.decenter 1,0,0
+        world.addObjectAtPos new Stone(color:[0,1,0,0.5], slippery:true), world.decenter -1,0,0
+        world.addObjectAtPos new Stone(color:[0,1,0,0.5], slippery:true), world.decenter 0,1,0
+        world.addObjectAtPos new Stone(color:[0,1,0,0.5], slippery:true), world.decenter 0,-1,0
     

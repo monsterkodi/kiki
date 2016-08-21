@@ -24,9 +24,8 @@ class WireStone extends Stone
                     if @wires[i]?
                         world.unsetObject @wires[i]
                         @wires[i].setActive false
-                for generator in world.getObjectsOfType Generator
-                    if generator.active
-                        generator.activateWires()
+                for generator in world.getObjectsOfType Generator # ???
+                    generator.activateWires() if generator.active # ???
         super action
     
     setPosition: (pos) ->      

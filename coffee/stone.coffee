@@ -10,7 +10,12 @@ class Stone extends Pushable
     
     constructor: (opt) ->
         @slippery = opt?.slippery or false
-        @color = opt?.color or 0xff8800
+        @color = 0xff8800
+        if opt?.color
+            if Array.isArray opt.color
+                @color = new THREE.Color opt.color[0], opt.color[1], opt.color[2]
+            else
+                @color = opt.color
         @geom = new THREE.BoxGeometry 0.98,0.98,0.98
         
         @mat  = new THREE.MeshPhongMaterial 
@@ -18,7 +23,7 @@ class Stone extends Pushable
             side:           THREE.DoubleSide
             shading:        THREE.SmoothShading
             transparent:    true
-            opacity:        0.7
+            opacity:        opt?.opacity ? 0.7
             shininess:      20
         
         @mesh = new THREE.Mesh @geom, @mat

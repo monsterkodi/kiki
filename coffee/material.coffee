@@ -6,6 +6,30 @@
 #   000   000  000   000     000     00000000  000   000  000  000   000  0000000
 
 module.exports =
+
+    bot: new THREE.MeshPhongMaterial
+        color:          0x2222ff
+        side:           THREE.FrontSide
+        shading:        THREE.SmoothShading
+        transparent:    true
+        opacity:        1
+        shininess:      5
+                    
+    tire: new THREE.MeshPhongMaterial 
+        color:          0x000066
+        specular:       0x222255
+        side:           THREE.FrontSide
+        shading:        THREE.FlatShading
+        transparent:    true
+        opacity:        1
+        shininess:      4
+
+    glow: new THREE.SpriteMaterial 
+        map: new THREE.TextureLoader().load "#{__dirname}/../img/glow.png"
+        color: 0xffff00
+        # transparent: true
+        # opacity: 0.8
+        id: 999
     
     gear: new THREE.MeshPhongMaterial 
         color:          0xff0000
@@ -39,7 +63,7 @@ module.exports =
           
     plate: new THREE.MeshPhongMaterial 
         color:          0x880000
-        side:           THREE.DoubleSide
+        side:           THREE.FrontSide
         shading:        THREE.SmoothShading
         shininess:      10
         emissive:       0x880000

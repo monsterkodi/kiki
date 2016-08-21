@@ -18,7 +18,13 @@ module.exports =
         side:           THREE.FrontSide
         shading:        THREE.SmoothShading
         shininess:      20
-        
+
+    wall: new THREE.MeshPhongMaterial 
+        color:          0x770000
+        side:           THREE.FrontSide
+        shading:        THREE.SmoothShading
+        shininess:      10
+          
     plate: new THREE.MeshPhongMaterial 
         color:          0x880000
         side:           THREE.FrontSide

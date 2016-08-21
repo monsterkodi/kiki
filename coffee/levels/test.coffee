@@ -18,8 +18,11 @@ module.exports =
     create: ->
 
         s = world.size
-        {Gear,Generator,MotorCylinder,MotorGear,Face} = require '../items'
-        # world.addObjectAtPos new Generator(Face.Z), 5, 5, 0
+        {Gear,Generator,MotorCylinder,MotorGear,Face,Wall} = require '../items'
+        world.addObjectAtPos new Generator(Face.Z), 5, 7, 0
+        world.addObjectAtPos new Wall(), 6, 7, 0
+        world.addObjectAtPos new Wall(), 6, 7, 1
+        world.addObjectAtPos new Wall(), 6, 7, 2
 
         world.addObjectAtPos new MotorCylinder(Face.Z), 4, 5, 1
         world.addObjectAtPos new MotorGear(Face.Z), 4, 5, 0

@@ -4,10 +4,10 @@
 # 000   000  000       000  0000  000       000   000  000   000     000     000   000  000   000
 #  0000000   00000000  000   000  00000000  000   000  000   000     000      0000000   000   000
 
-Gear = require './gear'
-Geom = require './geom'
-Cage = require './cage'
-Wire = require './wire'
+Gear     = require './gear'
+Geom     = require './geom'
+Wire     = require './wire'
+Material = require './material'
 
 class Generator extends Gear
     
@@ -15,8 +15,8 @@ class Generator extends Gear
         super face
         
     createMesh: ->
-        @mesh = new THREE.Mesh Geom.generator(), Cage.cageMat
-        @mesh.add new THREE.Mesh Geom.gear(), Cage.rasterMat
+        @mesh = new THREE.Mesh Geom.generator(), Material.plate
+        @mesh.add new THREE.Mesh Geom.gear(),    Material.gear
         @mesh.receiveShadow = true
         
     activateWires: ->

@@ -4,28 +4,15 @@
 # 000       000   000  000   000  000     
 #  0000000  000   000   0000000   00000000
 
-log = require '/Users/kodi/s/ko/js/tools/log'
+log      = require '/Users/kodi/s/ko/js/tools/log'
+Material = require './material'
 
 class Cage
-
-    @cageMat = new THREE.MeshPhongMaterial 
-        color:          0x880000
-        side:           THREE.FrontSide
-        shading:        THREE.SmoothShading
-        shininess:      10
-        emissive:       0x880000
-        emissiveIntensity: 0.02
-
-    @rasterMat = new THREE.MeshPhongMaterial 
-        color:          0x880000
-        side:           THREE.FrontSide
-        shading:        THREE.SmoothShading
-        shininess:      20
 
     constructor: (@size, gap) ->
         Cage.gap = gap
         geom = Cage.wallTiles @size, 'inside', 0
-        @raster = new THREE.Mesh geom, Cage.rasterMat
+        @raster = new THREE.Mesh geom, Material.raster 
         @raster.translateX -0.5
         @raster.translateY -0.5 
         @raster.translateZ -0.5
@@ -33,7 +20,7 @@ class Cage
         world.scene.add @raster        
         
         geom = Cage.wallTiles @size, 'inside', Cage.gap                  
-        @cage = new THREE.Mesh geom, Cage.cageMat
+        @cage = new THREE.Mesh geom, Material.plate 
         @cage.translateX -0.5
         @cage.translateY -0.5 
         @cage.translateZ -0.5

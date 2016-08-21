@@ -5,37 +5,30 @@
 #   000   000  000   000  000      000    
 #   00     00  000   000  0000000  0000000
 
-Pos  = require './lib/pos'
-Item = require './item'
-Cage = require './cage'
+Pos      = require './lib/pos'
+Item     = require './item'
+Cage     = require './cage'
+Material = require './material'
 
 class Wall extends Item
 
-    @rasterMat = new THREE.MeshPhongMaterial 
-        color:          0x770000
-        side:           THREE.FrontSide
-        shading:        THREE.SmoothShading
-        shininess:      10
-
     isSpaceEgoistic: -> true
     
-    constructor: ->
-                
-        geom = Cage.wallTiles new Pos(1,1,1), 'outside', 0
-        geom.translate -0.5, -0.5, -0.5
-        @raster = new THREE.Mesh geom, Wall.rasterMat
+    constructor: -> super
+       
+    createMesh: -> 
+        geom = new THREE.BoxGeometry 1,1,1
+        @raster = new THREE.Mesh geom, Material.wall
         @raster.receiveShadow = true
         @raster.castShadow = true
         
         geom = Cage.wallTiles new Pos(1,1,1), 'outside', Cage.gap                  
         geom.translate -0.5, -0.5, -0.5
-        @plates = new THREE.Mesh geom, Cage.cageMat
+        @plates = new THREE.Mesh geom, Material.plate
         @plates.receiveShadow = true
         
         @mesh = new THREE.Object3D
         @mesh.add @raster
         @mesh.add @plates
-        
-        super
     
 module.exports = Wall

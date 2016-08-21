@@ -4,28 +4,19 @@
 # 000 0 000  000   000     000     000   000  000   000  000   000  000       000   000  000   000
 # 000   000   0000000      000      0000000   000   000   0000000   00000000  000   000  000   000
 
-Gear = require './gear'
+Gear     = require './gear'
+Geom     = require './geom'
+Material = require './material'
 
 class MotorGear extends Gear
     
     constructor: (face) -> 
         super face
         @setActive true
+
+    createMesh: ->
+        @mesh = new THREE.Mesh Geom.gear(),    Material.gear
+        @mesh.add new THREE.Mesh Geom.motor(), Material.plate
+        @mesh.receiveShadow = true
         
-    render: ->
-        # colors[0].glColor();
-#     
-        # render_motor;
-#         
-        # if (active)
-        # {
-            # glRotatef (clockwise ? angle : -angle, 0.0, 0.0, 1.0);
-        # }
-#     
-        # KikiGear::getObjectColor(0).glColor();
-#             
-        # glTranslatef (0.0, 0.0, 0.4);
-#     
-        # render_gear;
-            
 module.exports = MotorGear

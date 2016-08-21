@@ -4,12 +4,12 @@
 # 000   000  000       000   000  000   000
 #  0000000   00000000  000   000  000   000
 
-log    = require '/Users/kodi/s/ko/js/tools/log'
-Valve  = require './valve'
-Action = require './action'
-Pos    = require './lib/pos'
-Cage   = require './cage'
-Geom   = require './geom'
+log      = require '/Users/kodi/s/ko/js/tools/log'
+Valve    = require './valve'
+Action   = require './action'
+Pos      = require './lib/pos'
+Geom     = require './geom'
+Material = require './material'
 
 class Gear extends Valve
         
@@ -20,8 +20,8 @@ class Gear extends Valve
         @updateMesh()
 
     createMesh: ->
-        @mesh = new THREE.Mesh Geom.gear(), Cage.cageMat
-        @mesh.add new THREE.Mesh Geom.valve(), Cage.rasterMat
+        @mesh = new THREE.Mesh Geom.gear(),    Material.gear
+        @mesh.add new THREE.Mesh Geom.valve(), Material.plate
         @mesh.receiveShadow = true
         
     getNeighborGears: ->

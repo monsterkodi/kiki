@@ -39,40 +39,40 @@ module.exports =
                  
         {Generator, MotorCylinder, MotorGear, Face} = require '../items'
                     
-        for z in range(-sz/2+2, sz/2)
+        for z in [-sz/2+2...sz/2]
             
-            world.addObjectAtPos('Wall', world.decenter(-sx/2+2, 0, z))
-            world.addObjectAtPos('Wall', world.decenter( sx/2-1, 0, z))
+            world.addObjectAtPos 'Wall', world.decenter -sx/2+2, 0, z
+            world.addObjectAtPos 'Wall', world.decenter  sx/2-1, 0, z
         
-        for z in range(-sz/2+4, sz/2-2)
+        for z in [-sz/2+4...sz/2-2]
             
-            world.addObjectAtPos('Wall', world.decenter(-sx/2+4, 0, z))
-            world.addObjectAtPos('Wall', world.decenter( sx/2-3, 0, z))
+            world.addObjectAtPos 'Wall', world.decenter -sx/2+4, 0, z
+            world.addObjectAtPos 'Wall', world.decenter  sx/2-3, 0, z
         
-        for x in range(-sx/2+3, sx/2-1)
+        for x in [-sx/2+3...sx/2-1]
             
-            world.addObjectAtPos('Wall', world.decenter(x, 0, -sz/2+2))
-            world.addObjectAtPos('Wall', world.decenter(x, 0,  sz/2-1))
+            world.addObjectAtPos 'Wall', world.decenter x, 0, -sz/2+2
+            world.addObjectAtPos 'Wall', world.decenter x, 0,  sz/2-1
         
-        for x in range(-sx/2+4, sx/2-2)
+        for x in [-sx/2+4...sx/2-2]
             
-            world.addObjectAtPos('Wall', world.decenter(x, 0, -sz/2+4))
-            world.addObjectAtPos('Wall', world.decenter(x, 0,  sz/2-3))
+            world.addObjectAtPos 'Wall', world.decenter x, 0, -sz/2+4
+            world.addObjectAtPos 'Wall', world.decenter x, 0,  sz/2-3
         
           
-        world.addObjectAtPos( new Generator(Face.Y), world.decenter(0,0,-4))
-        world.addObjectAtPos('WireStone', world.decenter(4,0,0))
-        world.addObjectAtPos('WireStone', world.decenter(-4,0,0))
+        world.addObjectAtPos  new Generator(Face.Y), world.decenter 0,0,-4
+        world.addObjectAtPos 'WireStone', world.decenter 4,0,0
+        world.addObjectAtPos 'WireStone', world.decenter -4,0,0
         
-        world.addObjectAtPos('WireStone', world.decenter(0,-2,-2))
-        world.addObjectAtPos('WireStone', world.decenter(0,-1,-2))
-        world.addObjectAtPos( new MotorGear(Face.Y), world.decenter(0,0,-2))
-        world.addObjectAtPos( new MotorCylinder(Face.Y), world.decenter(0,1,-2))
+        world.addObjectAtPos 'WireStone', world.decenter 0,-2,-2
+        world.addObjectAtPos 'WireStone', world.decenter 0,-1,-2
+        world.addObjectAtPos  new MotorGear(Face.Y), world.decenter 0,0,-2
+        world.addObjectAtPos  new MotorCylinder(Face.Y), world.decenter 0,1,-2
         
-        world.addObjectAtPos('Bomb', world.decenter(0, 2,-2))
-        world.addObjectAtPos('Bomb', world.decenter( 1, 0,-2))
-        world.addObjectAtPos('Bomb', world.decenter(-1, 0,-2))
+        world.addObjectAtPos 'Bomb', world.decenter 0, 2,-2
+        world.addObjectAtPos 'Bomb', world.decenter  1, 0,-2
+        world.addObjectAtPos 'Bomb', world.decenter -1, 0,-2
              
-        world.removeObject(world.getOccupantAtPos(world.decenter(0, 0, 3)))
-        world.addObjectAtPos('WireStone', world.decenter(0,0,3))
+        # world.removeObject world.getOccupantAtPos world.decenter 0, 0, 3
+        world.addObjectAtPos 'WireStone', world.decenter 0,0,3
         

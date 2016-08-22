@@ -6,6 +6,7 @@
 #   000     000     00000000  000   000  0000000 
 
 module.exports = 
+    Mutant:        require './mutant'
     Gear:          require './gear'
     Stone:         require './stone'
     Wire:          require './wire'

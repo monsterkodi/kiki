@@ -10,12 +10,14 @@ class Levels
         @dict = {}
         @list = [
             # "test",
-            # intro
+            # --- introduction
             # "steps", 
             # "start", 
-            #"move", "electro", "elevate", 
+            # "move", 
+            # "electro", 
+            # "elevate", 
             # "throw", 
-            # easy
+            # --- easy
             # "gold", 
             # "jump", 
             # "escape", 
@@ -31,15 +33,20 @@ class Levels
             # "energy", 
             # "maze", 
             # "love", 
-            # medium
-            # "towers", "edge", "random", "plate", "nice", "entropy", 
-            # owen hay's levels (TODO: sort in)
+            # --- medium
+            # "towers", 
+            # "edge", 
+            # "random", 
+            # "plate", 
+            # "nice", 
+            # "entropy", 
+            # --- owen hay's levels (TODO: sort in)
             # "grasp", 
             # "fallen", 
             # "cheese", 
             # "invisimaze", 
             # "spiral", 
-            # difficult
+            # --- difficult
             # "slick", 
             # "bridge", 
             # "flower", 
@@ -48,21 +55,22 @@ class Levels
             # "grid", 
             # "rings", 
             # "core", 
-            # "browanze", 
+            # "bronze", 
             # "pool", 
-            # tough
+            # --- tough
             # "hidden", 
             # "church", 
             # "strange", 
             # "mesh", 
             # "columns", 
             # "machine", 
-            # very hard
+            # --- very hard
             # "neutron", 
             # "captured", 
             # "circuit", 
             # "regal", 
-            "conductor", "evil", 
+            # "conductor", 
+            # "evil", 
             # outro
             "mutants"]
                

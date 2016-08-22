@@ -6,7 +6,7 @@
 #   00     00   0000000   000   000  0000000  0000000  
 {
 absMin,
-randrange,
+randInt,
 clamp,
 first,
 last}       = require "/Users/kodi/s/ko/js/tools/tools"
@@ -396,9 +396,7 @@ class World extends Actor
         # adds number objects of type at random positions to the world
         object_set = 0
         while not object_set                                   # hack alert!
-            random_pos = Pos randrange(@size.x),
-                             randrange(@size.y),
-                             randrange(@size.z)
+            random_pos = new Pos randInt(@size.x), randInt(@size.y), randInt(@size.z)
             if not object.isSpaceEgoistic() or @isUnoccupiedPos(random_pos)
                 @addObjectAtPos object, random_pos
                 object_set = 1

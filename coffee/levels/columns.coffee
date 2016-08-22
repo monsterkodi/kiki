@@ -33,7 +33,7 @@ module.exports =
                 for z in [-3, -1, 1, 3 ]
                     world.addObjectAtPos 'Stone', world.decenter x, y, z  
                     
-        world.deleteObject world.getOccupantAtPos world.decenter -1, 0, 1
-        world.deleteObject world.getOccupantAtPos world.decenter  1, 0,-1
-        world.deleteObject world.getOccupantAtPos world.decenter  1, 0, 1
-        world.deleteObject world.getOccupantAtPos world.decenter -1, 0,-1
+        world.getOccupantAtPos(world.decenter -1, 0, 1).del()
+        world.getOccupantAtPos(world.decenter  1, 0,-1).del()
+        world.getOccupantAtPos(world.decenter  1, 0, 1).del()
+        world.getOccupantAtPos(world.decenter -1, 0,-1).del()

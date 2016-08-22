@@ -21,8 +21,12 @@ class Gear extends Valve
 
     createMesh: ->
         @mesh = new THREE.Mesh Geom.gear(),    Material.gear
-        @mesh.add new THREE.Mesh Geom.valve(), Material.plate
+        valve = new THREE.Mesh Geom.valve(), Material.plate
+        valve.receiveShadow = true
+        valve.castShadow = true
+        @mesh.add valve
         @mesh.receiveShadow = true
+        @mesh.castShadow = true
         
     neighborGears: ->
         dirs = Gear.neighbors[@face % 3]

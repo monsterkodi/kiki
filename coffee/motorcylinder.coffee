@@ -32,6 +32,7 @@ class MotorCylinder extends Pushable #Item
         @kolben = new THREE.Mesh Geom.kolben(),   Material.gear
         @mesh.add @kolben
         @mesh.receiveShadow = true
+        @mesh.castShadow = true
     
     updateMesh: -> 
         @kolben.position.set 0, 0, -0.5 * Math.sin @value 

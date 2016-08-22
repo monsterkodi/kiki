@@ -253,14 +253,9 @@ class World extends Actor
         # ............................................................ init
         # @init() # tell the world that we are finished
 
-    restart: () ->
-        # restores the player status and restarts the current level
-        @player.status.setMoves 0
-        @player.reborn()
-        @create()
+    restart: () -> @create @dict
 
-    finish: () ->
-        log 'world.levelFinished'
+    finish: () -> # log 'world.levelFinished'
         # saves the current level status in highscore file
         # highscore.levelFinished world.level_name, Controller.player.getStatus().getMoves()
     
@@ -397,12 +392,13 @@ class World extends Actor
         
     setObjectRandom: (object) ->
         # adds number objects of type at random positions to the world
-        object_set = 0
-        while not object_set                                   # hack alert!
-            random_pos = new Pos randInt(@size.x), randInt(@size.y), randInt(@size.z)
-            if not object.isSpaceEgoistic() or @isUnoccupiedPos(random_pos)
-                @addObjectAtPos object, random_pos
-                object_set = 1
+        objectSet = false
+        object = @newObject object
+        while not objectSet # hack alert!
+            randomPos = new Pos randInt(@size.x), randInt(@size.y), randInt(@size.z)
+            if not object.isSpaceEgoistic() or @isUnoccupiedPos randomPos 
+                @addObjectAtPos object, randomPos
+                objectSet = true
 
     #  0000000   0000000          000  00000000   0000000  000000000   0000000
     # 000   000  000   000        000  000       000          000     000     
@@ -494,14 +490,7 @@ class World extends Actor
     #   000   000  0000000   000      0000000      000     0000000 
     #   000   000  000       000      000          000     000     
     #   0000000    00000000  0000000  00000000     000     00000000
-    
-    deleteObject: (object) ->
-        if not object?
-            log "world.deleteObject [WARNING] no object?"
-            return
-        @removeObject object
-        object.del()
-    
+        
     deleteAllObjects: () ->
         Timer.removeAllActions()
     
@@ -899,6 +888,8 @@ class World extends Actor
         switch combo
             when '=' then @speed = Math.min 10, @speed+1
             when '-' then @speed = Math.max 1,  @speed-1
+            when 'r' then @restart()
+            when 'n' then @exitLevel()
 
     modKeyComboEventUp: (mod, key, combo, event) ->
         return if @player?.modKeyComboEventUp mod, key, combo, event        

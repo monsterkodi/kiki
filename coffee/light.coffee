@@ -29,6 +29,11 @@ class Light extends Item
             opacity:        0.7
             emissive:       0xffff00
             emissiveIntensity: 0.9
+
+        # world.scene.add new THREE.CameraHelper @point.shadow.camera if @shadow
+        
+        @point.shadow.camera.near = 0.1
+        @point.shadow.camera.far = @radius*2
             
         @mesh = new THREE.Mesh geom, mat
         world.scene.add @point

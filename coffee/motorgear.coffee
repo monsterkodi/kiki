@@ -25,8 +25,11 @@ class MotorGear extends Gear
     createMesh: ->
         @mesh = new THREE.Mesh Geom.motor(), Material.plate
         @gear = new THREE.Mesh Geom.gear(),  Material.gear
+        @gear.receiveShadow = true
+        @gear.castShadow = true
         @mesh.add @gear
         @mesh.receiveShadow = true
+        @mesh.castShadow = true
 
     initAction: (action) ->
         # log "MotorGear.initAction action #{action.name}"

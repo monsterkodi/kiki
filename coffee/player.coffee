@@ -284,19 +284,7 @@ class Player extends Bot
         # Controller.displayText "game over" 
         world.playSound 'BOT_DEATH'
         world.setCameraMode world.CAMERA_FOLLOW
-    
-    reborn: () ->
-        @died = false
-    
-    # reset: () ->
-        # super
-        # Timer.removeActionsOfObject @
-#         
-        # @look_action = null
-        # @look_angle  = 0.0
-        # @new_dir_sgn = 1.0
-        # @rotate      = 0
-        
+                
     #   000   000  00000000  000   000
     #   000  000   000        000 000 
     #   0000000    0000000     00000  

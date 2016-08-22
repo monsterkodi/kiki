@@ -92,4 +92,9 @@ module.exports =
         emissive:       0x880000
         emissiveIntensity: 0.02
 
+    stone: new THREE.MeshPhongMaterial 
+        side:           THREE.DoubleSide
+        shading:        THREE.SmoothShading
+        transparent:    true
+        shininess:      20
     

@@ -24,7 +24,7 @@ module.exports =
         
         world.addObjectLine 'Wall', [0, s.y/2, s.z/2], [s.x, s.y/2, s.z/2]
         world.addObjectLine 'Wall', [s.x/2, s.y/2, 0], [s.x/2, s.y/2, s.z]
-        world.deleteObject world.getOccupantAtPos world.decenter 0,0,0  
+        world.getOccupantAtPos(world.decenter 0,0,0).del()
         
         world.addObjectAtPos 'Wall',   world.decenter 0, 3, 0
         world.addObjectAtPos 'Wall',   world.decenter 0, 6, 0

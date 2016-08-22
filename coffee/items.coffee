@@ -16,4 +16,5 @@ module.exports =
     MotorCylinder: require './motorcylinder'
     Generator:     require './generator'
     Face:          require './face'
+    Switch:        require './switch'
     

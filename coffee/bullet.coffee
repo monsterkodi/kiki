@@ -14,10 +14,16 @@ class Bullet extends Item
     constructor: () ->
         @size = 0.2
         @src_object = null
-        
         super
         @addAction new Action @, Action.FLY,     "fly",     40
         @addAction new Action @, Action.EXPLODE, "explode", 200
+        
+    del: ->
+        if @mesh?
+            world.scene.remove @mesh
+            _.pull world.objects, @
+            Timer.removeActionsOfObject @
+            @mesh = null
 
     createMesh: ->
         geom = new THREE.SphereGeometry 1, 16, 16
@@ -28,12 +34,12 @@ class Bullet extends Item
         bullet = new Bullet()
         world.addObject bullet 
         bullet.direction = bot.getCurrentDir()
-        bullet.setPosition bot.position.plus bullet.direction #.mul 1/2.0
+        bullet.setPosition bot.position.plus bullet.direction.mul 0.8
         bullet.src_object = bot
         bullet.mesh.material.color.set bot.mesh.material.color
         world.playSound 'BULLET_SHOT', bot.getPos()
     
-        return if bullet.hitObjectAtPos bullet.position.plus bullet.direction.mul 1/2.0
+        return if bullet.hitObjectAtPos bot.position.plus bullet.direction
     
         Timer.addAction bullet.getActionWithId Action.FLY 
     
@@ -66,10 +72,10 @@ class Bullet extends Item
     
     actionFinished: (action) ->
         if action.id == Action.FLY
-            if @hitObjectAtPos @position.plus @direction.mul 1/2.0
+            if @hitObjectAtPos @position.plus @direction.mul 0.5
                 return
             Timer.addAction @getActionWithId Action.FLY
         else if action.id == Action.EXPLODE
-            world.deleteObject @
+            @del()
             
 module.exports = Bullet

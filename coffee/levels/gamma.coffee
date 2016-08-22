@@ -32,13 +32,13 @@ module.exports =
         s = world.size
         world.switch_countera = 0
         world.switch_counter = 0
-        
+        {Switch} = require '../items'
         aswitched = () ->
             # applyColorScheme(schemes[world.switch_countera])
-            if world.switch_countera==schemes.length-1
-                 world.switch_countera=0
-            else
-                world.switch_countera+=1
+            # if world.switch_countera==schemes.length-1
+                 # world.switch_countera=0
+            # else
+                # world.switch_countera+=1
         switched = (swtch) ->
             world.switch_counter += swtch.active and 1 or -1
             exit = world.getObjectWithName "exit"

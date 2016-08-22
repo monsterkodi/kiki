@@ -24,11 +24,34 @@ module.exports =
         opacity:        1
         shininess:      4
 
+    mutant: new THREE.MeshPhongMaterial
+        color:          0x888888
+        side:           THREE.FrontSide
+        shading:        THREE.SmoothShading
+        transparent:    true
+        opacity:        1
+        shininess:      5
+
+    mutant_tire: new THREE.MeshPhongMaterial 
+        color:          0x555555
+        specular:       0x222222
+        side:           THREE.FrontSide
+        shading:        THREE.FlatShading
+        transparent:    true
+        opacity:        1
+        shininess:      4
+        
+    bullet: new THREE.MeshPhongMaterial 
+        side:           THREE.FrontSide
+        shading:        THREE.SmoothShading
+        transparent:    true
+        opacity:        0.8
+        shininess:      5
+        depthWrite:     false
+
     glow: new THREE.SpriteMaterial 
         map: new THREE.TextureLoader().load "#{__dirname}/../img/glow.png"
         color: 0xffff00
-        # transparent: true
-        # opacity: 0.8
         id: 999
     
     gear: new THREE.MeshPhongMaterial 

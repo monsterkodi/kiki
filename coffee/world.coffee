@@ -168,11 +168,14 @@ class World extends Actor
         
         if worldDict
             if _.isString worldDict
-                @level_index = World.levels.list.indexOf worldDict
                 @level_name = worldDict
                 @dict = World.levels.dict[worldDict]
             else
+                @level_name = worldDict.name
                 @dict = worldDict
+                
+        @level_index = World.levels.list.indexOf @level_name
+        log "World.create #{@level_index} #{@level_name}"
             
         # ............................................................ appearance
         

@@ -32,7 +32,7 @@ class Levels
             # "sandbox", 
             # "energy", 
             # "maze", 
-            # "love", 
+            "love", 
             # --- medium
             # "towers", 
             # "edge", 

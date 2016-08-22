@@ -49,6 +49,8 @@ class Player extends Bot
     
         @projection = new Perspective 90.0
         @projection.updateViewport()
+
+    bulletHitSound: -> 'BULLET_HIT_PLAYER'
         
     #   00000000   00000000    0000000         000  00000000   0000000  000000000  000   0000000   000   000
     #   000   000  000   000  000   000        000  000       000          000     000  000   000  0000  000
@@ -226,8 +228,7 @@ class Player extends Bot
     initAction: (action) ->
         # log "initAction #{action.id} #{action.name}"
         switch action.id
-            # when Action.CLIMB_DOWN, Action.FORWARD
-                # @status.addMoves 1 
+            # when Action.CLIMB_DOWN, Action.FORWARD then @addMoves 1 
             when Action.TURN_LEFT, Action.TURN_RIGHT
                 world.playSound 'BOT_MOVE'
             when Action.JUMP
@@ -235,12 +236,7 @@ class Player extends Bot
                 world.playSound 'BOT_JUMP'
         
         super action
-    
-    # finishRotateAction: () ->
-        # if @rotate_action
-            # @rotate = false
-            # @finishAction @rotate_action 
-    
+        
     #   00000000   00000000  00000000   00000000   0000000   00000000   00     00
     #   000   000  000       000   000  000       000   000  000   000  000   000
     #   00000000   0000000   0000000    000000    000   000  0000000    000000000

@@ -13,12 +13,24 @@ class Mutant extends Bot
     
     constructor: () -> 
         super
+        @health = 1
         @move = true
         
     die: ->
         world.playSound 'BOT_DEATH'
         super()
+        @setOpacity 0.6
         @getActionWithId(Action.FALL).duration = 40
+        
+    bulletImpact: -> @health -= 0.1
+    bulletHitSound: -> @health > 0 and 'BULLET_HIT_MUTANT' or 'BULLET_HIT_OBJECT'
+    
+    actionFinished: (action) ->
+        if @health <= 0 and not @died
+            @die() 
+            if action.id != Action.PUSH and action.id != Action.FALL # dead player may only fall, nothing else
+                return
+        super action
     
     moveBot: ->
         changeOrientation = Math.random() < 0.3

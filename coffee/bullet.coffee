@@ -4,11 +4,10 @@
 # 000   000  000   000  000      000      000          000   
 # 0000000     0000000   0000000  0000000  00000000     000   
 
-log    = require '/Users/kodi/s/ko/js/tools/log'
-
-Item   = require './item'
-Action = require './action'
-Timer  = require './timer'
+Item     = require './item'
+Action   = require './action'
+Timer    = require './timer'
+Material = require './material'
 
 class Bullet extends Item
     
@@ -16,27 +15,22 @@ class Bullet extends Item
         @size = 0.2
         @src_object = null
         
-        geom = new THREE.SphereGeometry 1, 16, 16
-        mat  = new THREE.MeshPhongMaterial 
-            color:          0x2222ff
-            side:           THREE.FrontSide
-            shading:        THREE.SmoothShading
-            transparent:    true
-            opacity:        0.8
-            shininess:      5
-        @mesh = new THREE.Mesh geom, mat
-        @mesh.scale.set @size, @size, @size
         super
         @addAction new Action @, Action.FLY,     "fly",     40
         @addAction new Action @, Action.EXPLODE, "explode", 200
+
+    createMesh: ->
+        geom = new THREE.SphereGeometry 1, 16, 16
+        @mesh = new THREE.Mesh geom, Material.bullet.clone()
+        @mesh.scale.set @size, @size, @size
             
     @shootFromBot: (bot) ->
         bullet = new Bullet()
         world.addObject bullet 
         bullet.direction = bot.getCurrentDir()
-        bullet.setPosition bot.position.plus bullet.direction.mul 1/2.0
+        bullet.setPosition bot.position.plus bullet.direction #.mul 1/2.0
         bullet.src_object = bot
-        # log 'shootFromBot', bullet.direction, bullet.position
+        bullet.mesh.material.color.set bot.mesh.material.color
         world.playSound 'BULLET_SHOT', bot.getPos()
     
         return if bullet.hitObjectAtPos bullet.position.plus bullet.direction.mul 1/2.0
@@ -49,7 +43,7 @@ class Bullet extends Item
             @current_position = @position.plus @direction.mul relTime
         else if action.id == Action.EXPLODE
             @size = 0.2 + relTime/2.0
-            # color.setAlpha(0.8 * (1.0-relTime))
+            @mesh.material.opacity = 0.8 * (1.0-relTime)
     
     step: (step) -> 
         @mesh.position.copy @current_position
@@ -62,12 +56,6 @@ class Bullet extends Item
                 if hitObject?
                     hitObject.bulletImpact()
                     world.playSound hitObject.bulletHitSound?() ? 'BULLET_HIT_OBJECT'
-                    # if hitObject instanceof Mutant and not hitObject.isDead()
-                        # world.playSound 'BULLET_HIT_MUTANT', pos
-                    # else if hitObject == world.player
-                        # world.playSound 'BULLET_HIT_PLAYER', pos
-                    # else
-                        # world.playSound 'BULLET_HIT_OBJECT', pos
                 else
                     world.playSound 'BULLET_HIT_WALL', pos
                 Timer.addAction @getActionWithId Action.EXPLODE

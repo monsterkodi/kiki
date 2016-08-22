@@ -25,45 +25,10 @@ class Bot extends Pushable
         @climb_orientation   = new Quaternion
         @rest_orientation    = new Quaternion
         
-        tireRadius = 0.05
-        
-        nose = new THREE.ConeGeometry 0.404, 0.5, 32, 16, true
-        geom = new THREE.SphereGeometry 0.5, 32, 32, 16, Math.PI
-        geom = new THREE.SphereGeometry 0.5, 32, 32, 0, 2*Math.PI, 0, 2.2
-        
-        nmatr = new THREE.Matrix4()
-        trans = new THREE.Vector3 0,-0.543,0
-        rot   = new THREE.Quaternion().setFromEuler new THREE.Euler Vector.DEG2RAD(180), 0, 0
-        
-        nmatr.compose trans, rot, new THREE.Vector3 1,1,1
-        geom.merge nose, nmatr
-        geom.rotateX Vector.DEG2RAD -90
-        geom.scale 0.7, 0.7, 0.7
-                    
-        @mesh = new THREE.Mesh geom, Material.bot
-
-        geom = new THREE.TorusGeometry 0.5-tireRadius, tireRadius, 16, 32
-        geom.scale 1,1,2.5
-        
-        @leftTire = new THREE.Mesh geom, Material.tire
-        @leftTire.position.set 0.35,0,0 
-        @leftTire.rotation.set 0, Vector.DEG2RAD(90), 0
-        @mesh.add @leftTire
-
-        @rightTire = new THREE.Mesh geom, Material.tire
-        @rightTire.position.set -0.35,0,0 
-        @rightTire.rotation.set 0, Vector.DEG2RAD(-90), 0
-        @mesh.add @rightTire
-
-        @mesh.castShadow = @rightTire.castShadow = @leftTire.castShadow = true
-        @mesh.receiveShadow = @leftTire.receiveShadow = @rightTire.receiveShadow = true 
-        
         @left_tire_rot   = 0.0
         @right_tire_rot  = 0.0
         @last_fume       = 0
             
-        @moves    = 0
-        @health   = 1
         @minMoves = 100
 
         @move       = false
@@ -95,13 +60,50 @@ class Bot extends Pushable
         @addEventWithName "died"
     
         @startTimedAction @getActionWithId(Action.NOOP), 500
-    
+        
+    createMesh: ->
+        tireRadius = 0.05
+        nose = new THREE.ConeGeometry 0.404, 0.5, 32, 16, true
+        geom = new THREE.SphereGeometry 0.5, 32, 32, 16, Math.PI
+        geom = new THREE.SphereGeometry 0.5, 32, 32, 0, 2*Math.PI, 0, 2.2
+        
+        nmatr = new THREE.Matrix4()
+        trans = new THREE.Vector3 0,-0.543,0
+        rot   = new THREE.Quaternion().setFromEuler new THREE.Euler Vector.DEG2RAD(180), 0, 0
+        
+        nmatr.compose trans, rot, new THREE.Vector3 1,1,1
+        geom.merge nose, nmatr
+        geom.rotateX Vector.DEG2RAD -90
+        geom.scale 0.7, 0.7, 0.7
+           
+        Mutant = require './mutant'         
+        mutant = @ instanceof Mutant
+        @mesh = new THREE.Mesh geom, mutant and Material.mutant.clone() or Material.bot
+
+        geom = new THREE.TorusGeometry 0.5-tireRadius, tireRadius, 16, 32
+        geom.scale 1,1,2.5
+        tireMat = mutant and Material.mutant_tire.clone() or Material.tire
+        @leftTire = new THREE.Mesh geom, tireMat
+        @leftTire.position.set 0.35,0,0 
+        @leftTire.rotation.set 0, Vector.DEG2RAD(90), 0
+        @mesh.add @leftTire
+
+        @rightTire = new THREE.Mesh geom, tireMat
+        @rightTire.position.set -0.35,0,0 
+        @rightTire.rotation.set 0, Vector.DEG2RAD(-90), 0
+        @mesh.add @rightTire
+
+        @mesh.castShadow = @rightTire.castShadow = @leftTire.castShadow = true
+        @mesh.receiveShadow = @leftTire.receiveShadow = @rightTire.receiveShadow = true 
+            
     setOpacity: (opacity) -> 
-        Material.tire.visible = opacity > 0
-        Material.tire.depthWrite = opacity > 0.5
-        Material.bot.depthWrite = opacity > 0.5
-        Material.bot.opacity = opacity
-        Material.tire.opacity = opacity
+        tireMat = @leftTire.material
+        botMat = @mesh.material
+        tireMat.visible = opacity > 0
+        tireMat.depthWrite = opacity > 0.5
+        botMat.depthWrite = opacity > 0.5
+        botMat.opacity = opacity
+        tireMat.opacity = opacity
     
     # 0000000    000  00000000   00000000   0000000  000000000  000   0000000   000   000
     # 000   000  000  000   000  000       000          000     000  000   000  0000  000
@@ -117,9 +119,6 @@ class Bot extends Pushable
     getCurrentUp:   -> @current_orientation.rotate(Vector.unitY).normal()
     getCurrentLeft: -> @current_orientation.rotate(Vector.unitX).normal()
 
-    addMoves:  (m) -> @moves += m
-    addHealth: (h) -> @health = Math.max @health+h
-    
     # 0000000    000  00000000
     # 000   000  000  000     
     # 000   000  000  0000000 
@@ -361,14 +360,7 @@ class Bot extends Pushable
     
     actionFinished: (action) ->
         # log "bot.actionFinished #{action.name} #{action.id}"
-    
-        # if @isDead()
-            # log "DIE!"
-            # @die() 
-            # if action.id != Action.PUSH and action.id != Action.FALL
-                # # dead player may only fall, nothing else
-                # return
-        
+            
         if @spiked
             log 'spiked!'
             @move_action = null

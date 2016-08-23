@@ -8,7 +8,7 @@
 module.exports =
     name:       "start"
     scheme:     "default"
-    size:       [7,7,11]
+    size:       [7,5,11]
     help:       """
                 $scale(1.5)mission:
                 get to the exit!
@@ -21,8 +21,8 @@ module.exports =
                 to turn, press "$key(turn left)" or "$key(turn right)"
                 """
     player:   
-        position:     [2,1,4]
-        orientation:   rotx270
+        coordinates:   [1,0,4]
+        orientation:   minusXupY
     exits:    [
         name:         "exit"
         active:       1

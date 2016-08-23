@@ -6,10 +6,11 @@
 #    0000000  000   000  000   000  00000000  000   000  000   000
 {
 clamp
-}      = require '/Users/kodi/s/ko/js/tools/tools'
-log    = require '/Users/kodi/s/ko/js/tools/log'
-Matrix = require './lib/matrix'
-Vector = require './lib/vector'
+}           = require '/Users/kodi/s/ko/js/tools/tools'
+log         = require '/Users/kodi/s/ko/js/tools/log'
+Matrix      = require './lib/matrix'
+Vector      = require './lib/vector'
+Quaternion  = require './lib/quaternion'
 
 class Camera extends Matrix
 

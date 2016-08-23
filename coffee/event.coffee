@@ -23,7 +23,6 @@ class Event
     
     addAction: (action) ->
         if action? and not @hasAction action
-            # log "Event.addAction #{action.name}"
             return if world.noRotations and action.id == Action.ROTATE
             @actions.push action
             action.event = @
@@ -57,21 +56,15 @@ class Event
     triggerActions: () ->
         return if not @actions.length
         @time = world.getTime()
-        # log "event.triggerActions event name: #{@name} num actions: #{@actions.length}" if @name != 'timer'
-        save_actions = _.clone @actions
-        while save_actions.length
-            action = last save_actions
-            # log "event.triggerActions action: #{action.name}" if @name != 'timer' and action.name != 'noop'
-            action.performWithEvent @
-            save_actions.pop()
+        actions = _.clone @actions
+        while actions.length
+            actions.pop().performWithEvent @
     
     addFinishedAction: (action) -> 
-        # log "Event.addFinishedAction #{action.name} #{@finished_actions.length}"
         @finished_actions.push action
     
     finishActions: () ->
         while @finished_actions.length
-            # log "Event.finishActions pop:#{@finished_actions.length}", last(@finished_actions).name
             @finished_actions.pop().finished()
-        
+            
 module.exports = Event

@@ -41,9 +41,8 @@ class Quaternion
         @z = q.z
         @w = q.w
         @
-    
-    round: ->
-        @normalize()
+        
+    rounded: ->        
         minDist = 1000
         minQuat = null
         up   = @rotate Vector.unitY
@@ -76,14 +75,14 @@ class Quaternion
             upDiff   = 1 - up.dot q.rotate Vector.unitY
             backDiff = 1 - back.dot q.rotate Vector.unitZ
             l = upDiff + backDiff
-            # log "length #{upDiff} #{backDiff} #{q.name} #{l}"
             if l < minDist
                 minDist = l
                 minQuat = q
                 if l < 0.0001
                     break
-        log "differ a lot! #{minDist}" if minDist > 0.05
-        return @clone minQuat
+        minQuat
+        
+    round: -> @clone @normalize().rounded()
 
     euler: -> [
         Vector.RAD2DEG Math.atan2 2*(@w*@x+@y*@z), 1-2*(@x*@x+@y*@y)

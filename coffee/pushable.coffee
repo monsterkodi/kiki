@@ -4,7 +4,6 @@
 # 000        000   000       000  000   000  000   000  000   000  000      000     
 # 000         0000000   0000000   000   000  000   000  0000000    0000000  00000000
 
-log    = require '/Users/kodi/s/ko/js/tools/log'
 Vector = require './lib/vector'
 Item   = require './item'
 Action = require './action'
@@ -22,49 +21,51 @@ class Pushable extends Item
         @pushing_sound = 'STONE_MOVE'
         
         @addAction new Action @, Action.NOOP, "noop"
-        @addAction new Action @, Action.PUSH, "push"
+        @addAction new Action @, Action.PUSH, "push", 1 # set duration to make it TIMED
         @addAction new Action @, Action.FALL, "fall", 40
 
     setOrientation: (q) -> 
         super q
         if not @pusher?
             @direction = @orientation.rotate Vector.minusZ
-            # log "Pushable.setOrientation direction:", @direction
 
     pushedByObjectInDirection: (object, dir, duration) ->
-        # log "pushedByObjectInDirection #{object.name} duration:#{duration}"
+        # log "pushable.pushedByObjectInDirection #{@name} pusher:#{object.name} duration:#{duration}"
         pushAction   = @getActionWithId Action.PUSH
-        
         @pusher      = object
         @move_action = pushAction
         @direction   = dir
-        
         pushAction.duration = world.unmapMsTime duration
         Timer.addAction pushAction
 
     initAction: (action) ->
-        switch action.id
-            when Action.PUSH, Action.FALL
-                world.playSound @pushing_sound if action.id == Action.PUSH
-                world.objectWillMoveToPos @, @position.plus(@direction), action.getDuration()
+        if action.id in [Action.PUSH, Action.FALL]
+            world.playSound @pushing_sound if action.id == Action.PUSH
+            world.objectWillMoveToPos @, @position.plus(@direction), action.getDuration()
+            return
+        super action
 
     performAction: (action) ->
-        switch action.id
-            when Action.PUSH, Action.FALL
-                @setCurrentPosition @position.plus @direction.mul action.getRelativeTime()
+        if action.id in [Action.PUSH, Action.FALL]
+            # log "pushable.performAction #{@name} #{action.id}", @position, @direction
+            @setCurrentPosition @position.plus @direction.mul action.getRelativeTime()
+            return
+        super action
 
     finishAction: (action) ->
-        switch action.id
-            when Action.PUSH, Action.FALL
-                @move_action = null
-                targetPos = @current_position.round()
-                world.objectMoved @, @position, targetPos
-                @setPosition targetPos
+        if action.id in [Action.PUSH, Action.FALL]
+            @move_action = null
+            targetPos = @current_position.round()
+            world.objectMoved @, @position, targetPos
+            # log "pushable.finishAction #{action.id}", targetPos
+            @setPosition targetPos
+            return
+        super action
 
     actionFinished: (action) ->    
-        Bot  = require './bot'
-        Bomb = require './bomb'
         if action.id in [Action.PUSH, Action.FALL]
+            Bot  = require './bot'
+            Bomb = require './bomb'
             gravityDir = @direction
             if action.id == Action.PUSH
                 if @pusher instanceof Bot
@@ -89,5 +90,8 @@ class Pushable extends Item
             else
                 @direction.reset()
                 world.playSound @landing_sound, @position
+                
+            return
+        super action
 
 module.exports = Pushable

@@ -138,6 +138,31 @@ class World extends Actor
         global.rotx270 = Quaternion.rot_270_X
         global.roty270 = Quaternion.rot_270_Y
         global.rotz270 = Quaternion.rot_270_Z
+        
+        global.XupY        = Quaternion.XupY
+        global.XupZ        = Quaternion.XupZ
+        global.XdownY      = Quaternion.XdownY
+        global.XdownZ      = Quaternion.XdownZ
+        global.YupX        = Quaternion.YupX
+        global.YupZ        = Quaternion.YupZ
+        global.YdownX      = Quaternion.YdownX
+        global.YdownZ      = Quaternion.YdownZ
+        global.ZupX        = Quaternion.ZupX
+        global.ZupY        = Quaternion.ZupY
+        global.ZdownX      = Quaternion.ZdownX
+        global.ZdownY      = Quaternion.ZdownY
+        global.minusXupY   = Quaternion.minusXupY
+        global.minusXupZ   = Quaternion.minusXupZ
+        global.minusXdownY = Quaternion.minusXdownY
+        global.minusXdownZ = Quaternion.minusXdownZ
+        global.minusYupX   = Quaternion.minusYupX
+        global.minusYupZ   = Quaternion.minusYupZ
+        global.minusYdownX = Quaternion.minusYdownX
+        global.minusYdownZ = Quaternion.minusYdownZ
+        global.minusZupX   = Quaternion.minusZupX
+        global.minusZupY   = Quaternion.minusZupY
+        global.minusZdownX = Quaternion.minusZdownX
+        global.minusZdownY = Quaternion.minusZdownY
 
         @levels = new Levels
         

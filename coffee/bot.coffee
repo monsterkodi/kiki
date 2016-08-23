@@ -36,7 +36,6 @@ class Bot extends Pushable
         @jump       = false
         @shoot      = false
         @jump_once  = false
-        @spiked     = false
         @died       = false
         
         @move_action   = null
@@ -162,7 +161,6 @@ class Bot extends Pushable
         @jump        = false
         @shoot       = false
         @jump_once   = false
-        @spiked      = false
         @died        = false
     
     isFalling: -> @move_action and @move_action.id == Action.FALL
@@ -362,12 +360,6 @@ class Bot extends Pushable
     actionFinished: (action) ->
         # log "bot.actionFinished #{action.name} #{action.id}"
             
-        if @spiked
-            log 'spiked!'
-            @move_action = null
-            @startTimedAction @getActionWithId(Action.NOOP), 0
-            return
-    
         if action.id == Action.PUSH and not @direction.isZero()
             log 'super (Pushable) action!'
             super action
@@ -427,6 +419,8 @@ class Bot extends Pushable
         else
             @dir_sgn = 1
             @jump_once = false if action.id != Action.NOOP
+            log "bot.actionFinished '#{action.name}' position:", @position if action.id in [Action.FORWARD, Action.JUMP_FORWARD, Action.CLIMB_DOWN]
+            log "bot.actionFinished '#{action.name}' orientation:", @orientation.rounded().name if action.id in [Action.TURN_LEFT, Action.TURN_RIGHT, Action.CLIMB_UP]
             # keep action chain flowinwg in order to detect environment changes
             # @startTimedAction @getActionWithId(Action.NOOP), 0
 

@@ -154,7 +154,7 @@ class Player extends Bot
         
             when @key.left, @key.right
                 @rotate = (key == @key.left) and Action.TURN_LEFT or Action.TURN_RIGHT
-                if not @rotate_action? and not @spiked # player is not performing a rotation and unspiked
+                if not @rotate_action? # player is not performing a rotation
                     @rotate_action = @getActionWithId @rotate
                     Timer.addAction @rotate_action
                 return true

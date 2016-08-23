@@ -12,13 +12,12 @@ class Sound
     
     @sounds = Object.create null
     @files = 
-        BOT_MOVE:          file: "bot_move.wav",            volume: 0.2
+        BOT_MOVE:          file: "bot_move.wav",            volume: 0.1
+        BOT_TURN:          file: "bot_turn.wav",            volume: 0.2
+        BOT_CLIMB:         file: "bot_climb.wav",           volume: 0.2
         BOT_JUMP:          file: "bot_jump.wav",            volume: 0.7
-        BOT_LAND:          file: "bot_land.wav",            volume: 0.7
-        BOT_SPIKED:        file: "bot_move.wav",            volume: 1.0
-        BOT_HEALTH_ALERT:  file: "bot_health_alert.wav",    volume: 1.0
+        BOT_LAND:          file: "bot_land.wav",            volume: 0.5
         BOT_DEATH:         file: "bot_death.wav",           volume: 1.0
-        BOT_NO_ENERGY:     file: "bot_no_energy.wav",       volume: 1.0
         BULLET_SHOT:       file: "bullet_shot.wav",         volume: 1.0
         BULLET_HIT_WALL:   file: "bullet_hit_wall.wav",     volume: 1.0
         BULLET_HIT_OBJECT: file: "bullet_hit_object.wav",   volume: 1.0

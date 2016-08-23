@@ -7,9 +7,8 @@
 
 module.exports =
     name:       "start"
-    scheme:     "default_scheme"
+    scheme:     "default"
     size:       [7,7,11]
-    intro:      "start"
     help:       """
                 $scale(1.5)mission:
                 get to the exit!

@@ -7,9 +7,8 @@
     
 module.exports =
     name:       "electro"
-    scheme:     "metal_scheme"
+    scheme:     "metal"
     size:       [9,7,9]
-    intro:      "electro"
     help:       """
                 $scale(1.5)mission:
                 activate the exit!

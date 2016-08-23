@@ -1,8 +1,7 @@
 module.exports =
     name:       "love"
-    scheme:     "red_scheme"
+    scheme:     "red"
     size:       [13,13,13]
-    intro:      "love"
     help:       "$scale(1.5)mission:\nget to the exit!"
     player:   
         position:         [0,1,-4]

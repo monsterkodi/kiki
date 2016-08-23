@@ -8,9 +8,8 @@
 module.exports =
     name:       "cheese"
     design:     "Owen Hay"
-    scheme:     "yellow_scheme"
+    scheme:     "yellow"
     size:       [11,12,7]
-    intro:      "cheese"
     help:       """
                 $scale(1.5)mission:
                 activate the exit.

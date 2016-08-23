@@ -228,11 +228,16 @@ class Player extends Bot
     initAction: (action) ->
         # log "initAction #{action.id} #{action.name}"
         switch action.id
-            # when Action.CLIMB_DOWN, Action.FORWARD then @addMoves 1 
-            when Action.TURN_LEFT, Action.TURN_RIGHT
+            when Action.CLIMB_DOWN
+                # @addMoves 1 
+                world.playSound 'BOT_CLIMB'
+            when Action.FORWARD
+                # @addMoves 1 
                 world.playSound 'BOT_MOVE'
+            when Action.TURN_LEFT, Action.TURN_RIGHT
+                world.playSound 'BOT_TURN'
             when Action.JUMP
-                # @status.addMoves actionId == Action.JUMP and 1 or 2
+                # @addMoves actionId == Action.JUMP and 1 or 2
                 world.playSound 'BOT_JUMP'
         
         super action

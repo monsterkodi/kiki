@@ -8,9 +8,8 @@
 module.exports =
     name:       "cube"
     deisgn:     'Michael Abel'
-    scheme:     "default_scheme"
+    scheme:     "default"
     size:       [5,5,5]
-    intro:      "cube"
     help:       "reach the exit!"
     player:
         coordinates:  [2,0,0]

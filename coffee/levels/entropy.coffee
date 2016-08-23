@@ -9,9 +9,8 @@ module.exports =
 
     name:       "entropy"
     design:     'Michael Abel'
-    scheme:     "green_scheme"
+    scheme:     "green"
     size:       [9,9,9]
-    intro:      "entropy"
     help:       """
                 $scale(1.5)mission:
                 get to the exit!

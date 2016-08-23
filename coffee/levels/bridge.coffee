@@ -6,22 +6,21 @@
 #   0000000    000   000  000  0000000     0000000   00000000
 
 module.exports =
-    name: 'bridge'
-    scheme:   "red_scheme"
-    size:     [9,9,5]    
-    intro:    "bridge" 
-    help:     """
-              $scale(1.5)mission:
-              activate the exit!
-              to activate the exit,
-              feed it with electricity:
-                  
-              connect the generator
-              with the motor
-              
-              place a wire stone
-              next to the exit
-              """
+    name:       'bridge'
+    scheme:     "red"
+    size:       [9,9,5]    
+    help:       """
+                $scale(1.5)mission:
+                activate the exit!
+                to activate the exit,
+                feed it with electricity:
+                    
+                connect the generator
+                with the motor
+                
+                place a wire stone
+                next to the exit
+                """
     player:     
         position: [0,-3,1]
     exits:    [

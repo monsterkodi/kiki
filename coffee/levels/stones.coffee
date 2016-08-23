@@ -1,8 +1,7 @@
 module.exports =
     name:       "stones"
-    scheme:     "blue_scheme"
+    scheme:     "blue"
     size:       [11,11,12]
-    intro:      "stones"
     help:       """
                 $scale(1.5)mission:
                 get to the exit!

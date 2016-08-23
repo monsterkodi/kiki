@@ -4,10 +4,11 @@
 # 000   000  000   000     000     000     
 #  0000000   000   000     000     00000000
 
-Vector = require './lib/vector'
-Switch = require './switch'
-Light  = require './light'
-Action = require './action'
+Vector   = require './lib/vector'
+Switch   = require './switch'
+Light    = require './light'
+Action   = require './action'
+Material = require './material'
 
 class Gate extends Switch
     
@@ -30,13 +31,8 @@ class Gate extends Switch
     createMesh: () -> 
         torusRadius = 0.05
         t1 = new THREE.TorusBufferGeometry 0.5-torusRadius, torusRadius, 16, 32
-        @mat = new THREE.MeshPhongMaterial 
-            color:     0xff0000
-            side:      THREE.FrontSide
-            shading:   THREE.SmoothShading
-            shininess: 5
             
-        @mesh = new THREE.Mesh t1, @mat
+        @mesh = new THREE.Mesh t1, Material.gate
         @mesh.castShadow = true
         @mesh.receiveShadow = true
         
@@ -45,7 +41,7 @@ class Gate extends Switch
         t2.rotateY Vector.DEG2RAD 90 
         t3.rotateX Vector.DEG2RAD 90 
         t2.merge t3
-        @tors = new THREE.Mesh t2, @mat
+        @tors = new THREE.Mesh t2, Material.gate
         @tors.castShadow = true
         @tors.receiveShadow = true
         @mesh.add @tors

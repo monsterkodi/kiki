@@ -2,9 +2,8 @@
 module.exports =
     name:       "blocks"
     design:     'Michael Abel'
-    scheme:     "default_scheme"
+    scheme:     "default"
     size:       [18,12,5]
-    intro:      "blocks"
     help:       """
                 you can grab
                 most stones by pressing forward

@@ -2,9 +2,8 @@
 
 module.exports = 
     name:       "edge"
-    scheme:     "candy_scheme"
+    scheme:     "candy"
     size:       [7,7,7]
-    intro:      "edge"
     help:       "$scale(1.5)mission:\nget to the exit!"
     player:
         coordinates:  [3,0,0]

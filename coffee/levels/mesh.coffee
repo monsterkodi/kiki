@@ -8,9 +8,8 @@
 module.exports =
     name:       "mesh"
     design:     'Michael Abel'
-    scheme:     "default_scheme"
+    scheme:     "default"
     size:       [11,11,11]
-    intro:      "mesh"
     help:       "$scale(1.5)mission:\nget to the exit!"
     player:     
         coordinates:    [0,0,5]

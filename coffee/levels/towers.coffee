@@ -2,9 +2,8 @@
 
 module.exports = 
     name:       "towers"
-    scheme:     "metal_scheme"
+    scheme:     "metal"
     size:       [9,9,15]
-    intro:      "towers"
     help:       "$scale(1.5)mission:\nget to the exit!\n\nto get to the exit,\nmove the stones"
     player: 
         coordinates: [4,5,0]

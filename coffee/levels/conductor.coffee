@@ -8,9 +8,8 @@
 module.exports =
     name:       "conductor"
     deisgn:     "Michael Abel"
-    scheme:     "default_scheme"
+    scheme:     "default"
     size:       [11,9,11]
-    intro:      "conductor"
     help:       """
                 $scale(1.5)mission:
                 activate the exit!

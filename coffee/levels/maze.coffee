@@ -9,9 +9,8 @@ module.exports =
 
     name:       "maze"
     deisgn:     'Michael Abel'
-    scheme:     "default_scheme"
+    scheme:     "default"
     size:       [4,4,4]
-    intro:      "maze"
     help:       """
                 $scale(1.5)mission:
                 get to the exit!

@@ -9,9 +9,8 @@ module.exports =
 
     name:       "captured"
     design:     'Niko Boehm'
-    scheme:     "default_scheme"
+    scheme:     "default"
     size:       [9,9,9]
-    intro:      "captured"
     help:       """
                 $scale(1.5)mission:
                 get to the exit!

@@ -8,9 +8,8 @@
 module.exports =
     name:       "invisimaze"
     design:     'Owen Hay'
-    scheme:     "yellow_scheme"
+    scheme:     "yellow"
     size:       [9,5,5]
-    intro:      "invisimaze"
     help:       """
                 blindly fumbling through the maze
                 

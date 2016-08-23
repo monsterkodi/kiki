@@ -9,9 +9,8 @@ module.exports =
     
     name:       "throw"
     design:     'Michael Abel'
-    scheme:     "tron_scheme"
+    scheme:     "tron"
     size:       [5,7,7]
-    intro:      "throw"
     help:       """
                 "$scale(1.5)mission:
                 get to the exit!

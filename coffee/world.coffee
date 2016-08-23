@@ -27,6 +27,7 @@ Action      = require './action'
 TmpObject   = require './tmpobject'
 Pushable    = require './pushable'
 Material    = require './material'
+Scheme      = require './scheme'
 Quaternion  = require './lib/quaternion'
 Vector      = require './lib/vector'
 Pos         = require './lib/pos'
@@ -183,10 +184,7 @@ class World extends Actor
         
         # log "world size set", @size
         
-        # if "scheme" in @dict
-            # @applyColorScheme eval(@dict["scheme"])
-        # else
-            # @applyColorScheme default_scheme
+        @applyScheme @dict.scheme ? 'default'
 
         # ............................................................ intro text   
         # if "intro" in @dict
@@ -259,6 +257,22 @@ class World extends Actor
         # saves the current level status in highscore file
         # highscore.levelFinished world.level_name, Controller.player.getStatus().getMoves()
     
+
+    #  0000000   0000000  000   000  00000000  00     00  00000000
+    # 000       000       000   000  000       000   000  000     
+    # 0000000   000       000000000  0000000   000000000  0000000 
+    #      000  000       000   000  000       000 0 000  000     
+    # 0000000    0000000  000   000  00000000  000   000  00000000
+    
+    applyScheme: (scheme) ->
+        return if not Scheme[scheme]
+        log "Scheme[#{scheme}]", Scheme[scheme]
+        for k,v of Scheme[scheme]
+            if Material[k]?
+                if v.color
+                    c = v.color
+                    Material[k].color = new THREE.Color c[0], c[1], c[2]
+
     #  000      000   0000000   000   000  000000000
     #  000      000  000        000   000     000   
     #  000      000  000  0000  000000000     000   

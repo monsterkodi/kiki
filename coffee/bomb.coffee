@@ -4,11 +4,10 @@
 # 000   000  000   000  000 0 000  000   000
 # 0000000     0000000   000   000  0000000  
 
-log    = require '/Users/kodi/s/ko/js/tools/log'
-
 Pushable = require './pushable'
 Action   = require './action'
 Vector   = require './lib/vector'
+Material = require './material'
 
 class Bomb extends Pushable
     
@@ -24,16 +23,8 @@ class Bomb extends Pushable
         geom2 = new THREE.DodecahedronGeometry 1
         geom2.rotateX Vector.DEG2RAD 90
         geom.merge geom2
-        
-        @mat  = new THREE.MeshPhongMaterial 
-            color:          0xff0000
-            side:           THREE.FrontSide
-            shading:        THREE.FlatShading
-            transparent:    true
-            opacity:        0.7
-            shininess:      20
-        
-        @mesh = new THREE.Mesh geom, @mat
+                
+        @mesh = new THREE.Mesh geom, Material.bomb
         @updateMesh()
         super
     
@@ -68,7 +59,7 @@ class Bomb extends Pushable
             
         if splitter
             Splitter = require './splitter'
-            world.addObjectAtPos new Splitter(dir), pos        
+            world.addObjectAtPos new Splitter(dir), pos
     
     bulletImpact: ->
         if not @splitted

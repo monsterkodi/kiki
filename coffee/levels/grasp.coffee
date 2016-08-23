@@ -8,8 +8,7 @@
 module.exports =
     name:       "grasp"
     design:     "Owen Hay"
-    scheme:     "blue_scheme"
-    intro:      "grasp"
+    scheme:     "blue"
     size:       [11,11,11]
     help:       """
                 $scale(1.5)mission:activate the exit!

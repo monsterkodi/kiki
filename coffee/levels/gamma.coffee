@@ -11,9 +11,8 @@
 module.exports =
     name:       "gamma"
     design:     'Michael Abel'
-    scheme:     "tron_scheme"
+    scheme:     "tron"
     size:       [10,10,10]
-    intro:      "gamma"
     help:       """
                 $scale(1.5)mission:
                 activate the exit!

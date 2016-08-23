@@ -4,7 +4,8 @@
 # 000      000  000   000  000   000     000   
 # 0000000  000   0000000   000   000     000   
 
-Item = require './item'
+Item     = require './item'
+Material = require './material'
 
 class Light extends Item
     
@@ -21,21 +22,13 @@ class Light extends Item
         @point.shadow.mapSize = new THREE.Vector2 2048, 2048
         @point.shadow.bias = 0.01
         geom   = new THREE.SphereGeometry 0.3, 16, 16
-        mat    = new THREE.MeshLambertMaterial 
-            color:          0xffffff
-            side:           THREE.FrontSide
-            shading:        THREE.SmoothShading
-            transparent:    true
-            opacity:        0.7
-            emissive:       0xffff00
-            emissiveIntensity: 0.9
 
         # world.scene.add new THREE.CameraHelper @point.shadow.camera if @shadow
         
         @point.shadow.camera.near = 0.1
         @point.shadow.camera.far = @radius*2
             
-        @mesh = new THREE.Mesh geom, mat
+        @mesh = new THREE.Mesh geom, Material.bulb
         world.scene.add @point
         world.addLight @
         @setPosition opt.pos if opt?.pos?

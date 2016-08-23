@@ -5,9 +5,8 @@ Vector     = require '../lib/vector'
 
 module.exports =
     name:       "plate"
-    scheme:     "blue_scheme"
+    scheme:     "blue"
     size:       [7,7,9]
-    intro:      "plate"
     help:       """
                 $scale(1.5)mission:\nget to the exit!
                 

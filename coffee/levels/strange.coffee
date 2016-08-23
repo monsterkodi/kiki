@@ -8,7 +8,7 @@
 module.exports = 
     name:       "strange" 
     deisgn:     'Michael Abel'
-    scheme:     "default_scheme"
+    scheme:     "default"
     size:       [9,9,9]    
     help:       """
                 $scale(1.5)mission:

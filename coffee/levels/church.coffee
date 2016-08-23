@@ -7,9 +7,8 @@
 
 module.exports =
     name:       "church"
-    scheme:     "yellow_scheme"
+    scheme:     "yellow"
     size:       [5,7,5]
-    intro:      "church"
     help:       """
                 $scale(1.5)mission:
                 activate the exit!

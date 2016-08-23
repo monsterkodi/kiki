@@ -10,6 +10,7 @@ Vector     = require './lib/vector'
 Action     = require './action'
 Light      = require './light'
 Item       = require './item'
+Material   = require './material'
 
 class Switch extends Item
 
@@ -41,12 +42,7 @@ class Switch extends Item
     createMesh: () ->
         torusRadius = 0.05
         t1 = new THREE.TorusBufferGeometry 0.5-torusRadius, torusRadius, 16, 32
-        @mat  = new THREE.MeshPhongMaterial 
-            color:          0x0000ff
-            side:           THREE.FrontSide
-            shading:        THREE.SmoothShading
-            shininess:      5
-        @mesh = new THREE.Mesh t1, @mat
+        @mesh = new THREE.Mesh t1, Material.switch
         @mesh.castShadow = true
         @mesh.receiveShadow = true
      
@@ -55,7 +51,7 @@ class Switch extends Item
         t2.rotateY Vector.DEG2RAD 90 
         # t3.rotateX Vector.DEG2RAD 90 
         # t2.merge t3
-        @tors = new THREE.Mesh t2, @mat
+        @tors = new THREE.Mesh t2, Material.switch
         @tors.castShadow = true
         @tors.receiveShadow = true
         @mesh.add @tors

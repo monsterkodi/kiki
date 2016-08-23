@@ -8,9 +8,8 @@
 module.exports =
     name:       "random"
     design:     'Michael Abel'
-    scheme:     "default_scheme"
+    scheme:     "default"
     size:       [21,21,21]
-    intro:      "random"
     help:       """
                 $scale(1.5)mission:
                 get to the exit!

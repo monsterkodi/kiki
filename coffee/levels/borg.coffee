@@ -8,9 +8,8 @@
 module.exports = 
     name:       'borg'
     disgn:      'Michael Abel'
-    scheme:     "default_scheme"
+    scheme:     "default"
     size:       [9,9,9]
-    intro:      "borg"
     help:       """
                 Believe me,
                 they are

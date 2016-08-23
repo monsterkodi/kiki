@@ -1,8 +1,7 @@
 module.exports =
     name:       "regal"
-    scheme:     "bronze_scheme"
+    scheme:     "bronze"
     size:       [7,3,9]
-    intro:      "regal"
     help:       "$scale(1.5)mission:\nactivate the exit!"
     player:     position:         [0,0,0]
     exits:      [

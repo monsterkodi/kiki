@@ -7,9 +7,8 @@
 
 module.exports =
     name:       "columns"
-    scheme:     "green_scheme"
+    scheme:     "green"
     size:       [7,9,7]
-    intro:      "columns"
     help:       """
                 $scale(1.5)mission:
                 get to the exit!

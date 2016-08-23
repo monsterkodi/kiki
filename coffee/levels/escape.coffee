@@ -7,9 +7,8 @@
 
 module.exports =
     name:       "escape"
-    scheme:     "metal_scheme"
+    scheme:     "metal"
     size:       [7,9,7]
-    intro:      "escape"
     help:       """
                 $scale(1.5)mission:
                 try to escape!

@@ -58,7 +58,7 @@ class Wire extends Item
             geom.merge plane
         
         @wire = new THREE.Mesh geom,        Material.wire            
-        @mesh = new THREE.Mesh Geom.wire(), Material.wire_plate
+        @mesh = new THREE.Mesh Geom.wire(), Material.wirePlate
         @mesh.add @wire
         @mesh.receiveShadow = true
         @mesh.position.copy Face.normal(@face).mul -(0.5+o)

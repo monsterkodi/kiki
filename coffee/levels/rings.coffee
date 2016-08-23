@@ -7,9 +7,8 @@
 
 module.exports =
     name:       "rings"
-    scheme:     "default_scheme"
+    scheme:     "default"
     size:       [9,7,9]
-    intro:      "rings"
     help:       """
                 $scale(1.5)mission:
                 get to the exit!

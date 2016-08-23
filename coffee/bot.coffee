@@ -78,11 +78,11 @@ class Bot extends Pushable
            
         Mutant = require './mutant'         
         mutant = @ instanceof Mutant
-        @mesh = new THREE.Mesh geom, mutant and Material.mutant.clone() or Material.bot
+        @mesh = new THREE.Mesh geom, mutant and Material.mutant.clone() or Material.player
 
         geom = new THREE.TorusGeometry 0.5-tireRadius, tireRadius, 16, 32
         geom.scale 1,1,2.5
-        tireMat = mutant and Material.mutant_tire.clone() or Material.tire
+        tireMat = mutant and Material.mutantTire.clone() or Material.tire
         @leftTire = new THREE.Mesh geom, tireMat
         @leftTire.position.set 0.35,0,0 
         @leftTire.rotation.set 0, Vector.DEG2RAD(90), 0

@@ -8,7 +8,7 @@
 module.exports =
     name:       "core"
     design:     "Michael Abel"
-    scheme:     "yellow_scheme"
+    scheme:     "yellow"
     size:       [9,9,9]
     help:       """
                 reach the exit.

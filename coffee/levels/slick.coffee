@@ -9,9 +9,8 @@ module.exports =
 
     name:       "slick"
     design:     'Michael Abel'
-    scheme:     "tron_scheme"
+    scheme:     "tron"
     size:       [9,11,15]
-    intro:      "slick"
     help:       """
                 $scale(1.5)mission:
                 get to the exit!

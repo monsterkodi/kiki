@@ -9,7 +9,7 @@ module.exports =
 
     name:       "nice"
     design:     'Michael Abel'
-    scheme:     "tron_scheme"
+    scheme:     "tron"
     size:       [11,11,11]
     help:       "$scale(1.5)mission:\nget to the exit!"
     player:     position: [2,-1,0]

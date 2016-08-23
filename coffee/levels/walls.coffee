@@ -8,9 +8,8 @@
 module.exports =
     name:       "walls"
     design:     'Michael Abel'
-    scheme:     "default_scheme"
+    scheme:     "default"
     size:       [7,5,5]
-    intro:      "walls"
     help:       """
                 $scale(1.5)mission:
                     

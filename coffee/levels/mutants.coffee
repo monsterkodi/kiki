@@ -1,8 +1,7 @@
 module.exports =
     name:       "mutants"
-    scheme:     "blue_scheme"
+    scheme:     "blue"
     size:       [9,9,9]
-    intro:      "mutants"
     help:       """
                 $scale(1.5)mission:
                 deactivate the mutants!

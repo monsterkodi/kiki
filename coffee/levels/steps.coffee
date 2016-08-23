@@ -7,9 +7,8 @@
 
 module.exports =
     name:       "steps"
-    scheme:     "blue_scheme"
+    # scheme:     "blue"
     size:       [7,7,13]
-    intro:      "steps"
     help:       """
                 $scale(1.5)mission:
                 get to the exit!

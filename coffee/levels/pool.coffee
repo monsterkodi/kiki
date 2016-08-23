@@ -8,9 +8,8 @@
 module.exports =
     name:       "pool"
     design:     'Michael Abel'
-    scheme:     "green_scheme"
+    scheme:     "green"
     size:       [11,11,11]
-    intro:      "pool"
     help:       "$scale(1.5)mission:\nget to the exit!"
     player:   
         coordinates:     [5,10,5]

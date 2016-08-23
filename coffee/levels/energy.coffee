@@ -1,8 +1,7 @@
 module.exports =
     name:       "energy"
-    scheme:     "default_scheme"
+    scheme:     "default"
     size:       [9,17,9]
-    intro:      "energy"
     help:       """
                 $scale(1.5)mission:
                 activate the exit!

@@ -8,9 +8,8 @@
 module.exports =
     name:       "machine"
     deisgn:     'Michael Abel'
-    scheme:     "tron_scheme"
+    scheme:     "tron"
     size:       [5,5,9]
-    intro:      "machine"
     help:       "$scale(1.5)mission:\nactivate the exit!"
     player:     
         position:     [0,0,0]

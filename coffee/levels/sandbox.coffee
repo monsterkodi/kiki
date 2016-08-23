@@ -8,9 +8,8 @@
 module.exports =    
     name:       "sandbox"
     design:     'Michael Abel'
-    scheme:     "bronze_scheme"
+    scheme:     "bronze"
     size:       [9,9,6]
-    intro:      "sandbox"
     help:       """
                 $scale(1.5)mission:
                 activate the exit!

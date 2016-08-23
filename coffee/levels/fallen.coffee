@@ -8,9 +8,8 @@
 module.exports =
     name:       "fallen"
     deisgn:     'Owen Hay'
-    scheme:     "blue_scheme"
+    scheme:     "blue"
     size:       [13,15,13]
-    intro:      "fallen"
     help:       """
                 $scale(1.5)mission:
                 get to the exit!

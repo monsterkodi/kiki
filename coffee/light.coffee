@@ -13,26 +13,23 @@ class Light extends Item
         @radius    = opt?.radius ? 4
         @shadow    = opt?.shadow ? false
         @intensity = opt?.intensity ? 0.5
-        # @ambient_color  = colors[KikiLight_base_color]
-        # @diffuse_color  = colors[KikiLight_diffuse_color]
-        # @specular_color = colors[KikiLight_specular_color]
+        world.addLight @
+        super
+        @setPosition opt.pos if opt?.pos?
+        
+    createMesh: ->
         @point = new THREE.PointLight 0xffffff, @intensity, @radius, 2
         @point.castShadow = @shadow
         @point.shadow.darkness = 0.5
         @point.shadow.mapSize = new THREE.Vector2 2048, 2048
         @point.shadow.bias = 0.01
         geom   = new THREE.SphereGeometry 0.3, 16, 16
-
         # world.scene.add new THREE.CameraHelper @point.shadow.camera if @shadow
-        
         @point.shadow.camera.near = 0.1
         @point.shadow.camera.far = @radius*2
             
         @mesh = new THREE.Mesh geom, Material.bulb
         world.scene.add @point
-        world.addLight @
-        @setPosition opt.pos if opt?.pos?
-        super
 
     del: -> 
         world.removeLight @

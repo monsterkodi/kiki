@@ -12,8 +12,14 @@ module.exports =
         color: 0xffff00
         id: 999
 
+    bulb: new THREE.MeshLambertMaterial 
+        side:           THREE.FrontSide
+        shading:        THREE.SmoothShading
+        transparent:    true
+        opacity:        0.7
+        emissiveIntensity: 0.9
+
     player: new THREE.MeshPhongMaterial
-        color:          0x2222ff
         side:           THREE.FrontSide
         shading:        THREE.SmoothShading
         transparent:    true
@@ -21,8 +27,6 @@ module.exports =
         shininess:      5
                     
     tire: new THREE.MeshPhongMaterial 
-        color:          0x000066
-        # specular:       0x222255
         side:           THREE.FrontSide
         shading:        THREE.FlatShading
         transparent:    true
@@ -72,15 +76,6 @@ module.exports =
         shading:        THREE.SmoothShading
         shininess:      10
 
-    bulb: new THREE.MeshLambertMaterial 
-        color:          0xffffff
-        side:           THREE.FrontSide
-        shading:        THREE.SmoothShading
-        transparent:    true
-        opacity:        0.7
-        emissive:       0xffff00
-        emissiveIntensity: 0.9
-
     bomb: new THREE.MeshPhongMaterial 
         color:          0xff0000
         side:           THREE.FrontSide
@@ -102,24 +97,21 @@ module.exports =
         shininess:      5
     
     raster: new THREE.MeshPhongMaterial 
-        color:          0x880000
         side:           THREE.FrontSide
         shading:        THREE.SmoothShading
         shininess:      20
 
     wall: new THREE.MeshPhongMaterial 
-        color:          0x770000
+        # color:          0x770000
         side:           THREE.FrontSide
         shading:        THREE.SmoothShading
-        shininess:      10
+        shininess:      20
           
     plate: new THREE.MeshPhongMaterial 
-        color:          0x880000
         side:           THREE.FrontSide
         shading:        THREE.SmoothShading
         shininess:      10
-        emissive:       0x880000
-        emissiveIntensity: 0.02
+        emissiveIntensity: 0.05
 
     stone: new THREE.MeshPhongMaterial 
         side:           THREE.DoubleSide

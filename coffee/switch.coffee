@@ -47,10 +47,7 @@ class Switch extends Item
         @mesh.receiveShadow = true
      
         t2 = new THREE.TorusBufferGeometry 0.5-torusRadius, torusRadius, 16, 32
-        # t3 = new THREE.TorusGeometry 0.5-torusRadius, torusRadius, 16, 32
         t2.rotateY Vector.DEG2RAD 90 
-        # t3.rotateX Vector.DEG2RAD 90 
-        # t2.merge t3
         @tors = new THREE.Mesh t2, Material.switch
         @tors.castShadow = true
         @tors.receiveShadow = true

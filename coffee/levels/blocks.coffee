@@ -1,4 +1,10 @@
 
+#   0000000    000       0000000    0000000  000   000   0000000
+#   000   000  000      000   000  000       000  000   000     
+#   0000000    000      000   000  000       0000000    0000000 
+#   000   000  000      000   000  000       000  000        000
+#   0000000    0000000   0000000    0000000  000   000  0000000 
+
 module.exports =
     name:       "blocks"
     design:     'Michael Abel'
@@ -17,18 +23,18 @@ module.exports =
     player:     
         coordinates: [1,6,2]
     exits:    [
-            name:         "exit"
-            active:       1
-            coordinates: [7,9,2]
-            ]
+        name:         "exit"
+        active:       1
+        coordinates: [7,9,2]
+        ]
     create: ->
         {Stone} = require '../items'
         world.addObjectAtPos 'Wall', 1,1,2
         world.addObjectAtPos 'Wall', 4,2,2
         world.addObjectAtPos 'Wall', 7,2,2
         world.addObjectAtPos 'Stone', 10,2,2
-        world.addObjectAtPos new Stone(slippery:true), 13,2,2
-        world.addObjectAtPos new Stone(slippery:true), 15,4,2
+        world.addObjectAtPos new Stone(slippery: true), 13,2,2
+        world.addObjectAtPos new Stone(slippery: true), 15,4,2
         
         world.addObjectAtPos new Stone(color: [0,1,0], opacity: 0.8, slippery: true), 13,7,2
         world.addObjectAtPos new Stone(color: [1,0,0], opacity: 0.8, slippery: true), 10,7,2

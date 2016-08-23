@@ -11,14 +11,12 @@ class Stone extends Pushable
     
     constructor: (opt) ->
         @slippery = opt?.slippery or false
-        @opacity = opt?.opacity ? 0.7
-        @color = 0xff8800
+        @opacity = opt?.opacity
         if opt?.color
             if Array.isArray opt.color
                 @color = new THREE.Color opt.color[0], opt.color[1], opt.color[2]
             else
                 @color = opt.color                
-                log 'color: ', @color
         super
 
     isSlippery: -> return @slippery
@@ -37,8 +35,8 @@ class Stone extends Pushable
         else
             @geom = new THREE.BoxBufferGeometry 0.98,0.98,0.98
         @mat = Material.stone.clone()
-        @mat.opacity = @opacity
-        @mat.color.set @color
+        @mat.opacity = @opacity if @opacity?
+        @mat.color.set @color if @color?
         @mesh = new THREE.Mesh @geom, @mat
         @mesh.receiveShadow = true
         @mesh.castShadow = true

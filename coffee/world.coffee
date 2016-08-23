@@ -33,7 +33,12 @@ Vector      = require './lib/vector'
 Pos         = require './lib/pos'
 _           = require 'lodash'
 now         = require 'performance-now'
-{Wire,Gear,MotorGear,MotorCylinder,Face} = require './items'
+{
+Wire,
+Gear,
+MotorGear,
+MotorCylinder,
+Face}       = require './items'
 
 world       = null
 
@@ -182,8 +187,6 @@ class World extends Actor
         
         @setSize @dict["size"] # this removes all objects
         
-        # log "world size set", @size
-        
         @applyScheme @dict.scheme ? 'default'
 
         # ............................................................ intro text   
@@ -266,12 +269,31 @@ class World extends Actor
     
     applyScheme: (scheme) ->
         return if not Scheme[scheme]
-        log "Scheme[#{scheme}]", Scheme[scheme]
-        for k,v of Scheme[scheme]
-            if Material[k]?
-                if v.color
-                    c = v.color
-                    Material[k].color = new THREE.Color c[0], c[1], c[2]
+        
+        log "world.applyScheme #{scheme}"
+        
+        colors = _.clone Scheme[scheme]
+        
+        opacity =
+            stone: 0.7
+            bomb:  0.9
+            
+        colors.plate.emissive ?= colors.plate.color
+        colors.bulb.emissive  ?= colors.bulb.color
+        colors.raster ?= {}    
+        colors.raster.color   ?= colors.plate.color
+        colors.wall ?= {}
+        colors.wall.color     ?= new THREE.Color(colors.plate.color).multiplyScalar 0.6
+        colors.wirePlate ?= {}
+        colors.wirePlate.color ?= colors.wire.color
+        for k,v of colors
+            # log "#{k} #{v.color?.r} #{v.color?.g} #{v.color?.b}", v
+            continue if k == 'text'
+            mat = Material[k]
+            mat.color    = v.color
+            mat.opacity  = v.opacity ? opacity[k] ? 1
+            mat.specular = v.specular ? new THREE.Color(v.color).multiplyScalar 0.2
+            mat.emissive = v.emissive ? new THREE.Color 0,0,0
 
     #  000      000   0000000   000   000  000000000
     #  000      000  000        000   000     000   
@@ -909,3 +931,4 @@ class World extends Actor
         return if @player?.modKeyComboEventUp mod, key, combo, event        
 
 module.exports = World
+

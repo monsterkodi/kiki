@@ -114,10 +114,11 @@ class Bot extends Pushable
     getDown: -> @orientation.rotate Vector.minusY
     getUp:   -> @orientation.rotate Vector.unitY
     getDir:  -> @orientation.rotate new Vector 0,0,@dir_sgn
-    
-    getCurrentDir:  -> @current_orientation.rotate(Vector.unitZ).normal()
-    getCurrentUp:   -> @current_orientation.rotate(Vector.unitY).normal()
-    getCurrentLeft: -> @current_orientation.rotate(Vector.unitX).normal()
+  
+    currentPos:  -> @current_position.clone()
+    currentDir:  -> @current_orientation.rotate(Vector.unitZ).normal()
+    currentUp:   -> @current_orientation.rotate(Vector.unitY).normal()
+    currentLeft: -> @current_orientation.rotate(Vector.unitX).normal()
 
     # 0000000    000  00000000
     # 000   000  000  000     

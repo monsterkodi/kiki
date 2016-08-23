@@ -15,6 +15,7 @@ Pos         = require './lib/pos'
 Size        = require './lib/size'
 Cell        = require './cell'
 Gate        = require './gate'
+Camera      = require './camera'
 Light       = require './light'
 Levels      = require './levels'
 Player      = require './player'
@@ -43,10 +44,6 @@ Face}       = require './items'
 world       = null
 
 class World extends Actor
-
-    @CAMERA_INSIDE = 0 
-    @CAMERA_BEHIND = 1 
-    @CAMERA_FOLLOW = 2
     
     @levels = null
     
@@ -63,10 +60,7 @@ class World extends Actor
                 
         @speed       = 6
         
-        @raster_size = 0.05
-        # @camera_mode     = World.CAMERA_INSIDE
-        @camera_mode     = World.CAMERA_BEHIND
-        # @camera_mode     = World.CAMERA_FOLLOW
+        @rasterSize = 0.05
 
         super
         
@@ -84,22 +78,7 @@ class World extends Actor
         @renderer.setClearColor 0x000000        
         @renderer.setSize @view.offsetWidth, @view.offsetHeight
         @renderer.shadowMap.type = THREE.PCFSoftShadowMap
-                
-        #    0000000   0000000   00     00  00000000  00000000    0000000 
-        #   000       000   000  000   000  000       000   000  000   000
-        #   000       000000000  000000000  0000000   0000000    000000000
-        #   000       000   000  000 0 000  000       000   000  000   000
-        #    0000000  000   000  000   000  00000000  000   000  000   000
-        
-        @fov    = 90
-        @near   = 0.1
-        @far    = 20
-        @aspect = @view.offsetWidth / @view.offsetHeight
-        @dist   = 10
-        
-        @camera = new THREE.PerspectiveCamera @fov, @aspect, @near, @far
-        @camera.position.z = @dist
-        
+                        
         #    0000000   0000000  00000000  000   000  00000000
         #   000       000       000       0000  000  000     
         #   0000000   000       0000000   000 0 000  0000000 
@@ -115,7 +94,7 @@ class World extends Actor
         #   0000000  000   0000000   000   000     000   
 
         @sun = new THREE.PointLight 0xffffff
-        @sun.position.copy @camera.position
+        @sun.position.copy @player.camera.getPosition() if @player?
         @scene.add @sun
         
         @ambient = new THREE.AmbientLight 0x111111
@@ -199,11 +178,6 @@ class World extends Actor
         # else
             # @setName "noname"
         
-        # if @preview
-            # @getProjection().setViewport(0.0, 0.4, 1.0, 0.6)
-        # else
-            # @getProjection().setViewport(0.0, 0.0, 1.0, 1.0)
-        
         # ............................................................ escape
         # escape_event = Controller.getEventWithName ("escape")
         # escape_event.removeAllActions()
@@ -251,7 +225,7 @@ class World extends Actor
         else if @dict.player.coordinates?
             @addObjectAtPos @player, new Pos @dict.player.coordinates
 
-        @getProjection().setPosition new Vector 0,0,0
+        @player.camera.setPosition new Vector 0,0,0
     
     restart: () -> @create @dict
 
@@ -344,10 +318,10 @@ class World extends Actor
         # calcuate max distance (for position relative sound)
         @max_distance = Math.max(@size.x, Math.max(@size.y, @size.z))  # heuristic of a heuristic :-)
         @cage?.del()
-        @cage = new Cage @size, @raster_size
+        @cage = new Cage @size, @rasterSize
 
     getCellAtPos: (pos) -> return @cells[@posToIndex(pos)] if @isValidPos pos
-    getBotAtPos:  (pos) -> @getObjectOfTypeAtPos KikiBot, new Pos pos
+    getBotAtPos:  (pos) -> @getObjectOfTypeAtPos Bot, new Pos pos
 
     posToIndex:   (pos) -> 
         p = new Pos pos
@@ -477,9 +451,7 @@ class World extends Actor
 
     newObject: (object) ->
         if _.isString object
-            if object.startsWith 'Kiki'
-                return new (require "./#{object.slice(4).toLowerCase()}")()
-            else if object.startsWith 'new'
+            if object.startsWith 'new'
                 return eval object 
             return new (require "./#{object.toLowerCase()}")()
         if object instanceof Item
@@ -548,9 +520,9 @@ class World extends Actor
         log "World.getObjectWithName [WARNING] no object with name #{objectName}"
         null
     
-    setCameraMode: (mode) -> @camera_mode = clamp World.CAMERA_INSIDE, World.CAMERA_FOLLOW, mode
+    setCameraMode: (mode) -> @player.camera.mode = clamp Camera.INSIDE, Camera.FOLLOW, mode
     
-    changeCameraMode: -> @camera_mode = (@camera_mode+1) % (World.CAMERA_FOLLOW+1)
+    changeCameraMode: -> @player.camera.mode = (@player.camera.mode+1) % (Camera.FOLLOW+1)
     
     #    0000000   0000000          000        00     00   0000000   000   000  00000000
     #   000   000  000   000        000        000   000  000   000  000   000  000     
@@ -638,14 +610,6 @@ class World extends Actor
         else
             log "world.objectMoved [WARNING] #{movedObject.name} no target cell?"
     
-    setObjectColor: (color_name, color) ->
-        if color_name == 'base'
-            # KikiWall::setObjectColor "base", color 
-            @colors[0] = color
-        else if color_name == 'plate'
-            # KikiWall::setObjectColor "plate", color 
-            @colors[1] = color
-        
     #  0000000  000000000  00000000  00000000       
     # 000          000     000       000   000      
     # 0000000      000     0000000   00000000       
@@ -653,31 +617,27 @@ class World extends Actor
     # 0000000      000     00000000  000          
     
     step: (step) ->
+        camera = @player.camera.cam
         if false
-            quat = @camera.quaternion.clone()
+            quat = camera.quaternion.clone()
             quat.multiply new THREE.Quaternion().setFromAxisAngle new THREE.Vector3(1,0,0), step.dsecs*0.2
             quat.multiply new THREE.Quaternion().setFromAxisAngle new THREE.Vector3(0,1,0), step.dsecs*0.1
             center = @size.div 2
-            @camera.position.set(center.x,center.y,center.z+@dist).applyQuaternion quat
-            @camera.quaternion.copy quat
+            camera.position.set(center.x,center.y,center.z+@dist).applyQuaternion quat
+            camera.quaternion.copy quat
 
         Timer.event.triggerActions()
         Timer.event.finishActions()
         
         o.step?(step) for o in @objects
+        @player.camera.step step
 
-        switch @camera_mode 
-            when World.CAMERA_INSIDE then @projection = @player.getInsideProjection()
-            when World.CAMERA_BEHIND then @projection = @player.getBehindProjection()
-            when World.CAMERA_FOLLOW then @projection = @player.getFollowProjection()
-        
-        Sound.setMatrix @projection
+        Sound.setMatrix @player.camera
             
-        # Material.tire.visible = @camera_mode != World.CAMERA_INSIDE
-        @player.setOpacity clamp 0, 1, @projection.getPosition().minus(@player.current_position).length()-0.4
-        @projection.apply @camera
-        @sun.position.copy @camera.position
-        @renderer.render @scene, @camera
+        @player.setOpacity clamp 0, 1, @player.camera.getPosition().minus(@player.current_position).length()-0.4
+        
+        @sun.position.copy camera.position
+        @renderer.render @scene, camera
     
     #   000000000  000  00     00  00000000
     #      000     000  000   000  000     
@@ -711,8 +671,9 @@ class World extends Actor
     
     resized: (w,h) ->
         @aspect = w/h
-        @camera?.aspect = @aspect
-        @camera?.updateProjectionMatrix()
+        camera = @player.camera.cam
+        camera?.aspect = @aspect
+        camera?.updateProjectionMatrix()
         @renderer?.setSize w,h
         @screenSize = new Size w,h
 
@@ -819,7 +780,7 @@ class World extends Actor
         if less_text
             page.getEventWithName("previous").addAction (i=index-1) => @outro i
         
-    resetProjection: -> world.getProjection().setViewport 0.0, 0.0, 1.0, 1.0
+    resetProjection: -> @player.camera.setViewport 0.0, 0.0, 1.0, 1.0
     
     #   00000000   0000000   0000000
     #   000       000       000     
@@ -891,15 +852,7 @@ class World extends Actor
     displayLights: () ->
         for light in @lights
             lignt.display()
-        
-    getProjection: () ->
-        if not @projection
-            switch @camera_mode 
-                when World.CAMERA_INSIDE then @projection = @player.getInsideProjection()     
-                when World.CAMERA_BEHIND then @projection = @player.getBehindProjection()
-                when World.CAMERA_FOLLOW then @projection = @player.getFollowProjection()
-        @projection
-       
+               
     playSound: (sound, pos, time) -> Sound.play sound, pos, time
     
     #   000   000  00000000  000   000

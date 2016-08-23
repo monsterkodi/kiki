@@ -33,7 +33,7 @@ class Bullet extends Item
     @shootFromBot: (bot) ->
         bullet = new Bullet()
         world.addObject bullet 
-        bullet.direction = bot.getCurrentDir()
+        bullet.direction = bot.currentDir()
         bullet.setPosition bot.position.plus bullet.direction.mul 0.8
         bullet.src_object = bot
         bullet.mesh.material.color.set bot.mesh.material.color

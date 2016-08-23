@@ -393,7 +393,7 @@ class Bot extends Pushable
             # log 'bot.actionFinished below empty', world.isUnoccupiedPos(@position.plus @getDown()), @position.plus @getDown()
             if @move # sticky if moving
                 if world.isUnoccupiedPos @position.plus @getDir()  # forward will be empty
-                    log 'bot.actionFinished forward empty'
+                    # log 'bot.actionFinished forward empty'
                     if world.isOccupiedPos @position.plus @getDir().minus @getUp() # below forward is solid
                         occupant = world.getOccupantAtPos @position.plus @getDir().minus @getUp() 
                         if not occupant? or not occupant?.isSlippery()

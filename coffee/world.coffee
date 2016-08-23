@@ -216,7 +216,9 @@ class World extends Actor
             for entry in @dict.exits
                 exit_gate = new Gate entry["active"]
                 exit_gate.name = entry["name"] ? "exit #{exit_id}"
+                Action.id ?= 0
                 exitAction = new Action 
+                    id:   Action.id
                     func: @exitLevel
                     name: "exit #{exit_id}"
                     mode: Action.ONCE
@@ -250,16 +252,10 @@ class World extends Actor
             @addObjectAtPos @player, new Pos @dict.player.coordinates
 
         @getProjection().setPosition new Vector 0,0,0
-
-        # ............................................................ init
-        # @init() # tell the world that we are finished
-
+    
     restart: () -> @create @dict
 
-    finish: () -> # log 'world.levelFinished'
-        # saves the current level status in highscore file
-        # highscore.levelFinished world.level_name, Controller.player.getStatus().getMoves()
-    
+    finish: () -> # TODO: save progress
 
     #  0000000   0000000  000   000  00000000  00     00  00000000
     # 000       000       000   000  000       000   000  000     
@@ -321,14 +317,7 @@ class World extends Actor
     #   000   000   0000000     000     000   0000000   000   000
           
     exitLevel: (action) =>
-        log "world.exitLevel", action       
         @finish()
-        # exitIndex = parseInt action.name?.slice 5
-        # log "world.exitLevel exitIndex:#{exitIndex}"
-        # if @dict.exits[exitIndex]?.world?
-            # w = @dict.exits[exitIndex].world
-            # w() if _.isFunction w
-        # else
         log "world.level_index #{world.level_index} nextLevel #{World.levels.list[world.level_index+1]}"
         world.create World.levels.list[world.level_index+1]
 

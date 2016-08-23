@@ -4,7 +4,6 @@
 # 000   000  000          000     000  000   000  000  0000
 # 000   000   0000000     000     000   0000000   000   000
 
-log = require '/Users/kodi/s/ko/js/tools/log'
 _   = require 'lodash'
 
 class Action
@@ -34,18 +33,19 @@ class Action
     @ONCE       = 0
     @CONTINUOUS = 1
     @REPEAT     = 2
+    @TIMED      = 3
 
     constructor: (o, i, n, d, m) ->        
         if _.isPlainObject o 
             i = o.id ? -1
             n = o.name
             d = o.duration ? 0
-            m = o.mode ? Action.ONCE
+            m = o.mode ? (d and Action.TIMED or Action.ONCE)
             o = o.func
         else
             i ?= -1
-            m ?= Action.ONCE
             d ?= 0
+            m ?= (d and Action.TIMED or Action.ONCE)
         # log "Action.constructor #{i} #{n} #{d} #{m}"
         @object     = o
         @name       = n
@@ -62,21 +62,18 @@ class Action
         if @object? then @object.removeAction @
         @deleted = true
 
-    perform: () -> 
-        # log "Action.perform #{@name} action? #{@object.performAction?} #{@object.name}" if @name == 'push'
+    perform: -> 
+        log "Action.perform #{@name} action? #{@object.performAction?} #{@object.name}" if not @name in  ['noop', 'rotation']
         if @object.performAction? 
             @object.performAction @
         else if _.isFunction @object
-            @object()
-    
-    init: () ->    @object.initAction? @
-    finish: () ->  @object.finishAction? @
-    finished: () -> 
-        # log "Action.finished #{@name} #{@object?.actionFinished?}"
-        if _.isFunction @object
             @object @
-        else
-            @object.actionFinished @
+    
+    init: ->    @object.initAction? @
+    finish: ->  @object.finishAction? @
+    finished: -> 
+        # log "Action.finished #{@name} #{@object?.actionFinished?}"
+        @object?.actionFinished? @
         return if @deleted
         @reset()
         # if @current >= @getDuration() # if keepRest wasn't called -> reset start and current values
@@ -84,7 +81,7 @@ class Action
         # else 
             # log 'keeping rest', @current
 
-    reset: () ->
+    reset: ->
         # log "action.reset #{@name}"
         @start   = 0 # world time
         @rest    = 0 
@@ -93,7 +90,7 @@ class Action
         #@event   = null  
 
     takeOver: (action) ->
-        log "takeOver #{action.rest} from #{action.name} this: #{@name}"
+        # log "takeOver #{action.rest} from #{action.name} this: #{@name}"
         @current = action.current
         @start   = action.start
         @last    = action.last
@@ -110,16 +107,18 @@ class Action
 
     performWithEvent: (event) ->
         eventTime = event.getTime()
-        # log "action.performWithEvent #{@name} eventTime #{eventTime} start #{@start}" if @name != 'noop'
+        # log "action.performWithEvent #{@name} #{@id} eventTime #{eventTime} start #{@start}" if @name.startsWith 'exit'
         if @start == 0
             @start   = eventTime
             @current = 0
             @rest    = 0
             @last    = 0
-            event.removeAction @ if @duration == 0 and @mode == Action.ONCE
+            # event.removeAction @ if @duration == 0 and @mode == Action.ONCE
+            event.removeAction @ if @mode == Action.ONCE
             @perform()
             @last = @current
-            @finished() if @duration == 0 and @mode == Action.ONCE
+            # @finished() if @duration == 0 and @mode == Action.ONCE
+            @finished() if @mode == Action.ONCE
         else
             currentDiff = eventTime - @start
             msDur = @getDuration()
@@ -138,7 +137,7 @@ class Action
                     @last  = 0
                     @rest  = 0
                     return
-                event.removeAction @ if @mode == Action.ONCE
+                event.removeAction @ if @mode in [Action.ONCE, Action.TIMED]
                 
                 @finish()
     

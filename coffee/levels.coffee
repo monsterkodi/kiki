@@ -10,7 +10,6 @@ class Levels
         @dict = {}
         @list = [
             # "test",
-            "electro",
             # --- introduction
             "steps", 
             "start", 

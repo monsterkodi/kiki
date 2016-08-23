@@ -59,8 +59,6 @@ module.exports =
     tron:      
         plate:
             color:  rgb 0.05, 0.05, 0.2
-        # raster:            
-            # color:  rgb 0, 0, 0.3
         bulb:            
             color:  rgb 0, 0, 1
         bomb:             
@@ -99,8 +97,6 @@ module.exports =
     neutron:          
         plate:
             color:  rgb 0.5, 0.5, 0.5
-        # raster:            
-            # color:  rgb 0.13, 0.13, 0.13
         bulb:            
             color:  rgb 0, 0, 0
         bomb:             
@@ -140,8 +136,6 @@ module.exports =
     test:             
         plate:
             color:  rgb 0.08, 0.08, 0.08
-        # raster:            
-            # color:  rgb 1, 1, 1
         bulb:            
             color:  rgb 0, 0, 0
         bomb:             
@@ -181,8 +175,6 @@ module.exports =
     candy:            
         plate:
             color:  rgb 0.8, 0, 0.9
-        # raster:            
-            # color:  rgb 0.35, 0, 0.35
         bulb:            
             color:  rgb 0, 0, 0
         text:             
@@ -301,8 +293,6 @@ module.exports =
     blue:             
         plate:
             color:  rgb 0.1, 0.1, 0.6
-        # raster:            
-            # color:  rgb 0, 0, 0.2
         bulb:            
             color:  rgb 0.1, 0.1, 0.1
         stone:            
@@ -343,8 +333,6 @@ module.exports =
     yellow:           
         plate:
             color:  rgb 0.9, 0.9, 0
-        # raster:            
-            # color:  rgb 0.34, 0.34, 0
         bulb:            
             color:  rgb 0, 0, 0
         bomb:             
@@ -384,8 +372,6 @@ module.exports =
     green:            
         plate:
             color:  rgb 0.1, 0.6, 0.1
-        # raster:            
-            # color:  rgb 0, 0.2, 0
         bulb:            
             color:  rgb 0, 0, 0
         stone:            
@@ -424,8 +410,6 @@ module.exports =
     metal:            
         plate:
             color:  rgb 0.7,0.7,0.7
-        # raster:            
-            # color:  rgb 0.2, 0.2, 0.2
         bulb:            
             color:  rgb 1, 1, 1
         stone:            
@@ -463,8 +447,6 @@ module.exports =
     #  0000000  000   000  000   000  0000000     000   
     
     crazy:            
-        # plate:
-            # color: rgb 0, 0.51, 0.82
         raster:            
             color: rgb 0.84, 0.22, 0.20
         bulb:            
@@ -507,8 +489,6 @@ module.exports =
     zen:              
         plate:
             color:  rgb 0.36, 0.45, 0.30
-        # raster:            
-            # color:  rgb 0.75, 0.95, 0.64
         bulb:            
             color:  rgb 0, 0, 0
         stone:            

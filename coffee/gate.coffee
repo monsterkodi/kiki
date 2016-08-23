@@ -54,6 +54,8 @@ class Gate extends Switch
     newCellMate: (object) ->
         if object.name == 'player' and @active
             world.playSound 'GATE_WARP'
+            log 'gate trigger enter event', @events[@ENTER_EVENT].actions.length
             @events[@ENTER_EVENT].triggerActions() 
+            @active = false
                 
 module.exports = Gate

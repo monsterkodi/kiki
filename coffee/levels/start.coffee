@@ -21,7 +21,7 @@ module.exports =
                 to turn, press "$key(turn left)" or "$key(turn right)"
                 """
     player:   
-        position:     [0,0,4]
+        position:     [2,1,4]
         orientation:   rotx270
     exits:    [
         name:         "exit"

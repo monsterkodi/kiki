@@ -1,6 +1,6 @@
 module.exports =
     name:       "grid"
-    scheme:     "candy"
+    scheme:     "crazy"
     size:       [9,9,9]
     help:       """
                 $scale(1.5)mission:

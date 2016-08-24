@@ -10,6 +10,7 @@ class Levels
         @dict = {}
         @list = [
             # "test",
+            "grid",
             # --- introduction
             "steps",   # ok
             "start",   # ok
@@ -23,7 +24,7 @@ class Levels
             "gold", 
             "escape", 
             "gears", 
-            "gamma", 
+            "gamma",  # scheme change doesn't work
             "cube", 
             "switch", # exit doesnt open, other scheme
             # # "borg", 
@@ -33,11 +34,12 @@ class Levels
             "energy", 
             "maze", 
             "love", 
-            "chain",
             # --- medium
             "towers", 
             "edge", 
             "random", 
+            "slick", 
+            "bridge", 
             "plate", 
             "nice", 
             "entropy", 
@@ -45,8 +47,6 @@ class Levels
             "strange",
             "core",
             # --- difficult
-            "slick", 
-            "bridge", 
             "flower", 
             "stones", 
             "walls", 

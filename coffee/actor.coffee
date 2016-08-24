@@ -7,7 +7,6 @@
 {
 last
 }       = require '/Users/kodi/s/ko/js/tools/tools'
-log     = require '/Users/kodi/s/ko/js/tools/log'
 Action  = require './action'
 Timer   = require './timer'
 Event   = require './event'

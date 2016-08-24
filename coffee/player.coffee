@@ -118,10 +118,6 @@ class Player extends Bot
                     Timer.addAction @rotate_action
     
     die: () ->
-        super
-        # Controller.displayText "game over" 
-        world.playSound 'BOT_DEATH'
-        world.setCameraMode world.CAMERA_FOLLOW
                 
     #   000   000  00000000  000   000
     #   000  000   000        000 000 

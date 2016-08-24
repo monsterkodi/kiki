@@ -8,7 +8,7 @@
 module.exports = 
     name:       "neutron"
     design:     'Michael Abel'
-    scheme:     "neutron"
+    scheme:     "tron"
     size:       [11,11,11]
     help:       """ 
                 $scale(1.5)mission:

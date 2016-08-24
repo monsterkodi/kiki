@@ -5,7 +5,6 @@
 #   000     000     000       000 0 000
 #   000     000     00000000  000   000
 
-log        = require '/Users/kodi/s/ko/js/tools/log'
 Actor      = require './actor'
 Pos        = require './lib/pos'
 Vector     = require './lib/vector'

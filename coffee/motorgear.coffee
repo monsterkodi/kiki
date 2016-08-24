@@ -4,7 +4,6 @@
 # 000 0 000  000   000     000     000   000  000   000  000   000  000       000   000  000   000
 # 000   000   0000000      000      0000000   000   000   0000000   00000000  000   000  000   000
 
-log           = require '/Users/kodi/s/ko/js/tools/log'
 Gear          = require './gear'
 Geom          = require './geom'
 Face          = require './face'

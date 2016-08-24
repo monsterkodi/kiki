@@ -419,10 +419,10 @@ class Bot extends Pushable
         else
             @dir_sgn = 1
             @jump_once = false if action.id != Action.NOOP
-            # log "bot.actionFinished '#{action.name}' position:", @position if action.id in [Action.FORWARD, Action.JUMP_FORWARD, Action.CLIMB_DOWN]
-            # log "bot.actionFinished '#{action.name}' orientation:", @orientation.rounded().name if action.id in [Action.TURN_LEFT, Action.TURN_RIGHT, Action.CLIMB_UP]
+            log "bot.actionFinished '#{action.name}' position:", @position if action.id in [Action.FORWARD, Action.JUMP_FORWARD, Action.CLIMB_DOWN]
+            log "bot.actionFinished '#{action.name}' orientation:", @orientation.rounded().name if action.id in [Action.TURN_LEFT, Action.TURN_RIGHT, Action.CLIMB_UP]
             
-            if world.getRealOccupantAtPos(@position.plus @getDown()).isMutant?()
+            if world.getRealOccupantAtPos(@position.plus @getDown())?.isMutant?()
                 # keep action chain flowinwg in order to detect environment changes
                 log 'bot.actionFinished mutant below: startTimedAction NOOP'
                 @startTimedAction @getActionWithId(Action.NOOP), 0

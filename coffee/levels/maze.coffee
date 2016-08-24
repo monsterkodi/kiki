@@ -11,6 +11,7 @@ module.exports =
     deisgn:     'Michael Abel'
     scheme:     "default"
     size:       [4,4,4]
+    camera:     'inside'
     help:       """
                 $scale(1.5)mission:
                 get to the exit!
@@ -77,5 +78,4 @@ module.exports =
            
         world.addObjectAtPos('Light', 3,0,0)
             
-        world.setCameraMode(world.CAMERA_INSIDE)
         

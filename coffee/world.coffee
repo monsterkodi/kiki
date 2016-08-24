@@ -251,8 +251,10 @@ class World extends Actor
         else if @dict.player.coordinates?
             @addObjectAtPos @player, new Pos @dict.player.coordinates
 
-        # @player.camera.setPosition new Vector 0,0,0
         @player.camera.setPosition @player.currentPos()
+        
+        @setCameraMode Camera.INSIDE if @dict.camera == 'inside'
+        
         @creating = false
     
     restart: () -> @create @dict
@@ -331,7 +333,8 @@ class World extends Actor
     exitLevel: (action) =>
         @finish()
         # log "world.level_index #{world.level_index} nextLevel #{World.levels.list[world.level_index+1]}"
-        world.create World.levels.list[world.level_index+(_.isNumber(action) and action or 1)]
+        nextLevel = (world.level_index+(_.isNumber(action) and action or 1)) % World.levels.list.length
+        world.create World.levels.list[nextLevel]
 
     activate: (objectName) -> @getObjectWithName(objectName)?.setActive? true
     

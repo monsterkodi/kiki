@@ -18,8 +18,8 @@ module.exports =
                 you can't grab it while falling
                 """
     player:   
-        coordinates:    [4,10,0]
-        orientation:    rotx90
+        coordinates:    [0,10,13]
+        orientation:    ZdownY
     exits:    [
         name:         "exit"
         active:       1

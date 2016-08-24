@@ -17,8 +17,8 @@ module.exports =
                 jump and try
                 """
     player:   
-        coordinates:     [1,3,2]
-        nostatus:         0
+        coordinates:    [0,10,1]
+        orientation:    minusZupX
     exits:    [
         name:         "exit"
         active:       1
@@ -34,8 +34,6 @@ module.exports =
         world.addObjectAtPos('Wall', 19,18,2)
         world.addObjectAtPos('Wall', 19,2,18)
         world.addObjectAtPos('Wall', 19,18,18)
-        world.addObjectAtPos('Light', 0,0,0)
-        world.addObjectAtPos('Light', 20,20,20)
         world.addObjectAtPos('Stone', 3,2,6)
         world.addObjectAtPos('Stone', 5,2,6)
         world.addObjectAtPos('Stone', 12,4,6)

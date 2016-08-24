@@ -1,7 +1,13 @@
-# level design by Michael Abel
+
+#   00000000  0000000     0000000   00000000
+#   000       000   000  000        000     
+#   0000000   000   000  000  0000  0000000 
+#   000       000   000  000   000  000     
+#   00000000  0000000     0000000   00000000
 
 module.exports = 
     name:       "edge"
+    design:     "Michael Abel"
     scheme:     "candy"
     size:       [7,7,7]
     help:       "$scale(1.5)mission:\nget to the exit!"
@@ -16,8 +22,7 @@ module.exports =
     ]
     create: ->
         s=world.size
-        Stone = require './stone'
-        # for (i,j,l) in [ (m,n,o) for m in range(3) for n in range(3) for o in range(3)]
+        {Stone} = require '../items'
         for i in [0...3]
             for j in [0...3]
                 for l in [0...3]

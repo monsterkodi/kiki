@@ -22,7 +22,7 @@ class Camera extends Matrix
         @fov    = opt?.fov ? 90
         @near   = opt?.near ? 0.01
         @eye_distance = @near
-        @far    = opt?.far ? 20
+        @far    = opt?.far ? 30
         @mode   = Camera.BEHIND
         @aspect = opt.aspect ? -1
         @dist   = 10

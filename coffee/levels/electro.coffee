@@ -20,8 +20,8 @@ module.exports =
                 with the motor
                 """
     player:
-        coordinates:      [2,0,4]
-        orientation:      rotz180
+        coordinates:      [2,3,5]
+        orientation:      minusXupZ
         nostatus:         0
     exits:    [
         name:         "exit"

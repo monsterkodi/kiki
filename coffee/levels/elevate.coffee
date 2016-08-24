@@ -24,7 +24,9 @@ module.exports =
                 the bombs will detonate
                 if you shoot them
                 """
-    player:   position: [3,-2,0]
+    player:   
+        coordinates: [8,0,3]
+        orientation: XupY
     exits:    [
         name:         "exit"
         active:       0

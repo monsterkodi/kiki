@@ -19,8 +19,8 @@ module.exports =
                 if you move into its direction
                 """
     player:   
-        position: [0,0,5]
-        orientation: rotx270
+        coordinates: [3,6,4]
+        orientation: minusZdownY
     exits:    [
         name:         "exit"
         active:       1

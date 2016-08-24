@@ -37,6 +37,7 @@ now         = require 'performance-now'
 {
 Wire,
 Gear,
+Stone,
 MotorGear,
 MotorCylinder,
 Face}       = require './items'
@@ -173,7 +174,6 @@ class World extends Actor
     #  0000000  000   000  00000000  000   000     000     00000000
         
     create: (worldDict={}) -> # creates the world from a level name or a dictionary
-        
         # log "world.create", worldDict
         
         if worldDict
@@ -185,10 +185,10 @@ class World extends Actor
                 @dict = worldDict
                 
         @level_index = World.levels.list.indexOf @level_name
-        log "World.create #{@level_index} #{@level_name}"
+        log "World.create #{@level_index} ---------------------- #{@level_name}"
+
+        @creating = true
             
-        # ............................................................ appearance
-        
         @setSize @dict["size"] # this removes all objects
         
         @applyScheme @dict.scheme ? 'default'
@@ -250,7 +250,9 @@ class World extends Actor
         else if @dict.player.coordinates?
             @addObjectAtPos @player, new Pos @dict.player.coordinates
 
-        @player.camera.setPosition new Vector 0,0,0
+        # @player.camera.setPosition new Vector 0,0,0
+        @player.camera.setPosition @player.currentPos()
+        @creating = false
     
     restart: () -> @create @dict
 
@@ -878,7 +880,7 @@ class World extends Actor
         for light in @lights
             lignt.display()
                
-    playSound: (sound, pos, time) -> Sound.play sound, pos, time
+    playSound: (sound, pos, time) -> Sound.play sound, pos, time if not @creating
     
     #   000   000  00000000  000   000
     #   000  000   000        000 000 

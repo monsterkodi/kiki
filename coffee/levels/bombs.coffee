@@ -16,7 +16,9 @@ module.exports =
                 to get to the exit,
                 use the bombs
               """
-    player:   position: [0,-4,0]
+    player:   
+        coordinates: [4,0,4]
+        orientation: XupY
               
     exits:    [
         name:     "exit"

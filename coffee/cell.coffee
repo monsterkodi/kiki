@@ -23,14 +23,14 @@ class Cell
     removeObject: (object) ->
         # log "cell.removeObject #{object.name}", @objects.length
         for o in @objects
-            o.cellMateLeft object if o != object
+            o?.cellMateLeft object if o != object
         _.remove @objects, (o) -> o == object or o.object == object
         # log "cell.removeObject #{object.name}", @objects.length
 
     addObject: (object) ->
         # log "cell.addObject #{object.name}"
         for o in @objects
-            o.newCellMate object
+            o?.newCellMate object
         @objects.push object
 
 module.exports = Cell

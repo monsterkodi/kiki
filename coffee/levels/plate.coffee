@@ -23,13 +23,12 @@ module.exports =
     ]
     create: ->
     
-        world.addObjectAtPos 'new Stone(color:[0.8,0.8,0.3],slippery:true', world.decenter(0,0,0)
-        
-        world.addObjectPoly 'new Stone(color:[0.6,0.6,0.6],slippery:true)', [world.decenter(1,1,0),world.decenter(1,-1,0), world.decenter(-1,-1,0),world.decenter(-1,1,0)], 1
-        
+        {Stone} = require '../items'
+        world.addObjectAtPos new Stone(color:[0.8,0.8,0.3], slippery:true), world.decenter 0,0,0 
+        world.addObjectPoly  'new Stone({color:[0.6,0.6,0.6], slippery:true})', [world.decenter(1,1,0), world.decenter(1,-1,0), world.decenter(-1,-1,0), world.decenter(-1,1,0)]
+#         'new Stone(color:[0.6,0.6,0.6], slippery:true)'
         world.addObjectAtPos 'Bomb', world.decenter 0,1,-4
         world.addObjectAtPos 'Bomb', world.decenter 0,-1,-4
         world.addObjectAtPos 'Bomb', world.decenter 1,0,-4
         world.addObjectAtPos 'Bomb', world.decenter -1,0,-4
-        
         world.addObjectAtPos 'Bomb', world.decenter 0,0,-2

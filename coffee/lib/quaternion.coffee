@@ -150,11 +150,6 @@ class Quaternion
     length:        -> Math.sqrt @w*@w + @x*@x + @y*@y + @z*@z
     eql:       (q) -> @w==q.w and @x=q.x and @y==q.y and @z==q.z
     
-    # Quaternion &     operator +=     ( float f )    { w += f; return(*this); }
-    # Quaternion &     operator -=     ( float f )    { w -= f; return(*this); }
-    # Quaternion &     operator *=     ( float f )    { w *= f; x *= f; y *= f; z *= f; return(*this); }
-    # Quaternion &     operator /=     ( float f )    { w /= f; x /= f; y /= f; z /= f; return(*this); }
-            
     mul: (quatOrScalar) ->
         if quatOrScalar instanceof Quaternion
             quat = quatOrScalar
@@ -263,40 +258,40 @@ class Quaternion
     @minusZdownX = @rot_90_Z
     @minusZdownY = @rot_180_Z
         
-    @rot_0.name     = '@rot_0'
-    @rot_90_X.name  = '@rot_90_X'
-    @rot_90_Y.name  = '@rot_90_Y'
-    @rot_90_Z.name  = '@rot_90_Z'
-    @rot_180_X.name = '@rot_180_X'
-    @rot_180_Y.name = '@rot_180_Y'
-    @rot_180_Z.name = '@rot_180_Z'
-    @rot_270_X.name = '@rot_270_X'
-    @rot_270_Y.name = '@rot_270_Y'
-    @rot_270_Z.name = '@rot_270_Z'
+    @rot_0.name       = 'rot_0'
+    @rot_90_X.name    = 'rot_90_X'
+    @rot_90_Y.name    = 'rot_90_Y'
+    @rot_90_Z.name    = 'rot_90_Z'
+    @rot_180_X.name   = 'rot_180_X'
+    @rot_180_Y.name   = 'rot_180_Y'
+    @rot_180_Z.name   = 'rot_180_Z'
+    @rot_270_X.name   = 'rot_270_X'
+    @rot_270_Y.name   = 'rot_270_Y'
+    @rot_270_Z.name   = 'rot_270_Z'
     
-    @XupY.name        = '@XupY'
-    @XupZ.name        = '@XupZ'
-    @XdownY.name      = '@XdownY'
-    @XdownZ.name      = '@XdownZ'
-    @YupX.name        = '@YupX'
-    @YupZ.name        = '@YupZ'
-    @YdownX.name      = '@YdownX'
-    @YdownZ.name      = '@YdownZ'
-    @ZupX.name        = '@ZupX'
-    @ZupY.name        = '@ZupY'
-    @ZdownX.name      = '@ZdownX'
-    @ZdownY.name      = '@ZdownY'
-    @minusXupY.name   = '@minusXupY'
-    @minusXupZ.name   = '@minusXupZ'
-    @minusXdownY.name = '@minusXdownY'
-    @minusXdownZ.name = '@minusXdownZ'
-    @minusYupX.name   = '@minusYupX'
-    @minusYupZ.name   = '@minusYupZ'
-    @minusYdownX.name = '@minusYdownX'
-    @minusYdownZ.name = '@minusYdownZ'
-    @minusZupX.name   = '@minusZupX'
-    @minusZupY.name   = '@minusZupY'
-    @minusZdownX.name = '@minusZdownX'
-    @minusZdownY.name = '@minusZdownY'
+    @XupY.name        = 'XupY'
+    @XupZ.name        = 'XupZ'
+    @XdownY.name      = 'XdownY'
+    @XdownZ.name      = 'XdownZ'
+    @YupX.name        = 'YupX'
+    @YupZ.name        = 'YupZ'
+    @YdownX.name      = 'YdownX'
+    @YdownZ.name      = 'YdownZ'
+    @ZupX.name        = 'ZupX'
+    @ZupY.name        = 'ZupY'
+    @ZdownX.name      = 'ZdownX'
+    @ZdownY.name      = 'ZdownY'
+    @minusXupY.name   = 'minusXupY'
+    @minusXupZ.name   = 'minusXupZ'
+    @minusXdownY.name = 'minusXdownY'
+    @minusXdownZ.name = 'minusXdownZ'
+    @minusYupX.name   = 'minusYupX'
+    @minusYupZ.name   = 'minusYupZ'
+    @minusYdownX.name = 'minusYdownX'
+    @minusYdownZ.name = 'minusYdownZ'
+    @minusZupX.name   = 'minusZupX'
+    @minusZupY.name   = 'minusZupY'
+    @minusZdownX.name = 'minusZdownX'
+    @minusZdownY.name = 'minusZdownY'
     
 module.exports = Quaternion            

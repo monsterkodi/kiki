@@ -18,7 +18,7 @@ module.exports =
                 to shoot, press "$key(shoot)"
                 """
     player:   
-        coordinates:     [3,3,5]
+        coordinates:     [3,3,2]
         orientation:      rotx90
         nostatus:         0
     exits:    [

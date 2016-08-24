@@ -21,7 +21,8 @@ module.exports =
                 the color of a stone has no meaning.
                 """
     player:     
-        coordinates: [1,6,2]
+        coordinates: [4,4,0]
+        orientation: minusXupZ
     exits:    [
         name:         "exit"
         active:       1

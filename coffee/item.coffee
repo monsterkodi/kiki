@@ -46,8 +46,8 @@ class Item extends Actor
 
     getPos: -> new Pos @current_position
     setPos: (x,y,z) -> 
-        log "item.setPos #{@name} #{x} #{y} #{z}"
-        @setPosition newPos x,y,z
+        # log "item.setPos #{@name} #{x} #{y} #{z}"
+        @setPosition new Pos x,y,z
     
     setOrientation: (q) -> 
         @current_orientation = @orientation = new Quaternion q

@@ -175,8 +175,8 @@ module.exports =
     candy:            
         plate:
             color:  rgb 0.8, 0, 0.9
-        bulb:            
-            color:  rgb 0, 0, 0
+        bulb:
+            color:  rgb 1, 1, 1
         text:             
             color:  rgb 0.7, 0, 0.7
             bright: rgb 1, 0, 1
@@ -294,7 +294,7 @@ module.exports =
         plate:
             color:  rgb 0.1, 0.1, 0.6
         bulb:            
-            color:  rgb 0.1, 0.1, 0.1
+            color:  rgb 0.6, 0.6, 1
         stone:            
             color:  rgb 0, 0, 0.5
             opacity:      0.6
@@ -334,16 +334,18 @@ module.exports =
         plate:
             color:  rgb 0.9, 0.9, 0
         bulb:            
-            color:  rgb 0, 0, 0
+            color:  rgb 1, 1, 1
+        glow:
+            color:  rgb 1, 1, 1
         bomb:             
             color:  rgb 0.75, 0.75, 0
         stone:            
             color:  rgb 0.8, 0.85, 0
-            opacity:      0.6
+            opacity: 0.6
         switch:           
             color:  rgb 0.8, 0.8, 0
         gate:             
-            color:  rgb 1, 1, 0, 0.8
+            color:  rgb 1, 1, 0
         player:           
             color:  rgb 0.7, 0.7, 0
         tire:
@@ -356,8 +358,6 @@ module.exports =
             color:  rgb 0.7, 0.5, 0
         wire:             
             color:  rgb 1, 1, 0
-        glow:
-            color:  rgb 0, 0, 1
         text:             
             color:  rgb 0.7, 0.7, 0
             bright: rgb 1, 1, 0
@@ -373,7 +373,7 @@ module.exports =
         plate:
             color:  rgb 0.1, 0.6, 0.1
         bulb:            
-            color:  rgb 0, 0, 0
+            color:  rgb 0.3, 1, 0.3
         stone:            
             color:  rgb 0, 0.5, 0
         switch:           
@@ -448,12 +448,12 @@ module.exports =
     
     crazy:            
         raster:            
-            color: rgb 0.84, 0.22, 0.20
+            color:  rgb 0.84, 0.22, 0.20
         bulb:            
             color:  rgb 0, 0, 0
         stone:            
             color:  rgb 1, 1, 1
-            stone:        0.2
+            stone:  0.2
         switch:           
             color:  rgb 0.9, 1, 0.9
         gate:             
@@ -490,7 +490,7 @@ module.exports =
         plate:
             color:  rgb 0.36, 0.45, 0.30
         bulb:            
-            color:  rgb 0, 0, 0
+            color:  rgb 0.8, 0.8, 0.8
         stone:            
             color:  rgb 0.36, 0.45, 0.30
             opacity:      0.7

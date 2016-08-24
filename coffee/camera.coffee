@@ -53,6 +53,13 @@ class Camera extends Matrix
             @light.setPosition new Vector pos[X], pos[Y], pos[Z], 1.0 # positional light source
     
     getLookAtPosition: -> @getZVector().mul(-@eye_distance).plus @getPosition()
+    
+    setOrientation: (o) -> 
+        @setYVector o.rotate Vector.unitY
+        @setZVector o.rotate Vector.unitZ
+        @setXVector o.rotate Vector.minusX
+        @cam.up.copy @getYVector()
+        @cam.lookAt @getPosition().plus @getZVector()
             
     updateViewport: ->
         ss = world.screenSize

@@ -12,8 +12,8 @@ module.exports =
     size:       [11,11,11]
     help:       "$scale(1.5)mission:\nget to the exit!"
     player:     
-        coordinates:    [0,0,5]
-        nostatus:       0
+        coordinates:    [6,10,5]
+        orientation:    YdownZ
     exits:      [
         name:         "exit"
         active:       1

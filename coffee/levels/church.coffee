@@ -22,7 +22,9 @@ module.exports =
                 place a wire stone
                 next to the exit
                 """
-    player:   position: [1,0,0]
+    player:   
+        coordinates: [2,1,1]
+        orientation: minusYupZ
     exits:    [
         name:     "exit"
         active:   0

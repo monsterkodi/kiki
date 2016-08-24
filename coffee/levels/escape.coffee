@@ -24,8 +24,8 @@ module.exports =
                 move the stones
                 """
     player:   
-        coordinates:    [3,8,4]
-        orientation:    YupX
+        coordinates:    [3,0,4]
+        orientation:    minusXupY
     exits:    [
         name:           "exit"
         active:         0

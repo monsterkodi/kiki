@@ -19,9 +19,8 @@ module.exports =
                 feed it with electricity
                 """
     player:
-        coordinates:     [4,6,4]
-        nostatus:         0
-        orientation:      rot0
+        coordinates:     [4,5,3]
+        orientation:      YdownZ
     exits:  [
         name:         "exit"
         active:       0

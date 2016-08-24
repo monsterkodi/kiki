@@ -12,8 +12,8 @@ module.exports =
     size:       [5,25,5]
     help:       "Down the Rabbit Hole"
     player:     
-        coordinates:     [3,1,3]
-        nostatus:         0
+        coordinates:     [0,20,2]
+        orientation:     minusYupX
     exits:    [
         name:         "exit"
         active:       0

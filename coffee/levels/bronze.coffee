@@ -21,7 +21,9 @@ module.exports =
                 and close the circuit
                 with the wire stones"
                 """
-    player:     position: [0,1,0]
+    player:     
+        coordinates: [4,0,5]
+        orientation: minusYupZ
                 
     exits:      [
         name:         "exit"

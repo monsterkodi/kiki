@@ -22,7 +22,8 @@ module.exports =
                 next to the exit
                 """
     player:     
-        position: [0,-3,1]
+        coordinates: [4,1,0]
+        orientation: minusYupZ
     exits:    [
        name:         "exit"
        active:       0

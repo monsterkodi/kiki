@@ -20,7 +20,8 @@ module.exports =
                 the central wall
                 """
     player:
-        coordinates:    [0,0,2]
+        coordinates:    [0,4,2]
+        orientation:    minusXdownY
     exits:    [
         name:           "exit"
         active:         1

@@ -292,19 +292,19 @@ module.exports =
     
     blue:             
         plate:
-            color:  rgb 0.1, 0.1, 0.6
+            color:  rgb 0.3, 0.3, 1
         bulb:            
             color:  rgb 0.6, 0.6, 1
         stone:            
-            color:  rgb 0, 0, 0.5
-            opacity:      0.6
+            color:  rgb 0, 0, 0.7
+            opacity: 0.6
         switch:           
-            color:  rgb 0, 0, 0.6, 0.8
+            color:  rgb 0, 0, 0.6
         bomb:             
-            color:  rgb 0.2, 0.2, 0.9
-            opacity:      0.8
+            color:  rgb 0, 0, 1
+            opacity: 0.8
         gate:             
-            color:  rgb 0, 0.2, 1
+            color:  rgb 0, 0, 1
         player:           
             color:  rgb 0, 0, 0.7
         tire:
@@ -318,11 +318,11 @@ module.exports =
             bright: rgb 0.7, 0.8, 1
             dark:   rgb 0, 0, 0.6
         gear:             
-            color:  rgb 0.1, 0.1, 0.9
+            color:  rgb 0, 0, 0.9
         wire:             
-            color:  rgb 0.1, 0.1, 0.9
+            color:  rgb 0, 0, 0.9
         glow:
-            color:  rgb 1, 0.5, 0
+            color:  rgb 1, 1, 1
     
     # 000   000  00000000  000      000       0000000   000   000
     #  000 000   000       000      000      000   000  000 0 000

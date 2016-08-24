@@ -13,9 +13,8 @@ module.exports =
                 use the bombs :)
                 """
     player:   
-        coordinates:    [3,2,1]
-        nostatus:        0
-        orientation:    Quaternion.rotationAroundVector(270, new Vector(1,0,0))
+        coordinates:    [2,3,3]
+        orientation:    minusXdownZ
     exits:    [
         name:         "exit"
         active:       1

@@ -20,8 +20,8 @@ module.exports =
                 shoot at the 3 switches to activate the exit
                 """
     player: 
-        coordinates:     [0,5,0]
-        nostatus:         0
+        coordinates:     [5,5,4]
+        orientation:     XupY
     exits:    [
         name:         "exit"
         active:       0

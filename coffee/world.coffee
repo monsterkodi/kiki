@@ -244,6 +244,7 @@ class World extends Actor
         @player = new Player
         # log "player_dict", player_dict
         @player.setOrientation @dict.player.orientation ? rotx90
+        @player.camera.setOrientation @player.orientation
 
         if @dict.player.position?
             @addObjectAtPos @player, @decenter @dict.player.position

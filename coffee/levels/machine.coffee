@@ -12,9 +12,9 @@ module.exports =
     size:       [5,5,9]
     help:       "$scale(1.5)mission:\nactivate the exit!"
     player:     
-        position:     [0,0,0]
-        orientation:   roty270
-    exits:      [
+        coordinates:    [1,2,2]
+        orientation:    minusZupX
+    exits:      [ 
         name:         "exit"
         active:       0
         coordinates:  [1,2,8]

@@ -19,7 +19,9 @@ module.exports =
                 use the stones to
                 reach the exit
                 """
-    player:   position: [0,-3,1]
+    player:   
+        coordinates: [4,8,2]
+        orientation: YdownZ
                 
     exits:    [
         name:         "exit"

@@ -24,8 +24,8 @@ module.exports =
                 next to the exit
                 """
     player:
-        coordinates:  [3,0,3]
-        nostatus:     0
+        coordinates:  [6,2,0]
+        orientation:  XupZ
     exits:    [
         name:         "exit"
         active:       0

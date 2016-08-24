@@ -23,8 +23,8 @@ module.exports =
                 you have to fall of this stone, as well
                 """
     player:   
-        coordinates:     [6,11,6]
-        nostatus:         0
+        coordinates:    [0,6,2]
+        orientation:    minusZupX
     exits:    [
         name:         "exit"
         active:       1

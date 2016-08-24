@@ -12,8 +12,8 @@ module.exports =
                 while moving
                 """
     player:    
-        position:         [0,-1,-1]
-        orientation:      rotx90.mul roty180
+        coordinates:    [4,5,3]
+        orientation:    ZupX
     exits:    [
         name:         "exit"
         active:       1

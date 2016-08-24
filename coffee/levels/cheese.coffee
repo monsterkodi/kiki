@@ -18,8 +18,8 @@ module.exports =
                 activate all switches.
                 """
     player:
-        coordinates:   [3, 4,3]
-        nostatus:       0
+        coordinates:   [4,10,0]
+        orientation:    YupZ
     exits:    [
         name:           "exit"
         active:         0

@@ -13,7 +13,9 @@ module.exports =
                 when all mutant bots
                 are deactivated
                 """
-    player:   position: [0,-1,0]
+    player:   
+        coordinates: [7,1,8]
+        orientation: minusYdownZ
     exits:    [
         name:       "exit"
         active:     0
@@ -21,7 +23,7 @@ module.exports =
         world:      ()-> outro()
     ]
     create: ->
-# 
+        
         s = world.size
         {Mutant} = require '../items'
         

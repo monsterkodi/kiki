@@ -16,7 +16,9 @@ module.exports =
                 the switches move every time you play
                 there is only one way out!
                 """
-    player:   position: [0,1,0]
+    player:   
+        coordinates: [3,3,0]
+        orientation: YupZ
     exits:    [
         name:         "exit1"
         active:       0

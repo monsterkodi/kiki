@@ -17,7 +17,8 @@ module.exports =
                 use the stones
                 """
     player:   
-        position: [0,-1,0]
+        coordinates: [3,7,0]
+        orientation: YupZ
     exits:    [
         name:         "exit"
         active:       1
@@ -27,7 +28,7 @@ module.exports =
 
         s = world.size
         
-        for y in [-4...6]
+        for y in [-4...5]
             for x in [-3, -1, 1, 3]
                 for z in [-3, -1, 1, 3 ]
                     world.addObjectAtPos 'Stone', world.decenter x, y, z  

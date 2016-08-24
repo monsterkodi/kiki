@@ -16,8 +16,8 @@ module.exports =
                 to shoot, press $key(shoot)
                 """
     player:   
-        coordinates:     [3,0,3]
-        nostatus:         0
+        coordinates:    [5,4,1]
+        orientation:    minusYupZ
     exits:    [
         name:         "exit"
         active:       0

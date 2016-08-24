@@ -7,6 +7,7 @@
 
 module.exports =
     name:       "evil"
+    design:     "Michael Abel?"
     scheme:     "red"
     size:       [13,5,13]
     help:       """
@@ -26,7 +27,9 @@ module.exports =
                 
                 good luck!
                 """
-    player:     position: [1,1,1]
+    player:     
+        coordinates: [6,0,7]
+        orientation: ZupY
     exits:    [
         name:       "exit"
         active:     0

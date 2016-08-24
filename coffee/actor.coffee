@@ -78,8 +78,8 @@ class Actor extends Emitter
 
     initAction: ->
     performAction: ->
-    finishAction: -> log "actor.finishAction not implemented? #{@name}"
-    actionFinished: -> log 'actor.actionFinished not implemented? #{@name}'
+    finishAction: -> 
+    actionFinished: -> 
        
     #   000000000  000  00     00  00000000  00000000 
     #      000     000  000   000  000       000   000

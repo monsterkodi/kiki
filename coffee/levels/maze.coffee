@@ -17,9 +17,8 @@ module.exports =
                 but don't get confused :)
                 """
     player:   
-        coordinates:     [3,0,0]
-        nostatus:         0
-        orientation:      rotz90
+        coordinates:     [3,0,1]
+        orientation:      minusZdownX
     exits:    [
         name:         "exit"
         active:       1

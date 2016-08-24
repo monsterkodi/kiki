@@ -18,8 +18,8 @@ module.exports =
                 use the stones to reach it
                 """
     player:   
-        coordinates:     [4,3,4]
-        nostatus:         0
+        coordinates:     [4,3,2]
+        orientation:    minusXupZ
     exits:    [
         name:         "exit"
         active:       1

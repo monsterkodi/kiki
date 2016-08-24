@@ -17,17 +17,15 @@ module.exports =
                 it looks simpler than it is.
                 """
     player:      
-        "position": [0,-1,0]
-        "nostatus": 0
+        coordinates: [5,4,0]
+        orientation: minusZdownY
     exits:    [
-        "name":     "exit"
-        "active":   1
-        "position": [0,0,0]                                        
+        name:     "exit"
+        active:   1
+        position: [0,0,0]                                        
     ]
-    "create": ->
+    create: ->
         
-        # neutron_scheme["KikiStone"] = "base": [0.0, 0.5, 0.5, 0.5]
-    
         world.addObjectAtPos 'Stone', world.decenter 0,0,-5
         world.addObjectAtPos 'Stone', world.decenter 0,0,+5
         world.addObjectAtPos 'Stone', world.decenter +5,0,0

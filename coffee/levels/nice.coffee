@@ -12,7 +12,9 @@ module.exports =
     scheme:     "tron"
     size:       [11,11,11]
     help:       "$scale(1.5)mission:\nget to the exit!"
-    player:     position: [2,-1,0]
+    player:     
+        coordinates: [7,4,0]
+        orientation: minusZdownY
     exits:      [
         name:         "exit"
         active:       1

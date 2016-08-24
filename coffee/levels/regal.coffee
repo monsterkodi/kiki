@@ -1,9 +1,18 @@
+
+#   00000000   00000000   0000000    0000000   000    
+#   000   000  000       000        000   000  000    
+#   0000000    0000000   000  0000  000000000  000    
+#   000   000  000       000   000  000   000  000    
+#   000   000  00000000   0000000   000   000  0000000
+
 module.exports =
     name:       "regal"
     scheme:     "bronze"
     size:       [7,3,9]
     help:       "$scale(1.5)mission:\nactivate the exit!"
-    player:     position:         [0,0,0]
+    player:     
+        coordinates:    [3,2,4]
+        orientation:    XdownY
     exits:      [
         name:         "exit"
         active:       0

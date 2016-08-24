@@ -8,7 +8,9 @@ module.exports =
                 to get to the exit,
                 use the stones
                 """
-    player:    position:         [1,0,1]
+    player:    
+        coordinates: [3,4,8]
+        orientation: minusXdownZ
     exits:    [
         name:         "exit"
         active:       1

@@ -18,7 +18,9 @@ module.exports =
                 to get to the exit,
                 move the stones
                 """
-    player:     position:     [0,-3,0]
+    player:     
+        coordinates:    [2,3,2]
+        orientation:    minusZdownX
     exits:      [
         name:         "exit"
         active:       1

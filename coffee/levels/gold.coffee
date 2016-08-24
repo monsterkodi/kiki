@@ -16,7 +16,7 @@ module.exports =
                 move the stones to reach it
                 """
     player:
-        coordinates: [1,0,0]
+        coordinates: [1,1,0]
         orientation: minusYupZ
         
     exits:    [

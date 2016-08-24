@@ -31,7 +31,6 @@ module.exports =
         shading:        THREE.FlatShading
         transparent:    true
         opacity:        1
-        shininess:      4
 
     mutant: new THREE.MeshPhongMaterial
         color:          0x888888
@@ -55,7 +54,7 @@ module.exports =
         shading:        THREE.SmoothShading
         transparent:    true
         opacity:        0.8
-        shininess:      5
+        shininess:      50
         depthWrite:     false
     
     gear: new THREE.MeshPhongMaterial 
@@ -99,23 +98,18 @@ module.exports =
     raster: new THREE.MeshPhongMaterial 
         side:           THREE.FrontSide
         shading:        THREE.SmoothShading
-        shininess:      20
 
     wall: new THREE.MeshPhongMaterial 
-        # color:          0x770000
         side:           THREE.FrontSide
         shading:        THREE.SmoothShading
-        shininess:      20
           
     plate: new THREE.MeshPhongMaterial 
         side:           THREE.FrontSide
         shading:        THREE.SmoothShading
-        shininess:      10
         emissiveIntensity: 0.05
 
     stone: new THREE.MeshPhongMaterial 
         side:           THREE.DoubleSide
         shading:        THREE.SmoothShading
         transparent:    true
-        shininess:      20
     

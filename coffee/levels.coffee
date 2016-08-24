@@ -11,21 +11,21 @@ class Levels
         @list = [
             # "test",
             # --- introduction
-            "steps", 
-            "start", 
-            "blocks",
-            "move", 
-            "electro", 
-            "elevate", 
-            "throw", 
+            "steps",   # ok
+            "start",   # ok
+            "move",    # ok
+            "electro", # ok
+            "elevate", # ok
+            "jump",    # ok
             # # --- easy
+            "blocks",  # ok
+            "throw", 
             "gold", 
-            "jump", 
             "escape", 
             "gears", 
             "gamma", 
             "cube", 
-            "switch", 
+            "switch", # exit doesnt open, other scheme
             # # "borg", 
             "mini", 
             "bombs", 

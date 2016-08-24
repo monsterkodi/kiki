@@ -8,7 +8,7 @@
 module.exports =
     name:       "cube"
     deisgn:     'Michael Abel'
-    scheme:     "default"
+    scheme:     "red"
     size:       [5,5,5]
     help:       "reach the exit!"
     player:

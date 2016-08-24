@@ -60,7 +60,7 @@ module.exports =
         plate:
             color:  rgb 0.05, 0.05, 0.2
         bulb:            
-            color:  rgb 0, 0, 1
+            color:  rgb 0.4, 0.4, 1
         bomb:             
             color:  rgb 0.5, 0, 0
         stone:            
@@ -70,9 +70,9 @@ module.exports =
         gate:             
             color:  rgb 1, 1, 0
         player:           
-            color:  rgb 0.5, 0.5, 0.5
+            color:  rgb 1, 0.6, 0
         tire:         
-            color:  rgb 0, 0, 0.5
+            color:  rgb 0, 0, 0.6
         mutant:
             color:  rgb 0.5, 0, 0
         mutantTire:
@@ -318,7 +318,8 @@ module.exports =
             bright: rgb 0.7, 0.8, 1
             dark:   rgb 0, 0, 0.6
         gear:             
-            color:  rgb 0, 0, 0.9
+            color:  rgb 0.8, 0.4, 0
+            shininess: 80
         wire:             
             color:  rgb 0, 0, 0.9
         glow:
@@ -332,9 +333,15 @@ module.exports =
     
     yellow:           
         plate:
-            color:  rgb 0.9, 0.9, 0
+            color:    rgb 0.9, 0.9, 0
+            specular: rgb 0.005, 0.005, 0
+            shininess: 40
+        raster:
+            specular: rgb 0.05, 0.05, 0
+            shininess: 180
         bulb:            
             color:  rgb 1, 1, 1
+            emissive:  rgb 1,1,0
         glow:
             color:  rgb 1, 1, 1
         bomb:             
@@ -342,14 +349,18 @@ module.exports =
         stone:            
             color:  rgb 0.8, 0.85, 0
             opacity: 0.6
+            shininess: 130
         switch:           
             color:  rgb 0.8, 0.8, 0
         gate:             
             color:  rgb 1, 1, 0
         player:           
-            color:  rgb 0.7, 0.7, 0
+            color:  rgb 0.8, 0.8, 0
+            shininess: 10
         tire:
-            color:  rgb 0.3, 0.3, 0
+            color:  rgb 0.4, 0.4, 0
+            specular: rgb 0.4, 0.4, 0
+            shininess: 10
         mutant:           
             color:  rgb 0.3, 0.3, 0
         mutantTire:
@@ -375,7 +386,10 @@ module.exports =
         bulb:            
             color:  rgb 0.3, 1, 0.3
         stone:            
-            color:  rgb 0, 0.5, 0
+            color:     rgb 0, 0.2, 0
+            # specular:  rgb 0, 0.01, 0
+            opacity:   0.8
+            shininess: 60
         switch:           
             color:  rgb 0, 0.6, 0
         bomb:            

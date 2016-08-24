@@ -1,0 +1,107 @@
+0  size: 7 7 13   'steps'      scheme: 'default'
+1  size: 7 5 11   'start'      scheme: 'default'
+2  size: 7 7 7    'move'       scheme: 'red'
+3  size: 9 7 9    'electro'    scheme: 'metal'
+4  size: 9 5 7    'elevate'    scheme: 'bronze'
+5  size: 7 7 13   'jump'       scheme: 'red'
+6  size: 18 12 5  'blocks'     scheme: 'default'
+7  size: 5 7 7    'throw'      scheme: 'tron'
+8  size: 3 11 3   'gold'       scheme: 'yellow'
+9  size: 7 9 7    'escape'     scheme: 'metal'
+10 size: 9 9 9    'gears'      scheme: 'blue'
+11 size: 10 10 10 'gamma'      scheme: 'tron'
+12 size: 5 5 5    'cube'       scheme: 'red'
+13 size: 7 7 7    'switch'     scheme: 'tron'
+14 size: 5 5 7    'mini'       scheme: 'tron'
+15 size: 9 9 9    'bombs'      scheme: 'red'
+16 size: 9 9 6    'sandbox'    scheme: 'bronze'
+17 size: 9 17 9   'energy'     scheme: 'default'
+18 size: 4 4 4    'maze'       scheme: 'default'
+world.unsetObject [WARNING] no cell at pos: 
+x   3
+y   3
+z   4
+world.unsetObject [WARNING] no cell at pos: 
+x   5
+y   1
+z   3
+world.unsetObject [WARNING] no cell at pos: 
+x   2
+y   1
+z   6
+world.unsetObject [WARNING] no cell at pos: 
+x   6
+y   1
+z   2
+world.unsetObject [WARNING] no cell at pos: 
+x   3
+y   1
+z   3
+world.unsetObject [WARNING] no cell at pos: 
+x   5
+y   1
+z   5
+world.unsetObject [WARNING] no cell at pos: 
+x   6
+y   1
+z   6
+19 size: 13 13 13 'love'       scheme: 'red'
+20 size: 9 9 5    'chain'      scheme: 'candy'
+world.unsetObject [WARNING] no cell at pos: 
+x   6
+y   0
+z   7
+21 size: 9 9 15   'towers'     scheme: 'metal'
+22 size: 7 7 7    'edge'       scheme: 'candy'
+23 size: 21 21 21 'random'     scheme: 'default'
+24 size: 7 7 9    'plate'      scheme: 'blue'
+25 size: 11 11 11 'nice'       scheme: 'tron'
+26 size: 9 9 9    'entropy'    scheme: 'green'
+27 size: 11 11 11 'neutron'    scheme: 'neutron'
+28 size: 9 9 9    'strange'    scheme: 'default'
+29 size: 9 9 9    'core'       scheme: 'green'
+30 size: 9 11 15  'slick'      scheme: 'tron'
+31 size: 9 9 5    'bridge'     scheme: 'red'
+32 size: 7 7 11   'flower'     scheme: 'metal'
+33 size: 11 11 12 'stones'     scheme: 'blue'
+34 size: 7 5 5    'walls'      scheme: 'default'
+1 0 0
+1 0 1
+1 0 2
+35 size: 9 9 9    'grid'       scheme: 'candy'
+36 size: 9 7 9    'rings'      scheme: 'default'
+37 size: 9 6 9    'bronze'     scheme: 'bronze'
+38 size: 11 11 11 'pool'       scheme: 'green'
+39 size: 11 11 11 'grasp'      scheme: 'blue'
+40 size: 13 15 13 'fallen'     scheme: 'blue'
+41 size: 11 12 7  'cheese'     scheme: 'yellow'
+42 size: 9 5 5    'invisimaze' scheme: 'yellow'
+43 size: 5 25 5   'spiral'     scheme: 'zen'
+44 size: 9 9 9    'hidden'     scheme: 'metal'
+45 size: 5 7 5    'church'     scheme: 'yellow'
+46 size: 11 11 11 'mesh'       scheme: 'default'
+47 size: 7 9 7    'columns'    scheme: 'green'
+48 size: 5 5 9    'machine'    scheme: 'tron'
+49 size: 9 9 9    'captured'   scheme: 'default'
+50 size: 9 9 9    'circuit'    scheme: 'tron'
+51 size: 7 3 9    'regal'      scheme: 'bronze'
+52 size: 11 9 11  'conductor'  scheme: 'default'
+53 size: 13 5 13  'evil'       scheme: 'red'
+54 size: 9 9 9    'mutants'    scheme: 'blue'
+-1 size: 0 0 0    'undefined'  scheme: 'default'
+world.unsetObject [WARNING] no cell at pos: 
+x   8
+y   0
+z   1
+world.unsetObject [WARNING] no cell at pos: 
+x   6
+y   4
+z   0
+world.unsetObject [WARNING] no cell at pos: 
+x   4
+y   3
+z   7
+world.unsetObject [WARNING] no cell at pos: 
+x   1
+y   3
+z   6

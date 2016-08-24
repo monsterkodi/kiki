@@ -21,7 +21,8 @@ class Mutant extends Bot
         super()
         @setOpacity 0.6
         @getActionWithId(Action.FALL).duration = 40
-        
+      
+    isMutant: -> true  
     bulletImpact: -> @health -= 0.1
     bulletHitSound: -> @health > 0 and 'BULLET_HIT_MUTANT' or 'BULLET_HIT_OBJECT'
     

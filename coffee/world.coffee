@@ -185,7 +185,7 @@ class World extends Actor
                 @dict = worldDict
                 
         @level_index = World.levels.list.indexOf @level_name
-        log "World.create #{@level_index} ---------------------- #{@level_name}"
+        log "World.create #{@level_index} size: #{new Pos(@dict["size"]).str()} ---------------------- '#{@level_name}' scheme: '#{@dict.scheme ? 'default'}'"
 
         @creating = true
             
@@ -268,13 +268,21 @@ class World extends Actor
     applyScheme: (scheme) ->
         return if not Scheme[scheme]
         
-        log "world.applyScheme #{scheme}"
+        # log "world.applyScheme #{scheme}"
         
         colors = _.clone Scheme[scheme]
         
         opacity =
             stone: 0.7
             bomb:  0.9
+            
+        shininess = 
+            tire:   4
+            plate:  10
+            raster: 20
+            wall:   20
+            stone:  20
+            gear:   20
             
         colors.plate.emissive ?= colors.plate.color
         colors.bulb.emissive  ?= colors.bulb.color
@@ -292,6 +300,8 @@ class World extends Actor
             mat.opacity  = v.opacity ? opacity[k] ? 1
             mat.specular = v.specular ? new THREE.Color(v.color).multiplyScalar 0.2
             mat.emissive = v.emissive ? new THREE.Color 0,0,0
+            if shininess[k]?
+                mat.shininess = v.shininess ? shininess[k]
 
     #  000      000   0000000   000   000  000000000
     #  000      000  000        000   000     000   
@@ -320,8 +330,8 @@ class World extends Actor
           
     exitLevel: (action) =>
         @finish()
-        log "world.level_index #{world.level_index} nextLevel #{World.levels.list[world.level_index+1]}"
-        world.create World.levels.list[world.level_index+1]
+        # log "world.level_index #{world.level_index} nextLevel #{World.levels.list[world.level_index+1]}"
+        world.create World.levels.list[world.level_index+(_.isNumber(action) and action or 1)]
 
     activate: (objectName) -> @getObjectWithName(objectName)?.setActive? true
     
@@ -896,6 +906,7 @@ class World extends Actor
             when '-' then @speed = Math.max 1,  @speed-1
             when 'r' then @restart()
             when 'n' then @exitLevel()
+            when 'm' then @exitLevel 5
 
     modKeyComboEventUp: (mod, key, combo, event) ->
         return if @player?.modKeyComboEventUp mod, key, combo, event        

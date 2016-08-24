@@ -7,7 +7,7 @@
 
 module.exports =
     name:       "switch"
-    scheme:     "yellow"
+    scheme:     "tron"
     size:       [7,7,7]
     help:       """
                 $scale(1.5)mission:

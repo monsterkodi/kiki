@@ -24,7 +24,7 @@ module.exports =
     exits:    [
         name:         "exit"
         active:       1
-        position:     [0,0,4]
+        position:     [0,0,3]
     ]
     create: ->
 

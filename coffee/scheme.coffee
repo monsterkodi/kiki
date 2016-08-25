@@ -395,9 +395,9 @@ module.exports =
             color:  rgb 1, 1, 1
             opacity: 0.6
         switch:           
-            color:  rgb 0.9, 1, 0.9
+            color:  rgb 1, 1, 1
         gate:             
-            color:  rgb 1, 1, 1, 0.8
+            color:  rgb 1, 1, 1
         player:           
             color:  rgb 0.6, 0.6, 0.6
         tire:

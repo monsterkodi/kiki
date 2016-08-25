@@ -56,8 +56,11 @@ class Bullet extends Item
         @mesh.scale.set @size, @size, @size
     
     hitObjectAtPos: (pos) ->
-        if world.isInvalidPos(pos) or world.isOccupiedPos pos
-            hitObject = world.getRealOccupantAtPos pos
+        
+        world.switchAtPos(pos)?.bulletImpact()
+            
+        if world.isInvalidPos(pos) or world.isOccupiedPos pos 
+            hitObject = world.getRealOccupantAtPos pos 
             if hitObject != @src_object
                 if hitObject?
                     hitObject.bulletImpact()

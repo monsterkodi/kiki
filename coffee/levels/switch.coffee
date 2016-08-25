@@ -14,17 +14,7 @@ module.exports =
                 activate the exit!
                 
                 to activate the exit, 
-                activate the 4 switches
-                
-                to activate the switches, 
-                shoot them
-                
-                to be able to shoot the switches,
-                move the center stone
-                to move the center stone,
-                use the bomb.
-                
-                the bomb will detonate if you shoot it
+                activate the 4 switches.
                 """
     player:
         coordinates:    [3,4,3]
@@ -38,15 +28,13 @@ module.exports =
 
         s = world.size
         h = 0
-        # bomb and stones
         
         world.addObjectAtPos 'Stone', s.x/2, s.y/2, s.z/2
         world.addObjectAtPos 'Stone', s.x/2, s.y-2, s.z/2
         
-        # world.addObjectAtPos 'Bomb', s.x/2, 1, s.z/2
+        world.addObjectAtPos 'Bomb', s.x/2, 1, s.z/2
         
         # stone frames for switches
-        
         world.addObjectAtPos 'Wall', world.decenter  0,  h-1, s.z/2
         world.addObjectAtPos 'Wall', world.decenter  0,  h+1, s.z/2
         world.addObjectAtPos 'Wall', world.decenter  1,  h, s.z/2
@@ -77,17 +65,17 @@ module.exports =
             exit.setActive world.switch_counter == 4 
         
         Switch = require '../switch'
-        switch1 = new Switch()
-        switch1.getEventWithName("switched").addAction(world.continuous((s=switch1) -> switched(s)))
-        switch2 = new Switch()
-        switch2.getEventWithName("switched").addAction(world.continuous((s=switch2) -> switched(s)))
-        switch3 = new Switch()
-        switch3.getEventWithName("switched").addAction(world.continuous((s=switch3) -> switched(s)))
-        switch4 = new Switch()
-        switch4.getEventWithName("switched").addAction(world.continuous((s=switch4) -> switched(s)))
+        s1 = new Switch()
+        s1.getEventWithName("switched").addAction world.continuous -> switched s1
+        s2 = new Switch()                                                     
+        s2.getEventWithName("switched").addAction world.continuous -> switched s2
+        s3 = new Switch()                                                     
+        s3.getEventWithName("switched").addAction world.continuous -> switched s3
+        s4 = new Switch()                                                     
+        s4.getEventWithName("switched").addAction world.continuous -> switched s4
         
-        world.addObjectAtPos switch1, world.decenter -s.x/2+1, 0, 0
-        world.addObjectAtPos switch2, world.decenter  s.x/2, 0, 0
-        world.addObjectAtPos switch3, world.decenter 0, 0, -s.z/2+1
-        world.addObjectAtPos switch4, world.decenter 0, 0,  s.z/2
+        world.addObjectAtPos s1, world.decenter -s.x/2+1, 0, 0
+        world.addObjectAtPos s2, world.decenter  s.x/2, 0, 0
+        world.addObjectAtPos s3, world.decenter 0, 0, -s.z/2+1
+        world.addObjectAtPos s4, world.decenter 0, 0,  s.z/2
         

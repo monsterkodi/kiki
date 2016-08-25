@@ -10,7 +10,6 @@ class Levels
         @dict = {}
         @list = [
             # "test",
-            "invisimaze",
             # --- introduction
             "steps",   # ok
             "start",   # ok
@@ -24,9 +23,9 @@ class Levels
             "gold", 
             "escape", 
             "gears", 
-            "gamma",  # scheme change doesn't work
+            "gamma",  
             "cube", 
-            "switch", # exit doesnt open, other scheme
+            "switch"
             # # "borg", 
             "mini", 
             "bombs", 

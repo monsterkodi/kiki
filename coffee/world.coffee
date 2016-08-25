@@ -38,6 +38,7 @@ now         = require 'performance-now'
 Wire,
 Gear,
 Stone,
+Switch,
 MotorGear,
 MotorCylinder,
 Face}       = require './items'
@@ -456,7 +457,7 @@ class World extends Actor
             occupant.object
         else
             occupant
-
+    switchAtPos: (pos) -> @getObjectOfTypeAtPos Switch, pos
     setObjectAtPos: (object, pos) ->
         pos = new Pos pos
         if @isInvalidPos pos

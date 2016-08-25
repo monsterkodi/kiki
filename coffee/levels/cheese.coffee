@@ -61,19 +61,20 @@ module.exports =
         
         world.switch_counter = 0
         switched = (swtch) ->
-            world.switch_counter += swtch.active and 1 or -1
+            world.switch_counter += (swtch.active and 1 or -1)
+            log "world.switch_counter #{swtch} #{world.switch_counter}"
             exit = world.getObjectWithName "exit"
             exit.setActive world.switch_counter == 4
         
         Switch = require '../switch'
         switch1 = new Switch
-        switch1.getEventWithName("switched").addAction world.continuous (s=switch1) -> switched s
+        switch1.getEventWithName("switched").addAction world.continuous -> switched switch1
         switch2 = new Switch
-        switch2.getEventWithName("switched").addAction world.continuous (s=switch2) -> switched s
+        switch2.getEventWithName("switched").addAction world.continuous -> switched switch2
         switch3 = new Switch
-        switch3.getEventWithName("switched").addAction world.continuous (s=switch3) -> switched s
+        switch3.getEventWithName("switched").addAction world.continuous -> switched switch3
         switch4 = new Switch
-        switch4.getEventWithName("switched").addAction world.continuous (s=switch4) -> switched s
+        switch4.getEventWithName("switched").addAction world.continuous -> switched switch4
         
         world.addObjectAtPos switch1, 1, 0 ,2
         world.addObjectAtPos switch2, 7, 1, 0

@@ -14,7 +14,7 @@ Material   = require './material'
 
 class Switch extends Item
 
-    isSpaceEgoistic: -> true
+    isSpaceEgoistic: -> false # true?
     
     constructor: (active=false) ->
 

@@ -10,7 +10,7 @@ class Levels
         @dict = {}
         @list = [
             # "test",
-            "grid",
+            "invisimaze",
             # --- introduction
             "steps",   # ok
             "start",   # ok
@@ -58,7 +58,6 @@ class Levels
             "grasp", 
             "fallen", 
             "cheese", 
-            "invisimaze", 
             "spiral", 
             # --- tough
             "hidden", 

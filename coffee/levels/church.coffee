@@ -7,7 +7,7 @@
 
 module.exports =
     name:       "church"
-    scheme:     "yellow"
+    scheme:     "bronze"
     size:       [5,7,5]
     help:       """
                 $scale(1.5)mission:

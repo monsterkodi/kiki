@@ -431,9 +431,9 @@ module.exports =
         raster:            
             color:  rgb 1,1,1
         stone:
-            color:  rgb 1,0,0
-            specular: rgb 1,1,1
-            shininess: 1000
+            color:      rgb 1,0,0
+            specular:   rgb 1,1,1
+            shininess:  1000
         wall:
             color: rgb 1,0,0
         bulb:            
@@ -443,16 +443,19 @@ module.exports =
         gate:             
             color:  rgb 1, 0, 0
         player:           
-            color:  rgb 0.6, 0.6, 0.6
+            color:  rgb 1,1,1
         tire:
-            color:  rgb 0.3, 0.3, 0.3
+            color:  rgb 1,1,1
+            shininess: 100
         mutant:           
             color:  rgb 0.8, 0.8, 0.8
         mutantTire:         
             color:  rgb 0.7, 0.7, 0.7
         bomb:             
-            color:  rgb 0.4, 0.4, 0.5
-            opacity:      0.2
+            color:  rgb 1,1,1
+            specular: rgb 1,1,1
+            opacity: 0.2
+            shininess: 2000
         gear:             
             color:  rgb 0.2, 0.4, 0.5
         wire:             

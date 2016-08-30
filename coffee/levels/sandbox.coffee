@@ -30,13 +30,14 @@ module.exports =
     create: ->
         
         switched = ->
-            unoccupied = false
+            occupied = true
             for i in [3...6]
                 for j in [3...6]
-                    if world.isUnoccupiedPos i,j,0
-                        unoccupied=true
-                
-            world.toggle "exit" if not unoccupied
+                    if world.isUnoccupiedPos [i,j,0]
+                        log "isUnoccupiedPos #{i} #{j}"
+                        occupied = false
+            log "toggle? #{occupied}"    
+            world.toggle "exit" if occupied
             
         Switch = require '../switch'    
         swtch = new Switch

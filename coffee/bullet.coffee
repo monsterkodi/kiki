@@ -13,7 +13,7 @@ class Bullet extends Item
     
     constructor: () ->
         @size = 0.2
-        @src_object = null
+        @shooter = null
         super
         @addAction new Action @, Action.FLY,     "fly",     40
         @addAction new Action @, Action.EXPLODE, "explode", 200
@@ -21,8 +21,8 @@ class Bullet extends Item
     del: ->
         if @mesh?
             world.scene.remove @mesh
-            _.pull world.objects, @
             Timer.removeActionsOfObject @
+            _.pull world.objects, @
             @mesh = null
 
     createMesh: ->
@@ -35,7 +35,7 @@ class Bullet extends Item
         world.addObject bullet 
         bullet.direction = bot.currentDir()
         bullet.setPosition bot.position.plus bullet.direction.mul 0.8
-        bullet.src_object = bot
+        bullet.shooter = bot
         bullet.mesh.material.color.set bot.mesh.material.color
         world.playSound 'BULLET_SHOT', bot.getPos()
     
@@ -49,7 +49,7 @@ class Bullet extends Item
             @current_position = @position.plus @direction.mul relTime
         else if action.id == Action.EXPLODE
             @size = 0.2 + relTime/2.0
-            @mesh.material.opacity = 0.8 * (1.0-relTime)
+            @mesh?.material.opacity = 0.8 * (1.0-relTime)
     
     step: (step) -> 
         @mesh.position.copy @current_position
@@ -61,7 +61,7 @@ class Bullet extends Item
             
         if world.isInvalidPos(pos) or world.isOccupiedPos pos 
             hitObject = world.getRealOccupantAtPos pos 
-            if hitObject != @src_object
+            if hitObject != @shooter
                 if hitObject?
                     hitObject.bulletImpact()
                     world.playSound hitObject.bulletHitSound?() ? 'BULLET_HIT_OBJECT'

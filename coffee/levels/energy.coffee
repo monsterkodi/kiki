@@ -79,13 +79,13 @@ module.exports =
         
         Switch = require '../switch'
         switch1 = new Switch
-        switch1.getEventWithName("switched").addAction world.continuous (sw=switch1) -> switched sw
+        switch1.getEventWithName("switched").addAction world.continuous -> switched switch1
         switch2 = new Switch
-        switch2.getEventWithName("switched").addAction world.continuous (sw=switch2) -> switched sw
+        switch2.getEventWithName("switched").addAction world.continuous -> switched switch2
         switch3 = new Switch
-        switch3.getEventWithName("switched").addAction world.continuous (sw=switch3) -> switched sw
+        switch3.getEventWithName("switched").addAction world.continuous -> switched switch3
         switch4 = new Switch
-        switch4.getEventWithName("switched").addAction world.continuous (sw=switch4) -> switched sw
+        switch4.getEventWithName("switched").addAction world.continuous -> switched switch4
         
         world.addObjectAtPos switch1, world.decenter -s.x/2+1, 4, 0
         world.addObjectAtPos switch2, world.decenter  s.x/2, 4, 0

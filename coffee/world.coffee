@@ -488,8 +488,8 @@ class World extends Actor
             cell.removeObject object
             if cell.isEmpty()
                 @cells[@posToIndex(pos)] = null
-        else 
-            log 'world.unsetObject [WARNING] no cell at pos:', pos
+        # else 
+            # log 'world.unsetObject [WARNING] no cell at pos:', pos
 
     newObject: (object) ->
         if _.isString object

@@ -28,6 +28,7 @@ class Pos
         if Number.isNaN @x
             throw new Error
 
+    length:    -> Math.sqrt @x*@x + @y*@y + @z*@z
     vector:    -> new Vector @x, @y, @z 
     minus: (p) -> new Pos @x-p.x, @y-p.y, @z-p.z
     plus:  (p) -> new Pos @x+p.x, @y+p.y, @z+p.z

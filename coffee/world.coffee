@@ -678,6 +678,17 @@ class World extends Actor
             
         @player.setOpacity clamp 0, 1, @player.camera.getPosition().minus(@player.current_position).length()-0.4
         
+        stones = []
+        for o in @objects
+            if o instanceof Stone
+                stones.push o
+        stones.sort (a,b) => b.getPos().minus(@player.camera.getPosition()).length() - a.getPos().minus(@player.camera.getPosition()).length()
+        
+        order = 100
+        for stone in stones
+            stone.mesh.renderOrder = order
+            order += 1
+        
         @sun.position.copy camera.position
         @renderer.render @scene, camera
     

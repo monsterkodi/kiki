@@ -25,6 +25,7 @@ Timer       = require './timer'
 Actor       = require './actor'
 Item        = require './item'
 Action      = require './action'
+ScreenText  = require './screentext'
 TmpObject   = require './tmpobject'
 Pushable    = require './pushable'
 Material    = require './material'
@@ -74,10 +75,10 @@ class World extends Actor
         @renderer = new THREE.WebGLRenderer 
             antialias:              true
             logarithmicDepthBuffer: false
-            autoClear:              true
+            autoClear:              false
             sortObjects:            true
 
-        @renderer.setClearColor 0x000000        
+        # @renderer.setClearColor 0x000000        
         @renderer.setSize @view.offsetWidth, @view.offsetHeight
         @renderer.shadowMap.type = THREE.PCFSoftShadowMap
                         
@@ -127,9 +128,11 @@ class World extends Actor
     @initGlobal: () ->
         
         return if @levels?
-          
-        Sound.init()
         global.log = log
+          
+        ScreenText.init()
+        Sound.init()
+        
         global.rot0    = Quaternion.rot_0
         global.rotx90  = Quaternion.rot_90_X
         global.roty90  = Quaternion.rot_90_Y
@@ -190,19 +193,14 @@ class World extends Actor
 
         @creating = true
             
-        @setSize @dict["size"] # this removes all objects
+        @setSize @dict.size # this removes all objects
         
         @applyScheme @dict.scheme ? 'default'
 
         # ............................................................ intro text   
-        # if "intro" in @dict
-            # if not @preview
-                # intro_text = KikiScreenText()
-                # intro_text.addText @dict["intro"]
-                # intro_text.show()
-            # @setName @dict["intro"]
-        # else
-            # @setName "noname"
+        
+        if not @preview
+            @text = new ScreenText @dict.name
         
         # ............................................................ escape
         # escape_event = Controller.getEventWithName ("escape")
@@ -278,6 +276,7 @@ class World extends Actor
         opacity =
             stone: 0.7
             bomb:  0.9
+            text:  0
             
         shininess = 
             tire:   4
@@ -286,6 +285,7 @@ class World extends Actor
             wall:   20
             stone:  20
             gear:   20
+            text:   200
             
         colors.plate.emissive ?= colors.plate.color
         colors.bulb.emissive  ?= colors.bulb.color
@@ -297,7 +297,7 @@ class World extends Actor
         colors.wirePlate.color ?= colors.wire.color
         for k,v of colors
             # log "#{k} #{v.color?.r} #{v.color?.g} #{v.color?.b}", v
-            continue if k == 'text'
+            # continue if k == 'text'
             mat = Material[k]
             mat.color    = v.color
             mat.opacity  = v.opacity ? opacity[k] ? 1
@@ -690,7 +690,9 @@ class World extends Actor
             order += 1
         
         @sun.position.copy camera.position
+        @renderer.autoClearColor = false
         @renderer.render @scene, camera
+        @renderer.render @text.scene, @text.camera if @text
     
     #   000000000  000  00     00  00000000
     #      000     000  000   000  000     
@@ -729,11 +731,12 @@ class World extends Actor
         camera?.updateProjectionMatrix()
         @renderer?.setSize w,h
         @screenSize = new Size w,h
+        @text?.resized w,h
 
     getNearestValidPos: (pos) ->
-        new KikiPos Math.min(size.x-1, Math.max(pos.x, 0)), 
-                    Math.min(size.y-1, Math.max(pos.y, 0)), 
-                    Math.min(size.z-1, Math.max(pos.z, 0))
+        new Pos Math.min(@size.x-1, Math.max(pos.x, 0)), 
+                Math.min(@size.y-1, Math.max(pos.y, 0)), 
+                Math.min(@size.z-1, Math.max(pos.z, 0))
     
     isUnoccupiedPos: (pos) -> not @isOccupiedPos pos
     isOccupiedPos:   (pos) ->        
@@ -915,6 +918,7 @@ class World extends Actor
     #   000   000  00000000     000   
     
     modKeyComboEventDown: (mod, key, combo, event) ->
+        @text?.fadeOut()
         return if @player?.modKeyComboEventDown mod, key, combo, event
         switch combo
             when '=' then @speed = Math.min 10, @speed+1

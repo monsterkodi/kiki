@@ -41,8 +41,6 @@ module.exports =
             color:  rgb 0, 0, 0.2
         text:             
             color:  rgb 0.8, 0.8, 0
-            bright: rgb 1, 1, 0
-            dark:   rgb 0.6, 0.4, 0
         gear:             
             color:  rgb 0.1, 0.1, 0.9
         wire:             
@@ -78,9 +76,7 @@ module.exports =
         mutantTire:
             color:  rgb 0, 0, 0.2
         text:             
-            color:  rgb 0.8, 0.8, 0
-            bright: rgb 1, 1, 0
-            dark:   rgb 0.6, 0.4, 0
+            color:  rgb 0.3, 0.3, 0.9
         gear:             
             color:  rgb 0.1, 0.1, 0.9
         wire:             
@@ -117,9 +113,7 @@ module.exports =
         mutantTire:
             color:  rgb 0.5, 0, 0
         text:             
-            color:  rgb 0.8, 0.8, 0
-            bright: rgb 1, 1, 0
-            dark:   rgb 0.6, 0.4, 0
+            color:  rgb 0.8, 0.8, 0.8
         gear:             
             color:  rgb 0.1, 0.1, 0.9
         wire:             
@@ -142,8 +136,6 @@ module.exports =
             color:  rgb 1, 1, 1
         text:             
             color:  rgb 0.7, 0, 0.7
-            bright: rgb 1, 0, 1
-            dark:   rgb 0.4, 0, 0.4
         bomb:             
             color:  rgb 1, 0.8, 0
         stone:            
@@ -206,9 +198,7 @@ module.exports =
         bomb:             
             color:  rgb 0.9, 0.7, 0.1
         text:             
-            color:  rgb 0.7, 0.5, 0.1
-            bright: rgb 0.9, 0.7, 0.15
-            dark:   rgb 0.6, 0.4, 0
+            color:  rgb 0.9, 0.7, 0.1
     
     # 00000000   00000000  0000000  
     # 000   000  000       000   000
@@ -245,9 +235,7 @@ module.exports =
         wire:             
             color:  rgb 0.5, 0, 0
         text:             
-            color:  rgb 1, 0.5, 0
-            bright: rgb 1, 0.8, 0
-            dark:   rgb 0.4, 0.2, 0
+            color:  rgb 1, 0, 0
     
     # 0000000    000      000   000  00000000
     # 000   000  000      000   000  000     
@@ -279,9 +267,7 @@ module.exports =
         mutantTire:
             color:  rgb 0, 0, 0.7
         text:             
-            color:  rgb 0.2, 0.4, 0.8
-            bright: rgb 0.7, 0.8, 1
-            dark:   rgb 0, 0, 0.6
+            color:  rgb 0.8, 0.4, 0
         gear:             
             color:  rgb 0.8, 0.4, 0
             shininess: 80
@@ -336,8 +322,6 @@ module.exports =
             color:  rgb 1, 1, 0
         text:             
             color:  rgb 0.7, 0.7, 0
-            bright: rgb 1, 1, 0
-            dark:   rgb 0.4, 0.4, 0
     
     #  0000000   00000000   00000000  00000000  000   000
     # 000        000   000  000       000       0000  000
@@ -352,7 +336,6 @@ module.exports =
             color:  rgb 0.3, 1, 0.3
         stone:            
             color:     rgb 0, 0.2, 0
-            # specular:  rgb 0, 0.01, 0
             opacity:   0.8
             shininess: 60
         switch:           
@@ -371,8 +354,6 @@ module.exports =
             color:  rgb 0, 0.7, 0
         text:             
             color:  rgb 0, 0.4, 0
-            bright: rgb 0, 0.6, 0
-            dark:   rgb 0, 0.2, 0
         gear:             
             color:  rgb 0, 0.2, 0
         wire:             
@@ -415,9 +396,7 @@ module.exports =
         glow:
             color:  rgb 1, 1, 1
         text:             
-            color:  rgb 0.2, 0.4, 0.5
-            bright: rgb 0.3, 0.9, 1
-            dark:   rgb 0.1, 0.3, 0.4
+            color:  rgb 0.8, 0.8, 0.8
     
     #  0000000  00000000    0000000   0000000  000   000
     # 000       000   000  000   000     000    000 000 
@@ -463,9 +442,7 @@ module.exports =
         glow:
             color:  rgb 0, 0, 1
         text:             
-            color:  rgb 0.2, 0.4, 0.5
-            bright: rgb 0.3, 0.9, 1
-            dark:   rgb 0.1, 0.3, 0.4
+            color:  rgb 1, 0, 0
     
     # 0000000  00000000  000   000
     #    000   000       0000  000
@@ -504,7 +481,5 @@ module.exports =
             color:  rgb 0, 0, 1
         text:             
             color:  rgb 0.2, 0.4, 0.5
-            bright: rgb 0.3, 0.9, 1
-            dark:   rgb 0.1, 0.3, 0.4
                              
                              

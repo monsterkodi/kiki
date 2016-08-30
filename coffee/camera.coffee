@@ -62,21 +62,21 @@ class Camera extends Matrix
         @cam.lookAt @getPosition().plus @getZVector()
             
     updateViewport: ->
-        ss = world.screenSize
-        vp = []
-        vp[0] = @viewport[0] * ss.w + @border[0]
-        vp[1] = @viewport[1] * ss.h + @border[1]
-        vp[2] = @viewport[2] * ss.w - @border[0] - @border[2]
-        vp[3] = @viewport[3] * ss.h - @border[1] - @border[3]
+        # ss = world.screenSize
+        # vp = []
+        # vp[0] = @viewport[0] * ss.w + @border[0]
+        # vp[1] = @viewport[1] * ss.h + @border[1]
+        # vp[2] = @viewport[2] * ss.w - @border[0] - @border[2]
+        # vp[3] = @viewport[3] * ss.h - @border[1] - @border[3]
     
     setViewportBorder: (l, b, r, t) ->
-        @border = [l,b,r,t]
-        @updateViewport()
+        # @border = [l,b,r,t]
+        # @updateViewport()
     
     setViewport: (l, b, w, h) ->
-        @viewport = [l,b,w,h] 
-        @updateViewport()
-    
+        # @viewport = [l,b,w,h] 
+        # @updateViewport()
+#     
     setFov: (fov) -> @fov = Math.max(2.0, Math.min fov, 175.0)
             
     #   00000000   00000000    0000000         000  00000000   0000000  000000000  000   0000000   000   000

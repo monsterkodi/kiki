@@ -30,6 +30,10 @@ class Action
     @LOOK_RESET   = 19
     @TUCKER       = 20
     
+    @SHOW         = 1
+    @HIDE         = 2
+    @DELETE       = 3
+    
     @ONCE       = 0
     @CONTINUOUS = 1
     @REPEAT     = 2

@@ -10,11 +10,8 @@ module.exports =
     scheme:     "default"
     size:       [9,17,9]
     help:       """
-                $scale(1.5)mission:
-                activate the exit!
-                
                 to activate the exit,
-                shoot the 4 switches
+                shoot the 4 switches.
                 """
     player:   
         coordinates:    [4,4,5]

@@ -11,17 +11,14 @@ module.exports =
     scheme:     "default"
     size:       [11,9,11]
     help:       """
-                $scale(1.5)mission:
-                activate the exit!
-                
                 to activate the exit
                 feed it with electricity:
                     
                 connect the generator
-                with the motor
+                with the motor.
                 
                 and place a powered wirestone
-                next to the exit
+                next to the exit.
                 """
     player:
         coordinates:  [6,2,0]

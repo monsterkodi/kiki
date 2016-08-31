@@ -29,9 +29,8 @@ class Sound
         SWITCH_OFF:        file: "switch_on.wav",           volume: 0.5
         ATOM_BIRTH:        file: "atom_digest.wav",         volume: 1.0
         ATOM_DIGEST:       file: "atom_digest.wav",         volume: 1.0
-        SPIKES_START:      file: "bot_move.wav",            volume: 1.0
-        MENU_FADE:         file: "menu_fade.wav",           volume: 1.0
-        MENU_ITEM:         file: "menu_item.wav",           volume: 1.0
+        MENU_FADE:         file: "stone_land.wav",          volume: 1.0
+        MENU_ITEM:         file: "menu_item.wav",           volume: 0.5
         MENU_SELECT:       file: "menu_select.wav",         volume: 1.0
         MENU_ABORT:        file: "menu_abort.wav",          volume: 1.0
         GATE_OPEN:         file: "gate_open.wav",           volume: 1.0

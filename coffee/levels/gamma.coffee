@@ -13,10 +13,8 @@ module.exports =
     scheme:     "tron"
     size:       [10,10,10]
     help:       """
-                $scale(1.5)mission:
-                activate the exit!
-                
-                shoot at the 4 switches to activate the exit
+                shoot at the 4 switches 
+                to activate the exit.
                 """
     player: 
         coordinates:     [5,5,4]

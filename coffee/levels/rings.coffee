@@ -10,10 +10,8 @@ module.exports =
     scheme:     "default"
     size:       [9,7,9]
     help:       """
-                $scale(1.5)mission:
-                get to the exit!
                 to get to the exit,
-                use the stones
+                use the stones.
                 """
     player:   
         coordinates: [4,4,2]

@@ -3,16 +3,17 @@ module.exports =
     scheme:     "green"
     size:       [13,5,13]
     help:       """
-                $scale(1.5)mission:
-                activate the exit!
-                
                 place a powered
-                wire stone next to it.
+                wire stone next to the exit.
+                
                 a wirestone is powered by
                 a rotating generator
                 or it shares at least one edge with
                 another powered wirestone.
-                this one is hard, really hard, but it's possible.
+                
+                this one is hard, 
+                but it's possible.
+                
                 good luck!
                 """
     player:   position:         [1,1,1]

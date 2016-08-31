@@ -10,7 +10,7 @@ module.exports =
     deisgn:     'Michael Abel'
     scheme:     "tron"
     size:       [5,5,9]
-    help:       "$scale(1.5)mission:\nactivate the exit!"
+    help:       "activate the exit!"
     player:     
         coordinates:    [1,2,2]
         orientation:    minusZupX

@@ -10,7 +10,7 @@ module.exports =
     design:     'Michael Abel'
     scheme:     "default"
     size:       [11,11,11]
-    help:       "$scale(1.5)mission:\nget to the exit!"
+    help:       "get to the exit!"
     player:     
         coordinates:    [6,10,5]
         orientation:    YdownZ

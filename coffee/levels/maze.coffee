@@ -13,7 +13,6 @@ module.exports =
     size:       [4,4,4]
     camera:     'inside'
     help:       """
-                $scale(1.5)mission:
                 get to the exit!
                 but don't get confused :)
                 """

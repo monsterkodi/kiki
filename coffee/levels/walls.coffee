@@ -11,13 +11,11 @@ module.exports =
     scheme:     "red"
     size:       [7,5,5]
     help:       """
-                $scale(1.5)mission:
-                    
                 get to the exit!
                 
                 The exit is hidden
                 in the middle of
-                the central wall
+                the central wall.
                 """
     player:
         coordinates:    [0,4,2]

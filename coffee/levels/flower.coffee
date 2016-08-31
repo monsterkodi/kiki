@@ -6,11 +6,8 @@ module.exports =
     scheme:     "metal"
     size:       [7,7,11]
     help:       """
-                $scale(1.5)mission:
-                get to the exit!
-                
                 the green stone is slicky
-                you can't grab it while falling
+                you can't grab it while falling.
                 """
     player:
         coordinates:     [3,0,7]

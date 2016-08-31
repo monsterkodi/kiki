@@ -10,16 +10,13 @@ module.exports =
     scheme:     "bronze"
     size:       [9,6,9]
     help:       """
-                $scale(1.5)mission:
-                activate the exit!
-                
                 to activate the exit
                 feed it with electricity:
                     
                 connect the generator
                 with the motor
                 and close the circuit
-                with the wire stones"
+                with the wire stones.
                 """
     player:     
         coordinates: [4,0,5]

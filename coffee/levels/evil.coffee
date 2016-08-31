@@ -7,22 +7,18 @@
 
 module.exports =
     name:       "evil"
-    design:     "Michael Abel?"
+    design:     "Michael Abel"
     scheme:     "red"
     size:       [13,5,13]
     help:       """
-                $scale(1.5)mission:
-                activate the exit!
-                
-                place a powered
-                wire stone next to it.
+                place a powered wire stone 
+                next to the exit.
                 a wirestone is powered by
                 a rotating generator
                 or it shares at least
                 one edge with
                 another powered wirestone.
                 this one is hard,
-                really hard,
                 but it's possible.
                 
                 good luck!

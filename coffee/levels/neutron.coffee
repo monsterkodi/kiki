@@ -11,7 +11,6 @@ module.exports =
     scheme:     "tron"
     size:       [11,11,11]
     help:       """ 
-                $scale(1.5)mission:
                 get to the exit!
                 
                 it looks simpler than it is.

@@ -11,9 +11,6 @@ module.exports =
     scheme:     "yellow"
     size:       [11,12,7]
     help:       """
-                $scale(1.5)mission:
-                activate the exit.
-                
                 to activate the exit,
                 activate all switches.
                 """

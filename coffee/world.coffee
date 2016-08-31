@@ -257,7 +257,7 @@ class World extends Actor
         
         @creating = false
     
-    restart: () -> @create @dict
+    restart: => @create @dict
 
     finish: () -> # TODO: save progress
 
@@ -290,10 +290,12 @@ class World extends Actor
             
         colors.plate.emissive ?= colors.plate.color
         colors.bulb.emissive  ?= colors.bulb.color
+        colors.menu ?= {}   
+        colors.menu.color ?= colors.gear.color
         colors.raster ?= {}    
-        colors.raster.color   ?= colors.plate.color
+        colors.raster.color ?= colors.plate.color
         colors.wall ?= {}
-        colors.wall.color     ?= new THREE.Color(colors.plate.color).multiplyScalar 0.6
+        colors.wall.color ?= new THREE.Color(colors.plate.color).multiplyScalar 0.6
         colors.wirePlate ?= {}
         colors.wirePlate.color ?= colors.wire.color
         for k,v of colors
@@ -778,39 +780,16 @@ class World extends Actor
     
         false
     
-    reinit: () ->
-        for o in @objects
-            if o instanceof Light
-                o.initialize()
-        
-        # Text::reinit()
-        
     #   000   000  00000000  000      00000000 
     #   000   000  000       000      000   000
     #   000000000  0000000   000      00000000 
     #   000   000  000       000      000      
     #   000   000  00000000  0000000  000      
     
-    help: (index=0) ->
-        # displays help messages
+    showHelp: =>
+        # @menu.del()
+        @text = new ScreenText @dict['help']
 
-        # text_list = @dict["help"]
-        # more_text = index < len (text_list) - 1
-        # less_text = index > 0
-#         
-        # list = text_list[index].split("$key(")     
-        # for i in range (1, len(list))
-            # close = list[i].find(")")
-            # list[i] = Controller.player.getKeyForAction (list[i][:close]) + list[i][close+1:]
-#                          
-        # list.append ("\n\n$scale(0.5)(%d/%d)" % (index+1, len (text_list)))
-        # help_text = KikiPageText ("".join(list), more_text, less_text)
-#             
-        # if more_text:
-            # help_text.getEventWithName ("next").addAction (once (lambda i=index+1: @help (i)))
-        # if less_text:
-            # help_text.getEventWithName ("previous").addAction (once (lambda i=index-1: @help (i)))
- 
     outro: (index=0) ->
         # well hidden outro :-)
         outro_text = """
@@ -841,22 +820,22 @@ class World extends Actor
         
     resetProjection: -> @player.camera.setViewport 0.0, 0.0, 1.0, 1.0
     
-    #   00000000   0000000   0000000
-    #   000       000       000     
-    #   0000000   0000000   000     
-    #   000            000  000     
-    #   00000000  0000000    0000000
+    # 00     00  00000000  000   000  000   000
+    # 000   000  000       0000  000  000   000
+    # 000000000  0000000   000 0 000  000   000
+    # 000 0 000  000       000  0000  000   000
+    # 000   000  00000000  000   000   0000000 
     
     localizedString: (str) -> str
     
-    escape: (self) -> # handles an ESC key event
-        @text?.del()
+    showMenu: (self) -> # handles an ESC key event
+        # @text?.del()
         @menu = new Menu()
-        @menu.addItem @localizedString("help"),       @help
+        @menu.addItem @localizedString("help"),       @showHelp
         @menu.addItem @localizedString("restart"),    @restart 
-        @menu.addItem @localizedString("load level"), @levelSelection
-        @menu.addItem @localizedString("setup"),      @quickSetup       
-        @menu.addItem @localizedString("about"),      @displayAbout
+        @menu.addItem @localizedString("load level"), @showLevels
+        @menu.addItem @localizedString("setup"),      @showSetup       
+        @menu.addItem @localizedString("about"),      @showAbout
         @menu.addItem @localizedString("quit"),       @quit
         @menu.show()
     
@@ -913,7 +892,7 @@ class World extends Actor
         @text?.fadeOut()
         return if @player?.modKeyComboEventDown mod, key, combo, event
         switch combo
-            when 'esc' then @escape()
+            when 'esc' then @showMenu()
             when '=' then @speed = Math.min 10, @speed+1
             when '-' then @speed = Math.max 1,  @speed-1
             when 'r' then @restart()

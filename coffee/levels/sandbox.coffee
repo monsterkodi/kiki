@@ -11,10 +11,9 @@ module.exports =
     scheme:     "bronze"
     size:       [9,9,6]
     help:       """
-                $scale(1.5)mission:
                 activate the exit!
                 
-                All you have to do
+                all you have to do
                 is to put nine stones
                 into the sandbox
                 and shoot at the switch

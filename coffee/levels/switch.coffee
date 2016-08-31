@@ -10,9 +10,6 @@ module.exports =
     scheme:     "tron"
     size:       [7,7,7]
     help:       """
-                $scale(1.5)mission:
-                activate the exit!
-                
                 to activate the exit, 
                 activate the 4 switches.
                 """

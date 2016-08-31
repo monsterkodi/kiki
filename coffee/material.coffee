@@ -35,7 +35,11 @@ module.exports =
     text: new THREE.MeshPhongMaterial 
         side:           THREE.FrontSide
         shading:        THREE.SmoothShading
-        specular:       0xffff00
+        transparent:    true
+
+    menu: new THREE.MeshPhongMaterial 
+        side:           THREE.FrontSide
+        shading:        THREE.SmoothShading
         transparent:    true
 
     mutant: new THREE.MeshPhongMaterial

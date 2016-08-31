@@ -12,10 +12,8 @@ module.exports =
     scheme:     "tron"
     size:       [9,11,15]
     help:       """
-                $scale(1.5)mission:
-                get to the exit!
-                The green stone is slicky
-                you can't grab it while falling
+                the green stone is slicky
+                you can't grab it while falling.
                 """
     player:   
         coordinates:    [0,10,13]

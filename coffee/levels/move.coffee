@@ -10,12 +10,11 @@ module.exports =
     scheme:     "red"
     size:       [7,7,7]
     help:       """
-                $scale(1.5)mission: activate the exit!
-                to activate the exit, activate the switch
-                to activate the switch,shoot it
-                to be able to shoot the switch, move the stones
-                to move a stone, press "$key(push)" while moving
-                to shoot, press "$key(shoot)"
+                shoot the switch
+                to activate the exit.
+                    
+                "shift+w" to move the stone.
+                "return" to shoot.
                 """
     player:   
         coordinates:     [3,3,2]

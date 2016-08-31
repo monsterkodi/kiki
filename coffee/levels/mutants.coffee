@@ -3,15 +3,14 @@ module.exports =
     scheme:     "blue"
     size:       [9,9,9]
     help:       """
-                $scale(1.5)mission:
                 deactivate the mutants!
                 
                 to deactivate a mutant,
-                shoot him until it get's transparent
+                shoot him until it get's transparent.
                 
                 the exit will open,
                 when all mutant bots
-                are deactivated
+                are deactivated.
                 """
     player:   
         coordinates: [7,1,8]

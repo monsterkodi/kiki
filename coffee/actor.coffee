@@ -16,7 +16,7 @@ _       = require 'lodash'
 class Actor extends Emitter
     
     constructor: -> 
-        @actions = []
+        @actions = {}
         @events  = []
         super
         
@@ -49,7 +49,8 @@ class Actor extends Emitter
     #   000   000  000          000     000  000   000  000  0000
     #   000   000   0000000     000     000   0000000   000   000
     
-    addAction: (action) -> @actions[action.id] = action
+    # addAction: (action) -> @actions[action.id] = action
+    addAction: (action) -> @actions[action.name] = action
         
     del: -> @deleteActions()
 
@@ -57,23 +58,11 @@ class Actor extends Emitter
         a?.del() for a in @actions
         @actions = []
             
-    removeAction: (action) -> @actions[action.id] = null
+    # removeAction: (action) -> @actions[action.id] = null
+    removeAction: (action) -> @actions[action.name] = null
  
     getActionWithId: (actionId) -> _.find @actions, (a) -> a?.id == actionId
-        # if @actions[actionId]?.id? and @actions[actionId].id != actionId
-            # throw new Error
-        # @actions[actionId]
-        # if actionId < @actions.length and @actions[actionId].id == actionId
-            # return @actions[actionId]
-#     
-        # # to be deleted...
-        # log "[WARNING] Actor.getActionWithId #{actionId} [#{@actions.length}]", (a?.id for a in @actions)
-        # for a in @actions
-            # return a if a?.id == actionId
-
-    getActionWithName: (name) -> 
-        for a in @actions
-            return a if a?.name == name 
+    getActionWithName: (name) -> _.find @actions, (a) -> a?.name == name
 
     initAction: ->
     performAction: ->

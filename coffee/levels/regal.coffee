@@ -9,7 +9,7 @@ module.exports =
     name:       "regal"
     scheme:     "bronze"
     size:       [7,3,9]
-    help:       "$scale(1.5)mission:\nactivate the exit!"
+    help:       "activate the exit!"
     player:     
         coordinates:    [3,2,4]
         orientation:    XdownY

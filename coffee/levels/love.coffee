@@ -2,7 +2,7 @@ module.exports =
     name:       "love"
     scheme:     "red"
     size:       [13,13,13]
-    help:       "$scale(1.5)mission:\nget to the exit!"
+    help:       "get to the exit!"
     player:   
         coordinates:    [6,4,2]
         orientation:    minusZupY 

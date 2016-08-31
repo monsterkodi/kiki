@@ -12,13 +12,11 @@ module.exports =
     scheme:     "tron"
     size:       [5,7,7]
     help:       """
-                "$scale(1.5)mission:
-                get to the exit!
-                
-                use the stones to reach it
+                use the stones 
+                to reach the exit.
                 
                 push a stone and it will fall down
-                if nothing is below it
+                if nothing is below it.
                 but remember:
                 you decide where down and below is!
                 """

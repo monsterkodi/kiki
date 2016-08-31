@@ -7,17 +7,13 @@
 
 module.exports =
     name:       "steps"
-    # scheme:     "blue"
     size:       [7,7,13]
     help:       """
-                $scale(1.5)mission:
-                get to the exit!
-                
                 to get to the exit,
-                jump on the stones
-                to jump, press "$key(jump)" while moving
-                to move, press "$key(move forward)" or "$key(move backward)",
-                to turn, press "$key(turn left)" or "$key(turn right)"
+                jump on the stones.
+                
+                "w" to move forward.
+                "space" to jump.
                 """
     player:   
         coordinates: [3,0,1]

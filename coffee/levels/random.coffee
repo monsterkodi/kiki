@@ -11,10 +11,9 @@ module.exports =
     scheme:     "default"
     size:       [21,21,21]
     help:       """
-                $scale(1.5)mission:
                 get to the exit!
                 
-                jump and try
+                jump and try.
                 """
     player:   
         coordinates:    [0,10,1]

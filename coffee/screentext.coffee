@@ -21,15 +21,14 @@ class ScreenText extends Actor
         
     constructor: (text) ->
         super
-        
-        @addAction new Action @, Action.SHOW, "show",  500
-        @addAction new Action @, Action.HIDE, "hide",  500
+        @addAction new Action @, Action.SHOW, "show#{@constructor.name}",  500
+        @addAction new Action @, Action.HIDE, "hide#{@constructor.name}",  500
                 
         @scene = new THREE.Scene()
-        
-        sun = new THREE.PointLight 0xffffff
-        sun.position.set -1,1,10
-        @scene.add sun
+        @lineHeight = 1.3 if not @lineHeight?
+        @sun = new THREE.PointLight 0xffffff
+        @sun.position.set -1,1,10
+        @scene.add @sun
         
         @width = @height = 0
         @mesh = new THREE.Object3D
@@ -40,13 +39,15 @@ class ScreenText extends Actor
         @far  = 100
         @camera = new THREE.PerspectiveCamera @fov, @aspect, @near, @far
         if text?
-            @addText text 
+            for l in text.split '\n'
+                @addText l 
             @show()
     
     del: ->
         @scene.remove @mesh
+        @scene.remove @sun
         Timer.removeActionsOfObject @
-        world.text = null
+        world.text = null if world.text == @
     
     show: -> @startTimedAction @getActionWithId Action.SHOW
     
@@ -54,7 +55,7 @@ class ScreenText extends Actor
         geom = new THREE.TextGeometry str, 
             font: ScreenText.font
             size: 1
-            height: 0.5
+            height: 4
             bevelEnabled: true
             bevelThickness: 0.1
             bevelSize: 0.04
@@ -63,16 +64,22 @@ class ScreenText extends Actor
         geom.computeBoundingBox()
         min = geom.boundingBox.min
         max = geom.boundingBox.max
-        mesh = new THREE.Mesh geom, Material.text
+        mesh = new THREE.Mesh geom, Material.text.clone()
         mesh.translateX -(max.x-min.x)/2
-        mesh.translateY -@height
+        mesh.translateY -@height * @lineHeight
         @mesh.add mesh
-        @mesh.position.set 0, @height/2*0.9, 0
+        @mesh.position.set 0, @height/2*@lineHeight, 0
         
-        # adjust projection    
-        @camera.position.copy new Vector 0,0,12+5*@height
+        # adjust projection  
+        z = 20+4*@height
+        @camera.position.copy new Vector 0,0,z
+        @sun.position.set -z/5,z/5,z
         @camera.lookAt new Vector 0,0,0
         @height += 1
+
+    setOpacity: (o) ->
+        for c in @mesh.children
+            c.material.opacity = o
 
     resized: (w,h) ->
         @aspect = w/h
@@ -82,16 +89,16 @@ class ScreenText extends Actor
     performAction: (action) ->
         switch action.id
             when Action.SHOW
-                Material.text.opacity = action.getRelativeTime()
+                @setOpacity action.getRelativeTime()
             when Action.HIDE
-                Material.text.opacity = 1 - action.getRelativeTime()
+                @setOpacity 1 - action.getRelativeTime()
     
     actionFinished: (action) ->
         switch action.id
             when Action.HIDE
                 @del()
             when Action.SHOW
-                Material.text.opacity = 1
+                @setOpacity 1
             
     fadeOut: -> 
         return if @fadingOut

@@ -10,13 +10,14 @@ module.exports =
     scheme:     "red"
     size:       [7,7,13]
     help:       """  
-                $scale(1.5)mission:
-                get to the exit!
+                jump on the stones 
+                to reach the exit.
                 
-                jump on the stones to reach it
-                
-                you can attach to a stone when falling
-                if you move into its direction
+                you can attach 
+                to a stone 
+                when falling
+                if you move 
+                into its direction.
                 """
     player:   
         coordinates: [3,6,4]

@@ -10,19 +10,12 @@ module.exports =
     scheme:     "bronze"
     size:       [9,5,7]
     help:       """
-                $scale(1.5)mission:
-                activate the exit!
-                    
-                to activate the exit,
-                feed it with electricity
-
                 use the bombs
                 to elevate the gears
-
-                and the generator
+                and the generator.
 
                 the bombs will detonate
-                if you shoot them
+                if you shoot them.
                 """
     player:   
         coordinates: [8,0,3]

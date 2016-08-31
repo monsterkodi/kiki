@@ -10,7 +10,7 @@ module.exports =
     design:     'Ben "mrthoughtful" Griffin'
     scheme:     "metal"
     size:       [9,9,15]
-    help:       "$scale(1.5)mission:\nget to the exit!\n\nto get to the exit,\nmove the stones"
+    help:       "to get to the exit,\nmove the stones."
     player: 
         coordinates: [4,5,3]
         orientation: ZdownX

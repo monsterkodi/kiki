@@ -12,11 +12,8 @@ module.exports =
     scheme:     "tron"
     size:       [9,9,9]
     help:       """
-                $scale(1.5)mission:
-                activate the exit!
-                
                 to activate the exit
-                feed it with electricity
+                feed it with electricity.
                 """
     player:
         coordinates:     [4,5,3]

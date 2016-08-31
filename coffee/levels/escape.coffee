@@ -10,18 +10,12 @@ module.exports =
     scheme:     "metal"
     size:       [7,9,7]
     help:       """
-                $scale(1.5)mission:
-                try to escape!
-                
-                to escape,
-                activate the exit
-                
                 to activate the exit,
-                shoot the switch
+                shoot the switch.
                 
                 to be able to
                 shoot the switch,
-                move the stones
+                move the stones.
                 """
     player:   
         coordinates:    [3,0,4]

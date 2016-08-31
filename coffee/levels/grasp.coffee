@@ -11,8 +11,6 @@ module.exports =
     scheme:     "blue"
     size:       [11,11,11]
     help:       """
-                $scale(1.5)mission:activate the exit!
-                
                 to shoot, press $key(shoot)
                 """
     player:   

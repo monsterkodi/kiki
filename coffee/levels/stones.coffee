@@ -3,13 +3,9 @@ module.exports =
     scheme:     "blue"
     size:       [11,11,12]
     help:       """
-                $scale(1.5)mission:
-                get to the exit!
-                
                 use the stones.
                 to move a stone,
-                press "$key(push)"
-                while moving
+                press "shift+w"
                 """
     player:    
         coordinates:    [4,5,3]

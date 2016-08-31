@@ -25,6 +25,7 @@ Timer       = require './timer'
 Actor       = require './actor'
 Item        = require './item'
 Action      = require './action'
+Menu        = require './menu'
 ScreenText  = require './screentext'
 TmpObject   = require './tmpobject'
 Pushable    = require './pushable'
@@ -693,6 +694,7 @@ class World extends Actor
         @renderer.autoClearColor = false
         @renderer.render @scene, camera
         @renderer.render @text.scene, @text.camera if @text
+        @renderer.render @menu.scene, @menu.camera if @menu
     
     #   000000000  000  00     00  00000000
     #      000     000  000   000  000     
@@ -732,6 +734,7 @@ class World extends Actor
         @renderer?.setSize w,h
         @screenSize = new Size w,h
         @text?.resized w,h
+        @menu?.resized w,h
 
     getNearestValidPos: (pos) ->
         new Pos Math.min(@size.x-1, Math.max(pos.x, 0)), 
@@ -844,32 +847,18 @@ class World extends Actor
     #   000            000  000     
     #   00000000  0000000    0000000
     
+    localizedString: (str) -> str
+    
     escape: (self) -> # handles an ESC key event
-        
-        @resetProjection()
-        
-        if "escape" in @dict
-            if _.isFunction @dict["escape"]
-                @dict["escape"]()
-            else
-                exec @dict["escape"] in globals()
-            return
-
-        menu = new Menu()
-        menu.getEventWithName("hide").addAction once @resetProjection 
-        
-        # if Controller.isDebugVersion()
-            # menu.addItem (Controller.getLocalizedString("next level"), once(lambda w=self: w.performAction("exit 0",0)))
-        # if "help" in @dict
-            # menu.addItem (Controller.getLocalizedString("help"), once(@help))
-        menu.addItem(Controller.getLocalizedString("restart"), once(@restart))
-        
-        esc_menu_action = once @escape
-        log "level_index #{world.level_index}"
-        menu.addItem(Controller.getLocalizedString("load level"), (i=world.level_index,a=esc_menu_action) -> levelSelection(i, a))
-        menu.addItem(Controller.getLocalizedString("setup"), once @quickSetup)        
-        menu.addItem(Controller.getLocalizedString("about"), once @display_about)
-        menu.addItem(Controller.getLocalizedString("quit"), once world.quit)
+        @text?.del()
+        @menu = new Menu()
+        @menu.addItem @localizedString("help"),       @help
+        @menu.addItem @localizedString("restart"),    @restart 
+        @menu.addItem @localizedString("load level"), @levelSelection
+        @menu.addItem @localizedString("setup"),      @quickSetup       
+        @menu.addItem @localizedString("about"),      @displayAbout
+        @menu.addItem @localizedString("quit"),       @quit
+        @menu.show()
     
     #   000   000   0000000   000      000    
     #   000 0 000  000   000  000      000    
@@ -918,9 +907,13 @@ class World extends Actor
     #   000   000  00000000     000   
     
     modKeyComboEventDown: (mod, key, combo, event) ->
+        if @menu?            
+            @menu.modKeyComboEvent mod, key, combo, event 
+            return 
         @text?.fadeOut()
         return if @player?.modKeyComboEventDown mod, key, combo, event
         switch combo
+            when 'esc' then @escape()
             when '=' then @speed = Math.min 10, @speed+1
             when '-' then @speed = Math.max 1,  @speed-1
             when 'r' then @restart()

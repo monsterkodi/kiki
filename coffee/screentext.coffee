@@ -4,7 +4,10 @@
 #   0000000   000       0000000    0000000   0000000   000 0 000     000     0000000     00000       000   
 #        000  000       000   000  000       000       000  0000     000     000        000 000      000   
 #   0000000    0000000  000   000  00000000  00000000  000   000     000     00000000  000   000     000   
-
+{
+first,
+last
+}        = require '/Users/kodi/s/ko/js/tools/tools'
 Camera   = require './camera'
 Action   = require './action'
 Timer    = require './timer'
@@ -19,8 +22,8 @@ class ScreenText extends Actor
     constructor: (text) ->
         super
         
-        @addAction new Action @, Action.SHOW,   "show",  500
-        @addAction new Action @, Action.HIDE,   "hide",  500
+        @addAction new Action @, Action.SHOW, "show",  500
+        @addAction new Action @, Action.HIDE, "hide",  500
                 
         @scene = new THREE.Scene()
         
@@ -40,10 +43,14 @@ class ScreenText extends Actor
             @addText text 
             @show()
     
+    del: ->
+        @scene.remove @mesh
+        Timer.removeActionsOfObject @
+        world.text = null
+    
     show: -> @startTimedAction @getActionWithId Action.SHOW
     
     addText: (str, scaleFactor) ->
-        @height += 1
         geom = new THREE.TextGeometry str, 
             font: ScreenText.font
             size: 1
@@ -52,17 +59,20 @@ class ScreenText extends Actor
             bevelThickness: 0.1
             bevelSize: 0.04
                 
-        @width  = Math.max str.length, @width
+        @width = Math.max str.length, @width
         geom.computeBoundingBox()
-        geom.normalize()
         min = geom.boundingBox.min
         max = geom.boundingBox.max
         mesh = new THREE.Mesh geom, Material.text
+        mesh.translateX -(max.x-min.x)/2
+        mesh.translateY -@height
         @mesh.add mesh
+        @mesh.position.set 0, @height/2*0.9, 0
         
         # adjust projection    
-        @camera.position.copy new Vector 0,0,6*@height
+        @camera.position.copy new Vector 0,0,12+5*@height
         @camera.lookAt new Vector 0,0,0
+        @height += 1
 
     resized: (w,h) ->
         @aspect = w/h
@@ -79,7 +89,7 @@ class ScreenText extends Actor
     actionFinished: (action) ->
         switch action.id
             when Action.HIDE
-                @emit 'hidden'
+                @del()
             when Action.SHOW
                 Material.text.opacity = 1
             

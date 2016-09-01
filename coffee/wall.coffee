@@ -24,7 +24,7 @@ class Wall extends Item
         
         geom = Cage.wallTiles new Pos(1,1,1), 'outside', Cage.gap                  
         geom.translate -0.5, -0.5, -0.5
-        @plates = new THREE.Mesh geom, Material.plate
+        @plates = new THREE.Mesh geom, Material.plate.clone()
         @plates.receiveShadow = true
         
         @mesh = new THREE.Object3D

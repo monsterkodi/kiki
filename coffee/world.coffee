@@ -37,6 +37,7 @@ Pos         = require './lib/pos'
 _           = require 'lodash'
 now         = require 'performance-now'
 {
+Wall,
 Wire,
 Gear,
 Stone,
@@ -685,12 +686,21 @@ class World extends Actor
         for o in @objects
             if o instanceof Stone
                 stones.push o
-        stones.sort (a,b) => b.getPos().minus(@player.camera.getPosition()).length() - a.getPos().minus(@player.camera.getPosition()).length()
+        stones.sort (a,b) => b.position.minus(@player.camera.getPosition()).length() - a.position.minus(@player.camera.getPosition()).length()
         
         order = 100
         for stone in stones
             stone.mesh.renderOrder = order
             order += 1
+            
+            d = stone.position.minus(@player.camera.getPosition()).length()
+            if d < 1.0
+                console.log 'd', d
+                stone.mesh.material.orig_opacity = stone.mesh.material.opacity if not stone.mesh.material.orig_opacity?
+                stone.mesh.material.opacity = 0.2 + d * 0.5
+            else if stone.mesh.material.orig_opacity?
+                stone.mesh.material.opacity = stone.mesh.material.orig_opacity
+                delete stone.mesh.material.orig_opacity
         
         @sun.position.copy camera.position
         @renderer.autoClearColor = false

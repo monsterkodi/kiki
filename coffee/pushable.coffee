@@ -34,7 +34,7 @@ class Pushable extends Item
         pushAction   = @getActionWithId Action.PUSH
         @pusher      = object
         @move_action = pushAction
-        @direction   = dir
+        @direction   = new Vector dir
         pushAction.duration = world.unmapMsTime duration
         Timer.addAction pushAction
 

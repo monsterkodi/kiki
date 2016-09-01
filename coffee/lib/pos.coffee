@@ -5,7 +5,6 @@
 #   000        000   000       000
 #   000         0000000   0000000 
 
-log    = require '/Users/kodi/s/ko/js/tools/log'
 Vector = require './vector'
 
 class Pos

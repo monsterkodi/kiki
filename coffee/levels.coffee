@@ -12,11 +12,11 @@ class Levels
             # "test",
             # --- introduction
             "steps",   # ok
-            "start",   # ok
+            "jump",    # ok
             "move",    # ok
             "electro", # ok
             "elevate", # ok
-            "jump",    # ok
+            "fall",    # ok
             # # --- easy
             "blocks",  # ok
             "throw", 

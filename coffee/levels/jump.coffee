@@ -7,21 +7,22 @@
 
 module.exports =
     name:       "jump"
-    scheme:     "red"
-    size:       [7,7,13]
-    help:       """  
-                jump on the stones 
-                to reach the exit.
+    scheme:     "default"
+    size:       [7,5,11]
+    help:       """
+                $scale(1.5)mission:
+                get to the exit!
                 
-                you can attach 
-                to a stone 
-                when falling
-                if you move 
-                into its direction.
+                to get to the exit,
+                jump on the stone
+                to jump,
+                press "$key(jump)" while moving
+                to move, press "$key(move forward)" or "$key(move backward)"
+                to turn, press "$key(turn left)" or "$key(turn right)"
                 """
     player:   
-        coordinates: [3,6,4]
-        orientation: minusZdownY
+        coordinates:   [1,0,4]
+        orientation:   minusXupY
     exits:    [
         name:         "exit"
         active:       1
@@ -29,13 +30,7 @@ module.exports =
     ]
     create: ->
 
-        s = world.size
-        
-        world.addObjectAtPos 'Wall', world.decenter 0,0,1 - s.z/2
-        world.addObjectAtPos 'Wall', world.decenter 0,0,3 - s.z/2
-        world.addObjectAtPos 'Wall', world.decenter 0,0,6 - s.z/2
-        world.addObjectAtPos 'Wall', world.decenter 0,1,10 - s.z/2
-        world.addObjectAtPos 'Wall', world.decenter 1,0,10 - s.z/2
-        world.addObjectAtPos 'Wall', world.decenter -1,0,10 - s.z/2
-        world.addObjectAtPos 'Wall', world.decenter 0,-1,10 - s.z/2
+        world.addObjectAtPos 'Wall', world.decenter 0,0,-2
+        world.addObjectAtPos 'Wall', world.decenter 0,0,-4
+        world.addObjectAtPos 'Wall', world.decenter 0,0, 1
         

@@ -29,7 +29,6 @@ class Actor extends Emitter
     #   00000000      0      00000000  000   000     000   
     
     addEventWithName: (eventName) ->
-        # log "Actor.addEventWithName #{@name} eventName:#{eventName}"
         if @getEventWithName eventName # to be removed
             log "Actor.addEventWithName [WARNING] '#{eventName}' already in use!"
             return -1; # shouldn't happen anyway :-)
@@ -49,7 +48,6 @@ class Actor extends Emitter
     #   000   000  000          000     000  000   000  000  0000
     #   000   000   0000000     000     000   0000000   000   000
     
-    # addAction: (action) -> @actions[action.id] = action
     addAction: (action) -> @actions[action.name] = action
         
     del: -> @deleteActions()
@@ -58,7 +56,6 @@ class Actor extends Emitter
         a?.del() for a in @actions
         @actions = []
             
-    # removeAction: (action) -> @actions[action.id] = null
     removeAction: (action) -> @actions[action.name] = null
  
     getActionWithId: (actionId) -> _.find @actions, (a) -> a?.id == actionId
@@ -84,7 +81,6 @@ class Actor extends Emitter
         
     startTimedAction: (action, duration) ->
         action.duration = duration if duration >= 0
-        # log "Actor.startTimedAction #{action.name} duration: #{action.duration}"
         Timer.addAction action        
   
 module.exports = Actor

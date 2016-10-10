@@ -1,1 +1,10 @@
-coffee  . ext js . replace .. coffee/  js/
+ignore      
+    /dist/
+    /app/css/
+    /app/img/
+    /app/js/
+    
+noon    . ext json . replace .. coffee/  js/
+pug     . ext html . replace .. pug/     ./
+styl    . ext css  . replace .. styl/    css/
+

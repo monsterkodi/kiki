@@ -5,13 +5,14 @@
 # 000  000   000  000  000   000
 # 000   000  000  000   000  000
 
-Stage = require '/Users/kodi/s/ko/js/area/stage'
-log   = require '/Users/kodi/s/ko/js/tools/log'
+Stage = require './stage'
+log   = require './tools/log'
 World = require './world'
 
 class Kiki extends Stage
     
     constructor: (@view) -> 
+        log "view:", @view.className
         super @view
         @view.focus()
     
@@ -47,7 +48,7 @@ class Kiki extends Stage
         @elem.remove()
         @pause()
         
-    resized: (w,h) -> @world.resized w, h
+    resized: () -> @world.resized @view.clientWidth, @view.clientHeight
 
     modKeyComboEventDown: (mod, key, combo, event) -> world.modKeyComboEventDown mod, key, combo, event
     modKeyComboEventUp:   (mod, key, combo, event) -> world.modKeyComboEventUp   mod, key, combo, event

@@ -1,3 +1,12 @@
 js
+css
+dist
+app/img
+app/css
+app/bin
+app/js
+app/index.html
+app/sound
 node_modules
-package.json
+*.json
+*.html

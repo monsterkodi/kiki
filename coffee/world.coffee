@@ -695,7 +695,6 @@ class World extends Actor
             
             d = stone.position.minus(@player.camera.getPosition()).length()
             if d < 1.0
-                console.log 'd', d
                 stone.mesh.material.orig_opacity = stone.mesh.material.opacity if not stone.mesh.material.orig_opacity?
                 stone.mesh.material.opacity = 0.2 + d * 0.5
             else if stone.mesh.material.orig_opacity?

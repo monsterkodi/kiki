@@ -4,7 +4,7 @@
 # 000 0 000  000   000     000     000   000  000   000 000 
 # 000   000  000   000     000     000   000  000  000   000
 
-log         = require '/Users/kodi/s/ko/js/tools/log'
+log         = require '../tools/log'
 Quaternion  = require './quaternion'
 Vector      = require './vector'
 

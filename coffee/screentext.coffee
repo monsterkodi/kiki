@@ -7,7 +7,7 @@
 {
 first,
 last
-}        = require '/Users/kodi/s/ko/js/tools/tools'
+}        = require './tools/tools'
 Camera   = require './camera'
 Action   = require './action'
 Timer    = require './timer'

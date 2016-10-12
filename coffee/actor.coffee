@@ -6,7 +6,7 @@
 #   000   000   0000000     000      0000000   000   000
 {
 last
-}       = require '/Users/kodi/s/ko/js/tools/tools'
+}       = require './tools/tools'
 Action  = require './action'
 Timer   = require './timer'
 Event   = require './event'

@@ -5,7 +5,7 @@
 # 00000000      0      00000000  000   000     000   
 {
 last
-}      = require '/Users/kodi/s/ko/js/tools/tools'
+}      = require './tools/tools'
 Action = require './action'
 _      = require 'lodash'
 

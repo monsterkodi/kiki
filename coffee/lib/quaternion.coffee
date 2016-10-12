@@ -5,7 +5,7 @@
 #   000 0000   000   000  000   000     000     000       000   000  000  0000  000  000   000  000  0000
 #    00000 00   0000000   000   000     000     00000000  000   000  000   000  000   0000000   000   000
 
-log    = require '/Users/kodi/s/ko/js/tools/log'
+log    = require '../tools/log'
 Vector = require './vector'
 
 class Quaternion

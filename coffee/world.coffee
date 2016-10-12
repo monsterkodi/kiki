@@ -9,8 +9,8 @@ absMin,
 randInt,
 clamp,
 first,
-last}       = require "/Users/kodi/s/ko/js/tools/tools"
-log         = require "/Users/kodi/s/ko/js/tools/log"
+last}       = require "./tools/tools"
+log         = require "./tools/log"
 Pos         = require './lib/pos'
 Size        = require './lib/size'
 Cell        = require './cell'

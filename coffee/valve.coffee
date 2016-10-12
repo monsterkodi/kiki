@@ -4,7 +4,7 @@
 #    000     000   000  000         000     000     
 #     0      000   000  0000000      0      00000000
 
-log        = require '/Users/kodi/s/ko/js/tools/log'
+log        = require './tools/log'
 Quaternion = require './lib/quaternion'
 Pushable   = require './pushable'
 Action     = require './action'

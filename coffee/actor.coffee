@@ -30,7 +30,7 @@ class Actor extends Emitter
     
     addEventWithName: (eventName) ->
         if @getEventWithName eventName # to be removed
-            log "Actor.addEventWithName [WARNING] '#{eventName}' already in use!"
+            # log "Actor.addEventWithName [WARNING] '#{eventName}' already in use!"
             return -1; # shouldn't happen anyway :-)
         @events.push new Event @, eventName
         @events.length-1

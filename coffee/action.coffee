@@ -67,7 +67,7 @@ class Action
         @deleted = true
 
     perform: -> 
-        log "Action.perform #{@name} action? #{@object.performAction?} #{@object.name}" if not @name in  ['noop', 'rotation']
+        # log "Action.perform #{@name} action? #{@object.performAction?} #{@object.name}" if not @name in  ['noop', 'rotation']
         if @object.performAction? 
             @object.performAction @
         else if _.isFunction @object

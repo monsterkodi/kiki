@@ -19,28 +19,9 @@ maintainers
                   email   monsterkodi@gmx.net
 bugs
                 url  https://github.com/monsterkodi/kiki/issues
-build
-                appId           net.monsterkodi.kiki
-                app-category-type  public.app-category.utilities
-                asar            false
-                productName     kiki
-                mac
-                  background  build/background.png
-                  target
-                    dmg
-                  contents
-                    .
-                      x     100
-                      y     180
-                      type  link
-                      path  /Applications
-                    .
-                      x     100
-                      y     70
-                      type  file
 devDependencies
-                electron-builder  >=7.11.4
-                electron-prebuilt  >=1.4.3
+                electron-packager ^9.0.1
+                electron ^1.8.0
 dependencies
                 coffee-script   ^1.10.0
                 howler          ^2.0.0

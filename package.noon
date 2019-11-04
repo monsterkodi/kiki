@@ -1,7 +1,7 @@
 name            kiki
 productName     kiki
 main            js/app.js
-version         0.1.0
+version         0.2.0
 preferGlobal    true
 bin
                 kiki  ./bin/kiki
@@ -24,6 +24,7 @@ devDependencies
                 electron ^1.8.0
 dependencies
                 coffee-script   ^1.10.0
+                colors          ^1.4.0
                 howler          ^2.0.0
                 keycode         ^2.1.7
                 lodash          ^4.13.1

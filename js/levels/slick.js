@@ -1,0 +1,35 @@
+// koffee 1.4.0
+module.exports = {
+    name: "slick",
+    design: 'Michael Abel',
+    scheme: "tron",
+    size: [9, 11, 15],
+    help: "the green stone is slicky\nyou can't grab it while falling.",
+    player: {
+        coordinates: [0, 10, 13],
+        orientation: ZdownY
+    },
+    exits: [
+        {
+            name: "exit",
+            active: 1,
+            position: [0, 0, 4]
+        }
+    ],
+    create: function() {
+        var b, i, j, k, l, m, ref, ref1, ref2, ref3, s;
+        s = world.size;
+        for (b = i = 1; i <= 3; b = ++i) {
+            for (k = j = ref = b + 1, ref1 = s.x - b; ref <= ref1 ? j <= ref1 : j >= ref1; k = ref <= ref1 ? ++j : --j) {
+                for (l = m = ref2 = b + 1, ref3 = s.y - b; ref2 <= ref3 ? m <= ref3 : m >= ref3; l = ref2 <= ref3 ? ++m : --m) {
+                    world.addObjectAtPos('new Stone({color:[0,1,0,0.5], slippery:true})', k, l, b * 3);
+                }
+            }
+        }
+        world.addObjectAtPos('Wall', s.x / 2, s.y / 2, 0);
+        return world.addObjectAtPos('new Stone({color:[0,1,0,0.5], slippery:true})', s.x / 2, s.y / 2, 2);
+    }
+};
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic2xpY2suanMiLCJzb3VyY2VSb290IjoiLiIsInNvdXJjZXMiOlsiIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7QUFPQSxNQUFNLENBQUMsT0FBUCxHQUVJO0lBQUEsSUFBQSxFQUFZLE9BQVo7SUFDQSxNQUFBLEVBQVksY0FEWjtJQUVBLE1BQUEsRUFBWSxNQUZaO0lBR0EsSUFBQSxFQUFZLENBQUMsQ0FBRCxFQUFHLEVBQUgsRUFBTSxFQUFOLENBSFo7SUFJQSxJQUFBLEVBQVksNkRBSlo7SUFRQSxNQUFBLEVBQ0k7UUFBQSxXQUFBLEVBQWdCLENBQUMsQ0FBRCxFQUFHLEVBQUgsRUFBTSxFQUFOLENBQWhCO1FBQ0EsV0FBQSxFQUFnQixNQURoQjtLQVRKO0lBV0EsS0FBQSxFQUFVO1FBQ047WUFBQSxJQUFBLEVBQWMsTUFBZDtZQUNBLE1BQUEsRUFBYyxDQURkO1lBRUEsUUFBQSxFQUFjLENBQUMsQ0FBRCxFQUFHLENBQUgsRUFBSyxDQUFMLENBRmQ7U0FETTtLQVhWO0lBZ0JBLE1BQUEsRUFBUSxTQUFBO0FBQ0osWUFBQTtRQUFBLENBQUEsR0FBRSxLQUFLLENBQUM7QUFDUixhQUFTLDBCQUFUO0FBRUksaUJBQVMscUdBQVQ7QUFDSSxxQkFBUyx3R0FBVDtvQkFDSSxLQUFLLENBQUMsY0FBTixDQUFxQiwrQ0FBckIsRUFBc0UsQ0FBdEUsRUFBd0UsQ0FBeEUsRUFBMEUsQ0FBQSxHQUFFLENBQTVFO0FBREo7QUFESjtBQUZKO1FBTUEsS0FBSyxDQUFDLGNBQU4sQ0FBcUIsTUFBckIsRUFBNkIsQ0FBQyxDQUFDLENBQUYsR0FBSSxDQUFqQyxFQUFtQyxDQUFDLENBQUMsQ0FBRixHQUFJLENBQXZDLEVBQXlDLENBQXpDO2VBQ0EsS0FBSyxDQUFDLGNBQU4sQ0FBcUIsK0NBQXJCLEVBQXNFLENBQUMsQ0FBQyxDQUFGLEdBQUksQ0FBMUUsRUFBNEUsQ0FBQyxDQUFDLENBQUYsR0FBSSxDQUFoRixFQUFrRixDQUFsRjtJQVRJLENBaEJSIiwic291cmNlc0NvbnRlbnQiOlsiXG4jICAgIDAwMDAwMDAgIDAwMCAgICAgIDAwMCAgIDAwMDAwMDAgIDAwMCAgIDAwMFxuIyAgIDAwMCAgICAgICAwMDAgICAgICAwMDAgIDAwMCAgICAgICAwMDAgIDAwMCBcbiMgICAwMDAwMDAwICAgMDAwICAgICAgMDAwICAwMDAgICAgICAgMDAwMDAwMCAgXG4jICAgICAgICAwMDAgIDAwMCAgICAgIDAwMCAgMDAwICAgICAgIDAwMCAgMDAwIFxuIyAgIDAwMDAwMDAgICAwMDAwMDAwICAwMDAgICAwMDAwMDAwICAwMDAgICAwMDBcblxubW9kdWxlLmV4cG9ydHMgPVxuXG4gICAgbmFtZTogICAgICAgXCJzbGlja1wiXG4gICAgZGVzaWduOiAgICAgJ01pY2hhZWwgQWJlbCdcbiAgICBzY2hlbWU6ICAgICBcInRyb25cIlxuICAgIHNpemU6ICAgICAgIFs5LDExLDE1XVxuICAgIGhlbHA6ICAgICAgIFwiXCJcIlxuICAgICAgICAgICAgICAgIHRoZSBncmVlbiBzdG9uZSBpcyBzbGlja3lcbiAgICAgICAgICAgICAgICB5b3UgY2FuJ3QgZ3JhYiBpdCB3aGlsZSBmYWxsaW5nLlxuICAgICAgICAgICAgICAgIFwiXCJcIlxuICAgIHBsYXllcjogICBcbiAgICAgICAgY29vcmRpbmF0ZXM6ICAgIFswLDEwLDEzXVxuICAgICAgICBvcmllbnRhdGlvbjogICAgWmRvd25ZXG4gICAgZXhpdHM6ICAgIFtcbiAgICAgICAgbmFtZTogICAgICAgICBcImV4aXRcIlxuICAgICAgICBhY3RpdmU6ICAgICAgIDFcbiAgICAgICAgcG9zaXRpb246ICAgICBbMCwwLDRdXG4gICAgXVxuICAgIGNyZWF0ZTogLT5cbiAgICAgICAgcz13b3JsZC5zaXplXG4gICAgICAgIGZvciBiIGluIFsxLi4zXVxuICAgICAgICAgICAgIyBmb3IgKGssbCkgaW4gWyAoaSxqKSBmb3IgaSBpbiByYW5nZShiKzEscy54LWItMSkgZm9yIGogaW4gcmFuZ2UoYisxLHMueS1iLTEpIF1cbiAgICAgICAgICAgIGZvciBrIGluIFtiKzEuLnMueC1iXVxuICAgICAgICAgICAgICAgIGZvciBsIGluIFtiKzEuLnMueS1iXVxuICAgICAgICAgICAgICAgICAgICB3b3JsZC5hZGRPYmplY3RBdFBvcygnbmV3IFN0b25lKHtjb2xvcjpbMCwxLDAsMC41XSwgc2xpcHBlcnk6dHJ1ZX0pJywgayxsLGIqMylcbiAgICBcbiAgICAgICAgd29ybGQuYWRkT2JqZWN0QXRQb3MoJ1dhbGwnLCBzLngvMixzLnkvMiwwKVxuICAgICAgICB3b3JsZC5hZGRPYmplY3RBdFBvcygnbmV3IFN0b25lKHtjb2xvcjpbMCwxLDAsMC41XSwgc2xpcHBlcnk6dHJ1ZX0pJywgcy54LzIscy55LzIsMilcbiAgICAgICAgIl19
+//# sourceURL=../../coffee/levels/slick.coffee

@@ -100,14 +100,12 @@ class Main
     
     constructor: (openFiles) -> 
         
-        if app.makeSingleInstance @otherInstanceStarted
-            app.exit 0
-            return
+        # if app.makeSingleInstance @otherInstanceStarted
+            # app.exit 0
+            # return
                                 
         app.setName pkg.productName
         
-        log app.name
-                                                    
         if not openFiles.length and args.filelist.length
             openFiles = fileList args.filelist
             
@@ -172,7 +170,7 @@ class Main
     showWindows: =>
         for w in wins()
             w.show()
-            app.dock.show()
+            app.dock?.show()
             
     raiseWindows: =>
         if visibleWins().length
@@ -238,8 +236,8 @@ class Main
             backgroundColor: '#000'
             titleBarStyle:   'hidden'
 
-        win.loadURL "file://#{__dirname}/../index.html"
-        app.dock.show()
+        win.loadURL "file://#{__dirname}/../js/index.html"
+        app.dock?.show()
         win.on 'close',  @onCloseWin
         win.on 'move',   @onMoveWin
         win.on 'resize', @onResizeWin

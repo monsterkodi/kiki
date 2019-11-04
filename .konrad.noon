@@ -5,6 +5,6 @@ ignore
     /app/js/
     
 noon    . ext json . replace .. coffee/  js/
-pug     . ext html . replace .. pug/     ./
-styl    . ext css  . replace .. styl/    css/
+pug     . ext html . replace .. pug/     js/
+styl    . ext css  . replace .. styl/    js/css/
 

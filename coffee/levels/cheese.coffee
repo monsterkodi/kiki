@@ -5,6 +5,8 @@
 #   000       000   000  000       000            000  000     
 #    0000000  000   000  00000000  00000000  0000000   00000000
 
+{ klog } = require 'kxk'
+
 module.exports =
     name:       "cheese"
     design:     "Owen Hay"
@@ -59,7 +61,7 @@ module.exports =
         world.switch_counter = 0
         switched = (swtch) ->
             world.switch_counter += (swtch.active and 1 or -1)
-            log "world.switch_counter #{swtch} #{world.switch_counter}"
+            klog "world.switch_counter #{swtch} #{world.switch_counter}"
             exit = world.getObjectWithName "exit"
             exit.setActive world.switch_counter == 4
         

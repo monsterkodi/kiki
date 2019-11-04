@@ -5,6 +5,7 @@
 #   000 0 000  000       000  0000  000   000
 #   000   000  00000000  000   000   0000000 
 
+{ kerror } = require 'kxk'
 ScreenText = require './screentext'
 Action     = require './action'
 Material   = require './material'
@@ -50,6 +51,7 @@ class Menu extends ScreenText
         @setCurrent @current - 1
 
     modKeyComboEvent: (mod, key, combo, event) ->
+        
         switch key
             when 'esc'
                 world.playSound 'MENU_ABORT'
@@ -60,7 +62,10 @@ class Menu extends ScreenText
                 @prev()
             when 'enter'
                 world.playSound 'MENU_SELECT'
-                @callbacks[@current]()
+                if 'function' == typeof @callbacks[@current]
+                    @callbacks[@current]()
+                else
+                    kerror "no menu callback #{@current}"
                 @fadeOut()
 
 module.exports = Menu

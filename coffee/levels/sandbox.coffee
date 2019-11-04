@@ -5,6 +5,8 @@
 #        000  000   000  000  0000  000   000  000   000  000   000   000 000 
 #   0000000   000   000  000   000  0000000    0000000     0000000   000   000
 
+{ klog } = require 'kxk'
+
 module.exports =    
     name:       "sandbox"
     design:     'Michael Abel'
@@ -33,9 +35,9 @@ module.exports =
             for i in [3...6]
                 for j in [3...6]
                     if world.isUnoccupiedPos [i,j,0]
-                        log "isUnoccupiedPos #{i} #{j}"
+                        klog "isUnoccupiedPos #{i} #{j}"
                         occupied = false
-            log "toggle? #{occupied}"    
+            klog "toggle? #{occupied}"    
             world.toggle "exit" if occupied
             
         Switch = require '../switch'    

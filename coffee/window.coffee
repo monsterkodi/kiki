@@ -4,7 +4,7 @@
 # 000   000  000  000  0000  000   000  000   000  000   000
 # 00     00  000  000   000  0000000     0000000   00     00
 
-{ win, $ } = require 'kxk'
+{ win, klog, $ } = require 'kxk'
 
 Kiki        = require './kiki'
 electron    = require 'electron'
@@ -48,6 +48,6 @@ screenShot = ->
     win.capturePage (img) ->
         file = 'screenShot.png'
         remote.require('fs').writeFile file, img.toPng(), (err) -> 
-            log 'saving screenshot failed', err if err?
-            log "screenshot saved to #{file}"
+            klog 'saving screenshot failed', err if err?
+            klog "screenshot saved to #{file}"
         

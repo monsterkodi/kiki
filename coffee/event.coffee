@@ -4,7 +4,7 @@
 # 000          000     000       000  0000     000   
 # 00000000      0      00000000  000   000     000   
 
-{ last, _ } = require 'kxk'
+{ last, kerror, klog, _ } = require 'kxk'
 Action = require './action'
 
 class Event
@@ -26,10 +26,10 @@ class Event
             action.event = @
             action.init()
         else if not action?
-            console.log 'Event.addAction no action?'
+            kerror 'Event.addAction no action?'
             throw new Error
         else
-            log "Event.addAction has action #{action.name}"
+            klog "Event.addAction has action #{action.name}"
     
     removeAllActions: () ->
         while @actions.length

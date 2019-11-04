@@ -4,6 +4,7 @@
 # 000   000  000   000     000   
 # 0000000     0000000      000   
 
+{ klog } = require 'kxk'
 Pushable   = require './pushable'
 Action     = require './action'
 Timer      = require './timer'
@@ -243,7 +244,7 @@ class Bot extends Pushable
                 if not @direction.isZero()
                     super action
                     return
-                log 'still needed?'
+                klog 'still needed?'
                 @current_position = @position.plus @getDown().mul(relTime)
                 return
         
@@ -360,7 +361,7 @@ class Bot extends Pushable
         # log "bot.actionFinished #{action.name} #{action.id}"
             
         if action.id == Action.PUSH and not @direction.isZero()
-            log 'super (Pushable) action!'
+            klog 'super (Pushable) action!'
             super action
             return
     
@@ -423,7 +424,7 @@ class Bot extends Pushable
             
             if world.getRealOccupantAtPos(@position.plus @getDown())?.isMutant?()
                 # keep action chain flowinwg in order to detect environment changes
-                log 'bot.actionFinished mutant below: startTimedAction NOOP'
+                klog 'bot.actionFinished mutant below: startTimedAction NOOP'
                 @startTimedAction @getActionWithId(Action.NOOP), 0
 
     fixOrientationAndPosition: ->

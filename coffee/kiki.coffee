@@ -5,13 +5,14 @@
 # 000  000   000  000  000   000
 # 000   000  000  000   000  000
 
+{ klog } = require 'kxk'
 Stage = require './stage'
 World = require './world'
 
 class Kiki extends Stage
     
     constructor: (@view) -> 
-        log "view:", @view.className
+        klog "view:", @view.className
         super @view
         @view.focus()
     

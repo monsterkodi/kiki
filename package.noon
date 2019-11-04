@@ -1,7 +1,7 @@
 name            kiki
 productName     kiki
 main            js/app.js
-version         0.2.0
+version         0.3.0
 preferGlobal    true
 bin
                 kiki  ./bin/kiki

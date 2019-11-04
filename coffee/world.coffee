@@ -5,7 +5,7 @@
 #   000   000  000   000  000   000  000      000   000
 #   00     00   0000000   000   000  0000000  0000000  
 
-{ randInt, colors, absMin, first, clamp, last, _ } = require 'kxk'
+{ post, randInt, colors, absMin, first, clamp, last, kerror, klog, _ } = require 'kxk'
 
 Pos         = require './lib/pos'
 Size        = require './lib/size'
@@ -185,7 +185,7 @@ class World extends Actor
                 @dict = worldDict
                 
         @level_index = World.levels.list.indexOf @level_name
-        log "World.create #{@level_index} size: #{new Pos(@dict["size"]).str()} ---------------------- '#{@level_name}' scheme: '#{@dict.scheme ? 'default'}'"
+        klog "World.create #{@level_index} size: #{new Pos(@dict["size"]).str()} ---------------------- '#{@level_name}' scheme: '#{@dict.scheme ? 'default'}'"
 
         @creating = true
             
@@ -231,7 +231,7 @@ class World extends Actor
             if _.isFunction @dict.create
                 @dict.create()
             else
-                log "World.create [WARNING] @dict.create not a function!"
+                klog "World.create [WARNING] @dict.create not a function!"
                 # exec @dict["create"] in globals()
 
         # ............................................................ player
@@ -459,7 +459,7 @@ class World extends Actor
     setObjectAtPos: (object, pos) ->
         pos = new Pos pos
         if @isInvalidPos pos
-            log "World.setObjectAtPos [WARNING] invalid pos:", pos
+            kerror "World.setObjectAtPos [WARNING] invalid pos:", pos
             return
     
         if object.isSpaceEgoistic()
@@ -538,14 +538,14 @@ class World extends Actor
             oldSize = @lights.length
             last(@lights).del() # destructor will call remove object
             if oldSize == @lights.length
-                log "WARNING World.deleteAllObjects light no auto remove"
+                kerror "WARNING World.deleteAllObjects light no auto remove"
                 @lights.pop()
     
         while @objects.length
             oldSize = @objects.length
             last(@objects).del() # destructor will call remove object
             if oldSize == @objects.length
-                log "WARNING World.deleteAllObjects object no auto remove #{last(@objects).name}"
+                kerror "WARNING World.deleteAllObjects object no auto remove #{last(@objects).name}"
                 @objects.pop()
     
     deleteObjectsWithClassName: (className) ->
@@ -557,7 +557,7 @@ class World extends Actor
         for o in @objects
             if objectName == o.name
                 return o
-        log "World.getObjectWithName [WARNING] no object with name #{objectName}"
+        kerror "World.getObjectWithName [WARNING] no object with name #{objectName}"
         null
     
     setCameraMode: (mode) -> @player.camera.mode = clamp Camera.INSIDE, Camera.FOLLOW, mode
@@ -578,11 +578,11 @@ class World extends Actor
         # log "world.objectWillMoveToPos #{object.name} #{duration}", targetPos
         
         if @isInvalidPos targetPos
-            log "world.objectWillMoveToPos [WARNING] #{object.name} invalid targetPos:", targetPos
+            kerror "world.objectWillMoveToPos [WARNING] #{object.name} invalid targetPos:", targetPos
             return
         
         if sourcePos.eql targetPos
-            log "world.objectWillMoveToPos [WARNING] #{object.name} equal pos:", targetPos
+            kerror "world.objectWillMoveToPos [WARNING] #{object.name} equal pos:", targetPos
             return
         
         targetCell = @getCellAtPos pos
@@ -593,9 +593,9 @@ class World extends Actor
                         # temporary object at new pos will vanish before object will arrive . delete it
                         objectAtNewPos.del()
                     else
-                        log "world.objectWillMoveToPos [WARNING] #{object.name} timing conflict at pos:", targetPos
+                        kerror "world.objectWillMoveToPos [WARNING] #{object.name} timing conflict at pos:", targetPos
                 else
-                    log "world.objectWillMoveToPos [WARNING] #{object.name} already occupied:", targetPos 
+                    kerror "world.objectWillMoveToPos [WARNING] #{object.name} already occupied:", targetPos 
     
         if object.name != 'player'
             @unsetObject object # remove object from cell grid
@@ -617,7 +617,7 @@ class World extends Actor
         targetPos = new Pos to
 
         if @isInvalidPos targetPos
-             log "World.objectMoved [WARNING] #{movedObject.name} invalid targetPos:", targetPos
+             kerror "World.objectMoved [WARNING] #{movedObject.name} invalid targetPos:", targetPos
              return
         
         # log "world.objectMoved #{movedObject.name}", sourcePos
@@ -632,7 +632,7 @@ class World extends Actor
             tmpObject.del() if tmpObject.object == movedObject
             
         if @isOccupiedPos targetPos
-            log "World.objectMoved [WARNING] #{movedObject.name} occupied target pos:", targetPos
+            kerror "World.objectMoved [WARNING] #{movedObject.name} occupied target pos:", targetPos
             
         if sourceCell?
             sourceCell.removeObject movedObject
@@ -648,7 +648,7 @@ class World extends Actor
         if targetCell?
             targetCell.addObject movedObject
         else
-            log "world.objectMoved [WARNING] #{movedObject.name} no target cell?"
+            kerror "world.objectMoved [WARNING] #{movedObject.name} no target cell?"
     
     #  0000000  000000000  00000000  00000000       
     # 000          000     000       000   000      
@@ -842,6 +842,9 @@ class World extends Actor
         @menu.addItem @localizedString("quit"),       @quit
         @menu.show()
     
+    quit: -> post.emit 'menuEvent' 'Quit'
+    quit: -> post.emit 'menuEvent' 'About kiki'
+        
     #   000   000   0000000   000      000    
     #   000 0 000  000   000  000      000    
     #   000000000  000000000  000      000    

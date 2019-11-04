@@ -4,6 +4,7 @@
 # 000 0 000  000   000     000     000   000  000   000  000          000     000      000  000  0000  000   000  000       000   000
 # 000   000   0000000      000      0000000   000   000   0000000     000     0000000  000  000   000  0000000    00000000  000   000
 
+{ klog } = require 'kxk'
 Item      = require './item'
 Action    = require './action'
 Face      = require './face'
@@ -53,7 +54,7 @@ class MotorCylinder extends Pushable #Item
             occupant = world.getOccupantAtPos pos 
             MotorGear = require './motorgear'
             isGear = occupant instanceof MotorGear and occupant.face == @face
-            log "initAction isGear #{isGear}"
+            klog "initAction isGear #{isGear}"
             occupant.setActive false if isGear
         super action
         

@@ -4,6 +4,7 @@
 # 000   000  000   000  000      000      000          000   
 # 0000000     0000000   0000000  0000000  00000000     000   
 
+{ _ } = require 'kxk'
 Item     = require './item'
 Action   = require './action'
 Timer    = require './timer'

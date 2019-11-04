@@ -8,3 +8,12 @@
 ![kiki](img/shot12.png)
 ![kiki](img/shot09.png)
 ![kiki](img/shot10.png)
+
+### to try it out
+
+```
+git clone git@github.com:monsterkodi/kiki.git
+cd kiki
+npm install
+npm run kiki
+```

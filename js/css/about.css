@@ -1,0 +1,44 @@
+body {
+  font-family: Verdana;
+  background-color: #333;
+  color: #fff;
+}
+::selection {
+  color: #ff0;
+}
+body {
+  margin: 0px;
+  overflow: hidden;
+}
+a {
+  text-decoration: none;
+  color: #66f;
+}
+a:hover {
+  color: #f80;
+}
+#stage {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+#icon {
+  margin-top: 50px;
+  margin-bottom: 10px;
+  padding-left: 30px;
+  cursor: pointer;
+}
+#name {
+  font-weight: bold;
+  font-size: 60px;
+  display: none;
+}
+#version {
+  font-size: 20px;
+  color: #666;
+}
+#version:hover {
+  color: #66f;
+}

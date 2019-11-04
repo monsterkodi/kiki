@@ -236,7 +236,7 @@ class Main
             backgroundColor: '#000'
             titleBarStyle:   'hidden'
 
-        win.loadURL "file://#{__dirname}/../js/index.html"
+        win.loadURL "file://#{__dirname}/index.html"
         app.dock?.show()
         win.on 'close',  @onCloseWin
         win.on 'move',   @onMoveWin

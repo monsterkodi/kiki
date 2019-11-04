@@ -8,7 +8,7 @@
     "kiki": "./bin/kiki"
   },
   "scripts": {
-    "kiki": "./node_modules/.bin/electron"
+    "kiki": "./node_modules/.bin/electron ."
   },
   "repository": {
     "type": "git",

@@ -6,7 +6,7 @@ preferGlobal    true
 bin
                 kiki  ./bin/kiki
 scripts
-                kiki  ./node_modules/.bin/electron
+                kiki  ./node_modules/.bin/electron .
 repository
                 type  git
                 url   git+https://github.com/monsterkodi/kiki.git

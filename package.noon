@@ -6,7 +6,7 @@ preferGlobal    true
 bin
                 kiki  ./bin/kiki
 scripts
-                dist  ./bin/build.sh && build
+                kiki  ./node_modules/.bin/electron
 repository
                 type  git
                 url   git+https://github.com/monsterkodi/kiki.git
@@ -22,6 +22,8 @@ bugs
 devDependencies
                 electron-packager ^9.0.1
                 electron ^1.8.0
+                electron-rebuild ^1.8.6
+                konrad ^0.161.0
 dependencies
                 coffee-script   ^1.10.0
                 colors          ^1.4.0

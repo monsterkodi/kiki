@@ -2,11 +2,7 @@
   "name": "kiki",
   "productName": "kiki",
   "main": "js/main.js",
-  "version": "0.6.0",
-  "preferGlobal": true,
-  "bin": {
-    "kiki": "./bin/kiki"
-  },
+  "version": "0.7.0",
   "scripts": {
     "kiki": "./node_modules/.bin/electron .",
     "build": "./node_modules/.bin/konrad",
@@ -28,17 +24,15 @@
   "bugs": {
     "url": "https://github.com/monsterkodi/kiki/issues"
   },
-  "devDependencies": [
-    "electron-packager ^9.0.1",
-    "electron-rebuild ^1.8.6",
-    "konrad ^0.161.0"
-  ],
-  "dependencies": {
+  "devDependencies": {
     "electron": "^7.0.1",
+    "electron-packager": "^14.1.0",
+    "electron-rebuild": "^1.8.6",
+    "konrad": "^0.161.0"
+  },
+  "dependencies": {
     "howler": "^2.1.2",
     "kxk": "^0.355.0",
-    "performance-now": "^2.1.0",
-    "three": "0.79.0",
-    "underscore.string": "^3.3.5"
+    "three": "0.79.0"
   }
 }

@@ -30,7 +30,7 @@ Scheme      = require './scheme'
 Quaternion  = require './lib/quaternion'
 Vector      = require './lib/vector'
 Pos         = require './lib/pos'
-now         = require 'performance-now'
+now         = require('perf_hooks').performance.now
 {
 Wall,
 Wire,

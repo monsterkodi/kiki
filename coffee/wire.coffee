@@ -21,7 +21,7 @@ class Wire extends Item
     @HORIZONTAL =10
     @ALL        =15
     
-    constructor: (@face=Face.Z, @connections=Wire.ALL) ->
+    @: (@face=Face.Z, @connections=Wire.ALL) ->
         @glow   = null
         @active = false
         @value  = 1.0
@@ -72,7 +72,7 @@ class Wire extends Item
         if @active != active
             @active = active
             neighbors = @neighborWires()
-            # log "wire active:#{active} face:#{@face} neighbors:#{neighbors.length} pos:", @getPos()
+            # klog "wire active:#{active} face:#{@face} neighbors:#{neighbors.length} pos:", @getPos()
             for wire in neighbors
                 wire.setActive @active
                 
@@ -106,7 +106,7 @@ class Wire extends Item
     neighborWires: ->
         wires = []
         points = @connectionPoints()
-        # log 'points', points
+        # klog 'points', points
         neighbor_dirs = []
          
         rot = Face.orientationForFace @face

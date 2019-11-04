@@ -12,7 +12,7 @@ Quaternion = require './lib/quaternion'
 
 class Item extends Actor
 
-    constructor: ->
+    @: ->
         super
         @name = @constructor.name
         @createMesh?()
@@ -44,14 +44,14 @@ class Item extends Actor
 
     getPos: -> new Pos @current_position
     setPos: (x,y,z) -> 
-        # log "item.setPos #{@name} #{x} #{y} #{z}"
+        # klog "item.setPos #{@name} #{x} #{y} #{z}"
         @setPosition new Pos x,y,z
     
     setOrientation: (q) -> 
         @current_orientation = @orientation = new Quaternion q
         
     setCurrentPosition: (p) -> 
-        # log "item.setCurrentPosition #{@name}", p
+        # klog "item.setCurrentPosition #{@name}", p
         @current_position = new Vector p
         @mesh?.position.copy @current_position
         

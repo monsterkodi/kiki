@@ -9,7 +9,7 @@ Material = require './material'
 
 class Stone extends Pushable
     
-    constructor: (opt) ->
+    @: (opt) ->
         @slippery = opt?.slippery or false
         @opacity = opt?.opacity
         if opt?.color

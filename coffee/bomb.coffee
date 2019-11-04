@@ -13,7 +13,7 @@ class Bomb extends Pushable
     
     isSpaceEgoistic: -> true
     
-    constructor: () ->
+    @: ->
         
         @angle    = 0.0
         @size     = 0.55
@@ -73,7 +73,7 @@ class Bomb extends Pushable
             @getEventWithName("explode").triggerActions()
     
     performAction: (action) ->
-        # log "bomb.performAction #{action.id}"
+        # klog "bomb.performAction #{action.id}"
         switch action.id
             when Action.ROTATE  then @angle += action.getRelativeDelta() * 360
             when Action.IMPLODE then @size = 1.0 - action.getRelativeTime()

@@ -14,7 +14,7 @@ MotorCylinder = require './motorcylinder'
 
 class MotorGear extends Gear
     
-    constructor: (@face) -> 
+    @: (@face) ->
         super @face
         
     setPosition: (pos) ->
@@ -31,7 +31,7 @@ class MotorGear extends Gear
         @mesh.castShadow = true
 
     initAction: (action) ->
-        # log "MotorGear.initAction action #{action.name}"
+        # klog "MotorGear.initAction action #{action.name}"
         if action.id in [Action.PUSH, Action.FALL]
             pos = @position.plus Face.normal @face
             occupant = world.getOccupantAtPos pos 
@@ -40,14 +40,14 @@ class MotorGear extends Gear
         super action
         
     updateMesh: ->
-        # log "Valve.updateMesh #{@angle} #{@face}"
+        # klog "Valve.updateMesh #{@angle} #{@face}"
         rot = Quaternion.rotationAroundVector (@clockwise and 1 or -1) * @angle, 0,0,1
         @gear.quaternion.copy rot #Face.orientationForFace(@face).mul rot
         @mesh.quaternion.copy Face.orientation @face
         
     updateActive: ->
         pos = @position.plus Face.normal @face
-        # log "MotorGear.updateActive #{@active}", pos, world.getOccupantAtPos(pos) instanceof MotorCylinder
+        # klog "MotorGear.updateActive #{@active}", pos, world.getOccupantAtPos(pos) instanceof MotorCylinder
         occupant = world.getOccupantAtPos pos 
         isCylinder = occupant instanceof MotorCylinder and occupant.face == @face and not occupant.move_action
         @setActive isCylinder

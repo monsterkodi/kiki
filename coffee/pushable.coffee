@@ -13,7 +13,7 @@ class Pushable extends Item
 
     isSpaceEgoistic: -> true
     
-    constructor: () ->
+    @: () ->
         super
         @pusher     = null
         @direction  = Vector.minusY
@@ -30,7 +30,7 @@ class Pushable extends Item
             @direction = @orientation.rotate Vector.minusZ
 
     pushedByObjectInDirection: (object, dir, duration) ->
-        # log "pushable.pushedByObjectInDirection #{@name} pusher:#{object.name} duration:#{duration}"
+        # klog "pushable.pushedByObjectInDirection #{@name} pusher:#{object.name} duration:#{duration}"
         pushAction   = @getActionWithId Action.PUSH
         @pusher      = object
         @move_action = pushAction
@@ -47,7 +47,7 @@ class Pushable extends Item
 
     performAction: (action) ->
         if action.id in [Action.PUSH, Action.FALL]
-            # log "pushable.performAction #{@name} #{action.id}", @position, @direction
+            # klog "pushable.performAction #{@name} #{action.id}", @position, @direction
             @setCurrentPosition @position.plus @direction.mul action.getRelativeTime()
             return
         super action
@@ -57,7 +57,7 @@ class Pushable extends Item
             @move_action = null
             targetPos = @current_position.round()
             world.objectMoved @, @position, targetPos
-            # log "pushable.finishAction #{action.id}", targetPos
+            # klog "pushable.finishAction #{action.id}", targetPos
             @setPosition targetPos
             return
         super action
@@ -85,7 +85,7 @@ class Pushable extends Item
             if world.isUnoccupiedPos @position.plus gravityDir
                 @direction = gravityDir
                 @move_action = @getActionWithId Action.FALL
-                # log 'Pushable.actionFinished below empty, fall!'
+                # klog 'Pushable.actionFinished below empty, fall!'
                 Timer.addAction @move_action
             else
                 @direction.reset()

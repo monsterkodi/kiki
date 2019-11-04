@@ -14,7 +14,7 @@ class Gear extends Valve
         
     @neighbors = [ [[0,1,0], [0,-1,0], [0,0,1], [0,0,-1]], [[1,0,0], [-1,0,0], [0,0,1], [0,0,-1]], [[1,0,0], [-1,0,0], [0,1,0], [0,-1,0]] ]
     
-    constructor: (@face) -> 
+    @: (@face) ->
         super @face
         @updateMesh()
 
@@ -33,7 +33,7 @@ class Gear extends Valve
         gears = []
         for i in [0...4]
             neighbor = world.getOccupantAtPos pos.plus new Pos dirs[i]
-            # log "gear.neighborGears #{neighbor?} #{neighbor instanceof Gear} #{neighbor?.face}", pos.plus new Pos dirs[i]
+            # klog "gear.neighborGears #{neighbor?} #{neighbor instanceof Gear} #{neighbor?.face}", pos.plus new Pos dirs[i]
             if neighbor? and neighbor instanceof Gear
                 if neighbor.face == @face
                     gears.push neighbor
@@ -53,10 +53,10 @@ class Gear extends Valve
                 @updateActive()
     
     updateActive: ->
-        # log "gear.updateActive #{@active}"
+        # klog "gear.updateActive #{@active}"
         @setActive false
         for gear in @neighborGears()
-            # log "gear.updateActive neighbor active #{gear.active}"
+            # klog "gear.updateActive neighbor active #{gear.active}"
             if gear.active
                 @setActive true
                 return
@@ -70,13 +70,13 @@ class Gear extends Valve
                 @startTimedAction @getActionWithId Action.ROTATE
             else
                 @stopAction @getActionWithId Action.ROTATE
-            # log "gear.setActive neighborGears #{@neighborGears().length}"
+            # klog "gear.setActive neighborGears #{@neighborGears().length}"
             for gear in @neighborGears()
                 if @active
-                    # log 'gear.setActive activate neighbor'
+                    # klog 'gear.setActive activate neighbor'
                     gear.setActive true
                 else
-                    # log 'gear.setActive update neighbor'
+                    # klog 'gear.setActive update neighbor'
                     gear.updateActive()
      
 module.exports = Gear

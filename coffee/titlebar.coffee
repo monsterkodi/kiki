@@ -10,7 +10,7 @@ ipc      = electron.ipcRenderer
 
 class Titlebar
     
-    constructor: () ->
+    @: () ->
         @elem = $('.titlebar')
         @elem.ondblclick = (event) => 
             console.log window.winID

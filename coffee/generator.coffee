@@ -11,7 +11,7 @@ Material = require './material'
 
 class Generator extends Gear
     
-    constructor: (face) -> 
+    @: (face) ->
         super face
         
     createMesh: ->

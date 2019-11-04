@@ -8,7 +8,7 @@ Material = require './material'
 
 class Cage
 
-    constructor: (@size, gap) ->
+    @: (@size, gap) ->
         Cage.gap = gap
         geom = Cage.wallTiles @size, 'inside', 0
         @raster = new THREE.Mesh geom, Material.raster 

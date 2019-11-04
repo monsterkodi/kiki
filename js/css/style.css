@@ -1,6 +1,10 @@
-pre {
-  margin: 0;
-}
+/*
+ 0000000  000000000  000   000  000    
+000          000      000 000   000    
+0000000      000       00000    000    
+     000     000        000     000    
+0000000      000        000     0000000
+*/
 * {
   outline-width: 0;
 }
@@ -11,19 +15,130 @@ body {
   left: 0;
   top: 0;
   margin: 0;
-  background: #000;
-  color: #fff;
   overflow: hidden;
-  font-family: font;
   -webkit-user-select: none;
-  -webkit-app-region: drag;
 }
-.stage {
+#main {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  top: 30px;
+  scroll: none;
   overflow: hidden;
+  pointer-events: auto;
+}
+#titlebar {
+  display: flex;
+  flex-direction: row;
+  height: 30px;
+  box-sizing: border-box;
+  font-size: 15px;
+  font-family: Bahnschrift Light, Helvetica Neue, Ebrima, Varela Round, Helvetica, Arial;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.titlebar-title {
+  flex: 1 1;
+  display: inline-block;
+  flex-direction: row;
+  padding-top: 7px;
+  padding-left: 10px;
+  padding-right: 10px;
+  font: Bahnschrift Light, Helvetica Neue, Ebrima, Varela Round, Helvetica, Arial;
+}
+.titlebar-dot {
+  display: inline-block;
+  vertical-align: top;
+  padding-left: 9px;
+  padding-right: 9px;
+  margin-top: -1px;
+}
+#titlebar .winicon img {
+  pointer-events: all;
+  padding-left: 6px;
+  padding-top: 3px;
+  width: 22px;
+  height: 22px;
+}
+#titlebar .winbutton {
+  flex: 0 0 45px;
+  display: inline-block;
+  text-align: center;
+  vertical-align: bottom;
+  font-size: 18px;
+  padding-top: 2px;
+  pointer-events: all;
+}
+#titlebar .winbutton.minimize {
+  padding-top: 5px;
+}
+#titlebar .topframe {
+  height: 2px;
   position: absolute;
   left: 0;
-  right: 0;
-  bottom: 0;
   top: 0;
-  box-sizing: border-box;
+  right: 135px;
+}
+.menu {
+  height: 30px;
+  pointer-events: auto;
+  flex: 0 0 0;
+  display: flex;
+  flex-direction: row;
+}
+.menuItem {
+  cursor: pointer;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 7px;
+  display: inline-block;
+  height: 30px;
+  overflow: visible;
+}
+.popup {
+  z-index: 9999;
+  position: absolute;
+  border-radius: 3px;
+  font-size: 15px;
+  font-family: Bahnschrift Light, Helvetica Neue, Ebrima, Varela Round, Helvetica, Arial;
+}
+.popup.titlemenu {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.popupItem {
+  padding: 2px;
+  padding-left: 12px;
+  padding-right: 82px;
+  cursor: pointer;
+}
+.popupItem.separator {
+  padding: 0;
+  cursor: default;
+  border: 0;
+  height: 0;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+.popupItem:last-child {
+  padding-bottom: 6px;
+}
+.popupItem:first-child {
+  padding-top: 6px;
+}
+.popupCombo {
+  pointer-events: none;
+  position: absolute;
+  right: 12px;
+}
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar {
+  height: 6px;
+  background-color: transparent;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
 }

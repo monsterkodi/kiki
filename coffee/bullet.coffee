@@ -12,7 +12,7 @@ Material = require './material'
 
 class Bullet extends Item
     
-    constructor: () ->
+    @: () ->
         @size = 0.2
         @shooter = null
         super

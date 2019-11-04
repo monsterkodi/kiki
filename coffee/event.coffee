@@ -9,7 +9,7 @@ Action = require './action'
 
 class Event
     
-    constructor: (obj, name) ->
+    @: (obj, name) ->
         @object  = obj
         @name    = name
         @time    = 0

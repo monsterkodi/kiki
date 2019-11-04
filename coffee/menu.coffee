@@ -12,7 +12,7 @@ Material   = require './material'
 
 class Menu extends ScreenText
 
-    constructor: ->
+    @: ->
         @current = 0
         @callbacks = []
         @lineHeight = 1.1

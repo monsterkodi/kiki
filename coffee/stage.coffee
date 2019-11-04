@@ -8,7 +8,7 @@
 
 class Stage
     
-    constructor: (@view) -> 
+    @: (@view) ->
         @paused = false
         @view.onkeydown = @onKeyDown
         @view.onkeyup   = @onKeyUp

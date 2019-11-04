@@ -11,7 +11,7 @@ class TmpObject extends Item
     @tmpID = 0
     isSpaceEgoistic: -> true
     
-    constructor: (o) ->
+    @: (o) ->
         TmpObject.tmpID += 1
         @time = 0
         @object = o
@@ -20,7 +20,7 @@ class TmpObject extends Item
         @setPos o.getPos()
     
     del: -> 
-        # log "tmpObject -------- del #{@name}", @getPos()
+        # klog "tmpObject -------- del #{@name}", @getPos()
         super
         
 module.exports = TmpObject

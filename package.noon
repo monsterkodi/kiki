@@ -1,12 +1,14 @@
 name            kiki
 productName     kiki
-main            js/app.js
-version         0.3.0
+main            js/main.js
+version         0.5.0
 preferGlobal    true
 bin
                 kiki  ./bin/kiki
 scripts
-                kiki  ./node_modules/.bin/electron .
+                kiki    ./node_modules/.bin/electron .
+                build   ./node_modules/.bin/konrad
+                watch   ./node_modules/.bin/electron . -wD
 repository
                 type  git
                 url   git+https://github.com/monsterkodi/kiki.git
@@ -21,12 +23,12 @@ bugs
                 url  https://github.com/monsterkodi/kiki/issues
 devDependencies
                 electron-packager ^9.0.1
-                electron ^1.8.0
                 electron-rebuild ^1.8.6
                 konrad ^0.161.0
 dependencies
-                howler          ^2.0.0
-                kxk             ^0.354.0
-                performance-now  ^0.2.0
+                electron        ^7.0.1
+                howler          ^2.1.2
+                kxk             ^0.355.0
+                performance-now  ^2.1.0
                 three           0.79.0
-                underscore.string  ^3.3.4
+                underscore.string  ^3.3.5

@@ -15,7 +15,7 @@ Quaternion  = require './lib/quaternion'
  
 class Player extends Bot
     
-    constructor: ->
+    @: ->
         
         super
         @name = 'player'
@@ -57,7 +57,7 @@ class Player extends Bot
     #   000   000   0000000     000     000   0000000   000   000
     
     initAction: (action) ->
-        # log "initAction #{action.id} #{action.name}"
+        # klog "initAction #{action.id} #{action.name}"
         switch action.id
             when Action.CLIMB_DOWN
                 # @addMoves 1 
@@ -125,7 +125,7 @@ class Player extends Bot
         
     modKeyComboEventDown: (mod, key, combo, event) ->
                     
-        # log "player.modKeyComboEventDown mod:#{mod} key:#{key} combo:#{combo}"
+        # klog "player.modKeyComboEventDown mod:#{mod} key:#{key} combo:#{combo}"
         
         switch key
             when @key.forward, @key.backward
@@ -160,13 +160,13 @@ class Player extends Bot
                     @moveBot() # perform jump action (depending on environment)
                     @jump_once = false
                 else
-                    # log 'jump:moving'
+                    # klog 'jump:moving'
                     if @move_action.id == Action.FORWARD and @move_action.getRelativeTime() < 0.6 or 
                         @move_action.id == Action.CLIMB_DOWN and @move_action.getRelativeTime() < 0.4
                             # abort current move and jump instead
-                            # log 'jump:move or climb down'
+                            # klog 'jump:move or climb down'
                             if world.isUnoccupiedPos @position.plus @getUp()
-                                # log 'jump:can do'
+                                # klog 'jump:can do'
                                 if world.isUnoccupiedPos @position.plus @getUp().plus @getDir()  
                                     action = @getActionWithId Action.JUMP_FORWARD
                                 else 
@@ -211,7 +211,7 @@ class Player extends Bot
     
     modKeyComboEventUp: (mod, key, combo, event) ->
         @push = false if @key.push == 'shift'
-        # log "player.modKeyComboEventUp mod:#{mod} key:#{key} combo:#{combo}"
+        # klog "player.modKeyComboEventUp mod:#{mod} key:#{key} combo:#{combo}"
         switch key    
             when @key.shoot
                 Timer.removeAction @getActionWithId Action.SHOOT

@@ -9,7 +9,7 @@ Material = require './material'
 
 class Light extends Item
     
-    constructor: (opt) ->
+    @: (opt) ->
         @radius    = opt?.radius ? 4
         @shadow    = opt?.shadow ? false
         @intensity = opt?.intensity ? 0.5

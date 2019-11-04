@@ -11,7 +11,7 @@ class Splitter extends Bomb
 
     isSpaceEgoistic: -> false
         
-    constructor: (dir) ->
+    @: (dir) ->
         super
         @size      = 0.0
         @splitted  = true

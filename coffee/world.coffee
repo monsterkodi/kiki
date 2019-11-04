@@ -56,7 +56,7 @@ class World extends Actor
             new Vector 0, 0,-1
     ]
     
-    constructor: (@view) ->
+    @: (@view) ->
                 
         @speed       = 6
         
@@ -67,7 +67,7 @@ class World extends Actor
         @noRotations = false
         
         @screenSize = new Size @view.clientWidth, @view.clientHeight
-        # log "view @screenSize:", @screenSize
+        # klog "view @screenSize:", @screenSize
         
         @renderer = new THREE.WebGLRenderer 
             antialias:              true
@@ -174,7 +174,8 @@ class World extends Actor
     #  0000000  000   000  00000000  000   000     000     00000000
         
     create: (worldDict={}) -> # creates the world from a level name or a dictionary
-        # log "world.create", worldDict
+        
+        # klog "world.create" worldDict
         
         if worldDict
             if _.isString worldDict
@@ -237,7 +238,7 @@ class World extends Actor
         # ............................................................ player
 
         @player = new Player
-        # log "player_dict", player_dict
+        # klog "player_dict", player_dict
         @player.setOrientation @dict.player.orientation ? rotx90
         @player.camera.setOrientation @player.orientation
 
@@ -251,6 +252,7 @@ class World extends Actor
         @setCameraMode Camera.INSIDE if @dict.camera == 'inside'
         
         @creating = false
+        klog 'done creating'
     
     restart: => @create @dict
 
@@ -265,7 +267,7 @@ class World extends Actor
     applyScheme: (scheme) ->
         return if not Scheme[scheme]
         
-        # log "world.applyScheme #{scheme}"
+        # klog "world.applyScheme #{scheme}"
         
         colors = _.clone Scheme[scheme]
         
@@ -294,7 +296,7 @@ class World extends Actor
         colors.wirePlate ?= {}
         colors.wirePlate.color ?= colors.wire.color
         for k,v of colors
-            # log "#{k} #{v.color?.r} #{v.color?.g} #{v.color?.b}", v
+            # klog "#{k} #{v.color?.r} #{v.color?.g} #{v.color?.b}", v
             # continue if k == 'text'
             mat = Material[k]
             mat.color    = v.color
@@ -331,7 +333,7 @@ class World extends Actor
           
     exitLevel: (action) =>
         @finish()
-        # log "world.level_index #{world.level_index} nextLevel #{World.levels.list[world.level_index+1]}"
+        # klog "world.level_index #{world.level_index} nextLevel #{World.levels.list[world.level_index+1]}"
         nextLevel = (world.level_index+(_.isNumber(action) and action or 1)) % World.levels.list.length
         world.create World.levels.list[nextLevel]
 
@@ -382,11 +384,11 @@ class World extends Actor
         pos = new Pos x, y, z
         object = @newObject object
         @setObjectAtPos object, pos
-        # log "addObjectAtPos #{object.name}", pos
+        # klog "addObjectAtPos #{object.name}", pos
         @addObject object
 
     addObjectLine: (object, sx,sy,sz, ex,ey,ez) ->
-        # log "world.addObjectLine sx:#{sx} sy:#{sy} sz:#{sz} ex:#{ex} ey:#{ey} ez:#{ez}"
+        # klog "world.addObjectLine sx:#{sx} sy:#{sy} sz:#{sz} ex:#{ex} ey:#{ey} ez:#{ez}"
         if sx instanceof Pos or Array.isArray sx
             start = sx
             end   = sy
@@ -402,7 +404,7 @@ class World extends Actor
             start = [start.x, start.y, start.z]
         [sx, sy, sz] = start
         
-        # log "world.addObjectLine sx:#{sx} sy:#{sy} sz:#{sz} ex:#{ex} ey:#{ey} ez:#{ez}"
+        # klog "world.addObjectLine sx:#{sx} sy:#{sy} sz:#{sz} ex:#{ex} ey:#{ey} ez:#{ez}"
         
         diff = [ex-sx, ey-sy, ez-sz]
         maxdiff = _.max diff.map Math.abs
@@ -410,7 +412,7 @@ class World extends Actor
         for i in [0...maxdiff]
             # pos = apply(Pos, (map (lambda a, b: int(a+i*b), start, deltas)))
             pos = new Pos (start[j]+i*deltas[j] for j in [0..2])
-            # log "addObjectLine #{i}:", pos
+            # klog "addObjectLine #{i}:", pos
             if @isUnoccupiedPos pos
                 @addObjectAtPos object, pos
        
@@ -487,7 +489,7 @@ class World extends Actor
             if cell.isEmpty()
                 @cells[@posToIndex(pos)] = null
         # else 
-            # log 'world.unsetObject [WARNING] no cell at pos:', pos
+            # klog 'world.unsetObject [WARNING] no cell at pos:', pos
 
     newObject: (object) ->
         if _.isString object
@@ -575,7 +577,7 @@ class World extends Actor
         sourcePos = object.getPos()
         targetPos = new Pos pos
         
-        # log "world.objectWillMoveToPos #{object.name} #{duration}", targetPos
+        # klog "world.objectWillMoveToPos #{object.name} #{duration}", targetPos
         
         if @isInvalidPos targetPos
             kerror "world.objectWillMoveToPos [WARNING] #{object.name} invalid targetPos:", targetPos
@@ -600,13 +602,13 @@ class World extends Actor
         if object.name != 'player'
             @unsetObject object # remove object from cell grid
             
-            # log 'world.objectWillMoveToPos tmpObject at old pos', sourcePos
+            # klog 'world.objectWillMoveToPos tmpObject at old pos', sourcePos
             tmpObject = new TmpObject object  # insert tmp object at old pos
             tmpObject.setPosition sourcePos
             tmpObject.time = -duration
             @addObjectAtPos tmpObject, sourcePos 
 
-            # log 'world.objectWillMoveToPos tmpObject at new pos', targetPos 
+            # klog 'world.objectWillMoveToPos tmpObject at new pos', targetPos
             tmpObject = new TmpObject object  # insert tmp object at new pos
             tmpObject.setPosition targetPos 
             tmpObject.time = duration
@@ -620,7 +622,7 @@ class World extends Actor
              kerror "World.objectMoved [WARNING] #{movedObject.name} invalid targetPos:", targetPos
              return
         
-        # log "world.objectMoved #{movedObject.name}", sourcePos
+        # klog "world.objectMoved #{movedObject.name}", sourcePos
         
         sourceCell = @getCellAtPos sourcePos
         targetCell = @getCellAtPos targetPos
@@ -751,11 +753,11 @@ class World extends Actor
         if @isInvalidPos pos
             return true
         if @getOccupantAtPos pos
-            # log "isOccupiedPos occupant: #{@getOccupantAtPos(pos).name} at pos:", new Pos pos
+            # klog "isOccupiedPos occupant: #{@getOccupantAtPos(pos).name} at pos:", new Pos pos
             return true
     
     mayObjectPushToPos: (object, pos, duration) ->
-        # log "world.mayObjectPushToPos object:#{object.name} duration:#{duration}", pos
+        # klog "world.mayObjectPushToPos object:#{object.name} duration:#{duration}", pos
         # returns true, if a pushable object is at pos and may be pushed
         return false if @isInvalidPos pos
         
@@ -775,7 +777,7 @@ class World extends Actor
             else return false
     
         pushableObject = @getOccupantAtPos pos
-        # log "pushableObject #{pushableObject?.name}"
+        # klog "pushableObject #{pushableObject?.name}"
         if pushableObject? and pushableObject instanceof Pushable #and
                                 # pushableObject instanceof MotorGear # bad
             pushableObject.pushedByObjectInDirection object, direction, duration
@@ -842,8 +844,10 @@ class World extends Actor
         @menu.addItem @localizedString("quit"),       @quit
         @menu.show()
     
-    quit: -> post.emit 'menuEvent' 'Quit'
-    quit: -> post.emit 'menuEvent' 'About kiki'
+    quit: -> post.toMain 'quitApp'
+    showAbout: -> post.toMain 'showAbout'
+    showLevels: -> klog 'showLevels'
+    showSetup: -> klog 'showSetup'
         
     #   000   000   0000000   000      000    
     #   000 0 000  000   000  000      000    

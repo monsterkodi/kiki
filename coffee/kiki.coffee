@@ -11,7 +11,7 @@ World = require './world'
 
 class Kiki extends Stage
     
-    constructor: (@view) -> 
+    @: (@view) ->
         klog "view:", @view.className
         super @view
         @view.focus()
@@ -48,7 +48,7 @@ class Kiki extends Stage
         @elem.remove()
         @pause()
         
-    resized: () -> @world.resized @view.clientWidth, @view.clientHeight
+    resized: => @world.resized @view.clientWidth, @view.clientHeight
 
     modKeyComboEventDown: (mod, key, combo, event) -> world.modKeyComboEventDown mod, key, combo, event
     modKeyComboEventUp:   (mod, key, combo, event) -> world.modKeyComboEventUp   mod, key, combo, event

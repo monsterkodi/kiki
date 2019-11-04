@@ -1,0 +1,21 @@
+{
+  "kiki": {
+    "About": "alt+cmdctrl+/",
+    "---": null,
+    "Preferences": "cmdctrl+,",
+    "----": null,
+    "Quit": "cmdctrl+q"
+  },
+  "Window": {
+    "Toggle Menu": "alt+m",
+    "Fullscreen": "alt+f",
+    "--": null,
+    "Minimize": "alt+ctrl+shift+m",
+    "Maximize": "alt+ctrl+m",
+    "Hide": "cmdctrl+h",
+    "---": null,
+    "Screenshot": "f3",
+    "Reload": "alt+cmdctrl+l",
+    "DevTools": "alt+cmdctrl+i"
+  }
+}

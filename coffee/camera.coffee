@@ -16,7 +16,7 @@ class Camera extends Matrix
     @BEHIND = 1 
     @FOLLOW = 2
         
-    constructor: (@player, opt) ->
+    @: (@player, opt) ->
         @fov    = opt?.fov ? 90
         @near   = opt?.near ? 0.01
         @eye_distance = @near
@@ -141,7 +141,7 @@ class Camera extends Matrix
         @setPosition @getPosition().mul(1.0 - posDelta).plus camPos.mul posDelta
                                                                                 
         if lookAngle
-            # log "look_angle #{lookAngle}"
+            # klog "look_angle #{lookAngle}"
             @setXVector playerDir.cross(playerUp).normal() 
             rot = Quaternion.rotationAroundVector lookAngle, @getXVector() 
             @setYVector rot.rotate playerUp  
@@ -194,7 +194,7 @@ class Camera extends Matrix
         # rotate camera vertically
         verticalAngle = Vector.RAD2DEG Math.acos(clamp(-1.0, 1.0, botToCameraNormal.dot playerUp))
         if verticalAngle > 45
-            # log "verticalAngle #{verticalAngle}"
+            # klog "verticalAngle #{verticalAngle}"
             rotQuat     = Quaternion.rotationAroundVector(verticalAngle/400.0, botToCameraNormal.cross(playerUp))
             botToCamera = rotQuat.rotate botToCamera 
             botToCameraNormal = botToCamera.normal()

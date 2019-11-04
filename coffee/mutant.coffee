@@ -11,7 +11,7 @@ Action = require './action'
 
 class Mutant extends Bot
     
-    constructor: () -> 
+    @: () ->
         super
         @health = 1
         @move = true

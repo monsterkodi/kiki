@@ -14,7 +14,7 @@ class Wall extends Item
 
     isSpaceEgoistic: -> true
     
-    constructor: -> super
+    @: -> super
        
     createMesh: -> 
         geom = new THREE.BoxGeometry 1,1,1

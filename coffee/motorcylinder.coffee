@@ -16,7 +16,7 @@ class MotorCylinder extends Pushable #Item
     
     isSpaceEgoistic: -> true
     
-    constructor: (@face) ->
+    @: (@face) ->
         super()   
         @value = 0.0
         @active = false
@@ -80,7 +80,7 @@ class MotorCylinder extends Pushable #Item
         occupant = world.getOccupantAtPos pos 
         MotorGear = require './motorgear'
         isGear = occupant instanceof MotorGear and occupant.face == @face
-        # log "isGear #{isGear}"
+        # klog "isGear #{isGear}"
         @setActive isGear
         occupant.setActive true if isGear
         

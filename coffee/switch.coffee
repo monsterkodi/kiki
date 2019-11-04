@@ -15,7 +15,7 @@ class Switch extends Item
 
     isSpaceEgoistic: -> false # true?
     
-    constructor: (active=false) ->
+    @: (active=false) ->
 
         super
     

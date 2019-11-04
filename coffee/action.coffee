@@ -39,7 +39,7 @@ class Action
     @REPEAT     = 2
     @TIMED      = 3
 
-    constructor: (o, i, n, d, m) ->        
+    @: (o, i, n, d, m) ->
         if _.isPlainObject o 
             i = o.id ? -1
             n = o.name
@@ -50,7 +50,7 @@ class Action
             i ?= -1
             d ?= 0
             m ?= (d and Action.TIMED or Action.ONCE)
-        # log "Action.constructor #{i} #{n} #{d} #{m}"
+        # klog "Action.constructor #{i} #{n} #{d} #{m}"
         @object     = o
         @name       = n
         @id         = i
@@ -61,13 +61,13 @@ class Action
         @reset()
 
     del: ->
-        # log "Action.del #{@name} #{@event?} #{@object?}"
+        # klog "Action.del #{@name} #{@event?} #{@object?}"
         if @event?  then @event.removeAction @
         if @object? then @object.removeAction @
         @deleted = true
 
     perform: -> 
-        # log "Action.perform #{@name} action? #{@object.performAction?} #{@object.name}" if not @name in  ['noop', 'rotation']
+        # klog "Action.perform #{@name} action? #{@object.performAction?} #{@object.name}" if not @name in  ['noop', 'rotation']
         if @object.performAction? 
             @object.performAction @
         else if _.isFunction @object
@@ -76,17 +76,17 @@ class Action
     init: ->    @object.initAction? @
     finish: ->  @object.finishAction? @
     finished: -> 
-        # log "Action.finished #{@name} #{@object?.actionFinished?}"
+        # klog "Action.finished #{@name} #{@object?.actionFinished?}"
         @object?.actionFinished? @
         return if @deleted
         @reset()
         # if @current >= @getDuration() # if keepRest wasn't called -> reset start and current values
             # @reset()
         # else 
-            # log 'keeping rest', @current
+            # klog 'keeping rest', @current
 
     reset: ->
-        # log "action.reset #{@name}"
+        # klog "action.reset #{@name}"
         @start   = 0 # world time
         @rest    = 0 
         @last    = 0 # relative (ms since @start)
@@ -94,7 +94,7 @@ class Action
         #@event   = null  
 
     takeOver: (action) ->
-        # log "takeOver #{action.rest} from #{action.name} this: #{@name}"
+        # klog "takeOver #{action.rest} from #{action.name} this: #{@name}"
         @current = action.current
         @start   = action.start
         @last    = action.last
@@ -111,7 +111,7 @@ class Action
 
     performWithEvent: (event) ->
         eventTime = event.getTime()
-        # log "action.performWithEvent #{@name} #{@id} eventTime #{eventTime} start #{@start}" if @name.startsWith 'exit'
+        # klog "action.performWithEvent #{@name} #{@id} eventTime #{eventTime} start #{@start}" if @name.startsWith 'exit'
         if @start == 0
             @start   = eventTime
             @current = 0
@@ -130,12 +130,12 @@ class Action
                 @current = msDur
                 # @start   = msDur
                 @rest    = currentDiff - msDur
-                # log "action #{name} performWithEvent start #{@start} rest #{currentDiff}-#{msDur} = #{@rest}" if @name != 'noop'
+                # klog "action #{name} performWithEvent start #{@start} rest #{currentDiff}-#{msDur} = #{@rest}" if @name != 'noop'
                 @perform()
                 @last    = 0
                 
                 if @mode == Action.CONTINUOUS
-                    # log "action.performWithEvent #{@name} mode == Action.CONTINUOUS"
+                    # klog "action.performWithEvent #{@name} mode == Action.CONTINUOUS"
                     @current = @rest
                     @start = eventTime
                     @last  = 0

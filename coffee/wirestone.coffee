@@ -13,7 +13,7 @@ Generator = require './generator'
 
 class WireStone extends Stone
     
-    constructor: () ->
+    @: () ->
         @wires = [null, null, null, null, null, null]
         super
         

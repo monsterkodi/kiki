@@ -17,7 +17,7 @@ class ScreenText extends Actor
     
     @init: -> @font = new THREE.Font require 'three/examples/fonts/helvetiker_bold.typeface.json'
         
-    constructor: (text) ->
+    @: (text) ->
         super
         @addAction new Action @, Action.SHOW, "show#{@constructor.name}",  500
         @addAction new Action @, Action.HIDE, "hide#{@constructor.name}",  500

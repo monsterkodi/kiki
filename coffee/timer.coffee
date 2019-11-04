@@ -12,19 +12,19 @@ class Timer
     @init: -> 
         @eventID = world.addEventWithName 'timer'
         @event   = world.getEventWithId @eventID
-        # log "Timer.init @eventID:#{@eventID} #{@event.name}"
+        # klog "Timer.init @eventID:#{@eventID} #{@event.name}"
     
     @removeAllActions: -> @event.removeAllActions()
     @removeActionsOfObject: (o) -> 
-        # log "Timer.removeActionsOfObject"
+        # klog "Timer.removeActionsOfObject"
         @event.removeActionsOfObject o
         
     @addAction: (a) -> 
-        # log "Timer.addAction #{a.name} duration: #{a.duration}"
+        # klog "Timer.addAction #{a.name} duration: #{a.duration}"
         @event.addAction a
         
     @removeAction: (a) -> 
-        # log "Timer.removeAction #{a.name}"
+        # klog "Timer.removeAction #{a.name}"
         a.reset()
         @event.removeAction a
         

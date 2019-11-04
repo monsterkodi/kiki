@@ -69,7 +69,7 @@ class Sound
     
     @play: (sound, pos, time) ->
         pos ?= world.player?.current_position 
-        # log "Sound.play #{sound} #{time}", pos 
+        # klog "Sound.play #{sound} #{time}", pos
         id = @sounds[sound].play()
         @sounds[sound].pos pos.x, pos.y, pos.z, id if pos?
         

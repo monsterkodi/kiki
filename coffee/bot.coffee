@@ -16,7 +16,7 @@ Material   = require './material'
 
 class Bot extends Pushable
         
-    constructor: () ->
+    @: () ->
                 
         @direction           = new Vector
         @orientation         = new Quaternion
@@ -173,7 +173,7 @@ class Bot extends Pushable
     
     initAction: (action) ->
         newPos = new Pos @position 
-        # log "initAction #{action.name} pos", newPos
+        # klog "initAction #{action.name} pos", newPos
         
         switch action.id
             when Action.NOOP         then return
@@ -192,7 +192,7 @@ class Bot extends Pushable
                 return
     
         if not newPos.eql new Pos @position
-            # log 'bot.initAction objectWillMoveToPos:', newPos
+            # klog 'bot.initAction objectWillMoveToPos:', newPos
             world.objectWillMoveToPos @, newPos, action.getDuration()
     
     # 00000000   00000000  00000000   00000000   0000000   00000000   00     00
@@ -306,7 +306,7 @@ class Bot extends Pushable
     
     finishAction: (action) ->
     
-        # log "Bot.finishAction #{action.id} #{action.name}" if action.name != 'noop'
+        # klog "Bot.finishAction #{action.id} #{action.name}" if action.name != 'noop'
                 
         switch action.id
             when Action.NOOP, Action.SHOOT
@@ -358,7 +358,7 @@ class Bot extends Pushable
     # 000       000  000   000  000  0000000   000   000  00000000  0000000  
     
     actionFinished: (action) ->
-        # log "bot.actionFinished #{action.name} #{action.id}"
+        # klog "bot.actionFinished #{action.name} #{action.id}"
             
         if action.id == Action.PUSH and not @direction.isZero()
             klog 'super (Pushable) action!'
@@ -366,7 +366,7 @@ class Bot extends Pushable
             return
     
         if @move_action? # action was not a move action -> return
-            # log 'bot.actionFinished was not a move action!'
+            # klog 'bot.actionFinished was not a move action!'
             return 
         
         # find next action depending on type of finished action and surrounding environment
@@ -383,10 +383,10 @@ class Bot extends Pushable
                     @move_action = @getActionWithId Action.CLIMB_UP
                     world.playSound 'BOT_LAND', @getPos(), 0.5
         else if world.isUnoccupiedPos @position.plus @getDown()  # below will be empty
-            # log 'bot.actionFinished below empty', world.isUnoccupiedPos(@position.plus @getDown()), @position.plus @getDown()
+            # klog 'bot.actionFinished below empty', world.isUnoccupiedPos(@position.plus @getDown()), @position.plus @getDown()
             if @move # sticky if moving
                 if world.isUnoccupiedPos @position.plus @getDir()  # forward will be empty
-                    # log 'bot.actionFinished forward empty'
+                    # klog 'bot.actionFinished forward empty'
                     if world.isOccupiedPos @position.plus @getDir().minus @getUp() # below forward is solid
                         occupant = world.getOccupantAtPos @position.plus @getDir().minus @getUp() 
                         if not occupant? or not occupant?.isSlippery()
@@ -419,8 +419,8 @@ class Bot extends Pushable
         else
             @dir_sgn = 1
             @jump_once = false if action.id != Action.NOOP
-            # log "bot.actionFinished '#{action.name}' position:", @position if action.id in [Action.FORWARD, Action.JUMP_FORWARD, Action.CLIMB_DOWN]
-            # log "bot.actionFinished '#{action.name}' orientation:", @orientation.rounded().name if action.id in [Action.TURN_LEFT, Action.TURN_RIGHT, Action.CLIMB_UP]
+            # klog "bot.actionFinished '#{action.name}' position:", @position if action.id in [Action.FORWARD, Action.JUMP_FORWARD, Action.CLIMB_DOWN]
+            # klog "bot.actionFinished '#{action.name}' orientation:", @orientation.rounded().name if action.id in [Action.TURN_LEFT, Action.TURN_RIGHT, Action.CLIMB_UP]
             
             if world.getRealOccupantAtPos(@position.plus @getDown())?.isMutant?()
                 # keep action chain flowinwg in order to detect environment changes

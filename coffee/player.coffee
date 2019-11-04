@@ -24,8 +24,8 @@ class Player extends Bot
             backward: 's'
             left:     'a'
             right:    'd'
-            lookUp:   'up'
-            lookDown: 'down'
+            lookUp:   'q'
+            lookDown: 'e'
             shoot:    'enter'
             jump:     'space'
             view:     'c'
@@ -128,11 +128,11 @@ class Player extends Bot
         # klog "player.modKeyComboEventDown mod:#{mod} key:#{key} combo:#{combo}"
         
         switch key
-            when @key.forward, @key.backward
+            when 'up' 'down' @key.forward, @key.backward
                 @push = mod == @key.push
                 @move = true # try to move as long as the key is not released
                 if not @move_action?
-                    @new_dir_sgn = @dir_sgn = (key == @key.backward) and -1 or 1 
+                    @new_dir_sgn = @dir_sgn = (key in ['down' @key.backward]) and -1 or 1 
                     @moveBot() # perform new move action (depending on environment)
                 else
                     if @move_action.id == Action.JUMP and @move_action.getRelativeTime() < 1                        
@@ -146,8 +146,8 @@ class Player extends Bot
                     @new_dir_sgn = (key == @key.backward) and -1 or 1
                 return true
         
-            when @key.left, @key.right
-                @rotate = (key == @key.left) and Action.TURN_LEFT or Action.TURN_RIGHT
+            when 'left' 'right' @key.left, @key.right
+                @rotate = (key in ['left' @key.left]) and Action.TURN_LEFT or Action.TURN_RIGHT
                 if not @rotate_action? # player is not performing a rotation
                     @rotate_action = @getActionWithId @rotate
                     Timer.addAction @rotate_action
@@ -218,7 +218,7 @@ class Player extends Bot
                 @shoot = false
                 return true
             
-            when @key.forward, @key.backward
+            when 'up' 'down' @key.forward, @key.backward
                 @move = false
                 return true
             
@@ -226,7 +226,7 @@ class Player extends Bot
                 @jump = false
                 return true
             
-            when @key.left, @key.right
+            when 'left' 'right' @key.left, @key.right
                 @rotate = 0
                 return true
             

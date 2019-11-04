@@ -4,7 +4,7 @@
 #    000     000     000     000      000       000   000  000   000  000   000
 #    000     000     000     0000000  00000000  0000000    000   000  000   000
 
-{$}      = require './tools/tools'
+{ $ } = require 'kxk'
 electron = require 'electron'
 ipc      = electron.ipcRenderer
 

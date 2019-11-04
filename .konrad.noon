@@ -1,9 +1,3 @@
-ignore      
-    /dist/
-    /app/css/
-    /app/img/
-    /app/js/
-    
 noon    . ext json . replace .. coffee/  js/
 pug     . ext html . replace .. pug/     js/
 styl    . ext css  . replace .. styl/    js/css/

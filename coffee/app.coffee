@@ -3,22 +3,12 @@
 # 000000000  00000000   00000000 
 # 000   000  000        000      
 # 000   000  000        000      
-{
-first,
-fileList,
-dirExists,
-fileExists,
-resolve}      = require './tools/tools'
-log           = require './tools/log'
-str           = require './tools/str'
+
+{ colors, slash, args, noon, kstr, app, win, klog } = require 'kxk'
+
 pkg           = require '../package.json'
 MainMenu      = require './mainmenu'
-_             = require 'lodash'
-fs            = require 'fs'
-noon          = require 'noon'
-colors        = require 'colors'
 electron      = require 'electron'
-childp        = require 'child_process'
 app           = electron.app
 BrowserWindow = electron.BrowserWindow
 Menu          = electron.Menu
@@ -50,9 +40,6 @@ version  #{pkg.version}
 """, dontExit: true
 
 app.exit 0 if not args?
-
-while args.filelist.length and dirExists first args.filelist
-    process.chdir args.filelist.shift()
     
 if args.verbose
     log colors.white.bold "\n#{pkg.productName}", colors.gray "v#{pkg.version}\n"
@@ -106,18 +93,10 @@ class Main
                                 
         app.setName pkg.productName
         
-        if not openFiles.length and args.filelist.length
-            openFiles = fileList args.filelist
-            
-        if openFiles.length
-            for file in openFiles
-                @createWindow file            
-
-        if not wins().length
-            w = @createWindow()
+        w = @createWindow()
         
         if args.DevTools
-            wins()?[0]?.webContents.openDevTools()
+            w.webContents.openDevTools()
 
         MainMenu.init @
 
@@ -268,8 +247,8 @@ class Main
             continue if arg.startsWith '-'
             file = arg
             if not arg.startsWith '/'
-                file = resolve dir + '/' + arg
-            continue if not fileExists file
+                file = slash.resolve dir + '/' + arg
+            continue if not slash.isFile file
             w = @activateWindowWithFile file
             w = @createWindow file if not w?
             
@@ -301,8 +280,8 @@ class Main
         w.loadURL "file://#{cwd}/../about.html"
         w.on 'openFileDialog', @createWindow
 
-    log: -> log (str(s) for s in [].slice.call arguments, 0).join " " if args.verbose
-    dbg: -> log (str(s) for s in [].slice.call arguments, 0).join " " if args.debug
+    log: -> klog (kstr(s) for s in [].slice.call arguments, 0).join " " if args.verbose
+    dbg: -> klog (kstr(s) for s in [].slice.call arguments, 0).join " " if args.debug
             
 #  0000000   00000000   00000000         0000000   000   000
 # 000   000  000   000  000   000       000   000  0000  000

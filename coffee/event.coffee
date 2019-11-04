@@ -3,11 +3,9 @@
 # 0000000    000 000   0000000   000 0 000     000   
 # 000          000     000       000  0000     000   
 # 00000000      0      00000000  000   000     000   
-{
-last
-}      = require './tools/tools'
+
+{ last, _ } = require 'kxk'
 Action = require './action'
-_      = require 'lodash'
 
 class Event
     

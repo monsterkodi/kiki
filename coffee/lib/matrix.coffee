@@ -4,7 +4,6 @@
 # 000 0 000  000   000     000     000   000  000   000 000 
 # 000   000  000   000     000     000   000  000  000   000
 
-log         = require '../tools/log'
 Quaternion  = require './quaternion'
 Vector      = require './vector'
 

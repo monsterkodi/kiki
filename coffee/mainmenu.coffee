@@ -3,12 +3,9 @@
 # 000000000  000000000  000  000 0 000  000000000  0000000   000 0 000  000   000
 # 000 0 000  000   000  000  000  0000  000 0 000  000       000  0000  000   000
 # 000   000  000   000  000  000   000  000   000  00000000  000   000   0000000 
-{
-unresolve
-}     = require './tools/tools'
-log   = require './tools/log'
+
+{ win } = require 'kxk'
 pkg   = require '../package.json'
-fs    = require 'fs'
 path  = require 'path'
 Menu  = require('electron').Menu
 
@@ -16,10 +13,6 @@ class MainMenu
     
     @init: (main) -> 
         
-        fileLabel = (f) -> 
-            return path.basename(f) + ' - ' + unresolve path.dirname(f) if f?
-            "untitled"
-    
         Menu.setApplicationMenu Menu.buildFromTemplate [
             
             label: pkg.name   

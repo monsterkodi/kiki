@@ -4,8 +4,6 @@
 #    000     000  000 0 000  000       000   000
 #    000     000  000   000  00000000  000   000
 
-log = require './tools/log'
-
 class Timer
     
     @event   = null

@@ -4,13 +4,9 @@
 #   000000000  000   000  0000000    000      000   000
 #   000   000  000   000  000   000  000      000   000
 #   00     00   0000000   000   000  0000000  0000000  
-{
-absMin,
-randInt,
-clamp,
-first,
-last}       = require "./tools/tools"
-log         = require "./tools/log"
+
+{ randInt, colors, absMin, first, clamp, last, _ } = require 'kxk'
+
 Pos         = require './lib/pos'
 Size        = require './lib/size'
 Cell        = require './cell'
@@ -34,7 +30,6 @@ Scheme      = require './scheme'
 Quaternion  = require './lib/quaternion'
 Vector      = require './lib/vector'
 Pos         = require './lib/pos'
-_           = require 'lodash'
 now         = require 'performance-now'
 {
 Wall,
@@ -130,7 +125,6 @@ class World extends Actor
     @initGlobal: () ->
         
         return if @levels?
-        global.log = log
           
         ScreenText.init()
         Sound.init()

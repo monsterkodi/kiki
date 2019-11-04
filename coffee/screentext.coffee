@@ -4,10 +4,8 @@
 #   0000000   000       0000000    0000000   0000000   000 0 000     000     0000000     00000       000   
 #        000  000       000   000  000       000       000  0000     000     000        000 000      000   
 #   0000000    0000000  000   000  00000000  00000000  000   000     000     00000000  000   000     000   
-{
-first,
-last
-}        = require './tools/tools'
+
+{ first, last } = require 'kxk'
 Camera   = require './camera'
 Action   = require './action'
 Timer    = require './timer'

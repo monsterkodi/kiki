@@ -6,7 +6,6 @@
 # 000   000  000  000   000  000
 
 Stage = require './stage'
-log   = require './tools/log'
 World = require './world'
 
 class Kiki extends Stage

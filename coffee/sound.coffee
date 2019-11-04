@@ -4,8 +4,7 @@
 #      000  000   000  000   000  000  0000  000   000
 # 0000000    0000000    0000000   000   000  0000000  
 
-log    = require './tools/log'
-_      = require 'lodash'
+{ _ } = require 'kxk'
 Howler = require 'howler'
 Howl   = Howler.Howl
 

@@ -4,7 +4,6 @@
 # 000   000  000   000     000   
 # 0000000     0000000      000   
 
-log        = require './tools/log'
 Pushable   = require './pushable'
 Action     = require './action'
 Timer      = require './timer'

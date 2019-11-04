@@ -5,8 +5,6 @@
 #      000     000       000          000     000   000  000   000
 #       0      00000000   0000000     000      0000000   000   000
 
-log = require '../tools/log'
-
 class Vector
 
     constructor: (x=0,y=0,z=0,w=0) ->

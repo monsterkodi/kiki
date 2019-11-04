@@ -4,14 +4,13 @@
 #   000000000  000          000     000   000  0000000  
 #   000   000  000          000     000   000  000   000
 #   000   000   0000000     000      0000000   000   000
-{
-last
-}       = require './tools/tools'
+
+{ _ } = require 'kxk'
+
 Action  = require './action'
 Timer   = require './timer'
 Event   = require './event'
 Emitter = require 'events'
-_       = require 'lodash'
 
 class Actor extends Emitter
     

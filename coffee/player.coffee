@@ -4,10 +4,8 @@
 #   00000000   000      000000000    00000    0000000   0000000  
 #   000        000      000   000     000     000       000   000
 #   000        0000000  000   000     000     00000000  000   000
-{
-clamp
-}           = require './tools/tools'
-log         = require './tools/log'
+
+{ clamp }   = require 'kxk'
 Bot         = require './bot'
 Action      = require './action'
 Timer       = require './timer'

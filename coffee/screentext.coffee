@@ -5,7 +5,7 @@
 #        000  000       000   000  000       000       000  0000     000     000        000 000      000   
 #   0000000    0000000  000   000  00000000  00000000  000   000     000     00000000  000   000     000   
 
-{ first, last } = require 'kxk'
+{ klog } = require 'kxk'
 Camera   = require './camera'
 Action   = require './action'
 Timer    = require './timer'
@@ -17,10 +17,12 @@ class ScreenText extends Actor
     
     @init: -> @font = new THREE.Font require 'three/examples/fonts/helvetiker_bold.typeface.json'
         
-    @: (text) ->
+    @: (@text) ->
+        
         super
-        @addAction new Action @, Action.SHOW, "show#{@constructor.name}",  500
-        @addAction new Action @, Action.HIDE, "hide#{@constructor.name}",  500
+        
+        @addAction new Action @, Action.SHOW, "show#{@constructor.name}" 500
+        @addAction new Action @, Action.HIDE, "hide#{@constructor.name}" 500
                 
         @scene = new THREE.Scene()
         @lineHeight = 1.3 if not @lineHeight?
@@ -37,11 +39,13 @@ class ScreenText extends Actor
         @far  = 100
         @camera = new THREE.PerspectiveCamera @fov, @aspect, @near, @far
         if text?
-            for l in text.split '\n'
+            for l in @text.split '\n'
                 @addText l 
             @show()
     
     del: ->
+        
+        klog 'del text' @text
         @scene.remove @mesh
         @scene.remove @sun
         Timer.removeActionsOfObject @

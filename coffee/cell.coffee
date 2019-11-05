@@ -6,6 +6,7 @@
 #    0000000  00000000  0000000  0000000
 
 { _ } = require 'kxk'
+
 TmpObject   = require './tmpobject'
 
 class Cell

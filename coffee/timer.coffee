@@ -6,26 +6,34 @@
 
 class Timer
     
-    @event   = null
-    @eventID = -1
-    
-    @init: -> 
-        @eventID = world.addEventWithName 'timer'
-        @event   = world.getEventWithId @eventID
-        # klog "Timer.init @eventID:#{@eventID} #{@event.name}"
-    
-    @removeAllActions: -> @event.removeAllActions()
-    @removeActionsOfObject: (o) -> 
-        # klog "Timer.removeActionsOfObject"
-        @event.removeActionsOfObject o
+    @: (@world) ->
         
-    @addAction: (a) -> 
-        # klog "Timer.addAction #{a.name} duration: #{a.duration}"
-        @event.addAction a
+        @eventID = @world.addEventWithName 'timer'
+        @event   = @world.getEventWithId @eventID
+    
+    @removeAllActions: -> 
+    
+        world.timer.event.removeAllActions()
+        
+    @removeActionsOfObject: (o) -> 
+    
+        world.timer.event.removeActionsOfObject o
+        
+    @addAction: (a) ->
+        
+        world.timer.event.addAction a
         
     @removeAction: (a) -> 
-        # klog "Timer.removeAction #{a.name}"
+        
         a.reset()
-        @event.removeAction a
+        world.timer.event.removeAction a
+        
+    @triggerActions: ->
+        
+        world.timer.event.triggerActions()
+        
+    @finishActions: ->
+        
+        world.timer.event.finishActions()
         
 module.exports = Timer

@@ -31,8 +31,7 @@ class Player extends Bot
             view:     'c'
             push:     'shift'
 
-        @camera = new Camera @,
-            aspect: world.view.offsetWidth / world.view.offsetHeight
+        @camera = new Camera @, aspect: world.view.offsetWidth / world.view.offsetHeight
 
         @look_action = null
         @look_angle  = 0.0

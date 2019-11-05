@@ -56,9 +56,9 @@ class Menu extends ScreenText
             when 'esc'
                 world.playSound 'MENU_ABORT'
                 @fadeOut()
-            when 'down', 'right', 's', 'd'
+            when 'down' 'right' 's' 'd'
                 @next()
-            when 'left', 'up', 'w', 'a'
+            when 'left' 'up' 'w' 'a'
                 @prev()
             when 'enter'
                 world.playSound 'MENU_SELECT'

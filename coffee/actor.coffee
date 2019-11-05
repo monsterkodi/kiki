@@ -5,7 +5,7 @@
 #   000   000  000          000     000   000  000   000
 #   000   000   0000000     000      0000000   000   000
 
-{ _ } = require 'kxk'
+{ klog, _ } = require 'kxk'
 
 Action  = require './action'
 Timer   = require './timer'
@@ -29,7 +29,7 @@ class Actor extends Emitter
     
     addEventWithName: (eventName) ->
         if @getEventWithName eventName # to be removed
-            # klog "Actor.addEventWithName [WARNING] '#{eventName}' already in use!"
+            klog "Actor.addEventWithName [WARNING] '#{eventName}' already in use!"
             return -1; # shouldn't happen anyway :-)
         @events.push new Event @, eventName
         @events.length-1

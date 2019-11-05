@@ -6,6 +6,7 @@
 #    0000000  000   000  000   000  00000000  000   000  000   000
 
 { clamp } = require 'kxk'
+
 Matrix      = require './lib/matrix'
 Vector      = require './lib/vector'
 Quaternion  = require './lib/quaternion'
@@ -33,7 +34,7 @@ class Camera extends Matrix
         @cam = new THREE.PerspectiveCamera @fov, @aspect, @near, @far
         @cam.position.z = @dist
         
-    step: (step) ->
+    step: ->
         
         switch @mode
             when Camera.INSIDE then @insideProjection()     
@@ -74,7 +75,7 @@ class Camera extends Matrix
     setViewport: (l, b, w, h) ->
         # @viewport = [l,b,w,h] 
         # @updateViewport()
-#     
+
     setFov: (fov) -> @fov = Math.max(2.0, Math.min fov, 175.0)
             
     #   00000000   00000000    0000000         000  00000000   0000000  000000000  000   0000000   000   000
@@ -119,6 +120,7 @@ class Camera extends Matrix
     #   0000000    00000000  000   000  000  000   000  0000000  
     
     behindProjection: () ->
+        
         playerPos = @player.currentPos()
         playerDir = @player.currentDir()
         playerUp  = @player.currentUp()

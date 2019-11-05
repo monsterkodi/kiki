@@ -27,6 +27,7 @@ TmpObject   = require './tmpobject'
 Pushable    = require './pushable'
 Material    = require './material'
 Scheme      = require './scheme'
+LevelSelection = require './levelselection'
 Quaternion  = require './lib/quaternion'
 Vector      = require './lib/vector'
 Pos         = require './lib/pos'
@@ -56,9 +57,11 @@ class World extends Actor
             new Vector 0, 0,-1
     ]
     
-    @: (@view) ->
-                
-        @speed       = 6
+    @: (@view, @preview) ->
+             
+        global.world = @
+        
+        @speed      = 6
         
         @rasterSize = 0.05
 
@@ -75,7 +78,6 @@ class World extends Actor
             autoClear:              false
             sortObjects:            true
 
-        # @renderer.setClearColor 0x000000        
         @renderer.setSize @view.offsetWidth, @view.offsetHeight
         @renderer.shadowMap.type = THREE.PCFSoftShadowMap
                         
@@ -99,17 +101,17 @@ class World extends Actor
         
         @ambient = new THREE.AmbientLight 0x111111
         @scene.add @ambient
-         
-        @preview         = false
+                 
         @objects         = []
         @lights          = []
         @cells           = [] 
         @size            = new Pos()
         @depth           = -Number.MAX_SAFE_INTEGER
+        
+        @timer = new Timer @
+                
+        @view.appendChild @renderer.domElement
      
-    @deinit: () ->
-        world = null
-       
     @init: (view) ->
         return if world?
         
@@ -117,8 +119,6 @@ class World extends Actor
             
         world = new World view
         world.name = 'world'
-        global.world = world
-        Timer.init()
         world.create first @levels.list
         world
         
@@ -167,6 +167,10 @@ class World extends Actor
 
         @levels = new Levels
         
+    del: ->
+        
+        @renderer.domElement.remove()
+        
     #  0000000  00000000   00000000   0000000   000000000  00000000
     # 000       000   000  000       000   000     000     000     
     # 000       0000000    0000000   000000000     000     0000000 
@@ -199,11 +203,6 @@ class World extends Actor
         if not @preview
             @text = new ScreenText @dict.name
         
-        # ............................................................ escape
-        # escape_event = Controller.getEventWithName ("escape")
-        # escape_event.removeAllActions()
-        # escape_event.addAction(continuous(@escape, "escape"))
-
         # ............................................................ exits
 
         if @dict.exits?
@@ -233,12 +232,11 @@ class World extends Actor
                 @dict.create()
             else
                 klog "World.create [WARNING] @dict.create not a function!"
-                # exec @dict["create"] in globals()
 
         # ............................................................ player
 
         @player = new Player
-        # klog "player_dict", player_dict
+
         @player.setOrientation @dict.player.orientation ? rotx90
         @player.camera.setOrientation @player.orientation
 
@@ -249,7 +247,11 @@ class World extends Actor
 
         @player.camera.setPosition @player.currentPos()
         
-        @setCameraMode Camera.INSIDE if @dict.camera == 'inside'
+        if @preview
+            @player.camera.step()
+            @setCameraMode Camera.FOLLOW
+        else
+            @setCameraMode Camera.INSIDE if @dict.camera == 'inside'
         
         @creating = false
         klog 'done creating'
@@ -660,6 +662,10 @@ class World extends Actor
     
     step: (step) ->
         
+        if @levelSelection
+            @levelSelection.step step 
+            return 
+        
         camera = @player.camera.cam
         
         if false
@@ -670,8 +676,8 @@ class World extends Actor
             camera.position.set(center.x,center.y,center.z+@dist).applyQuaternion quat
             camera.quaternion.copy quat
 
-        Timer.event.triggerActions()
-        Timer.event.finishActions()
+        Timer.triggerActions()
+        Timer.finishActions()
         
         o.step?(step) for o in @objects
         @player.camera.step step
@@ -702,14 +708,6 @@ class World extends Actor
         @sun.position.copy camera.position
         @renderer.autoClearColor = false
 
-        # scene = new THREE.Scene()
-        # camera = new THREE.PerspectiveCamera 75, window.innerWidth / window.innerHeight, 0.1, 1000
-        # camera.position.z = 2
-        # geometry = new THREE.BoxGeometry 1, 1, 1
-        # material = new THREE.MeshBasicMaterial { color: 0x00ff00 }
-        # cube = new THREE.Mesh geometry, material
-        # scene.add cube
-        
         @renderer.render @scene, camera
         
         @renderer.render @text.scene, @text.camera if @text
@@ -754,6 +752,8 @@ class World extends Actor
         @screenSize = new Size w,h
         @text?.resized w,h
         @menu?.resized w,h
+        
+        @levelSelection?.resized w,h
 
     getNearestValidPos: (pos) ->
         new Pos Math.min(@size.x-1, Math.max(pos.x, 0)), 
@@ -804,7 +804,7 @@ class World extends Actor
     #   000   000  00000000  0000000  000      
     
     showHelp: =>
-        # @menu.del()
+
         @text = new ScreenText @dict['help']
 
     outro: (index=0) ->
@@ -817,7 +817,7 @@ class World extends Actor
                     the maker wants to thank you!\n\n(btw.: you thought\nyou didn't see\nkiki's maker in the game?
                     you are wrong!\nyou saw him\nall the time,\nbecause kiki\nlives inside him!)\n\n$scale(1.5)the end
                     p.s.: the maker of the game\nwants to thank you as well!\n\ni definitely want your feedback:
-                    please send me a mail (monsterkodi@users.sf.net)\nwith your experiences,
+                    please send me a mail (monsterkodi@gmx.net)\nwith your experiences,
                     which levels you liked, etc.\n\nthanks in advance and have a nice day,\n\nyours kodi
                     """
         
@@ -843,24 +843,22 @@ class World extends Actor
     # 000 0 000  000       000  0000  000   000
     # 000   000  00000000  000   000   0000000 
     
-    localizedString: (str) -> str
-    
     showMenu: (self) -> # handles an ESC key event
-        # @text?.del()
+
         @menu = new Menu()
-        @menu.addItem @localizedString("help"),       @showHelp
-        @menu.addItem @localizedString("restart"),    @restart 
-        @menu.addItem @localizedString("load level"), @showLevels
-        @menu.addItem @localizedString("setup"),      @showSetup       
-        @menu.addItem @localizedString("about"),      @showAbout
-        @menu.addItem @localizedString("quit"),       @quit
+        @menu.addItem 'help'       @showHelp
+        @menu.addItem 'restart'    @restart 
+        @menu.addItem 'load level' @showLevels
+        @menu.addItem 'setup'      @showSetup       
+        @menu.addItem 'about'      @showAbout
+        @menu.addItem 'quit'       @quit
         @menu.show()
     
     quit: -> post.toMain 'quitApp'
     showAbout: -> post.toMain 'showAbout'
-    showLevels: -> klog 'showLevels'
     showSetup: -> klog 'showSetup'
-        
+    showLevels: => @levelSelection = new LevelSelection @
+                
     #   000   000   0000000   000      000    
     #   000 0 000  000   000  000      000    
     #   000000000  000000000  000      000    
@@ -908,9 +906,15 @@ class World extends Actor
     #   000   000  00000000     000   
     
     modKeyComboEventDown: (mod, key, combo, event) ->
+        
+        if @levelSelection
+            @levelSelection.modKeyComboEvent mod, key, combo, event 
+            return
+        
         if @menu?            
             @menu.modKeyComboEvent mod, key, combo, event 
             return 
+            
         @text?.fadeOut()
         return if @player?.modKeyComboEventDown mod, key, combo, event
         switch combo
@@ -922,6 +926,8 @@ class World extends Actor
             when 'm' then @exitLevel 5
 
     modKeyComboEventUp: (mod, key, combo, event) ->
+        
+        return if @levelSelection
         return if @player?.modKeyComboEventUp mod, key, combo, event        
 
 module.exports = World

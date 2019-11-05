@@ -5,7 +5,7 @@
 #   000        000      000   000     000     000       000   000
 #   000        0000000  000   000     000     00000000  000   000
 
-{ clamp }   = require 'kxk'
+{ clamp, _ }   = require 'kxk'
 Bot         = require './bot'
 Action      = require './action'
 Timer       = require './timer'

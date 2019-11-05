@@ -8,7 +8,7 @@
 
 { clamp, elem, klog } = require 'kxk'
 
-ScreenText = require './screentext'
+LevelSelName = require './levelselname'
 
 class LevelSelection
     
@@ -22,30 +22,17 @@ class LevelSelection
         
         @gameWorld.menu.del()
 
-        {w,h} = @gameWorld.screenSize
-        
-        view = elem class:'names'
-        view.style.position = 'absolute'
-        view.style.left     = '0'
-        view.style.right    = '0'
-        view.style.top      = '66%'
-        view.style.bottom   = '0'
-        @gameWorld.view.appendChild view
-        @names = new World view, true
-        
         view = elem class:'preview'
         view.style.position = 'absolute'
         view.style.left     = '0'
         view.style.right    = '0'
         view.style.top      = '0'
-        view.style.height   = '66%'
+        view.style.bottom   = '0'
         @gameWorld.view.appendChild view
         @world = new World view, true
-        
         @world.create @levels[@index]
-        
-        @names.text = new ScreenText @levels[@index]
-        @resized w,h
+        @world.text = new LevelSelName @levels[@index]
+        @resized @gameWorld.screenSize.w, @gameWorld.screenSize.h
         
     navigate: (action) ->
         
@@ -60,18 +47,18 @@ class LevelSelection
         @index = clamp 0, @levels.length-1, @index
         klog @index, @levels[@index]
         @world.create @levels[@index]
-        @names.text = new ScreenText @levels[@index]
+        @world.text = new LevelSelName @levels[@index]
+        @resized @gameWorld.screenSize.w, @gameWorld.screenSize.h
         
     del: ->
         
         delete @gameWorld.levelSelection
         @world.del()
-        @names.del()
         
     load: ->
                 
         global.world = @gameWorld
-        @gameWorld.create @levels[@index]
+        @gameWorld.create @levels[@index], false
         @del()
         
     close: -> 
@@ -87,13 +74,10 @@ class LevelSelection
             when 'enter' 'space' then @load()
             when 'left' 'right' 'up' 'down' 'page up' 'page down' 'home' 'end' then @navigate combo
         
-    resized: (w, h) => 
-        @world.resized w, h*0.66
-        @names.resized w, h*0.34
+    resized: (w, h) => @world.resized w, h
         
     step: (step) -> 
     
         @world.step step
-        @names.step step
     
 module.exports = LevelSelection

@@ -179,7 +179,7 @@ class World extends Actor
     # 000       000   000  000       000   000     000     000     
     #  0000000  000   000  00000000  000   000     000     00000000
         
-    create: (worldDict={}) -> # creates the world from a level name or a dictionary
+    create: (worldDict={}, showName=true) -> # creates the world from a level name or a dictionary
         
         # klog "world.create" worldDict
         
@@ -206,7 +206,7 @@ class World extends Actor
 
         # ............................................................ intro text   
         
-        if not @preview
+        if not @preview and showName
             @text = new ScreenText @dict.name
         
         # ............................................................ exits
@@ -251,12 +251,13 @@ class World extends Actor
         else if @dict.player.coordinates?
             @addObjectAtPos @player, new Pos @dict.player.coordinates
 
-        @player.camera.setPosition @player.currentPos()
         
         if @preview
-            @player.camera.step()
+            # @player.camera.step()
+            @player.camera.setPosition @player.currentPos().minus @player.direction
             @setCameraMode Camera.FOLLOW
         else
+            @player.camera.setPosition @player.currentPos()
             @setCameraMode Camera.INSIDE if @dict.camera == 'inside'
         
         @creating = false
@@ -690,11 +691,17 @@ class World extends Actor
         
         if @player then @stepPlayer step
         
+        if @preview
+            @renderer.setViewport 0, Math.floor(@screenSize.h*0.72), @screenSize.w, Math.floor(@screenSize.h*0.3)
+        
         @renderer.render @text.scene, @text.camera if @text
+        
         @renderer.render @menu.scene, @menu.camera if @menu
 
     stepPlayer: (step) ->
             
+        if @preview
+            @player.camera.cam.aspect = @screenSize.w / (@screenSize.h*0.66)
         @player.camera.step step
 
         Sound.setMatrix @player.camera
@@ -723,6 +730,9 @@ class World extends Actor
         @sun.position.copy @player.camera.cam.position
         @renderer.autoClearColor = false
 
+        if @preview
+            @renderer.setViewport 0, 0, @screenSize.w, Math.floor @screenSize.h*0.66
+        
         @renderer.render @scene, @player.camera.cam        
     
     #   000000000  000  00     00  00000000
@@ -755,14 +765,14 @@ class World extends Actor
     # 000   000  000            000  000   000     000       000   000
     # 000   000  00000000  0000000   000  0000000  00000000  0000000  
     
-    resized: (w,h) ->
+    resized: (w,h) =>
         
         @aspect = w/h
+        @screenSize = new Size w,h
         camera = @player?.camera.cam
         camera?.aspect = @aspect
         camera?.updateProjectionMatrix()
         @renderer?.setSize w,h
-        @screenSize = new Size w,h
         @text?.resized w,h
         @menu?.resized w,h
         
@@ -848,8 +858,6 @@ class World extends Actor
         if less_text
             page.getEventWithName("previous").addAction (i=index-1) => @outro i
         
-    resetProjection: -> @player.camera.setViewport 0.0, 0.0, 1.0, 1.0
-    
     # 00     00  00000000  000   000  000   000
     # 000   000  000       0000  000  000   000
     # 000000000  0000000   000 0 000  000   000

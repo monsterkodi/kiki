@@ -45,7 +45,7 @@ class ScreenText extends Actor
     
     del: ->
         
-        klog 'del text' @text
+        # klog 'del text' @text
         @scene.remove @mesh
         @scene.remove @sun
         Timer.removeActionsOfObject @
@@ -53,10 +53,11 @@ class ScreenText extends Actor
     
     show: -> @startTimedAction @getActionWithId Action.SHOW
     
-    addText: (str, scaleFactor) ->
+    addText: (str, scaleFactor=1) ->
+        
         geom = new THREE.TextGeometry str, 
             font: ScreenText.font
-            size: 1
+            size: 1*scaleFactor
             height: 4
             bevelEnabled: true
             bevelThickness: 0.1
@@ -80,15 +81,18 @@ class ScreenText extends Actor
         @height += 1
 
     setOpacity: (o) ->
+        
         for c in @mesh.children
             c.material.opacity = o
 
     resized: (w,h) ->
+        
         @aspect = w/h
         @camera.aspect = @aspect
         @camera.updateProjectionMatrix()
     
     performAction: (action) ->
+        
         switch action.id
             when Action.SHOW
                 @setOpacity action.getRelativeTime()
@@ -96,6 +100,7 @@ class ScreenText extends Actor
                 @setOpacity 1 - action.getRelativeTime()
     
     actionFinished: (action) ->
+        
         switch action.id
             when Action.HIDE
                 @del()
@@ -103,6 +108,7 @@ class ScreenText extends Actor
                 @setOpacity 1
             
     fadeOut: -> 
+        
         return if @fadingOut
         @fadingOut = true
         @stopAction @getActionWithId Action.SHOW

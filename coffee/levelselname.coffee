@@ -9,52 +9,19 @@
 
 ScreenText = require './screentext'
 Action     = require './action'
-# Material   = require './material'
 
 class LevelSelName extends ScreenText
 
     @: (text) ->
 
-        @lineHeight = 1.1
-        super
-        @getActionWithId(Action.SHOW).duration = 250
-        @getActionWithId(Action.HIDE).duration = 200
+        super()
+        @addText text, 2
+        @show()
         
-    del: -> super
+    resized: (w,h) ->
         
-    addItem: (text, cb) ->
-        @callbacks.push cb
-        @addText text
-      
-    show: -> 
-        world.playSound 'MENU_FADE'
-        @setCurrent @current
-        super
-                
-    next: -> 
-        world.playSound 'MENU_ITEM'
-        @setCurrent @current + 1
+        @aspect = w/(h*0.3)
+        @camera.aspect = @aspect
+        @camera.updateProjectionMatrix()
         
-    prev: -> 
-        world.playSound 'MENU_ITEM'
-        @setCurrent @current - 1
-
-    modKeyComboEvent: (mod, key, combo, event) ->
-        
-        switch key
-            when 'esc'
-                world.playSound 'MENU_ABORT'
-                @fadeOut()
-            when 'down' 'right' 's' 'd'
-                @next()
-            when 'left' 'up' 'w' 'a'
-                @prev()
-            when 'enter'
-                world.playSound 'MENU_SELECT'
-                if 'function' == typeof @callbacks[@current]
-                    @callbacks[@current]()
-                else
-                    kerror "no menu callback #{@current}"
-                @fadeOut()
-
-module.exports = Menu
+module.exports = LevelSelName

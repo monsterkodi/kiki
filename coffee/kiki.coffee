@@ -28,15 +28,10 @@ class Kiki extends Stage
     #        000     000     000       000      
     #   0000000      000     00000000  000      
     
-    animationStep: (step) => 
+    animationStep: (step) =>
     
         @world.step step
 
-    # reset: ->
-#         
-        # @resume()
-        # @start()
-                
     resized: => @world.resized @view.clientWidth, @view.clientHeight
 
     modKeyComboEventDown: (mod, key, combo, event) => @world.modKeyComboEventDown mod, key, combo, event

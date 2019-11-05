@@ -61,6 +61,7 @@ class Bot extends Pushable
         @startTimedAction @getActionWithId(Action.NOOP), 500
         
     createMesh: ->
+        
         tireRadius = 0.05
         nose = new THREE.ConeGeometry 0.404, 0.5, 32, 16, true
         geom = new THREE.SphereGeometry 0.5, 32, 32, 16, Math.PI

@@ -673,7 +673,7 @@ class World extends Actor
             @levelSelection.step step 
             return 
         
-        camera = @player.camera.cam
+        camera = @player?.camera.cam
         
         if false
             quat = camera.quaternion.clone()
@@ -687,6 +687,14 @@ class World extends Actor
         Timer.finishActions()
         
         o.step?(step) for o in @objects
+        
+        if @player then @stepPlayer step
+        
+        @renderer.render @text.scene, @text.camera if @text
+        @renderer.render @menu.scene, @menu.camera if @menu
+
+    stepPlayer: (step) ->
+            
         @player.camera.step step
 
         Sound.setMatrix @player.camera
@@ -712,13 +720,10 @@ class World extends Actor
                 stone.mesh.material.opacity = stone.mesh.material.orig_opacity
                 delete stone.mesh.material.orig_opacity
         
-        @sun.position.copy camera.position
+        @sun.position.copy @player.camera.cam.position
         @renderer.autoClearColor = false
 
-        @renderer.render @scene, camera
-        
-        @renderer.render @text.scene, @text.camera if @text
-        @renderer.render @menu.scene, @menu.camera if @menu
+        @renderer.render @scene, @player.camera.cam        
     
     #   000000000  000  00     00  00000000
     #      000     000  000   000  000     
@@ -751,8 +756,9 @@ class World extends Actor
     # 000   000  00000000  0000000   000  0000000  00000000  0000000  
     
     resized: (w,h) ->
+        
         @aspect = w/h
-        camera = @player.camera.cam
+        camera = @player?.camera.cam
         camera?.aspect = @aspect
         camera?.updateProjectionMatrix()
         @renderer?.setSize w,h

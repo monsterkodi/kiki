@@ -8,6 +8,8 @@
 
 { clamp, elem, klog } = require 'kxk'
 
+ScreenText = require './screentext'
+
 class LevelSelection
     
     @: (@gameWorld) ->
@@ -19,6 +21,17 @@ class LevelSelection
         @index = ((@gameWorld.level_index ? 0) + 1) % @levels.length
         
         @gameWorld.menu.del()
+
+        {w,h} = @gameWorld.screenSize
+        
+        view = elem class:'names'
+        view.style.position = 'absolute'
+        view.style.left     = '0'
+        view.style.right    = '0'
+        view.style.top      = '66%'
+        view.style.bottom   = '0'
+        @gameWorld.view.appendChild view
+        @names = new World view, true
         
         view = elem class:'preview'
         view.style.position = 'absolute'
@@ -26,12 +39,13 @@ class LevelSelection
         view.style.right    = '0'
         view.style.top      = '0'
         view.style.height   = '66%'
-        
         @gameWorld.view.appendChild view
-        
         @world = new World view, true
+        
         @world.create @levels[@index]
-        @resized @gameWorld.screenSize.w, @gameWorld.screenSize.h
+        
+        @names.text = new ScreenText @levels[@index]
+        @resized w,h
         
     navigate: (action) ->
         
@@ -44,21 +58,26 @@ class LevelSelection
             when 'end'          then @index = @levels.length-1
         
         @index = clamp 0, @levels.length-1, @index
-        klog @index
+        klog @index, @levels[@index]
         @world.create @levels[@index]
+        @names.text = new ScreenText @levels[@index]
+        
+    del: ->
+        
+        delete @gameWorld.levelSelection
+        @world.del()
+        @names.del()
         
     load: ->
                 
         global.world = @gameWorld
         @gameWorld.create @levels[@index]
-        delete @gameWorld.levelSelection
-        @world.del()
+        @del()
         
     close: -> 
         
         global.world = @gameWorld
-        delete @gameWorld.levelSelection
-        @world.del()
+        @del()
         @gameWorld.applyScheme @gameWorld.dict.scheme ? 'default'
         
     modKeyComboEvent: (mod, key, combo, event) =>
@@ -68,10 +87,13 @@ class LevelSelection
             when 'enter' 'space' then @load()
             when 'left' 'right' 'up' 'down' 'page up' 'page down' 'home' 'end' then @navigate combo
         
-    resized: (w, h) => @world.resized w, h*0.66
+    resized: (w, h) => 
+        @world.resized w, h*0.66
+        @names.resized w, h*0.34
         
     step: (step) -> 
     
         @world.step step
+        @names.step step
     
 module.exports = LevelSelection

@@ -38,7 +38,7 @@ class ScreenText extends Actor
         @near = 0.1
         @far  = 100
         @camera = new THREE.PerspectiveCamera @fov, @aspect, @near, @far
-        if text?
+        if @text?
             for l in @text.split '\n'
                 @addText l 
             @show()

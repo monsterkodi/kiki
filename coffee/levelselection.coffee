@@ -6,11 +6,17 @@
 0000000  00000000      0      00000000  0000000  0000000   00000000  0000000  
 ###
 
-{ elem } = require 'kxk'
+{ clamp, elem, klog } = require 'kxk'
 
 class LevelSelection
     
     @: (@gameWorld) ->
+        
+        World = require './world'
+        
+        @levels = World.levels.list
+        
+        @index = ((@gameWorld.level_index ? 0) + 1) % @levels.length
         
         @gameWorld.menu.del()
         
@@ -23,14 +29,30 @@ class LevelSelection
         
         @gameWorld.view.appendChild view
         
-        World = require './world'
         @world = new World view, true
-        @world.create 'bombs'
+        @world.create @levels[@index]
         @resized @gameWorld.screenSize.w, @gameWorld.screenSize.h
         
     navigate: (action) ->
         
+        switch action
+            when 'right' 'down' then @index += 1
+            when 'left' 'up'    then @index -= 1
+            when 'page up'      then @index -= 10
+            when 'page down'    then @index += 10
+            when 'home'         then @index = 0
+            when 'end'          then @index = @levels.length-1
+        
+        @index = clamp 0, @levels.length-1, @index
+        klog @index
+        @world.create @levels[@index]
+        
     load: ->
+                
+        global.world = @gameWorld
+        @gameWorld.create @levels[@index]
+        delete @gameWorld.levelSelection
+        @world.del()
         
     close: -> 
         

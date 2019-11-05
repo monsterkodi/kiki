@@ -5,7 +5,7 @@
 #   000   000  000   000  000   000  000      000   000
 #   00     00   0000000   000   000  0000000  0000000  
 
-{ post, randInt, colors, absMin, first, clamp, last, kerror, klog, _ } = require 'kxk'
+{ post, randInt, colors, absMin, prefs, clamp, last, kerror, klog, _ } = require 'kxk'
 
 Pos         = require './lib/pos'
 Size        = require './lib/size'
@@ -102,24 +102,26 @@ class World extends Actor
         @ambient = new THREE.AmbientLight 0x111111
         @scene.add @ambient
                  
-        @objects         = []
-        @lights          = []
-        @cells           = [] 
-        @size            = new Pos()
-        @depth           = -Number.MAX_SAFE_INTEGER
+        @objects = []
+        @lights  = []
+        @cells   = [] 
+        @size    = new Pos()
+        @depth   = -Number.MAX_SAFE_INTEGER
         
         @timer = new Timer @
                 
         @view.appendChild @renderer.domElement
      
     @init: (view) ->
+        
         return if world?
         
         @initGlobal()
             
         world = new World view
         world.name = 'world'
-        world.create first @levels.list
+        index = prefs.get 'level' 0
+        world.create @levels.list[index]
         world
         
     @initGlobal: () ->
@@ -190,7 +192,11 @@ class World extends Actor
                 @dict = worldDict
                 
         @level_index = World.levels.list.indexOf @level_name
-        klog "World.create #{@level_index} size: #{new Pos(@dict["size"]).str()} ---------------------- '#{@level_name}' scheme: '#{@dict.scheme ? 'default'}'"
+        
+        if not @preview
+            prefs.set 'level' @level_index
+        
+        # klog "World.create #{@level_index} size: #{new Pos(@dict["size"]).str()} ---------------------- '#{@level_name}' scheme: '#{@dict.scheme ? 'default'}'"
 
         @creating = true
             
@@ -254,7 +260,7 @@ class World extends Actor
             @setCameraMode Camera.INSIDE if @dict.camera == 'inside'
         
         @creating = false
-        klog 'done creating'
+        # klog 'done creating'
     
     restart: => @create @dict
 
@@ -334,6 +340,7 @@ class World extends Actor
     #   000   000   0000000     000     000   0000000   000   000
           
     exitLevel: (action) =>
+        
         @finish()
         # klog "world.level_index #{world.level_index} nextLevel #{World.levels.list[world.level_index+1]}"
         nextLevel = (world.level_index+(_.isNumber(action) and action or 1)) % World.levels.list.length

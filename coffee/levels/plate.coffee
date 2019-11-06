@@ -14,7 +14,7 @@ module.exports =
     scheme:     "crazy"
     size:       [7,7,9]
     help:       """
-                $scale(1.5)mission:\nget to the exit!
+                get to the exit!
                 
                 use the bombs :)
                 """

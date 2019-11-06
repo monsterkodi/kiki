@@ -10,7 +10,6 @@ module.exports =
     scheme:     "red"
     size:       [7,7,13]
     help:       """  
-                $scale(1.5)mission:
                 get to the exit!
                 
                 jump on the stones to reach it

@@ -833,12 +833,12 @@ class World extends Actor
     outro: (index=0) ->
         # well hidden outro :-)
         outro_text = """
-                    $scale(1.5)congratulations!\n\n$scale(1)you rescued\nthe nano world!
+                    congratulations!\n\nyou rescued\nthe nano world!
                     
                     the last dumb mutant bot\nhas been destroyed.\n\nthe maker is functioning again.
                     kiki will go now\nand see all his new friends.\n\nyou should maybe\ndo the same?
                     the maker wants to thank you!\n\n(btw.: you thought\nyou didn't see\nkiki's maker in the game?
-                    you are wrong!\nyou saw him\nall the time,\nbecause kiki\nlives inside him!)\n\n$scale(1.5)the end
+                    you are wrong!\nyou saw him\nall the time,\nbecause kiki\nlives inside him!)\n\nthe end
                     p.s.: the maker of the game\nwants to thank you as well!\n\ni definitely want your feedback:
                     please send me a mail (monsterkodi@gmx.net)\nwith your experiences,
                     which levels you liked, etc.\n\nthanks in advance and have a nice day,\n\nyours kodi
@@ -848,7 +848,7 @@ class World extends Actor
         less_text = index > 0
         
         page_text = outro_text[index]
-        page_text += "\n\n$scale(0.5)(#{index+1}/#{outro_text.length})"
+        page_text += "\n\n#{index+1}/#{outro_text.length}"
     
         page = KikiPageText(page_text, more_text, less_text)
         page.getEventWithName("hide").addAction(once(display_main_menu))
@@ -867,11 +867,11 @@ class World extends Actor
     showMenu: (self) -> # handles an ESC key event
 
         @menu = new Menu()
+        @menu.addItem 'load'       @showLevels
+        @menu.addItem 'reset'      @restart 
         @menu.addItem 'help'       @showHelp
-        @menu.addItem 'restart'    @restart 
-        @menu.addItem 'load level' @showLevels
-        @menu.addItem 'setup'      @showSetup       
-        @menu.addItem 'about'      @showAbout
+        # @menu.addItem 'setup'      @showSetup       
+        # @menu.addItem 'about'      @showAbout
         @menu.addItem 'quit'       @quit
         @menu.show()
     
@@ -916,7 +916,7 @@ class World extends Actor
     
     displayLights: () ->
         for light in @lights
-            lignt.display()
+            light.display()
                
     playSound: (sound, pos, time) -> Sound.play sound, pos, time if not @creating
     

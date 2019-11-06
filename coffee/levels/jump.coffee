@@ -10,15 +10,14 @@ module.exports =
     scheme:     "default"
     size:       [7,5,11]
     help:       """
-                $scale(1.5)mission:
                 get to the exit!
                 
                 to get to the exit,
                 jump on the stone
                 to jump,
-                press "$key(jump)" while moving
-                to move, press "$key(move forward)" or "$key(move backward)"
-                to turn, press "$key(turn left)" or "$key(turn right)"
+                press "space" while moving
+                to move, press "up" or "down"
+                to turn, press "left" or "right"
                 """
     player:   
         coordinates:   [1,0,4]

@@ -5,13 +5,12 @@
 #   000        000      000   000     000     000       000   000
 #   000        0000000  000   000     000     00000000  000   000
 
-{ clamp, _ }   = require 'kxk'
-Bot         = require './bot'
-Action      = require './action'
-Timer       = require './timer'
-Vector      = require './lib/vector'
-Camera      = require './camera'
-Quaternion  = require './lib/quaternion'
+{ valid, prefs } = require 'kxk'
+
+Bot    = require './bot'
+Action = require './action'
+Timer  = require './timer'
+Camera = require './camera'
  
 class Player extends Bot
     
@@ -19,17 +18,22 @@ class Player extends Bot
         
         super
         @name = 'player'
-        @key =
-            forward:  'w'
-            backward: 's'
-            left:     'a'
-            right:    'd'
-            lookUp:   'q'
-            lookDown: 'e'
-            shoot:    'enter'
-            jump:     'space'
-            view:     'c'
-            push:     'shift'
+        
+        if valid pkey = prefs.get 'keys' {}
+            @key = pkey
+        else
+            @key =
+                forward:  'w'
+                backward: 's'
+                left:     'a'
+                right:    'd'
+                lookUp:   'e'
+                lookDown: 'q'
+                shoot:    'enter'
+                jump:     'space'
+                view:     'c'
+                push:     'shift'
+            prefs.set 'keys' @key
 
         @camera = new Camera @, aspect: world.view.offsetWidth / world.view.offsetHeight
 
@@ -41,9 +45,9 @@ class Player extends Bot
         @recorder    = null
         @playback    = null
         
-        @addAction new Action @, Action.LOOK_UP,    "look up",    220
-        @addAction new Action @, Action.LOOK_DOWN,  "look down",  220
-        @addAction new Action @, Action.LOOK_RESET, "look reset", 60
+        @addAction new Action @, Action.LOOK_UP,    'look up'    220
+        @addAction new Action @, Action.LOOK_DOWN,  'look down'  220
+        @addAction new Action @, Action.LOOK_RESET, 'look reset' 60
     
         @addEventWithName "landed"
     
@@ -59,15 +63,12 @@ class Player extends Bot
         # klog "initAction #{action.id} #{action.name}"
         switch action.id
             when Action.CLIMB_DOWN
-                # @addMoves 1 
                 world.playSound 'BOT_CLIMB'
             when Action.FORWARD
-                # @addMoves 1 
                 world.playSound 'BOT_MOVE'
             when Action.TURN_LEFT, Action.TURN_RIGHT
                 world.playSound 'BOT_TURN'
             when Action.JUMP
-                # @addMoves actionId == Action.JUMP and 1 or 2
                 world.playSound 'BOT_JUMP'
         
         super action
@@ -128,7 +129,7 @@ class Player extends Bot
         
         switch key
             when 'up' 'down' @key.forward, @key.backward
-                @push = mod == @key.push
+                @push = (mod in ['ctrl' @key.push])
                 @move = true # try to move as long as the key is not released
                 if not @move_action?
                     @new_dir_sgn = @dir_sgn = (key in ['down' @key.backward]) and -1 or 1 
@@ -142,7 +143,7 @@ class Player extends Bot
                                 Timer.removeAction @move_action
                                 @move_action = action
                                 Timer.addAction @move_action                          
-                    @new_dir_sgn = (key == @key.backward) and -1 or 1
+                    @new_dir_sgn = (key in ['down' @key.backward]) and -1 or 1
                 return true
         
             when 'left' 'right' @key.left, @key.right
@@ -179,11 +180,11 @@ class Player extends Bot
                         @jump_once = false
                 return true
             
-            when @key.push
+            when 'ctrl' @key.push
                 @push = true
                 return true
             
-            when @key.shoot
+            when 'f' @key.shoot
                 if not @shoot
                     @shoot = true
                     Timer.addAction @getActionWithId Action.SHOOT
@@ -209,10 +210,10 @@ class Player extends Bot
     #   000   000  00000000  0000000  00000000  000   000  0000000   00000000
     
     modKeyComboEventUp: (mod, key, combo, event) ->
-        @push = false if @key.push == 'shift'
+        # @push = false if @key.push == 'shift'
         # klog "player.modKeyComboEventUp mod:#{mod} key:#{key} combo:#{combo}"
         switch key    
-            when @key.shoot
+            when 'f' @key.shoot
                 Timer.removeAction @getActionWithId Action.SHOOT
                 @shoot = false
                 return true
@@ -229,7 +230,7 @@ class Player extends Bot
                 @rotate = 0
                 return true
             
-            when @key.push
+            when 'ctrl' @key.push
                 @push = false
                 return true
             

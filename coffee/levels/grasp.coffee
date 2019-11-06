@@ -11,7 +11,7 @@ module.exports =
     scheme:     "blue"
     size:       [11,11,11]
     help:       """
-                to shoot, press $key(shoot)
+                to shoot, press "enter"
                 """
     player:   
         coordinates:    [5,4,1]

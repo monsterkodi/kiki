@@ -76,8 +76,8 @@ class LevelSelection
         
     resized: (w, h) => @world.resized w, h
         
-    step: (step) -> 
+    step: -> 
     
-        @world.step step
+        @world.step()
     
 module.exports = LevelSelection

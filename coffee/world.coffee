@@ -251,9 +251,7 @@ class World extends Actor
         else if @dict.player.coordinates?
             @addObjectAtPos @player, new Pos @dict.player.coordinates
 
-        
         if @preview
-            # @player.camera.step()
             @player.camera.setPosition @player.currentPos().minus @player.direction
             @setCameraMode Camera.FOLLOW
         else
@@ -261,7 +259,6 @@ class World extends Actor
             @setCameraMode Camera.INSIDE if @dict.camera == 'inside'
         
         @creating = false
-        # klog 'done creating'
     
     restart: => @create @dict
 
@@ -275,8 +272,6 @@ class World extends Actor
     
     applyScheme: (scheme) ->
         return if not Scheme[scheme]
-        
-        # klog "world.applyScheme #{scheme}"
         
         colors = _.clone Scheme[scheme]
         
@@ -305,8 +300,6 @@ class World extends Actor
         colors.wirePlate ?= {}
         colors.wirePlate.color ?= colors.wire.color
         for k,v of colors
-            # klog "#{k} #{v.color?.r} #{v.color?.g} #{v.color?.b}", v
-            # continue if k == 'text'
             mat = Material[k]
             mat.color    = v.color
             mat.opacity  = v.opacity ? opacity[k] ? 1
@@ -343,7 +336,6 @@ class World extends Actor
     exitLevel: (action) =>
         
         @finish()
-        # klog "world.level_index #{world.level_index} nextLevel #{World.levels.list[world.level_index+1]}"
         nextLevel = (world.level_index+(_.isNumber(action) and action or 1)) % World.levels.list.length
         world.create World.levels.list[nextLevel]
 
@@ -668,28 +660,20 @@ class World extends Actor
     #      000     000     000       000            
     # 0000000      000     00000000  000          
     
-    step: (step) ->
+    step: ->
         
         if @levelSelection
-            @levelSelection.step step 
+            @levelSelection.step()
             return 
         
         camera = @player?.camera.cam
-        
-        if false
-            quat = camera.quaternion.clone()
-            quat.multiply new THREE.Quaternion().setFromAxisAngle new THREE.Vector3(1,0,0), step.dsecs*0.2
-            quat.multiply new THREE.Quaternion().setFromAxisAngle new THREE.Vector3(0,1,0), step.dsecs*0.1
-            center = @size.div 2
-            camera.position.set(center.x,center.y,center.z+@dist).applyQuaternion quat
-            camera.quaternion.copy quat
-
+    
         Timer.triggerActions()
         Timer.finishActions()
         
-        o.step?(step) for o in @objects
+        o.step?() for o in @objects
         
-        if @player then @stepPlayer step
+        if @player then @stepPlayer()
         
         if @preview
             @renderer.setViewport 0, Math.floor(@screenSize.h*0.72), @screenSize.w, Math.floor(@screenSize.h*0.3)
@@ -698,11 +682,11 @@ class World extends Actor
         
         @renderer.render @menu.scene, @menu.camera if @menu
 
-    stepPlayer: (step) ->
+    stepPlayer: ->
             
         if @preview
             @player.camera.cam.aspect = @screenSize.w / (@screenSize.h*0.66)
-        @player.camera.step step
+        @player.camera.step()
 
         Sound.setMatrix @player.camera
             
@@ -871,7 +855,6 @@ class World extends Actor
         @menu.addItem 'reset'      @restart 
         @menu.addItem 'help'       @showHelp
         # @menu.addItem 'setup'      @showSetup       
-        # @menu.addItem 'about'      @showAbout
         @menu.addItem 'quit'       @quit
         @menu.show()
     

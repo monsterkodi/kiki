@@ -9,67 +9,67 @@ class Levels
     @: () ->
         @dict = {}
         @list = [
-            # "test",
+            # "test"
             # --- introduction
-            "steps",   # ok
-            "jump",    # ok
-            "move",    # ok
-            "electro", # ok
-            "elevate", # ok
-            "fall",    # ok
+            "steps"   # ok
+            "jump"    # ok
+            "move"    # ok
+            "electro" # ok
+            "elevate" # ok
+            "fall"    # ok
             # # --- easy
-            "blocks",  # ok
-            "throw", 
-            "gold", 
-            "escape", 
-            "gears", 
-            "gamma",  
-            "cube", 
+            "blocks"  # ok
+            "throw" 
+            "gold" 
+            "escape" 
+            "gears" 
+            "gamma"  
+            "cube" 
             "switch"
-            # # "borg", 
-            "mini", 
-            "bombs", 
-            "sandbox", 
-            "energy", 
-            "maze", 
-            "love", 
+            # # "borg" 
+            "mini" 
+            "bombs" 
+            "sandbox" 
+            "energy" 
+            "maze" 
+            "love" 
             # --- medium
-            "towers", 
-            "edge", 
-            "random", 
-            "slick", 
-            "bridge", 
-            "plate", 
-            "nice", 
-            "entropy", 
-            "neutron",
-            "strange",
-            "core",
+            "towers" 
+            "edge" 
+            "random" 
+            "slick" 
+            "bridge" 
+            "plate" 
+            "nice" 
+            "entropy" 
+            "neutron"
+            "strange"
+            "core"
             # --- difficult
-            "flower", 
-            "stones", 
-            "walls", 
-            "grid", 
-            "rings", 
-            "bronze", 
-            "pool", 
+            "flower" 
+            "stones" 
+            "walls" 
+            "grid" 
+            "rings" 
+            "bronze" 
+            "pool" 
             # --- owen hay's levels (TODO: sort in)
-            "grasp", 
-            "fallen", 
-            "cheese", 
-            "spiral", 
+            "grasp" 
+            "fallen" 
+            "cheese" 
+            "spiral" 
             # --- tough
-            "hidden", 
-            "church", 
-            "mesh", 
-            "columns", 
-            "machine", 
+            "hidden" 
+            "church" 
+            "mesh" 
+            "columns" 
+            "machine" 
             # --- very hard
-            "captured", 
-            "circuit", 
-            "regal", 
-            "conductor", 
-            "evil", 
+            "captured" 
+            "circuit" 
+            "regal" 
+            "conductor" 
+            "evil" 
             # outro
             "mutants"]
                

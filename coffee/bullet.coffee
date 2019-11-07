@@ -52,7 +52,7 @@ class Bullet extends Item
             @size = 0.2 + relTime/2.0
             @mesh?.material.opacity = 0.8 * (1.0-relTime)
     
-    step: (step) -> 
+    step: -> 
         @mesh.position.copy @current_position
         @mesh.scale.set @size, @size, @size
     

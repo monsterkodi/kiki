@@ -5,36 +5,68 @@
 # 000  000   000  000  000   000
 # 000   000  000  000   000  000
 
-{ klog } = require 'kxk'
-Stage = require './stage'
+{ post, keyinfo } = require 'kxk'
+
 World = require './world'
 
-class Kiki extends Stage
+class Kiki
     
     @: (@view) ->
-        klog "view:", @view.className
-        super @view
+        
+        @paused = false
+        
+        post.on 'pause'  => @paused = true
+        post.on 'resume' => @paused = false
+                
+        @view.onkeydown = @onKeyDown
+        @view.onkeyup   = @onKeyUp
+        
         @view.focus()
+    
+    #  0000000  000000000   0000000   00000000   000000000  
+    # 000          000     000   000  000   000     000     
+    # 0000000      000     000000000  0000000       000     
+    #      000     000     000   000  000   000     000     
+    # 0000000      000     000   000  000   000     000     
     
     start: -> 
                 
         @world = World.init @view
         @view.focus()
         @animate()
+        @interval = setInterval @animate, 16
 
-    #    0000000  000000000  00000000  00000000 
-    #   000          000     000       000   000
-    #   0000000      000     0000000   00000000 
-    #        000     000     000       000      
-    #   0000000      000     00000000  000      
+    #  0000000   000   000  000  00     00   0000000   000000000  00000000  
+    # 000   000  0000  000  000  000   000  000   000     000     000       
+    # 000000000  000 0 000  000  000000000  000000000     000     0000000   
+    # 000   000  000  0000  000  000 0 000  000   000     000     000       
+    # 000   000  000   000  000  000   000  000   000     000     00000000  
     
-    animationStep: (step) =>
+    animate: =>
+        # requestAnimationFrame @animate
+        if not @paused
+            @world.step()
+
+    # 000   000  00000000  000   000  
+    # 000  000   000        000 000   
+    # 0000000    0000000     00000    
+    # 000  000   000          000     
+    # 000   000  00000000     000     
     
-        @world.step step
-
-    resized: => @world.resized @view.clientWidth, @view.clientHeight
-
-    modKeyComboEventDown: (mod, key, combo, event) => @world.modKeyComboEventDown mod, key, combo, event
-    modKeyComboEventUp:   (mod, key, combo, event) => @world.modKeyComboEventUp   mod, key, combo, event
+    onKeyDown: (event) =>
         
+        {mod, key, combo} = keyinfo.forEvent event
+        return if not combo
+        return if key == 'right click' # weird right command key
+        @world.modKeyComboEventDown mod, key, combo, event
+   
+    onKeyUp: (event) =>
+        
+        {mod, key, combo} = keyinfo.forEvent event        
+        return if not combo
+        return if key == 'right click' # weird right command key
+        @world.modKeyComboEventUp   mod, key, combo, event
+    
+    resized: => @world.resized @view.clientWidth, @view.clientHeight
+    
 module.exports = Kiki

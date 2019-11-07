@@ -76,14 +76,10 @@ class Action
     init: ->    @object.initAction? @
     finish: ->  @object.finishAction? @
     finished: -> 
-        # klog "Action.finished #{@name} #{@object?.actionFinished?}"
+        # klog "Action.finished #{@name} #{@object?.actionFinished? and '.' or 'unfinished'}"
         @object?.actionFinished? @
         return if @deleted
         @reset()
-        # if @current >= @getDuration() # if keepRest wasn't called -> reset start and current values
-            # @reset()
-        # else 
-            # klog 'keeping rest', @current
 
     reset: ->
         # klog "action.reset #{@name}"
@@ -91,7 +87,6 @@ class Action
         @rest    = 0 
         @last    = 0 # relative (ms since @start)
         @current = 0 # relative (ms since @start)
-        #@event   = null  
 
     takeOver: (action) ->
         # klog "takeOver #{action.rest} from #{action.name} this: #{@name}"
@@ -100,37 +95,43 @@ class Action
         @last    = action.last
         @rest    = action.rest
 
-    keepRest: () ->
-        if @rest != 0
-            @current = @rest
-            @rest    = 0
-
-    getRelativeTime:  -> @current / @getDuration() 
     getRelativeDelta: -> (@current-@last) / @getDuration()
     getDuration:      -> world.mapMsTime @duration 
+    getRelativeTime:  -> 
+    
+        s = 1/(16+@getDuration())
+        s * (16+@current)
 
     performWithEvent: (event) ->
+        
         eventTime = event.getTime()
-        # klog "action.performWithEvent #{@name} #{@id} eventTime #{eventTime} start #{@start}" if @name.startsWith 'exit'
+        
         if @start == 0
+            
             @start   = eventTime
             @current = 0
             @rest    = 0
             @last    = 0
-            # event.removeAction @ if @duration == 0 and @mode == Action.ONCE
+
             event.removeAction @ if @mode == Action.ONCE
+            
+            # klog "#{@name} start #{@start} #{@getRelativeDelta()} #{@getRelativeTime()}"
+            
             @perform()
             @last = @current
             # @finished() if @duration == 0 and @mode == Action.ONCE
             @finished() if @mode == Action.ONCE
+            
         else
+            
             currentDiff = eventTime - @start
             msDur = @getDuration()
-            if currentDiff >= msDur
+            
+            if currentDiff >= (msDur - 4) # action (almost) finished
                 @current = msDur
-                # @start   = msDur
                 @rest    = currentDiff - msDur
                 # klog "action #{name} performWithEvent start #{@start} rest #{currentDiff}-#{msDur} = #{@rest}" if @name != 'noop'
+                # klog "#{@name} end   #{@current} #{@getRelativeDelta()} #{@getRelativeTime()}"
                 @perform()
                 @last    = 0
                 
@@ -141,6 +142,7 @@ class Action
                     @last  = 0
                     @rest  = 0
                     return
+                    
                 event.removeAction @ if @mode in [Action.ONCE, Action.TIMED]
                 
                 @finish()
@@ -151,8 +153,11 @@ class Action
                     return
                 
                 event.addFinishedAction @
+                
             else
+                
                 @current = currentDiff
+                # klog "#{@name}      #{@current} #{@getRelativeDelta()} #{@getRelativeTime()}"
                 @perform()
                 @last    = @current
         

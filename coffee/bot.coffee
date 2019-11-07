@@ -25,9 +25,10 @@ class Bot extends Pushable
         @climb_orientation   = new Quaternion
         @rest_orientation    = new Quaternion
         
+        @lastActionDelta = 0.0
+            
         @left_tire_rot   = 0.0
         @right_tire_rot  = 0.0
-        @last_fume       = 0
             
         @minMoves = 100
 
@@ -147,7 +148,6 @@ class Bot extends Pushable
     
         @left_tire_rot   = 0.0
         @right_tire_rot  = 0.0
-        @last_fume       = 0
     
         @direction.reset()
         @orientation.reset()
@@ -175,6 +175,7 @@ class Bot extends Pushable
     initAction: (action) ->
         newPos = new Pos @position 
         # klog "initAction #{action.name} pos", newPos
+        # klog "initAction #{action.name}"
         
         switch action.id
             when Action.NOOP         then return
@@ -204,11 +205,14 @@ class Bot extends Pushable
     
     performAction: (action) ->
         
-        relTime  = action.getRelativeTime()
-        dltTime  = action.getRelativeDelta()
+        relTime  = action.getRelativeTime()  # @current / @getDuration() 
+        dltTime  = action.getRelativeDelta() # (@current-@last) / @getDuration()
     
+        @lastActionDelta = dltTime
+                
         cosFac = Math.cos Math.PI/2 - Math.PI/2 * relTime
         sinFac = Math.sin Math.PI/2 * relTime
+        
         switch action.id
             when Action.SHOOT
                 if relTime == 0
@@ -220,6 +224,7 @@ class Bot extends Pushable
     
                 @left_tire_rot  += @dir_sgn * dltTime
                 @right_tire_rot += @dir_sgn * dltTime
+                # log 'r:' relTime
                 @current_position = @position.plus @getDir().mul(relTime)
                 return
             
@@ -439,6 +444,7 @@ class Bot extends Pushable
     # 000   000   0000000       0      00000000
         
     moveBot: () ->
+        # klog 'moveBot' @move, @move_action
         @move_action = null
         forwardPos = @position.plus @getDir()
         if @move and (@jump or @jump_once) and    # jump mode or jump activated while moving
@@ -475,7 +481,6 @@ class Bot extends Pushable
         @jump_once = false 
     
         if @move_action
-            @move_action.keepRest() # try to make subsequent actions smooth
             Timer.addAction @move_action
         
     #  0000000  000000000  00000000  00000000 
@@ -484,7 +489,7 @@ class Bot extends Pushable
     #      000     000     000       000      
     # 0000000      000     00000000  000      
         
-    step: (step) ->
+    step: ->
         @mesh.position.copy @current_position
         @mesh.quaternion.copy @current_orientation
         @leftTire.rotation.set Vector.DEG2RAD(180*@left_tire_rot), Vector.DEG2RAD(90), 0

@@ -36,6 +36,8 @@ class LevelSelection
         
     navigate: (action) ->
         
+        oldIndex = @index
+        
         switch action
             when 'right' 'down' then @index += 1
             when 'left' 'up'    then @index -= 1
@@ -46,9 +48,11 @@ class LevelSelection
         
         @index = clamp 0, @levels.length-1, @index
         klog @index, @levels[@index]
-        @world.create @levels[@index]
-        @world.text = new LevelSelName @levels[@index]
-        @resized @gameWorld.screenSize.w, @gameWorld.screenSize.h
+        if oldIndex != @index
+            @world.playSound 'MENU_ITEM'
+            @world.create @levels[@index]
+            @world.text = new LevelSelName @levels[@index]
+            @resized @gameWorld.screenSize.w, @gameWorld.screenSize.h
         
     del: ->
         
@@ -56,13 +60,15 @@ class LevelSelection
         @world.del()
         
     load: ->
-                
+              
+        @world.playSound 'MENU_SELECT'
         global.world = @gameWorld
         @gameWorld.create @levels[@index], false
         @del()
         
     close: -> 
         
+        @world.playSound 'MENU_ABORT'
         global.world = @gameWorld
         @del()
         @gameWorld.applyScheme @gameWorld.dict.scheme ? 'default'

@@ -5,7 +5,7 @@
 # 000  000   000  000  000   000
 # 000   000  000  000   000  000
 
-{ post, keyinfo } = require 'kxk'
+{ keyinfo } = require 'kxk'
 
 World = require './world'
 
@@ -15,9 +15,6 @@ class Kiki
         
         @paused = false
         
-        post.on 'pause'  => @paused = true
-        post.on 'resume' => @paused = false
-                
         @view.onkeydown = @onKeyDown
         @view.onkeyup   = @onKeyUp
         
@@ -43,7 +40,7 @@ class Kiki
     # 000   000  000   000  000  000   000  000   000     000     00000000  
     
     animate: =>
-        # requestAnimationFrame @animate
+
         if not @paused
             @world.step()
 
@@ -58,6 +55,10 @@ class Kiki
         {mod, key, combo} = keyinfo.forEvent event
         return if not combo
         return if key == 'right click' # weird right command key
+        if key == 'p' 
+            @paused = not @paused
+            return
+            
         @world.modKeyComboEventDown mod, key, combo, event
    
     onKeyUp: (event) =>

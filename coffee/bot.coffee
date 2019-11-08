@@ -46,15 +46,15 @@ class Bot extends Pushable
         
         super 
 
-        @addAction new Action @, Action.FORWARD,      "move forward",   200
-        @addAction new Action @, Action.CLIMB_UP,     "climb up",       200
-        @addAction new Action @, Action.CLIMB_DOWN,   "climb down",     500
-        @addAction new Action @, Action.TURN_LEFT,    "turn left",      200
-        @addAction new Action @, Action.TURN_RIGHT,   "turn right",     200
-        @addAction new Action @, Action.JUMP,         "jump",           120
-        @addAction new Action @, Action.JUMP_FORWARD, "jump forward",   200
-        @addAction new Action @, Action.FALL_FORWARD, "fall forward",   200
-        @addAction new Action @, Action.SHOOT,        "shoot",          200, Action.REPEAT
+        @addAction new Action @, Action.FORWARD,      "move forward"   200
+        @addAction new Action @, Action.CLIMB_UP,     "climb up"       200
+        @addAction new Action @, Action.CLIMB_DOWN,   "climb down"     500
+        @addAction new Action @, Action.TURN_LEFT,    "turn left"      200
+        @addAction new Action @, Action.TURN_RIGHT,   "turn right"     200
+        @addAction new Action @, Action.JUMP,         "jump"           120
+        @addAction new Action @, Action.JUMP_FORWARD, "jump forward"   200
+        @addAction new Action @, Action.FALL_FORWARD, "fall forward"   200
+        @addAction new Action @, Action.SHOOT,        "shoot"          200 Action.REPEAT
     
         @getActionWithId(Action.FALL).duration = 120
         @addEventWithName "died"
@@ -205,7 +205,7 @@ class Bot extends Pushable
     
     performAction: (action) ->
         
-        relTime  = action.getRelativeTime()  # @current / @getDuration() 
+        relTime  = action.getRelativeTime()  # ~ @current / @getDuration() 
         dltTime  = action.getRelativeDelta() # (@current-@last) / @getDuration()
     
         @lastActionDelta = dltTime
@@ -215,7 +215,7 @@ class Bot extends Pushable
         
         switch action.id
             when Action.SHOOT
-                if relTime == 0
+                if action.atStart()
                     Bullet.shootFromBot @
                 
             when Action.NOOP then return
@@ -278,7 +278,7 @@ class Bot extends Pushable
         
             when Action.TURN_RIGHT, Action.TURN_LEFT
     
-                if @move_action == null and relTime == 0.0 # if not performing move action and start of rotation
+                if @move_action == null and action.atStart() # if not performing move action and start of rotation
                     # update @orientation now, so next move action will move in desired @direction
                     if action.id == Action.TURN_LEFT
                         @orientation = @orientation.mul Quaternion.rotationAroundVector 90.0, Vector.unitY

@@ -68,7 +68,7 @@ class Player extends Bot
                 world.playSound 'BOT_MOVE'
             when Action.TURN_LEFT, Action.TURN_RIGHT
                 world.playSound 'BOT_TURN'
-            when Action.JUMP
+            when Action.JUMP, Action.JUMP_FORWARD
                 world.playSound 'BOT_JUMP'
         
         super action
@@ -80,7 +80,9 @@ class Player extends Bot
     #   000        00000000  000   000  000        0000000   000   000  000   000
 
     performAction: (action) ->
+        
         relTime = action.getRelativeTime()
+        
         switch action.id
             when Action.NOOP      then return
             when Action.LOOK_UP   then @look_angle = relTime * 90.0
@@ -115,7 +117,7 @@ class Player extends Bot
                     @rotate_action.reset()
                     Timer.addAction @rotate_action
     
-    die: () ->
+    die: ->
                 
     #   000   000  00000000  000   000
     #   000  000   000        000 000 
@@ -154,6 +156,7 @@ class Player extends Bot
                 return true
             
             when @key.jump
+                
                 @jump = true # switch to jump mode until jump_key released
                 @jump_once = true
                 if not @move_action? 
@@ -171,11 +174,12 @@ class Player extends Bot
                                     action = @getActionWithId Action.JUMP_FORWARD
                                 else 
                                     action = @getActionWithId Action.JUMP
+                                world.playSound 'BOT_JUMP'
                                 action.takeOver @move_action                                
                                 Timer.removeAction @move_action
                                 @move_action = action
                                 @jump_once = false
-                                Timer.addAction @move_action 
+                                Timer.addAction @move_action
                     else if @move_action.id in [Action.JUMP, Action.JUMP_FORWARD]
                         @jump_once = false
                 return true

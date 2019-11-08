@@ -69,7 +69,7 @@ class MotorCylinder extends Pushable #Item
     
     finishAction: (action) ->
         if action.id == Action.TUCKER
-            world.playSound 'MOTOR', @getPos()
+            world.playSound 'MOTOR' @getPos()
             return
         super action
         if action.id in [Action.PUSH, Action.FALL]

@@ -29,7 +29,7 @@ class Menu extends ScreenText
         @addText text
       
     show: -> 
-        world.playSound 'MENU_FADE'
+        world.playSound 'ATOM_DIGEST' #'MENU_FADE'
         @setCurrent @current
         super
         

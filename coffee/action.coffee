@@ -81,6 +81,8 @@ class Action
         return if @deleted
         @reset()
 
+    atStart: -> @current == 0
+        
     reset: ->
         # klog "action.reset #{@name}"
         @start   = 0 # world time

@@ -665,7 +665,7 @@ class World extends Actor
         if @levelSelection
             @levelSelection.step()
             return 
-        
+            
         camera = @player?.camera.cam
     
         Timer.triggerActions()
@@ -679,7 +679,6 @@ class World extends Actor
             @renderer.setViewport 0, Math.floor(@screenSize.h*0.72), @screenSize.w, Math.floor(@screenSize.h*0.3)
         
         @renderer.render @text.scene, @text.camera if @text
-        
         @renderer.render @menu.scene, @menu.camera if @menu
 
     stepPlayer: ->
@@ -861,7 +860,8 @@ class World extends Actor
     quit: -> post.toMain 'quitApp'
     showAbout: -> post.toMain 'showAbout'
     showSetup: -> klog 'showSetup'
-    showLevels: => @levelSelection = new LevelSelection @
+    showLevels: =>
+        @levelSelection = new LevelSelection @
                 
     #   000   000   0000000   000      000    
     #   000 0 000  000   000  000      000    

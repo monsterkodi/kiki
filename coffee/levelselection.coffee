@@ -6,7 +6,7 @@
 0000000  00000000      0      00000000  0000000  0000000   00000000  0000000  
 ###
 
-{ clamp, elem, klog } = require 'kxk'
+{ prefs, clamp, elem, klog } = require 'kxk'
 
 LevelSelName = require './levelselname'
 
@@ -31,8 +31,14 @@ class LevelSelection
         @gameWorld.view.appendChild view
         @world = new World view, true
         @world.create @levels[@index]
-        @world.text = new LevelSelName @levels[@index]
+        @addName()
         @resized @gameWorld.screenSize.w, @gameWorld.screenSize.h
+
+    addName: -> 
+        
+        @world.text = new LevelSelName @levels[@index]
+        @world.text.addText ""
+        @world.text.addText "#{prefs.get("solved▸#{@levels[@index]}" false) and 'solved' or @index+1}" 0.8
         
     navigate: (action) ->
         
@@ -51,7 +57,7 @@ class LevelSelection
         if oldIndex != @index
             @world.playSound 'MENU_ITEM'
             @world.create @levels[@index]
-            @world.text = new LevelSelName @levels[@index]
+            @addName()
             @resized @gameWorld.screenSize.w, @gameWorld.screenSize.h
         
     del: ->

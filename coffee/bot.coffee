@@ -453,6 +453,7 @@ class Bot extends Pushable
                     if world.isUnoccupiedPos(forwardPos.plus @getUp()) and
                         world.isUnoccupiedPos(forwardPos)  # forward and above forward also empty
                             @move_action = @getActionWithId Action.JUMP_FORWARD
+                            world.playSound 'BOT_JUMP'
                     else # no space to jump forward -> jump up
                         @move_action = @getActionWithId Action.JUMP
         else if @move 

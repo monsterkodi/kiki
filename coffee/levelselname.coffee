@@ -15,7 +15,7 @@ class LevelSelName extends ScreenText
     @: (text) ->
 
         super()
-        @addText text, 2
+        @addText text, 2 if text
         @show()
         
     resized: (w,h) ->

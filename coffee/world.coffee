@@ -27,11 +27,11 @@ TmpObject   = require './tmpobject'
 Pushable    = require './pushable'
 Material    = require './material'
 Scheme      = require './scheme'
-LevelSelection = require './levelselection'
 Quaternion  = require './lib/quaternion'
 Vector      = require './lib/vector'
 Pos         = require './lib/pos'
 now         = require('perf_hooks').performance.now
+LevelSel    = require './levelselection'
 {
 Wall,
 Wire,
@@ -262,8 +262,6 @@ class World extends Actor
     
     restart: => @create @dict
 
-    finish: () -> # TODO: save progress
-
     #  0000000   0000000  000   000  00000000  00     00  00000000
     # 000       000       000   000  000       000   000  000     
     # 0000000   000       000000000  0000000   000000000  0000000 
@@ -335,7 +333,7 @@ class World extends Actor
           
     exitLevel: (action) =>
         
-        @finish()
+        prefs.set "solved▸#{World.levels.list[world.level_index]}" true
         nextLevel = (world.level_index+(_.isNumber(action) and action or 1)) % World.levels.list.length
         world.create World.levels.list[nextLevel]
 
@@ -803,66 +801,22 @@ class World extends Actor
     
         false
     
-    #   000   000  00000000  000      00000000 
-    #   000   000  000       000      000   000
-    #   000000000  0000000   000      00000000 
-    #   000   000  000       000      000      
-    #   000   000  00000000  0000000  000      
-    
-    showHelp: =>
-
-        @text = new ScreenText @dict['help']
-
-    outro: (index=0) ->
-        # well hidden outro :-)
-        outro_text = """
-                    congratulations!\n\nyou rescued\nthe nano world!
-                    
-                    the last dumb mutant bot\nhas been destroyed.\n\nthe maker is functioning again.
-                    kiki will go now\nand see all his new friends.\n\nyou should maybe\ndo the same?
-                    the maker wants to thank you!\n\n(btw.: you thought\nyou didn't see\nkiki's maker in the game?
-                    you are wrong!\nyou saw him\nall the time,\nbecause kiki\nlives inside him!)\n\nthe end
-                    p.s.: the maker of the game\nwants to thank you as well!\n\ni definitely want your feedback:
-                    please send me a mail (monsterkodi@gmx.net)\nwith your experiences,
-                    which levels you liked, etc.\n\nthanks in advance and have a nice day,\n\nyours kodi
-                    """
-        
-        more_text = index < outro_text.length-1
-        less_text = index > 0
-        
-        page_text = outro_text[index]
-        page_text += "\n\n#{index+1}/#{outro_text.length}"
-    
-        page = KikiPageText(page_text, more_text, less_text)
-        page.getEventWithName("hide").addAction(once(display_main_menu))
-        
-        if more_text
-            page.getEventWithName("next").addAction (i=index+1) => @outro i
-        if less_text
-            page.getEventWithName("previous").addAction (i=index-1) => @outro i
-        
     # 00     00  00000000  000   000  000   000
     # 000   000  000       0000  000  000   000
     # 000000000  0000000   000 0 000  000   000
     # 000 0 000  000       000  0000  000   000
     # 000   000  00000000  000   000   0000000 
     
-    showMenu: (self) -> # handles an ESC key event
+    showMenu: (self) ->
 
+        @text?.del()
         @menu = new Menu()
-        @menu.addItem 'load'       @showLevels
+        @menu.addItem 'load'       => @levelSelection = new LevelSel @
         @menu.addItem 'reset'      @restart 
-        @menu.addItem 'help'       @showHelp
-        # @menu.addItem 'setup'      @showSetup       
-        @menu.addItem 'quit'       @quit
+        @menu.addItem 'help'       => @text = new ScreenText @dict['help']
+        @menu.addItem 'quit'       -> post.toMain 'quitApp'
         @menu.show()
     
-    quit: -> post.toMain 'quitApp'
-    showAbout: -> post.toMain 'showAbout'
-    showSetup: -> klog 'showSetup'
-    showLevels: =>
-        @levelSelection = new LevelSelection @
-                
     #   000   000   0000000   000      000    
     #   000 0 000  000   000  000      000    
     #   000000000  000000000  000      000    
@@ -870,6 +824,7 @@ class World extends Actor
     #   00     00  000   000  0000000  0000000
     
     getInsideWallPosWithDelta: (pos, delta) ->
+        
         insidePos = new Vector pos
         for w in [0..5]
             planePos = new Vector -0.5, -0.5, -0.5

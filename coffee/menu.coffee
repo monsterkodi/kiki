@@ -13,11 +13,12 @@ Material   = require './material'
 class Menu extends ScreenText
 
     @: ->
+        
         @current = 0
         @callbacks = []
         @lineHeight = 1.1
         super
-        @getActionWithId(Action.SHOW).duration = 250
+        @getActionWithId(Action.SHOW).duration = 100
         @getActionWithId(Action.HIDE).duration = 200
         
     del: ->
@@ -29,7 +30,7 @@ class Menu extends ScreenText
         @addText text
       
     show: -> 
-        world.playSound 'ATOM_DIGEST' #'MENU_FADE'
+        world.playSound 'GEAR_ON' # 'ATOM_DIGEST' #'MENU_FADE'
         @setCurrent @current
         super
         
@@ -46,6 +47,7 @@ class Menu extends ScreenText
     next: -> 
         world.playSound 'MENU_ITEM'
         @setCurrent @current + 1
+        
     prev: -> 
         world.playSound 'MENU_ITEM'
         @setCurrent @current - 1

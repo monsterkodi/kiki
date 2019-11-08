@@ -9,16 +9,15 @@ class Levels
     @: () ->
         @dict = {}
         @list = [
-            # "test"
             # --- introduction
-            "steps"   # ok
-            "jump"    # ok
-            "move"    # ok
-            "electro" # ok
-            "elevate" # ok
-            "fall"    # ok
-            # # --- easy
-            "blocks"  # ok
+            "steps"   
+            "jump"    
+            "move"    
+            "electro" 
+            "elevate" 
+            "fall"    
+            # --- easy
+            "blocks"  
             "throw" 
             "gold" 
             "escape" 
@@ -26,10 +25,8 @@ class Levels
             "gamma"  
             "cube" 
             "switch"
-            # # "borg" 
             "mini" 
             "bombs" 
-            "sandbox" 
             "energy" 
             "maze" 
             "love" 

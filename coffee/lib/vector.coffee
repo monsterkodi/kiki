@@ -75,6 +75,7 @@ class Vector
     div:   (d) -> new Vector @x/d, @y/d, @z/d, @w/d
     plus:  (v) -> new Vector(v).add @
     minus: (v) -> new Vector(v).neg().add @
+    to:    (v) -> new Vector(@).neg().add v
     neg:       -> new Vector -@x, -@y, -@z, -@w
      
     add: (v) ->

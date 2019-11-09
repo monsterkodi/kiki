@@ -30,6 +30,7 @@ class Pos
     length:    -> Math.sqrt @x*@x + @y*@y + @z*@z
     vector:    -> new Vector @x, @y, @z 
     minus: (p) -> new Pos @x-p.x, @y-p.y, @z-p.z
+    to:    (p) -> new Pos p.x-@x, p.y-@y, p.z-@z
     plus:  (p) -> new Pos @x+p.x, @y+p.y, @z+p.z
     mul:   (f) -> new Pos @x*f, @y*f, @z*f
     div:   (d) -> new Pos Math.floor(@x/d), Math.floor(@y/d), Math.floor(@z/d)

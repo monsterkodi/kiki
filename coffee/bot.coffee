@@ -210,9 +210,6 @@ class Bot extends Pushable
     
         @lastActionDelta = dltTime
                 
-        cosFac = Math.cos Math.PI/2 - Math.PI/2 * relTime
-        sinFac = Math.sin Math.PI/2 * relTime
-        
         switch action.id
             when Action.SHOOT
                 if action.atStart()
@@ -224,20 +221,23 @@ class Bot extends Pushable
     
                 @left_tire_rot  += @dir_sgn * dltTime
                 @right_tire_rot += @dir_sgn * dltTime
-                # log 'r:' relTime
                 @current_position = @position.plus @getDir().mul(relTime)
                 return
             
             when Action.JUMP
-            
+
+                sinFac = Math.sin Math.PI/2 * relTime
                 @current_position = @position.plus @getUp().mul(sinFac)
                 return
                     
             when Action.JUMP_FORWARD
         
+                sinFac = Math.sin Math.PI/2 * relTime
                 @left_tire_rot  += 1 - Math.cos(Math.PI/2 * dltTime)
                 @right_tire_rot += 1 - Math.cos(Math.PI/2 * dltTime)
                 @current_position = @position.plus @getDir().mul(relTime).plus @getUp().mul(sinFac) 
+                # if action.taken
+                    # klog 'taken' relTime, action.taken
                 return
                 
             when Action.FALL_FORWARD

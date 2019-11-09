@@ -92,6 +92,15 @@ class Player extends Bot
                 else                    @look_angle = Math.max @look_angle, (1.0-relTime) * -90.0
             else
                 super action 
+                
+                if @takenOffset
+                    correct = @takenOrig.mul action.getRelativeDelta()
+                    if @takenOffset.length() < correct.length()
+                        delete @takenOffset
+                        delete @takenOrig
+                    else
+                        @takenOffset.sub correct
+                        @current_position.add @takenOffset
     
     #   00000000  000  000   000  000   0000000  000   000
     #   000       000  0000  000  000  000       000   000
@@ -137,7 +146,8 @@ class Player extends Bot
                     @new_dir_sgn = @dir_sgn = (key in ['down' @key.backward]) and -1 or 1 
                     @moveBot() # perform new move action (depending on environment)
                 else
-                    if @move_action.id == Action.JUMP and @move_action.getRelativeTime() < 1 # really 1? not smaller?
+                    @new_dir_sgn = (key in ['down' @key.backward]) and -1 or 1
+                    if @move_action.id == Action.JUMP and @move_action.getRelativeTime() < 1 
                         dir = (key in ['down' @key.backward]) and -1 or 1 
                         if world.isUnoccupiedPos(@position.plus(@getUp()).plus(@getDir(dir))) and
                             world.isUnoccupiedPos(@position.plus(@getDir(dir))) 
@@ -147,7 +157,6 @@ class Player extends Bot
                                 @move_action = action
                                 @dir_sgn = dir # needed?
                                 Timer.addAction @move_action
-                    @new_dir_sgn = (key in ['down' @key.backward]) and -1 or 1
                 return true
         
             when 'left' 'right' @key.left, @key.right
@@ -167,7 +176,7 @@ class Player extends Bot
                 else
                     # klog 'jump:moving'
                     if @move_action.id == Action.FORWARD and @move_action.getRelativeTime() < 0.6 or 
-                        @move_action.id == Action.CLIMB_DOWN and @move_action.getRelativeTime() < 0.4
+                        @move_action.id == Action.CLIMB_DOWN and @move_action.getRelativeTime() < 0.2
                             # abort current move and jump instead
                             # klog 'jump:move or climb down'
                             if world.isUnoccupiedPos @position.plus @getUp()
@@ -177,8 +186,8 @@ class Player extends Bot
                                     world.playSound 'BOT_JUMP'
                                 else 
                                     action = @getActionWithId Action.JUMP
-                                world.playSound 'BOT_JUMP'
-                                action.takeOver @move_action                                
+                                # world.playSound 'BOT_JUMP'
+                                action.takeOver @move_action
                                 Timer.removeAction @move_action
                                 @move_action = action
                                 @jump_once = false

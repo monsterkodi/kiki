@@ -1,7 +1,7 @@
 {
   "name": "kiki",
   "main": "js/main.js",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "scripts": {
     "kiki": "./node_modules/.bin/electron .",
     "watch": "./node_modules/.bin/electron . -wD",
@@ -25,14 +25,14 @@
     "url": "https://github.com/monsterkodi/kiki/issues"
   },
   "devDependencies": {
-    "konrad": "^0.161.0",
-    "electron": "^7.0.1",
+    "konrad": "^0.166.0",
+    "electron": "^7.1.1",
     "electron-packager": "^14.1.0",
     "electron-rebuild": "^1.8.6"
   },
   "dependencies": {
     "howler": "^2.1.2",
-    "kxk": "^0.355.0",
+    "kxk": "^0.357.0",
     "three": "0.87.0"
   }
 }

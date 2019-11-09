@@ -6,6 +6,9 @@
 
 { _ } = require 'kxk'
 
+Quaternion = require './lib/quaternion'
+Vector     = require './lib/vector'
+
 class Action
     
     @NOOP         = 0
@@ -40,6 +43,7 @@ class Action
     @TIMED      = 3
 
     @: (o, i, n, d, m) ->
+        
         if _.isPlainObject o 
             i = o.id ? -1
             n = o.name
@@ -50,7 +54,7 @@ class Action
             i ?= -1
             d ?= 0
             m ?= (d and Action.TIMED or Action.ONCE)
-        # klog "Action.constructor #{i} #{n} #{d} #{m}"
+
         @object     = o
         @name       = n
         @id         = i
@@ -85,20 +89,41 @@ class Action
         
     reset: ->
         # klog "action.reset #{@name}"
-        @start   = 0 # world time
-        @rest    = 0 
-        @last    = 0 # relative (ms since @start)
-        @current = 0 # relative (ms since @start)
+        @start    = 0 # world time
+        @rest     = 0 
+        @last     = 0 # relative (ms since @start)
+        @current  = 0 # relative (ms since @start)
 
     takeOver: (action) ->
-        # klog "takeOver #{action.rest} from #{action.name} this: #{@name}"
-        @current = action.current
-        @start   = action.start
-        @last    = action.last
-        @rest    = action.rest
+
+        @current  = action.current
+        @start    = action.start
+        @last     = action.last
+        @rest     = action.rest
+
+        relOther  = action.getRelativeTime()
+        relTime   = @getRelativeTime()
+        
+        switch action.id
+            when Action.FORWARD
+                oldPos = @object.position.plus @object.getDir().mul relOther
+            when Action.CLIMB_DOWN
+                oldPos = @object.position.plus @object.getDir().mul (relOther/0.2)/2
+            when Action.JUMP
+                oldPos = @object.position.plus @object.getUp().mul Math.sin Math.PI/2 * relOther
+                
+        sinFac = Math.sin Math.PI/2 * relTime
+        switch @id
+            when Action.JUMP
+                newPos = @object.position.plus @object.getUp().mul sinFac
+            when Action.JUMP_FORWARD
+                newPos = @object.position.plus @object.getDir(@object.new_dir_sgn).mul(relTime).plus @object.getUp().mul sinFac 
+                
+        @object.takenOffset = newPos.to oldPos
+        @object.takenOrig   = newPos.to oldPos
 
     getRelativeDelta: -> (@current-@last) / @getDuration()
-    getDuration:      -> world.mapMsTime @duration 
+    getDuration:      -> world.mapMsTime @duration
     getRelativeTime:  -> 
     
         s = 1/(16+@getDuration())

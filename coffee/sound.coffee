@@ -10,7 +10,7 @@ Howl   = Howler.Howl
 
 class Sound
     
-    @master = 0.1
+    @master = 1
     @listen = null
     @sounds = Object.create null
     @files = 

@@ -25,8 +25,6 @@ class Bot extends Pushable
         @climb_orientation   = new Quaternion
         @rest_orientation    = new Quaternion
         
-        @lastActionDelta = 0.0
-            
         @left_tire_rot   = 0.0
         @right_tire_rot  = 0.0
             
@@ -206,10 +204,8 @@ class Bot extends Pushable
     performAction: (action) ->
         
         relTime  = action.getRelativeTime()  # ~ @current / @getDuration() 
-        dltTime  = action.getRelativeDelta() # (@current-@last) / @getDuration()
+        rotTime  = (action.current-action.last) / parseInt(10*action.duration/6)
     
-        @lastActionDelta = dltTime
-                
         switch action.id
             when Action.SHOOT
                 if action.atStart()
@@ -219,8 +215,8 @@ class Bot extends Pushable
             
             when Action.FORWARD
     
-                @left_tire_rot  += @dir_sgn * dltTime
-                @right_tire_rot += @dir_sgn * dltTime
+                @left_tire_rot  += @dir_sgn * rotTime
+                @right_tire_rot += @dir_sgn * rotTime
                 @current_position = @position.plus @getDir().mul(relTime)
                 return
             
@@ -233,8 +229,8 @@ class Bot extends Pushable
             when Action.JUMP_FORWARD
         
                 sinFac = Math.sin Math.PI/2 * relTime
-                @left_tire_rot  += 1 - Math.cos(Math.PI/2 * dltTime)
-                @right_tire_rot += 1 - Math.cos(Math.PI/2 * dltTime)
+                @left_tire_rot  += 1 - Math.cos(Math.PI/2 * rotTime)
+                @right_tire_rot += 1 - Math.cos(Math.PI/2 * rotTime)
                 @current_position = @position.plus @getDir().mul(relTime).plus @getUp().mul(sinFac) 
                 return
                 
@@ -254,15 +250,15 @@ class Bot extends Pushable
         
             when Action.CLIMB_UP
         
-                @left_tire_rot  += @dir_sgn * dltTime/2
-                @right_tire_rot += @dir_sgn * dltTime/2
+                @left_tire_rot  += @dir_sgn * rotTime/2
+                @right_tire_rot += @dir_sgn * rotTime/2
                 @climb_orientation = Quaternion.rotationAroundVector @dir_sgn * relTime * -90.0, Vector.unitX
                 break
             
             when Action.CLIMB_DOWN
         
-                @left_tire_rot  += @dir_sgn * dltTime
-                @right_tire_rot += @dir_sgn * dltTime
+                @left_tire_rot  += @dir_sgn * rotTime
+                @right_tire_rot += @dir_sgn * rotTime
                 if relTime <= 0.2
                     @current_position = @position.plus @getDir().mul (relTime/0.2)/2
                 else if (relTime >= 0.8)
@@ -286,12 +282,12 @@ class Bot extends Pushable
                         @rest_orientation = Quaternion.rotationAroundVector 90.0, Vector.unitY
     
                 if action.id == Action.TURN_LEFT
-                    @left_tire_rot  += -dltTime
-                    @right_tire_rot +=  dltTime
+                    @left_tire_rot  += -rotTime
+                    @right_tire_rot +=  rotTime
                     @rotate_orientation = Quaternion.rotationAroundVector relTime * 90.0, Vector.unitY 
                 else
-                    @left_tire_rot  +=  dltTime
-                    @right_tire_rot += -dltTime
+                    @left_tire_rot  +=  rotTime
+                    @right_tire_rot += -rotTime
                     @rotate_orientation = Quaternion.rotationAroundVector relTime * -90.0, Vector.unitY 
                 break
             

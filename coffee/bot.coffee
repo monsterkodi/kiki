@@ -114,7 +114,7 @@ class Bot extends Pushable
 
     getDown: -> @orientation.rotate Vector.minusY
     getUp:   -> @orientation.rotate Vector.unitY
-    getDir:  -> @orientation.rotate new Vector 0,0,@dir_sgn
+    getDir: (dir=@dir_sgn) -> @orientation.rotate new Vector 0,0,dir
   
     currentPos:  -> @current_position.clone()
     currentDir:  -> @current_orientation.rotate(Vector.unitZ).normal()
@@ -383,11 +383,11 @@ class Bot extends Pushable
                     @move_action = @getActionWithId Action.FALL_FORWARD
                 else
                     @move_action = @getActionWithId Action.FORWARD
-                    world.playSound 'BOT_LAND', @getPos(), 0.25 
+                    world.playSound 'BOT_LAND' @getPos(), 0.25 
             else # forward will not be empty
                 if world.isUnoccupiedPos @position.minus @getUp()  # below is empty
                     @move_action = @getActionWithId Action.CLIMB_UP
-                    world.playSound 'BOT_LAND', @getPos(), 0.5
+                    world.playSound 'BOT_LAND' @getPos(), 0.5
         else if world.isUnoccupiedPos @position.plus @getDown()  # below will be empty
             # klog 'bot.actionFinished below empty', world.isUnoccupiedPos(@position.plus @getDown()), @position.plus @getDown()
             if @move # sticky if moving
@@ -416,11 +416,13 @@ class Bot extends Pushable
             Timer.addAction @move_action
             return
         
-        return if @rotate_action? 
+        return if @rotate_action?
         
-        @fixOrientationAndPosition()
+        @setPosition @current_position.round()
+        @setOrientation @current_orientation.round()
 
         if @move or @jump or @jump_once
+            # klog 'moveBot' (@jump and 'jump' or ''), (@jump_once and 'once' or '')
             @moveBot()
         else
             @dir_sgn = 1
@@ -429,13 +431,9 @@ class Bot extends Pushable
             # klog "bot.actionFinished '#{action.name}' orientation:", @orientation.rounded().name if action.id in [Action.TURN_LEFT, Action.TURN_RIGHT, Action.CLIMB_UP]
             
             if world.getRealOccupantAtPos(@position.plus @getDown())?.isMutant?()
-                # keep action chain flowinwg in order to detect environment changes
+                # keep action chain flowing in order to detect environment changes
                 klog 'bot.actionFinished mutant below: startTimedAction NOOP'
                 @startTimedAction @getActionWithId(Action.NOOP), 0
-
-    fixOrientationAndPosition: ->
-        @setPosition @current_position.round()
-        @setOrientation @current_orientation.round()
 
     # 00     00   0000000   000   000  00000000
     # 000   000  000   000  000   000  000     
@@ -448,14 +446,14 @@ class Bot extends Pushable
         @move_action = null
         forwardPos = @position.plus @getDir()
         if @move and (@jump or @jump_once) and    # jump mode or jump activated while moving
-            @dir_sgn == 1.0 and                     # and moving forward
-                world.isUnoccupiedPos(@position.plus @getUp())  # and above empty
-                    if world.isUnoccupiedPos(forwardPos.plus @getUp()) and
-                        world.isUnoccupiedPos(forwardPos)  # forward and above forward also empty
-                            @move_action = @getActionWithId Action.JUMP_FORWARD
-                            world.playSound 'BOT_JUMP'
-                    else # no space to jump forward -> jump up
-                        @move_action = @getActionWithId Action.JUMP
+            # @dir_sgn == 1.0 and                     # and moving forward
+            world.isUnoccupiedPos(@position.plus @getUp())  # and above empty
+                if world.isUnoccupiedPos(forwardPos.plus @getUp()) and
+                    world.isUnoccupiedPos(forwardPos)  # forward and above forward also empty
+                        @move_action = @getActionWithId Action.JUMP_FORWARD
+                        world.playSound 'BOT_JUMP'
+                else # no space to jump forward -> jump up
+                    @move_action = @getActionWithId Action.JUMP
         else if @move 
             if world.isUnoccupiedPos forwardPos  # forward is empty
                 if world.isUnoccupiedPos forwardPos.plus @getDown()  

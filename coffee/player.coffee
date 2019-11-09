@@ -137,14 +137,15 @@ class Player extends Bot
                     @new_dir_sgn = @dir_sgn = (key in ['down' @key.backward]) and -1 or 1 
                     @moveBot() # perform new move action (depending on environment)
                 else
-                    if @move_action.id == Action.JUMP and @move_action.getRelativeTime() < 1                        
-                        if world.isUnoccupiedPos(@position.plus(@getUp()).plus(@getDir())) and
-                            world.isUnoccupiedPos(@position.plus(@getDir())) # forward and above forward also empty
+                    if @move_action.id == Action.JUMP and @move_action.getRelativeTime() < 1 # really 1? not smaller?
+                        dir = (key in ['down' @key.backward]) and -1 or 1 
+                        if world.isUnoccupiedPos(@position.plus(@getUp()).plus(@getDir(dir))) and
+                            world.isUnoccupiedPos(@position.plus(@getDir(dir))) 
                                 action = @getActionWithId Action.JUMP_FORWARD
-                                # world.playSound 'BOT_JUMP'
                                 action.takeOver @move_action                                
                                 Timer.removeAction @move_action
                                 @move_action = action
+                                @dir_sgn = dir # needed?
                                 Timer.addAction @move_action
                     @new_dir_sgn = (key in ['down' @key.backward]) and -1 or 1
                 return true

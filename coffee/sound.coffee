@@ -10,6 +10,7 @@ Howl   = Howler.Howl
 
 class Sound
     
+    @master = 0.1
     @listen = null
     @sounds = Object.create null
     @files = 
@@ -79,7 +80,7 @@ class Sound
         # pos ?= world.player?.current_position 
         # klog "play #{sound}" @sounds[sound].playing(id) # pos
         id = @sounds[sound].play()
-        @sounds[sound].volume @files[sound].volume * distanceFactor
+        @sounds[sound].volume @master * @files[sound].volume * distanceFactor
         # @sounds[sound].pos pos.x, pos.y, pos.z, id if pos?
         
 module.exports = Sound

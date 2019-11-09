@@ -65,27 +65,19 @@ class Wire extends Item
         @mesh.quaternion.copy Face.orientation @face
         
     updateActive: ->
+        
         for wire in @neighborWires()
             @setActive true if wire.active
     
     setActive: (active) ->
+        
         if @active != active
             @active = active
             neighbors = @neighborWires()
-            # klog "wire active:#{active} face:#{@face} neighbors:#{neighbors.length} pos:", @getPos()
+
             for wire in neighbors
                 wire.setActive @active
-                
-            # active_neighbor = false
-            # if @active
-                # for wire in neighbors
-                    # if wire.active
-                        # active_neighbor = true
-                        # break
-#              
-            # for wire in wires
-                # wire.setActive active
-    
+                    
             gate = world.getObjectOfTypeAtPos Gate, @getPos()
             gate?.setActive @active
             
@@ -104,9 +96,10 @@ class Wire extends Item
             @events[@SWITCHED_EVENT].triggerActions()
     
     neighborWires: ->
+        
         wires = []
         points = @connectionPoints()
-        # klog 'points', points
+
         neighbor_dirs = []
          
         rot = Face.orientationForFace @face

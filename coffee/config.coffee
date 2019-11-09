@@ -29,11 +29,17 @@ class Config extends Menu
         speed = clamp 1 5 speed
         prefs.set 'speed' speed
         global.world.speed = 6 + (prefs.get 'speed' 3) - 3 # 4-8
-    
+
+    onFPS: (d=1) =>
+        fps = prefs.get('fps' 60) == 60 and 30 or 60
+        prefs.set 'fps' fps
+        global.world.fps = fps
+        
     addItems: ->
         
         @addItem "volume #{prefs.get 'volume' 3}" @onVolume
         @addItem "speed #{prefs.get 'speed' 3}"  @onSpeed
+        @addItem "fps #{prefs.get 'fps' 60}"  @onFPS
         
     update: ->
         
@@ -50,17 +56,15 @@ class Config extends Menu
         switch key
             
             when 'right'
-                if @current in [0, 1]
-                    @callbacks[@current]()
-                    world.playSound 'MENU_SELECT'
-                    @update()
+                @callbacks[@current]()
+                world.playSound 'MENU_SELECT'
+                @update()
                 return
                     
             when 'left'
-                if @current in [0, 1]
-                    @callbacks[@current] -1
-                    world.playSound 'MENU_SELECT'
-                    @update()
+                @callbacks[@current] -1
+                world.playSound 'MENU_SELECT'
+                @update()
                 return
                     
             when 'enter'

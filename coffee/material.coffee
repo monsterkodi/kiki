@@ -8,8 +8,8 @@
 module.exports =
 
     glow: new THREE.SpriteMaterial 
-        map: new THREE.TextureLoader().load "#{__dirname}/../img/glow.png"
-        color: 0xffff00
+        map:            new THREE.TextureLoader().load "#{__dirname}/../img/glow.png"
+        blending:       THREE.AdditiveBlending
 
     bulb: new THREE.MeshLambertMaterial 
         side:           THREE.FrontSide

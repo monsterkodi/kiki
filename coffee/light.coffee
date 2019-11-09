@@ -24,7 +24,6 @@ class Light extends Item
         @point.shadow.mapSize = new THREE.Vector2 2048, 2048
         @point.shadow.bias = 0.01
         geom   = new THREE.SphereGeometry 0.3, 16, 16
-        # world.scene.add new THREE.CameraHelper @point.shadow.camera if @shadow
         @point.shadow.camera.near = 0.1
         @point.shadow.camera.far = @radius*2
             

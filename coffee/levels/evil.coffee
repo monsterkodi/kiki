@@ -71,6 +71,5 @@ module.exports =
         world.addObjectAtPos 'Bomb', world.decenter  1, 0,-2
         world.addObjectAtPos 'Bomb', world.decenter -1, 0,-2
              
-        # world.removeObject world.getOccupantAtPos world.decenter 0, 0, 3
         world.addObjectAtPos 'WireStone', world.decenter 0,0,3
         

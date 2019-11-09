@@ -457,8 +457,11 @@ class World extends Actor
             occupant.object
         else
             occupant
+    
     switchAtPos: (pos) -> @getObjectOfTypeAtPos Switch, pos
+    
     setObjectAtPos: (object, pos) ->
+        
         pos = new Pos pos
         if @isInvalidPos pos
             kerror "World.setObjectAtPos [WARNING] invalid pos:", pos
@@ -478,6 +481,8 @@ class World extends Actor
             cellIndex = @posToIndex(pos)
             cell = new Cell()
             @cells[cellIndex] = cell
+        else
+            klog 'cell?'
         
         object.setPosition pos
         cell.addObject object
@@ -488,8 +493,8 @@ class World extends Actor
             cell.removeObject object
             if cell.isEmpty()
                 @cells[@posToIndex(pos)] = null
-        # else 
-            # klog 'world.unsetObject [WARNING] no cell at pos:', pos
+        else 
+            klog 'world.unsetObject [WARNING] no cell at pos:', pos
 
     newObject: (object) ->
         if _.isString object
@@ -513,12 +518,12 @@ class World extends Actor
         _.pull @lights, object
         _.pull @objects, object
     
-    moveObjectToPos: (object, pos) ->
-        return false if @isInvalidPos(pos) or @isOccupiedPos(pos)
-        @unsetObject    object
-        @setObjectAtPos object, pos
-        world.playSound 'BOT_LAND'
-        true
+    # moveObjectToPos: (object, pos) ->
+        # return false if @isInvalidPos(pos) or @isOccupiedPos(pos)
+        # @unsetObject    object
+        # @setObjectAtPos object, pos
+        # world.playSound 'BOT_LAND'
+        # true
         
     toggle: (objectName) ->
         object = @getObjectWithName objectName 
@@ -602,27 +607,24 @@ class World extends Actor
         if object.name != 'player'
             @unsetObject object # remove object from cell grid
             
-            # klog 'world.objectWillMoveToPos tmpObject at old pos', sourcePos
             tmpObject = new TmpObject object  # insert tmp object at old pos
             tmpObject.setPosition sourcePos
             tmpObject.time = -duration
             @addObjectAtPos tmpObject, sourcePos 
 
-            # klog 'world.objectWillMoveToPos tmpObject at new pos', targetPos
             tmpObject = new TmpObject object  # insert tmp object at new pos
             tmpObject.setPosition targetPos 
             tmpObject.time = duration
             @addObjectAtPos tmpObject, targetPos 
 
     objectMoved: (movedObject, from, to) ->
+        
         sourcePos = new Pos from
         targetPos = new Pos to
 
         if @isInvalidPos targetPos
-             kerror "World.objectMoved [WARNING] #{movedObject.name} invalid targetPos:", targetPos
+             kerror "World.objectMoved [WARNING] #{movedObject.name} invalid targetPos:" targetPos
              return
-        
-        # klog "world.objectMoved #{movedObject.name}", sourcePos
         
         sourceCell = @getCellAtPos sourcePos
         targetCell = @getCellAtPos targetPos
@@ -634,18 +636,22 @@ class World extends Actor
             tmpObject.del() if tmpObject.object == movedObject
             
         if @isOccupiedPos targetPos
-            kerror "World.objectMoved [WARNING] #{movedObject.name} occupied target pos:", targetPos
+            kerror "World.objectMoved [WARNING] #{movedObject.name} occupied target pos:" targetPos
             
         if sourceCell?
             sourceCell.removeObject movedObject
             if sourceCell.isEmpty()
                 @cells[@posToIndex(sourcePos)] = null
+        else
+            klog 'no sourceCell?'
         
         targetCell = @getCellAtPos targetPos    
         if not targetCell?
             cellIndex = @posToIndex targetPos 
             targetCell = new Cell()
             @cells[cellIndex] = targetCell
+        else
+            klog 'targetCell?'
 
         if targetCell?
             targetCell.addObject movedObject

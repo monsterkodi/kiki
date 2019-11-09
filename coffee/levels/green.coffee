@@ -29,7 +29,7 @@ module.exports =
         position:     [0,0,4]
     ]
     create: ->
-# 
+
         [sx, sy, sz] = [13,5,13]
         { MotorGear, MotorCylinder, Generator} = require '../items'
                     

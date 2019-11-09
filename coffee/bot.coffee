@@ -16,7 +16,7 @@ Material   = require './material'
 
 class Bot extends Pushable
         
-    @: () ->
+    @: ->
                 
         @direction           = new Vector
         @orientation         = new Quaternion
@@ -64,34 +64,34 @@ class Bot extends Pushable
     createMesh: ->
         
         tireRadius = 0.05
-        nose = new THREE.ConeGeometry 0.404, 0.5, 32, 16, true
-        geom = new THREE.SphereGeometry 0.5, 32, 32, 16, Math.PI
-        geom = new THREE.SphereGeometry 0.5, 32, 32, 0, 2*Math.PI, 0, 2.2
+        nose = new THREE.ConeGeometry 0.404 0.5 32 16 true
+        geom = new THREE.SphereGeometry 0.5 32 32 16  Math.PI
+        geom = new THREE.SphereGeometry 0.5 32 32 0 2*Math.PI, 0 2.2
         
         nmatr = new THREE.Matrix4()
         trans = new THREE.Vector3 0,-0.543,0
-        rot   = new THREE.Quaternion().setFromEuler new THREE.Euler Vector.DEG2RAD(180), 0, 0
+        rot   = new THREE.Quaternion().setFromEuler new THREE.Euler Vector.DEG2RAD(180), 0 0
         
-        nmatr.compose trans, rot, new THREE.Vector3 1,1,1
+        nmatr.compose trans, rot, new THREE.Vector3 1 1 1
         geom.merge nose, nmatr
         geom.rotateX Vector.DEG2RAD -90
-        geom.scale 0.7, 0.7, 0.7
+        geom.scale 0.7 0.7 0.7
            
         Mutant = require './mutant'         
         mutant = @ instanceof Mutant
         @mesh = new THREE.Mesh geom, mutant and Material.mutant.clone() or Material.player
 
-        geom = new THREE.TorusGeometry 0.5-tireRadius, tireRadius, 16, 32
-        geom.scale 1,1,2.5
+        geom = new THREE.TorusGeometry 0.5-tireRadius, tireRadius, 16 32
+        geom.scale 1 1 2.5
         tireMat = mutant and Material.mutantTire.clone() or Material.tire
         @leftTire = new THREE.Mesh geom, tireMat
-        @leftTire.position.set 0.35,0,0 
+        @leftTire.position.set 0.35 0 0 
         @leftTire.rotation.set 0, Vector.DEG2RAD(90), 0
         @mesh.add @leftTire
 
         @rightTire = new THREE.Mesh geom, tireMat
-        @rightTire.position.set -0.35,0,0 
-        @rightTire.rotation.set 0, Vector.DEG2RAD(-90), 0
+        @rightTire.position.set -0.35 0 0 
+        @rightTire.rotation.set 0 Vector.DEG2RAD(-90), 0
         @mesh.add @rightTire
 
         @mesh.castShadow = @rightTire.castShadow = @leftTire.castShadow = true
@@ -236,8 +236,6 @@ class Bot extends Pushable
                 @left_tire_rot  += 1 - Math.cos(Math.PI/2 * dltTime)
                 @right_tire_rot += 1 - Math.cos(Math.PI/2 * dltTime)
                 @current_position = @position.plus @getDir().mul(relTime).plus @getUp().mul(sinFac) 
-                # if action.taken
-                    # klog 'taken' relTime, action.taken
                 return
                 
             when Action.FALL_FORWARD
@@ -417,18 +415,15 @@ class Bot extends Pushable
             return
         
         return if @rotate_action?
-        
+                
         @setPosition @current_position.round()
         @setOrientation @current_orientation.round()
 
         if @move or @jump or @jump_once
-            # klog 'moveBot' (@jump and 'jump' or ''), (@jump_once and 'once' or '')
             @moveBot()
         else
             @dir_sgn = 1
             @jump_once = false if action.id != Action.NOOP
-            # klog "bot.actionFinished '#{action.name}' position:", @position if action.id in [Action.FORWARD, Action.JUMP_FORWARD, Action.CLIMB_DOWN]
-            # klog "bot.actionFinished '#{action.name}' orientation:", @orientation.rounded().name if action.id in [Action.TURN_LEFT, Action.TURN_RIGHT, Action.CLIMB_UP]
             
             if world.getRealOccupantAtPos(@position.plus @getDown())?.isMutant?()
                 # keep action chain flowing in order to detect environment changes
@@ -442,11 +437,10 @@ class Bot extends Pushable
     # 000   000   0000000       0      00000000
         
     moveBot: () ->
-        # klog 'moveBot' @move, @move_action
+
         @move_action = null
         forwardPos = @position.plus @getDir()
         if @move and (@jump or @jump_once) and    # jump mode or jump activated while moving
-            # @dir_sgn == 1.0 and                     # and moving forward
             world.isUnoccupiedPos(@position.plus @getUp())  # and above empty
                 if world.isUnoccupiedPos(forwardPos.plus @getUp()) and
                     world.isUnoccupiedPos(forwardPos)  # forward and above forward also empty
@@ -489,7 +483,10 @@ class Bot extends Pushable
     # 0000000      000     00000000  000      
         
     step: ->
-        @mesh.position.copy @current_position
+        if @takenOffset
+            @mesh.position.copy @current_position.plus @takenOffset
+        else
+            @mesh.position.copy @current_position
         @mesh.quaternion.copy @current_orientation
         @leftTire.rotation.set Vector.DEG2RAD(180*@left_tire_rot), Vector.DEG2RAD(90), 0
         @rightTire.rotation.set Vector.DEG2RAD(180*@right_tire_rot), Vector.DEG2RAD(-90), 0

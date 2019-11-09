@@ -57,7 +57,7 @@ class ScreenText extends Actor
         
         geom = new THREE.TextGeometry str, 
             font: ScreenText.font
-            size: 1*scaleFactor
+            size: 1
             height: 4
             bevelEnabled: true
             bevelThickness: 0.1
@@ -68,8 +68,9 @@ class ScreenText extends Actor
         min = geom.boundingBox.min
         max = geom.boundingBox.max
         mesh = new THREE.Mesh geom, Material.text.clone()
-        mesh.translateX -(max.x-min.x)/2
+        mesh.translateX -(max.x-min.x)*scaleFactor/2
         mesh.translateY -@height * @lineHeight
+        mesh.scale.set scaleFactor, scaleFactor, scaleFactor
         @mesh.add mesh
         @mesh.position.set 0, @height/2*@lineHeight, 0
         
@@ -107,7 +108,7 @@ class ScreenText extends Actor
             when Action.SHOW
                 @setOpacity 1
             
-    fadeOut: -> 
+    fadeOut: => 
         
         return if @fadingOut
         @fadingOut = true

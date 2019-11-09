@@ -64,7 +64,7 @@ class Bomb extends Pushable
     bulletImpact: ->
         if not @splitted
             @splitted = true 
-            directions = [[1,0,0], [0,1,0], [0,0,1], [-1,0,0], [0,-1,0], [0,0,-1]]
+            directions = [[1 0 0], [0 1 0], [0 0 1], [-1 0 0], [0 -1 0], [0 0 -1]]
             for i in [0...6]
                 @splitterInDirection new Vector directions[i][0], directions[i][1], directions[i][2]
             

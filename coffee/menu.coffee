@@ -26,6 +26,7 @@ class Menu extends ScreenText
         super
         
     addItem: (text, cb) ->
+        
         @callbacks.push cb
         @addText text
       
@@ -68,6 +69,7 @@ class Menu extends ScreenText
                     @callbacks[@current]()
                 else
                     kerror "no menu callback #{@current}"
-                @fadeOut()
+                if world.menu == @
+                    @fadeOut()
 
 module.exports = Menu

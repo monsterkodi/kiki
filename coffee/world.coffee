@@ -22,6 +22,7 @@ Actor       = require './actor'
 Item        = require './item'
 Action      = require './action'
 Menu        = require './menu'
+Config      = require './config'
 ScreenText  = require './screentext'
 TmpObject   = require './tmpobject'
 Pushable    = require './pushable'
@@ -61,7 +62,7 @@ class World extends Actor
              
         global.world = @
         
-        @speed      = 6
+        @speed      = 6 + (prefs.get 'speed' 3) - 3
         
         @rasterSize = 0.05
 
@@ -481,8 +482,6 @@ class World extends Actor
             cellIndex = @posToIndex(pos)
             cell = new Cell()
             @cells[cellIndex] = cell
-        else
-            klog 'cell?'
         
         object.setPosition pos
         cell.addObject object
@@ -509,22 +508,15 @@ class World extends Actor
     addObject: (object) ->
         object = @newObject object
         if object instanceof Light
-            @lights.push object # if lights.indexOf(object) < 0
+            @lights.push object
         else
-            @objects.push object # if objects.indexOf(object) < 0 
+            @objects.push object
 
     removeObject: (object) ->
         @unsetObject object
         _.pull @lights, object
         _.pull @objects, object
     
-    # moveObjectToPos: (object, pos) ->
-        # return false if @isInvalidPos(pos) or @isOccupiedPos(pos)
-        # @unsetObject    object
-        # @setObjectAtPos object, pos
-        # world.playSound 'BOT_LAND'
-        # true
-        
     toggle: (objectName) ->
         object = @getObjectWithName objectName 
         object.getActionWithName("toggle").perform()
@@ -581,8 +573,6 @@ class World extends Actor
         
         sourcePos = object.getPos()
         targetPos = new Pos pos
-        
-        # klog "world.objectWillMoveToPos #{object.name} #{duration}", targetPos
         
         if @isInvalidPos targetPos
             kerror "world.objectWillMoveToPos [WARNING] #{object.name} invalid targetPos:", targetPos
@@ -775,11 +765,10 @@ class World extends Actor
         if @isInvalidPos pos
             return true
         if @getOccupantAtPos pos
-            # klog "isOccupiedPos occupant: #{@getOccupantAtPos(pos).name} at pos:", new Pos pos
             return true
     
     mayObjectPushToPos: (object, pos, duration) ->
-        # klog "world.mayObjectPushToPos object:#{object.name} duration:#{duration}", pos
+
         # returns true, if a pushable object is at pos and may be pushed
         return false if @isInvalidPos pos
         
@@ -799,9 +788,8 @@ class World extends Actor
             else return false
     
         pushableObject = @getOccupantAtPos pos
-        # klog "pushableObject #{pushableObject?.name}"
-        if pushableObject? and pushableObject instanceof Pushable #and
-                                # pushableObject instanceof MotorGear # bad
+
+        if pushableObject? and pushableObject instanceof Pushable
             pushableObject.pushedByObjectInDirection object, direction, duration
             return true
     
@@ -817,10 +805,11 @@ class World extends Actor
 
         @text?.del()
         @menu = new Menu()
-        @menu.addItem 'load'       => @levelSelection = new LevelSel @
-        @menu.addItem 'reset'      @restart 
-        @menu.addItem 'help'       => @text = new ScreenText @dict['help']
-        @menu.addItem 'quit'       -> post.toMain 'quitApp'
+        @menu.addItem 'load'   => @levelSelection = new LevelSel @
+        @menu.addItem 'reset'  @restart 
+        @menu.addItem 'config' => @menu = new Config
+        @menu.addItem 'help'   => @text = new ScreenText @dict['help']
+        @menu.addItem 'quit'   -> post.toMain 'quitApp'
         @menu.show()
     
     #   000   000   0000000   000      000    
@@ -884,11 +873,9 @@ class World extends Actor
         return if @player?.modKeyComboEventDown mod, key, combo, event
         switch combo
             when 'esc' then @showMenu()
-            when '=' then @speed = Math.min 10, @speed+1
-            when '-' then @speed = Math.max 1,  @speed-1
+            when '=' then @speed = Math.min 8, @speed+1; prefs.set 'speed' @speed-3
+            when '-' then @speed = Math.max 4, @speed-1; prefs.set 'speed' @speed-3
             when 'r' then @restart()
-            when 'n' then @exitLevel()
-            when 'm' then @exitLevel 5
 
     modKeyComboEventUp: (mod, key, combo, event) ->
         

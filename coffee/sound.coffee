@@ -4,7 +4,7 @@
 #      000  000   000  000   000  000  0000  000   000
 # 0000000    0000000    0000000   000   000  0000000  
 
-{ prefs, clamp, klog, _ } = require 'kxk'
+{ prefs, clamp, _ } = require 'kxk'
 Howler = require 'howler'
 Howl   = Howler.Howl
 
@@ -49,7 +49,6 @@ class Sound
         return if _.size @sounds
         
         @master = (prefs.get 'volume' 3) / 5
-        klog 'master' @master, prefs.get 'volume' 3
         
         for k,v of @files
             @sounds[k] = new Howl 

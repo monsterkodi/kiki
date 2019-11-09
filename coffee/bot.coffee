@@ -192,7 +192,6 @@ class Bot extends Pushable
                 return
     
         if not newPos.eql new Pos @position
-            # klog 'bot.initAction objectWillMoveToPos:', newPos
             world.objectWillMoveToPos @, newPos, action.getDuration()
     
     # 00000000   00000000  00000000   00000000   0000000   00000000   00     00

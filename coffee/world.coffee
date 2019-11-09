@@ -640,8 +640,6 @@ class World extends Actor
             cellIndex = @posToIndex targetPos 
             targetCell = new Cell()
             @cells[cellIndex] = targetCell
-        else
-            klog 'targetCell?'
 
         if targetCell?
             targetCell.addObject movedObject

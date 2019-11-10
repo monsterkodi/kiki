@@ -1,11 +1,11 @@
 ![kiki](img/kiki.png)
 
 ![kiki](img/kiki-blue.png)
-![kiki](img/shot05.png)
-![kiki](img/shot06.png)
-![kiki](img/shot11.png)
-![kiki](img/shot12.png)
-![kiki](img/shot09.png)
+![kiki](img/kiki08.png)
+![kiki](img/kiki23.png)
+![kiki](img/kiki32.png)
+![kiki](img/kiki34.png)
+![kiki](img/kiki41.png)
 ![kiki](img/kiki-love.png)
 
 ### to try it out

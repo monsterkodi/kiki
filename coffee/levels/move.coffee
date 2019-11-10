@@ -13,8 +13,11 @@ module.exports =
                 shoot the switch
                 to activate the exit.
                     
-                "shift+w" to move the stone.
-                "return" to shoot.
+                hold [shift] or [ctrl] and 
+                press [w] or [up] 
+                to move the stone.
+                
+                [return] or [f] to shoot.
                 """
     player:   
         coordinates:     [3,3,2]

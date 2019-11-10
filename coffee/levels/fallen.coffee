@@ -13,6 +13,7 @@ module.exports =
     help:       """
                 to get to the exit,
                 jump and fall off the stones.
+                
                 try to jump so that you
                 land on other stones.
                 """
@@ -56,5 +57,4 @@ module.exports =
         world.addObjectAtPos('Stone', s.x/2-4, s.y/2+1, s.z/2-2)
         world.addObjectAtPos('Stone', s.x/2-4, s.y/2+1, s.z/2-1)
         
-        world.addObjectAtPos('Stone', 0, 0, 0)
         

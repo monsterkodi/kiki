@@ -34,11 +34,12 @@ class Switch extends Item
     
         @setActive active
 
-    del: () ->
+    del: ->
         super
         @light?.del()
 
-    createMesh: () ->
+    createMesh: ->
+        
         torusRadius = 0.05
         t1 = new THREE.TorusBufferGeometry 0.5-torusRadius, torusRadius, 16, 32
         @mesh = new THREE.Mesh t1, Material.switch
@@ -55,8 +56,10 @@ class Switch extends Item
         
     bulletImpact: -> @setActive not @active
         
-    lightDeleted: () -> @light = null
+    lightDeleted: -> @light = null
+    
     createLight: -> 
+        
         @light = new Light 
             pos:    @position
             radius: 6.0
@@ -64,6 +67,7 @@ class Switch extends Item
     toggle: -> @setActive not @active
     
     setActive: (status) ->
+        
         if @active != status
             @active = status
             
@@ -73,7 +77,7 @@ class Switch extends Item
                 world.playSound @sound_on
                 @events[@SWITCH_ON_EVENT].triggerActions()
                 @createLight()
-                @light.on 'deleted', @lightDeleted
+                @light.on 'deleted' @lightDeleted
             else
                 @stopAction @getActionWithId Action.ROTATE
                 
@@ -87,10 +91,12 @@ class Switch extends Item
             @events[@SWITCHED_EVENT].triggerActions()
     
     setPosition: (pos) ->
+        
         super pos
         @light?.setPosition @position
     
     animate: (f) ->
+        
         @angle += f * 360
         @mesh.quaternion.copy Quaternion.rotationAroundVector @angle, Vector.unitY
         @tors.quaternion.copy Quaternion.rotationAroundVector @angle/2, Vector.unitZ

@@ -23,9 +23,9 @@ class ScreenText extends Actor
         
         @font = new THREE.Font require 'three/examples/fonts/helvetiker_bold.typeface.json'
         
-        for c in "abcdefghijklmnopqrstuvwxyz0123456789.,[]()<>'\"!?:"
+        for c in "abcdefghijklmnopqrstuvwxyz0123456789.,-+:'?/\\[]()<>!"
 
-            geom = new THREE.TextGeometry c, 
+            geom = new THREE.TextGeometry "#{c}", 
                 font: ScreenText.font
                 size: 1
                 height: 4
@@ -51,9 +51,12 @@ class ScreenText extends Actor
                 
         @scene = new THREE.Scene()
         @lineHeight = 1.3 if not @lineHeight?
-        @sun = new THREE.PointLight 0xffffff
-        @sun.position.set -1 1 10
-        @scene.add @sun
+                
+        @sun1 = new THREE.PointLight 0xffffff
+        @scene.add @sun1
+
+        @sun2 = new THREE.PointLight 0xffffff
+        @scene.add @sun2
         
         @height = 0
         @width = 0
@@ -61,7 +64,7 @@ class ScreenText extends Actor
         @mesh = new THREE.Object3D
         @scene.add @mesh
         aspect = world.screenSize.w/world.screenSize.h
-        @camera = new THREE.PerspectiveCamera 20, aspect, 0.1, 100
+        @camera = new THREE.PerspectiveCamera 20, aspect, 1, 1000
         if @text?
             for l in @text.split '\n'
                 @addText l, 1, material
@@ -70,7 +73,8 @@ class ScreenText extends Actor
     del: ->
         
         @scene.remove @mesh
-        @scene.remove @sun
+        @scene.remove @sun1
+        @scene.remove @sun2
         Timer.removeActionsOfObject @
         if world.text == @
             world.text = null 
@@ -110,8 +114,9 @@ class ScreenText extends Actor
 
         @cameraOffset = Math.max @cameraOffset, z
         @camera.position.copy new Vector 0 0 @cameraOffset
-        @sun.position.set -@cameraOffset/5 @cameraOffset/5 @cameraOffset
-        @camera.lookAt new Vector 0 0 0
+        @sun1.position.set -@cameraOffset/5 @cameraOffset/5 @cameraOffset
+        @sun2.position.set  @cameraOffset/5 @cameraOffset/5 @cameraOffset
+        @camera.lookAt new THREE.Vector3 0 0 0
         @height += 1
 
     setOpacity: (o) ->

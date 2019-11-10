@@ -29,6 +29,7 @@ class Camera extends Matrix
         super
         
         @cam = new THREE.PerspectiveCamera @fov, @aspect, @near, @far
+        
         @cam.position.z = @dist
                 
     step: ->
@@ -41,7 +42,9 @@ class Camera extends Matrix
         camPos = @getPosition()
         @cam.position.copy camPos
         @cam.up.copy @getYVector()
-        @cam.lookAt camPos.plus @getZVector()
+
+        @lookAt camPos.plus @getZVector()
+
         @cam.updateProjectionMatrix()
 
         if @light?
@@ -51,12 +54,16 @@ class Camera extends Matrix
     
     getLookAtPosition: -> @getZVector().mul(-@eye_distance).plus @getPosition()
     
-    setOrientation: (o) -> 
+    setOrientation: (o) ->
+                
         @setYVector o.rotate Vector.unitY
         @setZVector o.rotate Vector.unitZ
         @setXVector o.rotate Vector.minusX
         @cam.up.copy @getYVector()
-        @cam.lookAt @getPosition().plus @getZVector()
+        
+        @lookAt @getPosition().plus @getZVector()
+        
+    lookAt: (v) -> @cam.lookAt v.threeVector()
                 
     setFov: (fov) -> @fov = Math.max(2.0, Math.min fov, 175.0)
             
@@ -101,7 +108,7 @@ class Camera extends Matrix
     #   000   000  000       000   000  000  000  0000  000   000
     #   0000000    00000000  000   000  000  000   000  0000000  
     
-    behindProjection: () ->
+    behindProjection: ->
         
         playerPos = @player.currentPos()
         playerDir = @player.currentDir()
@@ -122,8 +129,9 @@ class Camera extends Matrix
             
         # smooth camera movement a little bit
         posDelta = 0.2
+        
         @setPosition @getPosition().mul(1.0 - posDelta).plus camPos.mul posDelta
-                                                                                
+            
         if lookAngle
             # klog "look_angle #{lookAngle}"
             @setXVector playerDir.cross(playerUp).normal() 
@@ -146,7 +154,7 @@ class Camera extends Matrix
     #   000       000   000  000      000      000   000  000   000
     #   000        0000000   0000000  0000000   0000000   00     00
 
-    followProjection: () ->
+    followProjection: ->
         
         camPos = @getPosition()
         desiredDistance = 2.0 # desired distance from camera to bot

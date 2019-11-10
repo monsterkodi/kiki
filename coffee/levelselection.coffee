@@ -20,7 +20,7 @@ class LevelSelection
         
         @index = ((@gameWorld.level_index ? 0) + 1) % @levels.length
         
-        @gameWorld.menu.del()
+        @gameWorld.menu?.del()
 
         view = elem class:'preview'
         view.style.position = 'absolute'
@@ -53,7 +53,7 @@ class LevelSelection
             when 'end'          then @index = @levels.length-1
         
         @index = clamp 0, @levels.length-1, @index
-        # klog @index, @levels[@index]
+
         if oldIndex != @index
             @world.playSound 'MENU_ITEM'
             @world.create @levels[@index]

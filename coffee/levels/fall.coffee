@@ -12,10 +12,11 @@ module.exports =
     help:       """  
                 get to the exit!
                 
-                jump on the stones to reach it
+                jump on the stones to reach it.
                 
-                you can attach to a stone when falling
-                if you move into its direction
+                you can attach 
+                to a stone when falling
+                if you move into its direction.
                 """
     player:   
         coordinates: [3,6,4]

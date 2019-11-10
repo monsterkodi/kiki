@@ -81,6 +81,7 @@ class Bot extends Pushable
 
         geom = new THREE.TorusGeometry 0.5-tireRadius, tireRadius, 16 32
         geom.scale 1 1 2.5
+
         tireMat = mutant and Material.mutantTire.clone() or Material.tire
         @leftTire = new THREE.Mesh geom, tireMat
         @leftTire.position.set 0.35 0 0 
@@ -96,8 +97,10 @@ class Bot extends Pushable
         @mesh.receiveShadow = @leftTire.receiveShadow = @rightTire.receiveShadow = true 
             
     setOpacity: (opacity) -> 
+        
         tireMat = @leftTire.material
         botMat = @mesh.material
+        
         tireMat.visible = opacity > 0
         tireMat.depthWrite = opacity > 0.5
         botMat.depthWrite = opacity > 0.5
@@ -360,7 +363,7 @@ class Bot extends Pushable
         # klog "bot.actionFinished #{action.name} #{action.id}"
             
         if action.id == Action.PUSH and not @direction.isZero()
-            klog 'super (Pushable) action!'
+            # klog 'super (Pushable) action!'
             super action
             return
     

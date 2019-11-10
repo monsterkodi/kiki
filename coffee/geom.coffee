@@ -19,9 +19,9 @@ class Geom
         pi = @quadStrip positions, normals, pi, @wireQuadStrip2
         pi = @triangleList positions, normals, pi, @wireTriangles
         geom = new THREE.BufferGeometry
-        geom.addAttribute 'position', new THREE.BufferAttribute positions, 3 
-        geom.addAttribute 'normal',   new THREE.BufferAttribute normals,   3 
-        geom.translate 0,0,-0.5+0.008
+        geom.setAttribute 'position' new THREE.BufferAttribute positions, 3 
+        geom.setAttribute 'normal'   new THREE.BufferAttribute normals,   3 
+        geom.translate 0 0, -0.5 0.008
         geom
 
     @kolben: ->
@@ -33,8 +33,8 @@ class Geom
         pi = @quadList  positions, normals, pi, @kolbenQuads
         pi = @quadStrip positions, normals, pi, @kolbenQuadStrip
         geom = new THREE.BufferGeometry
-        geom.addAttribute 'position', new THREE.BufferAttribute positions, 3 
-        geom.addAttribute 'normal',   new THREE.BufferAttribute normals,   3   
+        geom.setAttribute 'position' new THREE.BufferAttribute positions, 3 
+        geom.setAttribute 'normal'   new THREE.BufferAttribute normals,   3   
         geom
 
     @cylinder: ->
@@ -60,8 +60,8 @@ class Geom
         pi = @quadStrip positions, normals, pi, @cylinderQuadStrip15
         pi = @quadStrip positions, normals, pi, @cylinderQuadStrip16
         geom = new THREE.BufferGeometry
-        geom.addAttribute 'position', new THREE.BufferAttribute positions, 3 
-        geom.addAttribute 'normal',   new THREE.BufferAttribute normals,   3   
+        geom.setAttribute 'position' new THREE.BufferAttribute positions, 3 
+        geom.setAttribute 'normal'   new THREE.BufferAttribute normals,   3   
         geom
 
     @motor: ->
@@ -73,8 +73,8 @@ class Geom
         pi = @quadList     positions, normals, pi, @motorQuads
         pi = @triangleList positions, normals, pi, @motorTriangles
         geom = new THREE.BufferGeometry
-        geom.addAttribute 'position', new THREE.BufferAttribute positions, 3 
-        geom.addAttribute 'normal',   new THREE.BufferAttribute normals,   3   
+        geom.setAttribute 'position' new THREE.BufferAttribute positions, 3 
+        geom.setAttribute 'normal'   new THREE.BufferAttribute normals,   3   
         geom
     
     @generator: ->
@@ -99,8 +99,8 @@ class Geom
         pi = @quadStrip positions, normals, pi, @generatorQuadStrip12
             
         geom = new THREE.BufferGeometry
-        geom.addAttribute 'position', new THREE.BufferAttribute positions, 3 
-        geom.addAttribute 'normal',   new THREE.BufferAttribute normals,   3   
+        geom.setAttribute 'position' new THREE.BufferAttribute positions, 3 
+        geom.setAttribute 'normal'   new THREE.BufferAttribute normals,   3   
         geom
 
     @valve: ->
@@ -117,8 +117,8 @@ class Geom
         pi = @quadStrip positions, normals, pi, @valveQuadStrip5
             
         geom = new THREE.BufferGeometry
-        geom.addAttribute 'position', new THREE.BufferAttribute positions, 3 
-        geom.addAttribute 'normal',   new THREE.BufferAttribute normals,   3   
+        geom.setAttribute 'position' new THREE.BufferAttribute positions, 3 
+        geom.setAttribute 'normal'   new THREE.BufferAttribute normals,   3   
         geom
 
     @gear: ->
@@ -133,9 +133,9 @@ class Geom
         pi = @quadStrip positions, normals, pi, @gearQuadStrip3
             
         geom = new THREE.BufferGeometry
-        geom.addAttribute 'position', new THREE.BufferAttribute positions, 3 
-        geom.addAttribute 'normal',   new THREE.BufferAttribute normals,   3   
-        geom.translate 0,0,0.4
+        geom.setAttribute 'position' new THREE.BufferAttribute positions, 3 
+        geom.setAttribute 'normal'   new THREE.BufferAttribute normals,   3   
+        geom.translate 0 0 0.4
         geom
 
     #   000000000  00000000   000   0000000   000   000   0000000   000      00000000   0000000

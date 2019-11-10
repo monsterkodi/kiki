@@ -17,13 +17,14 @@ class Wall extends Item
     @: -> super
        
     createMesh: -> 
-        geom = new THREE.BoxGeometry 1,1,1
+        
+        geom = new THREE.BoxGeometry 1 1 1
         @raster = new THREE.Mesh geom, Material.wall
         @raster.receiveShadow = true
         @raster.castShadow = true
         
-        geom = Cage.wallTiles new Pos(1,1,1), 'outside', Cage.gap                  
-        geom.translate -0.5, -0.5, -0.5
+        geom = Cage.wallTiles new Pos(1 1 1), 'outside' Cage.gap                  
+        geom.translate -0.5 -0.5 -0.5
         @plates = new THREE.Mesh geom, Material.plate.clone()
         @plates.receiveShadow = true
         

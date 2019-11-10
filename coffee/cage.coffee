@@ -9,6 +9,7 @@ Material = require './material'
 class Cage
 
     @: (@size, gap) ->
+        
         Cage.gap = gap
         geom = Cage.wallTiles @size, 'inside', 0
         @raster = new THREE.Mesh geom, Material.raster 
@@ -27,6 +28,7 @@ class Cage
         world.scene.add @cage        
      
     del: -> 
+        
         world.scene.remove @raster
         world.scene.remove @cage 
         
@@ -180,8 +182,8 @@ class Cage
                 plates[5] size.x-offset, y, z
 
         geom = new THREE.BufferGeometry
-        geom.addAttribute 'position', new THREE.BufferAttribute positions, 3 
-        geom.addAttribute 'normal',   new THREE.BufferAttribute normals,   3 
+        geom.setAttribute 'position' new THREE.BufferAttribute positions, 3 
+        geom.setAttribute 'normal'   new THREE.BufferAttribute normals,   3 
         geom
         
 module.exports = Cage

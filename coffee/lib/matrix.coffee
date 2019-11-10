@@ -9,7 +9,8 @@ Vector      = require './vector'
 
 class Matrix
     
-    constructor: (o) ->
+    @: (o) ->
+        
         @matrix = []
         switch
             when not o? then @reset()
@@ -24,6 +25,7 @@ class Matrix
             else @reset()
     
     initXYZ: (x,y,z) ->  
+        
         @matrix[0]  = x.x
         @matrix[1]  = x.y
         @matrix[2]  = x.z
@@ -43,6 +45,7 @@ class Matrix
         @
 
     initQuat: (o) ->
+        
         # calculate coefficients
         x2 = o.x + o.x
         y2 = o.y + o.y
@@ -172,6 +175,7 @@ class Matrix
         @matrix[11] = a3*b8+a7*b9+a11*b10
     
     scale: (x,y,z) ->
+        
         @matrix[0]  *= x
         @matrix[1]  *= x
         @matrix[2]  *= x

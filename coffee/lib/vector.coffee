@@ -7,7 +7,8 @@
 
 class Vector
 
-    constructor: (x=0,y=0,z=0,w=0) ->
+    @: (x=0,y=0,z=0,w=0) ->
+        
         if x.x? and x.y?
             @copy x
         else if Array.isArray x
@@ -22,7 +23,8 @@ class Vector
             @w = w ? 0
         if Number.isNaN @x or Number.isNaN @w
             throw new Error
-            
+          
+    threeVector: -> new THREE.Vector3 @x, @y, @z
     clone: -> new Vector @
     copy: (v) -> 
         @x = v.x

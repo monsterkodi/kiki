@@ -10,6 +10,7 @@ Material = require './material'
 class Light extends Item
     
     @: (opt) ->
+        
         @radius    = opt?.radius ? 4
         @shadow    = opt?.shadow ? false
         @intensity = opt?.intensity ? 0.5
@@ -18,12 +19,13 @@ class Light extends Item
         @setPosition opt.pos if opt?.pos?
         
     createMesh: ->
+        
         @point = new THREE.PointLight 0xffffff, @intensity, @radius, 2
         @point.castShadow = @shadow
         @point.shadow.darkness = 0.5
-        @point.shadow.mapSize = new THREE.Vector2 2048, 2048
+        @point.shadow.mapSize = new THREE.Vector2 2048 2048
         @point.shadow.bias = 0.01
-        geom   = new THREE.SphereGeometry 0.3, 16, 16
+        geom = new THREE.SphereGeometry 0.3 16 16
         @point.shadow.camera.near = 0.1
         @point.shadow.camera.far = @radius*2
             
@@ -31,11 +33,13 @@ class Light extends Item
         world.scene.add @point
 
     del: -> 
+        
         world.removeLight @
         world.scene.remove @point
         super
         
     setPosition: (pos) ->
+        
         super pos
         @point.position.copy @position
 

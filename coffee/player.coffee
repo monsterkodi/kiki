@@ -49,7 +49,7 @@ class Player extends Bot
         @addAction new Action @, Action.LOOK_DOWN,  'look down'  220
         @addAction new Action @, Action.LOOK_RESET, 'look reset' 60
     
-        @addEventWithName "landed"
+        @addEventWithName 'landed'
     
     bulletHitSound: -> 'BULLET_HIT_PLAYER'
             

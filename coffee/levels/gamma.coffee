@@ -5,7 +5,7 @@
 # 000   000  000   000  000 0 000  000 0 000  000   000
 #  0000000   000   000  000   000  000   000  000   000
 
-schemes = ['tron', 'candy', 'default', 'green', 'yellow', 'blue', 'red', 'metal', 'bronze', 'crazy']
+schemes = ['tron' 'candy' 'default' 'green' 'yellow' 'blue' 'red' 'metal' 'bronze' 'crazy']
 
 module.exports =
     name:       "gamma"

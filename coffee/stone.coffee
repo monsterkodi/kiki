@@ -10,6 +10,7 @@ Material = require './material'
 class Stone extends Pushable
     
     @: (opt) ->
+        
         @slippery = opt?.slippery or false
         @opacity = opt?.opacity
         if opt?.color
@@ -26,14 +27,15 @@ class Stone extends Pushable
             for x in [-1,1]
                 for y in [-1,1]
                     for z in [-1,1]
-                        cube = new THREE.BoxGeometry 0.48, 0.48, 0.48
+                        cube = new THREE.BoxGeometry 0.48 0.48 0.48
                         cube.translate x * 0.25, y * 0.25, z * 0.25
                         if not @geom
                             @geom = cube 
                         else
                             @geom.merge cube
         else
-            @geom = new THREE.BoxBufferGeometry 0.98,0.98,0.98
+            @geom = new THREE.BoxBufferGeometry 0.98 0.98 0.98
+            
         @mat = Material.stone.clone()
         @mat.opacity = @opacity if @opacity?
         @mat.color.set @color if @color?

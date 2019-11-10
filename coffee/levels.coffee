@@ -51,7 +51,6 @@ class Levels
             "bronze" 
             "pool" 
             # --- owen hay's levels (TODO: sort in)
-            "grasp" 
             "fallen" 
             "cheese" 
             "spiral" 

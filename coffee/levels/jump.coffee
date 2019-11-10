@@ -14,10 +14,15 @@ module.exports =
                 
                 to get to the exit,
                 jump on the stone
-                to jump,
-                press "space" while moving
-                to move, press "up" or "down"
-                to turn, press "left" or "right"
+                
+                to jump forward,
+                press [space] while moving
+                    
+                to move, press [up] or [down]
+                to turn, press [left] or [right]
+                
+                alternatively, you can use
+                [w] [a] [s] [d]
                 """
     player:   
         coordinates:   [1,0,4]

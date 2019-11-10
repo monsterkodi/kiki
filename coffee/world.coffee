@@ -71,16 +71,14 @@ class World extends Actor
         @noRotations = false
         
         @screenSize = new Size @view.clientWidth, @view.clientHeight
-        # klog "view @screenSize:", @screenSize
         
-        @renderer = new THREE.WebGLRenderer 
-            antialias:              true
-            logarithmicDepthBuffer: false
-            autoClear:              false
-            sortObjects:            true
+        @renderer = new THREE.WebGLRenderer antialias:true, precision:'highp'
 
         @renderer.setSize @view.offsetWidth, @view.offsetHeight
+        @renderer.autoClear = false
+        @renderer.sortObjects = true
         @renderer.shadowMap.type = THREE.PCFSoftShadowMap
+        @view.appendChild @renderer.domElement
                         
         #    0000000   0000000  00000000  000   000  00000000
         #   000       000       000       0000  000  000     
@@ -109,9 +107,7 @@ class World extends Actor
         @size    = new Pos()
         @depth   = -Number.MAX_SAFE_INTEGER
         
-        @timer = new Timer @
-                
-        @view.appendChild @renderer.domElement
+        @timer = new Timer @                        
      
     @init: (view) ->
         
@@ -204,7 +200,7 @@ class World extends Actor
         @setSize @dict.size # this removes all objects
         
         @applyScheme @dict.scheme ? 'default'
-
+        
         # ............................................................ intro text   
         
         if not @preview and showName
@@ -358,6 +354,7 @@ class World extends Actor
     #    0000000  00000000  0000000  0000000  0000000 
     
     setSize: (size) ->
+        
         @deleteAllObjects()
         @cells = []
         @size = new Pos size
@@ -668,11 +665,16 @@ class World extends Actor
         
         o.step?() for o in @objects
         
-        if @player then @stepPlayer()
-        
+        @renderer.clear true true true
+            
+        if @player 
+            @stepPlayer()
+                
         if @preview
-            @renderer.setViewport 0, Math.floor(@screenSize.h*0.72), @screenSize.w, Math.floor(@screenSize.h*0.3)
+            @renderer.setViewport 0, 0, @screenSize.w, Math.floor(@screenSize.h*0.25)
         
+        @renderer.clearDepth()
+            
         @renderer.render @text.scene, @text.camera if @text
         @renderer.render @menu.scene, @menu.camera if @menu
 
@@ -696,7 +698,7 @@ class World extends Actor
         for stone in stones
             stone.mesh.renderOrder = order
             order += 1
-            
+             
             d = stone.position.minus(@player.camera.getPosition()).length()
             if d < 1.0
                 stone.mesh.material.orig_opacity = stone.mesh.material.opacity if not stone.mesh.material.orig_opacity?
@@ -706,12 +708,11 @@ class World extends Actor
                 delete stone.mesh.material.orig_opacity
         
         @sun.position.copy @player.camera.cam.position
-        @renderer.autoClearColor = false
 
         if @preview
-            @renderer.setViewport 0, 0, @screenSize.w, Math.floor @screenSize.h*0.66
+            @renderer.setViewport 0, Math.floor(@screenSize.h*0.34), @screenSize.w, Math.floor(@screenSize.h*0.66)
         
-        @renderer.render @scene, @player.camera.cam        
+        @renderer.render @scene, @player.camera.cam
     
     #   000000000  000  00     00  00000000
     #      000     000  000   000  000     
@@ -808,12 +809,16 @@ class World extends Actor
         
         @text?.del()
         @menu = new Menu()
-        @menu.addItem 'load'   => @levelSelection = new LevelSel @
+        @menu.addItem 'load'   @showLevelSelection
         @menu.addItem 'reset'  @restart 
         @menu.addItem 'config' => @menu = new Config
         @menu.addItem 'help'   @showHelp
         @menu.addItem 'quit'   -> post.toMain 'quitApp'
         @menu.show()
+    
+    showLevelSelection: => 
+    
+        @levelSelection = new LevelSel @
     
     showHelp: =>
         
@@ -893,6 +898,7 @@ class World extends Actor
             when '-' then @speed = Math.max 4, @speed-1; prefs.set 'speed' @speed-3
             when 'r' then @restart()
             when 'h' then @toggleHelp()
+            when 'l' then @showLevelSelection()
             when 'n' then @create World.levels.list[(@level_index+1) % World.levels.list.length]
 
     modKeyComboEventUp: (mod, key, combo, event) ->

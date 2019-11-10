@@ -9,13 +9,14 @@ Vector = require './vector'
 
 class Quaternion
 
-    constructor: (w=1, x=0, y=0, z=0) ->
+    @: (w=1, x=0, y=0, z=0) ->
+        
         if w instanceof Vector
             @x = w.x
             @y = w.y
             @z = w.z
             @w = 0
-        else if w instanceof Quaternion
+        else if (w instanceof Quaternion) or (w instanceof THREE.Quaternion)
             @x = w.x
             @y = w.y
             @z = w.z

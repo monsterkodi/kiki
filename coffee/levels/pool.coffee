@@ -30,7 +30,7 @@ module.exports =
                     if Math.pow(-1, i+j+l) == 1 and not (d<=i<=s.x-d-1 and d<=j<=s.y-d-1 and d<=l)
                         world.addObjectAtPos new Stone(color:[0.3,0.3,1.0], opacity:0.9, slippery:true), i,j,l 
     
-        for h in [ s.z/2 -1, s.z-5]
+        for h in [ s.z/2, -1, s.z-5]
             world.addObjectPoly 'Wall', [[0,0,h],[s.x-1,0,h],[s.x-1,s.y-1,h],[0,s.y-1,h]]
         
         # for (i,j) in [ (m,n) for m in range(s.x) for n in range(s.y) ]

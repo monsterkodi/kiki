@@ -15,9 +15,34 @@ Material = require './material'
 
 class ScreenText extends Actor    
     
-    @init: -> @font = new THREE.Font require 'three/examples/fonts/helvetiker_bold.typeface.json'
+    @geomCache: {}
+    
+    @letters: {}
+    
+    @init: -> 
         
-    @: (@text) ->
+        @font = new THREE.Font require 'three/examples/fonts/helvetiker_bold.typeface.json'
+        
+        for c in "abcdefghijklmnopqrstuvwxyz0123456789.,[]()<>'\"!?:"
+
+            geom = new THREE.TextGeometry c, 
+                font: ScreenText.font
+                size: 1
+                height: 4
+                bevelEnabled: true
+                bevelThickness: 0.1
+                bevelSize: 0.04
+                    
+            geom.computeBoundingBox()
+            min = geom.boundingBox.min
+            max = geom.boundingBox.max
+                    
+            @letters[c] = 
+                geom: geom
+                width: max.x - min.x
+                height: max.y - min.y
+                        
+    @: (@text, material=Material.text) ->
         
         super
         
@@ -27,69 +52,75 @@ class ScreenText extends Actor
         @scene = new THREE.Scene()
         @lineHeight = 1.3 if not @lineHeight?
         @sun = new THREE.PointLight 0xffffff
-        @sun.position.set -1,1,10
+        @sun.position.set -1 1 10
         @scene.add @sun
         
-        @width = @height = 0
+        @height = 0
+        @width = 0
+        @cameraOffset = 1
         @mesh = new THREE.Object3D
         @scene.add @mesh
-        @fov = 20
-        @aspect = world.screenSize.w/world.screenSize.h
-        @near = 0.1
-        @far  = 100
-        @camera = new THREE.PerspectiveCamera @fov, @aspect, @near, @far
+        aspect = world.screenSize.w/world.screenSize.h
+        @camera = new THREE.PerspectiveCamera 20, aspect, 0.1, 100
         if @text?
             for l in @text.split '\n'
-                @addText l 
+                @addText l, 1, material
             @show()
     
     del: ->
         
-        # klog 'del text' @text
         @scene.remove @mesh
         @scene.remove @sun
         Timer.removeActionsOfObject @
-        world.text = null if world.text == @
+        if world.text == @
+            world.text = null 
+            world.helpShown = false
     
     show: -> @startTimedAction @getActionWithId Action.SHOW
     
-    addText: (str, scaleFactor=1) ->
+    addText: (str, scaleFactor=1, material=Material.text) ->
         
-        geom = new THREE.TextGeometry str, 
-            font: ScreenText.font
-            size: 1
-            height: 4
-            bevelEnabled: true
-            bevelThickness: 0.1
-            bevelSize: 0.04
+        if str.trim().length == 0
+            @height += 1
+            return
+        
+        x = 0
+        group = new THREE.Group
+        for c in str
+            c = c.toLowerCase()
+            if letter = ScreenText.letters[c]
+                mesh = new THREE.Mesh letter.geom, material
+                mesh.translateX x
+                x += letter.width + 0.06
+                group.add mesh
+            else
+                x += 0.5
                 
-        @width = Math.max str.length, @width
-        geom.computeBoundingBox()
-        min = geom.boundingBox.min
-        max = geom.boundingBox.max
-        mesh = new THREE.Mesh geom, Material.text.clone()
-        mesh.translateX -(max.x-min.x)*scaleFactor/2
-        mesh.translateY -@height * @lineHeight
-        mesh.scale.set scaleFactor, scaleFactor, scaleFactor
-        @mesh.add mesh
+        @width = Math.max @width, x
+        group.translateX -x/2 * scaleFactor 
+        group.translateY -@height * @lineHeight * scaleFactor
+        group.scale.set scaleFactor, scaleFactor, scaleFactor
+        @mesh.add group
+            
         @mesh.position.set 0, @height/2*@lineHeight, 0
         
-        # adjust projection  
+        # adjust projection
         z = 20+4*@height
-        @camera.position.copy new Vector 0,0,z
-        @sun.position.set -z/5,z/5,z
-        @camera.lookAt new Vector 0,0,0
+        z = Math.max z, parseInt @width*4
+
+        @cameraOffset = Math.max @cameraOffset, z
+        @camera.position.copy new Vector 0 0 @cameraOffset
+        @sun.position.set -@cameraOffset/5 @cameraOffset/5 @cameraOffset
+        @camera.lookAt new Vector 0 0 0
         @height += 1
 
     setOpacity: (o) ->
         
-        for c in @mesh.children
-            c.material.opacity = o
-
+        @mesh.traverse (c) -> c.material?.opacity = o
+            
     resized: (w,h) ->
         
-        @aspect = w/h
-        @camera.aspect = @aspect
+        @camera.aspect = w/h
         @camera.updateProjectionMatrix()
     
     performAction: (action) ->

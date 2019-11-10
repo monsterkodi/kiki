@@ -36,6 +36,10 @@ module.exports =
     menu: new THREE.MeshPhongMaterial 
         side:           THREE.FrontSide
         transparent:    true
+        
+    help: new THREE.MeshPhongMaterial 
+        side:           THREE.FrontSide
+        transparent:    true
 
     mutant: new THREE.MeshPhongMaterial
         color:          0x888888

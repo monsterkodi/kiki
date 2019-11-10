@@ -35,7 +35,7 @@ class Event
         while @actions.length
             @removeAction last @actions
 
-    getActionsOfObject: (object) -> @actions.filter (a) -> a.object == object
+    getActionsOfObject: (object) -> @actions.filter (a) -> a?.object == object
 
     removeActionsOfObject: (object) ->
         for a in @actions

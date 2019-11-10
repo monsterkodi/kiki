@@ -1,7 +1,7 @@
 {
   "name": "kiki",
   "main": "js/main.js",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "scripts": {
     "kiki": "./node_modules/.bin/electron .",
     "watch": "./node_modules/.bin/electron . -wD",

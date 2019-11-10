@@ -31,17 +31,17 @@ class Menu extends ScreenText
         @addText text
       
     show: -> 
-        world.playSound 'GEAR_ON' # 'ATOM_DIGEST' #'MENU_FADE'
+        world.playSound 'GEAR_ON' 
         @setCurrent @current
         super
         
-    setCurrent: (current) ->        
+    setCurrent: (current) ->
+        
         @current = (@mesh.children.length + current) % @mesh.children.length
+        
         for ci in [0...@mesh.children.length]
             m = ci == @current and Material.menu or Material.text
-            o = @mesh.children[ci].material.opacity
-            @mesh.children[ci].material = m.clone()
-            @mesh.children[ci].material.opacity = o
+            @mesh.children[ci].traverse (c) -> c.material = m
             z = ci == @current and 4 or 0
             @mesh.children[ci].position.set @mesh.children[ci].position.x, @mesh.children[ci].position.y, z
         

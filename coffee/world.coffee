@@ -288,16 +288,19 @@ class World extends Actor
             gear:   20
             text:   200
             
-        colors.plate.emissive ?= colors.plate.color
-        colors.bulb.emissive  ?= colors.bulb.color
-        colors.menu ?= {}   
-        colors.menu.color ?= colors.gear.color
-        colors.raster ?= {}    
-        colors.raster.color ?= colors.plate.color
-        colors.wall ?= {}
-        colors.wall.color ?= new THREE.Color(colors.plate.color).multiplyScalar 0.6
-        colors.wirePlate ?= {}
-        colors.wirePlate.color ?= colors.wire.color
+        colors.plate.emissive   ?= colors.plate.color
+        colors.bulb.emissive    ?= colors.bulb.color
+        colors.menu             ?= {}   
+        colors.menu.color       ?= colors.gear.color
+        colors.raster           ?= {}    
+        colors.raster.color     ?= colors.plate.color
+        colors.wall             ?= {}
+        colors.wall.color       ?= new THREE.Color(colors.plate.color).multiplyScalar 0.6
+        colors.wirePlate        ?= {}
+        colors.wirePlate.color  ?= colors.wire.color
+        colors.help             ?= {}
+        colors.help.color       ?= colors.text.color
+        
         for k,v of colors
             mat = Material[k]
             mat.color    = v.color
@@ -492,8 +495,8 @@ class World extends Actor
             cell.removeObject object
             if cell.isEmpty()
                 @cells[@posToIndex(pos)] = null
-        else 
-            klog 'world.unsetObject [WARNING] no cell at pos:', pos
+        # else 
+            # klog 'world.unsetObject [WARNING] no cell at pos:', pos
 
     newObject: (object) ->
         if _.isString object
@@ -799,17 +802,32 @@ class World extends Actor
     # 000 0 000  000       000  0000  000   000
     # 000   000  00000000  000   000   0000000 
     
-    showMenu: (self) ->
+    showMenu: ->
 
+        if @helpShown then return @toggleHelp()
+        
         @text?.del()
         @menu = new Menu()
         @menu.addItem 'load'   => @levelSelection = new LevelSel @
         @menu.addItem 'reset'  @restart 
         @menu.addItem 'config' => @menu = new Config
-        @menu.addItem 'help'   => @text = new ScreenText @dict['help']
+        @menu.addItem 'help'   @showHelp
         @menu.addItem 'quit'   -> post.toMain 'quitApp'
         @menu.show()
     
+    showHelp: =>
+        
+        @helpShown = true
+        @text = new ScreenText @dict['help'], Material.help
+        
+    toggleHelp: ->
+        
+        @helpShown = not @helpShown
+        if @helpShown
+            @showHelp()
+        else
+            @text?.del()
+        
     #   000   000   0000000   000      000    
     #   000 0 000  000   000  000      000    
     #   000000000  000000000  000      000    
@@ -874,6 +892,8 @@ class World extends Actor
             when '=' then @speed = Math.min 8, @speed+1; prefs.set 'speed' @speed-3
             when '-' then @speed = Math.max 4, @speed-1; prefs.set 'speed' @speed-3
             when 'r' then @restart()
+            when 'h' then @toggleHelp()
+            when 'n' then @create World.levels.list[(@level_index+1) % World.levels.list.length]
 
     modKeyComboEventUp: (mod, key, combo, event) ->
         

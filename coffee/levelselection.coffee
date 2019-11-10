@@ -6,7 +6,7 @@
 0000000  00000000      0      00000000  0000000  0000000   00000000  0000000  
 ###
 
-{ prefs, clamp, elem, klog } = require 'kxk'
+{ prefs, clamp, elem } = require 'kxk'
 
 LevelSelName = require './levelselname'
 
@@ -53,7 +53,7 @@ class LevelSelection
             when 'end'          then @index = @levels.length-1
         
         @index = clamp 0, @levels.length-1, @index
-        klog @index, @levels[@index]
+        # klog @index, @levels[@index]
         if oldIndex != @index
             @world.playSound 'MENU_ITEM'
             @world.create @levels[@index]

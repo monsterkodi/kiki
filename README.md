@@ -1,8 +1,6 @@
 ![kiki](img/kiki.png)
 
 ![kiki](img/kiki-blue.png)
-![kiki](img/kiki08.png)
-![kiki](img/kiki23.png)
 ![kiki](img/kiki32.png)
 ![kiki](img/kiki34.png)
 ![kiki](img/kiki41.png)

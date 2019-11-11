@@ -63,7 +63,7 @@ class Menu extends ScreenText
                 @next()
             when 'left' 'up' 'w' 'a'
                 @prev()
-            when 'enter'
+            when 'enter' 'space'
                 world.playSound 'MENU_SELECT'
                 if 'function' == typeof @callbacks[@current]
                     @callbacks[@current]()

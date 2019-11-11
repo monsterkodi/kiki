@@ -11,7 +11,8 @@ module.exports =
     help:       """
                 use the stones.
                 to move a stone,
-                press "shift+w"
+                press [shift] or [ctrl]
+                and [up] or [w]
                 """
     player:    
         coordinates:    [4,5,3]

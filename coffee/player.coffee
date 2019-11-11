@@ -135,11 +135,8 @@ class Player extends Bot
         
     modKeyComboEventDown: (mod, key, combo, event) ->
                     
-        # klog "player.modKeyComboEventDown mod:#{mod} key:#{key} combo:#{combo}"
-        
         switch key
             when 'up' 'down' @key.forward, @key.backward
-                @push = (mod in ['ctrl' @key.push])
                 @move = true # try to move as long as the key is not released
                 if not @move_action?
                     @new_dir_sgn = @dir_sgn = (key in ['down' @key.backward]) and -1 or 1 
@@ -225,8 +222,7 @@ class Player extends Bot
     #   000   000  00000000  0000000  00000000  000   000  0000000   00000000
     
     modKeyComboEventUp: (mod, key, combo, event) ->
-        # @push = false if @key.push == 'shift'
-        # klog "player.modKeyComboEventUp mod:#{mod} key:#{key} combo:#{combo}"
+
         switch key    
             when 'f' @key.shoot
                 Timer.removeAction @getActionWithId Action.SHOOT

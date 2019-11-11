@@ -5,6 +5,8 @@
 #   000   000  000  000   000  000   000  000       000  0000
 #   000   000  000  0000000    0000000    00000000  000   000
 
+{ klog } = require 'kxk'
+
 module.exports =
     name:       "hidden"
     scheme:     "metal"
@@ -73,8 +75,8 @@ module.exports =
             exit = world.getObjectWithName "exit"
             exit.setActive world.switch_counter == 5 
         
-        switch1.getEventWithName("switched").addAction world.continuous (s=switch1) -> switched s
-        switch2.getEventWithName("switched").addAction world.continuous (s=switch2) -> switched s
-        switch3.getEventWithName("switched").addAction world.continuous (s=switch3) -> switched s
-        switch4.getEventWithName("switched").addAction world.continuous (s=switch4) -> switched s
-        switch5.getEventWithName("switched").addAction world.continuous (s=switch5) -> switched s
+        switch1.getEventWithName("switched").addAction world.continuous -> switched switch1
+        switch2.getEventWithName("switched").addAction world.continuous -> switched switch2
+        switch3.getEventWithName("switched").addAction world.continuous -> switched switch3
+        switch4.getEventWithName("switched").addAction world.continuous -> switched switch4
+        switch5.getEventWithName("switched").addAction world.continuous -> switched switch5

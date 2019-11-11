@@ -1,6 +1,6 @@
 name            kiki
 main            js/main.js
-version         0.14.0
+version         0.15.0
 scripts
                 kiki    ./node_modules/.bin/electron .
                 watch   ./node_modules/.bin/electron . -wD
@@ -25,5 +25,5 @@ devDependencies
                 electron-rebuild  ^1.8.6
 dependencies
                 howler  ^2.1.2
-                kxk     ^0.359.0
+                kxk     ^0.362.0
                 three   0.110.0

@@ -16,6 +16,12 @@ class Wall extends Item
     
     @: -> super
        
+    del: ->
+        
+        @plates.geometry.dispose()
+        @raster.geometry.dispose()
+        super
+    
     createMesh: -> 
         
         geom = new THREE.BoxGeometry 1 1 1

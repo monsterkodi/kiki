@@ -15,7 +15,9 @@ class Gate extends Switch
     isSpaceEgoistic: -> false
 
     @: (active) ->
-        super active
+        
+        super
+        
         @ENTER_EVENT = @addEventWithName "enter"
         @value = 0.0
         @getActionWithId(Action.ROTATE).duration = 50000 
@@ -23,12 +25,23 @@ class Gate extends Switch
         @sound_off = 'GATE_CLOSE'
 
     createLight: -> 
+        
+        return if @light 
+            
         @light = new Light 
             pos:    @position
             radius: 10.0
             shadow: true
             
-    createMesh: () -> 
+    # del: ->
+#         
+        # @tors.geometry.dispose()
+        # @mesh.geometry.dispose()
+        # @light?.del()
+        # super
+            
+    createMesh: -> 
+        
         torusRadius = 0.05
         t1 = new THREE.TorusBufferGeometry 0.5-torusRadius, torusRadius, 16, 32
             
@@ -41,6 +54,7 @@ class Gate extends Switch
         t2.rotateY Vector.DEG2RAD 90 
         t3.rotateX Vector.DEG2RAD 90 
         t2.merge t3
+        t3.dispose()
         @tors = new THREE.Mesh t2, Material.gate
         @tors.castShadow = true
         @tors.receiveShadow = true
@@ -52,9 +66,9 @@ class Gate extends Switch
     bulletImpact: ->
 
     newCellMate: (object) ->
+        
         if object.name == 'player' and @active
             world.playSound 'GATE_WARP'
-            # klog 'gate trigger enter event', @events[@ENTER_EVENT].actions.length
             @events[@ENTER_EVENT].triggerActions() 
             @active = false
                 

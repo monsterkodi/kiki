@@ -21,11 +21,17 @@ class MotorCylinder extends Pushable #Item
         @value = 0.0
         @active = false
         @orientation = Face.orientationForFace @face
-        @addAction new Action @, Action.TUCKER, "tucker", 500, Action.REPEAT
+        @addAction new Action @, Action.TUCKER, 'tucker' 500 Action.REPEAT
     
     setPosition: (pos) ->
         super pos
         @updateActive()
+        
+    del: ->
+        
+        @kolben.geometry.dispose()
+        @mesh.geometry.dispose()
+        super
         
     createMesh: ->
                     

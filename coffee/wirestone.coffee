@@ -13,11 +13,18 @@ Generator = require './generator'
 
 class WireStone extends Stone
     
-    @: () ->
+    @: ->
         @wires = [null, null, null, null, null, null]
         super
         
+    del: ->
+        
+        for wire in @wires
+            wire?.del()
+        super
+        
     initAction: (action) ->
+        
         switch action.id
             when Action.FALL, Action.PUSH
                 for i in [0...6]
@@ -29,6 +36,7 @@ class WireStone extends Stone
         super action
     
     setPosition: (pos) ->      
+        
         for i in [0...6]
             newPos = pos.minus Face.normalVectorForFace i
             if @isFreePos newPos
@@ -49,11 +57,13 @@ class WireStone extends Stone
         super pos
     
     setCurrentPosition: (pos) ->
+        
         super pos
         for i in [0...6]
             @wires[i]?.setPosition @current_position.minus Face.normalVectorForFace i
     
     isFreePos: (pos) ->
+        
         if world.isUnoccupiedPos pos
             return true
         if world.isValidPos pos

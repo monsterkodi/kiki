@@ -178,7 +178,7 @@ class World extends Actor
         
     create: (worldDict={}, showName=true) -> # creates the world from a level name or a dictionary
         
-        # klog "world.create" worldDict
+        # klog @level_name
         
         if worldDict
             if _.isString worldDict
@@ -266,6 +266,7 @@ class World extends Actor
     # 0000000    0000000  000   000  00000000  000   000  00000000
     
     applyScheme: (scheme) ->
+        
         return if not Scheme[scheme]
         
         colors = _.clone Scheme[scheme]
@@ -313,16 +314,21 @@ class World extends Actor
     #  0000000  000   0000000   000   000     000   
     
     addLight: (light) ->
+        
         @lights.push light
         @enableShadows true if light.shadow
         
     removeLight: (light) ->
+        
         _.pull @lights, light
+        
         for l in @lights
             shadow = true if l.shadow
+            
         @enableShadows shadow
 
     enableShadows: (enable) ->
+        
         @renderer.shadowMap.enabled = enable
     
     #    0000000    0000000  000000000  000   0000000   000   000
@@ -527,32 +533,41 @@ class World extends Actor
     #   000   000  000       000      000          000     000     
     #   0000000    00000000  0000000  00000000     000     00000000
         
-    deleteAllObjects: () ->
+    deleteAllObjects: ->
+        
         Timer.removeAllActions()
-    
+
+        # klog '+' @renderer.info.memory.geometries, @renderer.info.memory.textures, 'objects' @objects.length, @lights.length
+
+        @enableShadows false
+        
         if @player?
             @player.del()
-    
-        while @lights.length
-            oldSize = @lights.length
-            last(@lights).del() # destructor will call remove object
-            if oldSize == @lights.length
-                kerror "WARNING World.deleteAllObjects light no auto remove"
-                @lights.pop()
-    
+        
         while @objects.length
             oldSize = @objects.length
-            last(@objects).del() # destructor will call remove object
+            @objects[-1].del() # destructor will call remove object
             if oldSize == @objects.length
                 kerror "WARNING World.deleteAllObjects object no auto remove #{last(@objects).name}"
                 @objects.pop()
     
+        while @lights.length
+            oldSize = @lights.length
+            @lights[-1].del() # destructor will call remove object
+            if oldSize == @lights.length
+                kerror "WARNING World.deleteAllObjects light no auto remove"
+                @lights.pop()
+                              
+        # klog '-' @renderer.info.memory.geometries, @renderer.info.memory.textures
+    
     deleteObjectsWithClassName: (className) ->
+        
         for o in _.clone @objects
             if className == o.getClassName()
                 o.del()
     
     getObjectWithName: (objectName) ->
+        
         for o in @objects
             if objectName == o.name
                 return o

@@ -14,17 +14,27 @@ class Generator extends Gear
     @: (face) ->
         super face
         
+    del: ->
+        
+        @mesh.geometry.dispose()
+        @gear.geometry.dispose()
+        super
+        
     createMesh: ->
+        
         @mesh = new THREE.Mesh Geom.generator(), Material.plate
-        @mesh.add new THREE.Mesh Geom.gear(),    Material.gear
+        @gear = new THREE.Mesh Geom.gear(),    Material.gear
+        @mesh.add @gear
         @mesh.receiveShadow = true
         
     activateWires: ->
+        
         wires = world.getObjectsOfTypeAtPos Wire, @getPos()
         for wire in wires
             wire.setActive @active
     
     setActive: (active) ->
+        
         if @active != active
             super active
             @activateWires()

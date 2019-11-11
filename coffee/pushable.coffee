@@ -13,7 +13,7 @@ class Pushable extends Item
 
     isSpaceEgoistic: -> true
     
-    @: () ->
+    @: ->
         super
         @pusher     = null
         @direction  = Vector.minusY

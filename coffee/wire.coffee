@@ -22,6 +22,7 @@ class Wire extends Item
     @ALL        =15
     
     @: (@face=Face.Z, @connections=Wire.ALL) ->
+        
         @glow   = null
         @active = false
         @value  = 1.0
@@ -32,7 +33,18 @@ class Wire extends Item
         @SWITCH_ON_EVENT  = @addEventWithName "on"
         @SWITCHED_EVENT   = @addEventWithName "switched"
     
+    del: ->
+        
+        @glow?.material.map.dispose()
+        @glow?.material.dispose()
+        @mesh.remove @glow
+        @mesh.remove @wire
+        @mesh.geometry.dispose()
+        @wire.geometry.dispose()
+        super
+        
     createMesh: ->
+        
         o = 0.005
         geom = new THREE.Geometry
         
@@ -44,18 +56,22 @@ class Wire extends Item
             plane = new THREE.PlaneGeometry  w, h
             plane.translate w/2, 0, -s+o
             geom.merge plane
+            plane.dispose()
         if @connections & Wire.LEFT   
             plane = new THREE.PlaneGeometry  w, h
             plane.translate -w/2, 0, -s+o
             geom.merge plane
+            plane.dispose()
         if @connections & Wire.UP 
             plane = new THREE.PlaneGeometry  h, w
             plane.translate 0, w/2, -s+o
             geom.merge plane
+            plane.dispose()
         if @connections & Wire.DOWN    
             plane = new THREE.PlaneGeometry h, w
             plane.translate 0, -w/2, -s+o
             geom.merge plane
+            plane.dispose()
         
         @wire = new THREE.Mesh geom,        Material.wire            
         @mesh = new THREE.Mesh Geom.wire(), Material.wirePlate
@@ -89,6 +105,8 @@ class Wire extends Item
                     @glow.renderOrder = 999
                     @mesh.add @glow
             else if @glow?
+                @glow.material.map.dispose()
+                @glow.material.dispose()
                 @mesh.remove @glow
                 @glow = null
     
@@ -105,7 +123,7 @@ class Wire extends Item
         rot = Face.orientationForFace @face
         n   = Face.normalVectorForFace @face
     
-        neighbor_dirs.push new Vector 0,0,0 
+        neighbor_dirs.push new Vector 0 0 0 
          
         if @connections & Wire.RIGHT 
             neighbor_dirs.push rot.rotate new Vector(1,0,0)
@@ -132,6 +150,7 @@ class Wire extends Item
         wires
     
     connectionPoints: ->
+        
         points = []
         to_border = Face.normal(@face).mul -0.5
         rot = Face.orientation @face

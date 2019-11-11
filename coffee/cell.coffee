@@ -7,11 +7,11 @@
 
 { _ } = require 'kxk'
 
-TmpObject   = require './tmpobject'
+TmpObject = require './tmpobject'
 
 class Cell
     
-    @: () -> @objects = []
+    @: -> @objects = []
     
     isEmpty: -> @objects.length == 0    
     getObjectsOfType: (clss) -> @objects.filter (o) -> o instanceof clss

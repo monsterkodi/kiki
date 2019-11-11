@@ -26,7 +26,8 @@ class Item extends Actor
         return if @name == 'del'
         super 
         @name = 'del'
-        world.scene.remove @mesh if @mesh?
+        if @mesh?
+            world.scene.remove @mesh 
         world.removeObject @
         @emit 'deleted'
         

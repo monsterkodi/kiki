@@ -15,16 +15,23 @@ class Gear extends Valve
     @neighbors = [ [[0 1 0], [0,-1 0], [0 0 1], [0 0,-1]], [[1 0 0], [-1 0 0], [0 0 1], [0 0,-1]], [[1 0 0], [-1 0 0], [0 1 0], [0,-1 0]] ]
     
     @: (@face) ->
-        super @face
+        
+        super
         @updateMesh()
 
+    del: ->
+        
+        @mesh.geometry.dispose()
+        @valve?.geometry.dispose()
+        super
+        
     createMesh: ->
         
         @mesh = new THREE.Mesh Geom.gear(),  Material.gear
-        valve = new THREE.Mesh Geom.valve(), Material.plate
-        valve.receiveShadow = true
-        valve.castShadow = true
-        @mesh.add valve
+        @valve = new THREE.Mesh Geom.valve(), Material.plate
+        @valve.receiveShadow = true
+        @valve.castShadow = true
+        @mesh.add @valve
         @mesh.receiveShadow = true
         @mesh.castShadow = true
         

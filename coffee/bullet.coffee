@@ -12,39 +12,45 @@ Material = require './material'
 
 class Bullet extends Item
     
-    @: () ->
+    @: ->
         @size = 0.2
         @shooter = null
         super
-        @addAction new Action @, Action.FLY,     "fly",     40
-        @addAction new Action @, Action.EXPLODE, "explode", 200
+        @addAction new Action @, Action.FLY,     'fly'     40
+        @addAction new Action @, Action.EXPLODE, 'explode' 200
         
     del: ->
+        
         if @mesh?
+            @mesh.geometry.dispose()
+            @mesh.material.dispose()
             world.scene.remove @mesh
             Timer.removeActionsOfObject @
             _.pull world.objects, @
             @mesh = null
 
     createMesh: ->
+        
         geom = new THREE.SphereGeometry 1, 16, 16
         @mesh = new THREE.Mesh geom, Material.bullet.clone()
         @mesh.scale.set @size, @size, @size
             
     @shootFromBot: (bot) ->
+        
         bullet = new Bullet()
         world.addObject bullet 
         bullet.direction = bot.currentDir()
         bullet.setPosition bot.position.plus bullet.direction.mul 0.8
         bullet.shooter = bot
         bullet.mesh.material.color.set bot.mesh.material.color
-        world.playSound 'BULLET_SHOT', bot.getPos()
+        world.playSound 'BULLET_SHOT' bot.getPos()
     
         return if bullet.hitObjectAtPos bot.position.plus bullet.direction
     
         Timer.addAction bullet.getActionWithId Action.FLY 
     
     performAction: (action) ->
+        
         relTime = action.getRelativeTime()        
         if action.id == Action.FLY
             @current_position = @position.plus @direction.mul relTime
@@ -53,6 +59,7 @@ class Bullet extends Item
             @mesh?.material.opacity = 0.8 * (1.0-relTime)
     
     step: -> 
+        
         @mesh.position.copy @current_position
         @mesh.scale.set @size, @size, @size
     
@@ -67,7 +74,7 @@ class Bullet extends Item
                     hitObject.bulletImpact()
                     world.playSound hitObject.bulletHitSound?() ? 'BULLET_HIT_OBJECT'
                 else
-                    world.playSound 'BULLET_HIT_WALL', pos
+                    world.playSound 'BULLET_HIT_WALL' pos
                 Timer.addAction @getActionWithId Action.EXPLODE
                 return true
         false

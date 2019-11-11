@@ -59,11 +59,21 @@ class Bot extends Pushable
     
         @startTimedAction @getActionWithId(Action.NOOP), 500
         
+    del: ->
+        
+        @mesh.geometry.dispose()
+        @leftTire.geometry.dispose()
+        
+        if @ instanceof require './mutant'
+            @mesh.material.dispose()
+            @leftTire.material.dispose()
+            
+        super
+        
     createMesh: ->
         
         tireRadius = 0.05
         nose = new THREE.ConeGeometry 0.404 0.5 32 16 true
-        geom = new THREE.SphereGeometry 0.5 32 32 16  Math.PI
         geom = new THREE.SphereGeometry 0.5 32 32 0 2*Math.PI, 0 2.2
         
         nmatr = new THREE.Matrix4()
@@ -75,6 +85,8 @@ class Bot extends Pushable
         geom.rotateX Vector.DEG2RAD -90
         geom.scale 0.7 0.7 0.7
            
+        nose.dispose()
+        
         Mutant = require './mutant'         
         mutant = @ instanceof Mutant
         @mesh = new THREE.Mesh geom, mutant and Material.mutant.clone() or Material.player
@@ -128,7 +140,7 @@ class Bot extends Pushable
     # 000   000  000  000     
     # 0000000    000  00000000
     
-    die: () ->
+    die: ->
         Timer.removeActionsOfObject @
         
         @move  = false
@@ -481,6 +493,7 @@ class Bot extends Pushable
     # 0000000      000     00000000  000      
         
     step: ->
+        
         if @takenOffset
             @mesh.position.copy @current_position.plus @takenOffset
         else

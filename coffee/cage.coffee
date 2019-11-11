@@ -29,6 +29,8 @@ class Cage
      
     del: -> 
         
+        @raster.geometry.dispose()
+        @cage.geometry.dispose()
         world.scene.remove @raster
         world.scene.remove @cage 
         

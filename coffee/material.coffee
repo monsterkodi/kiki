@@ -11,7 +11,7 @@ module.exports =
         map:            new THREE.TextureLoader().load "#{__dirname}/../img/glow.png"
         blending:       THREE.AdditiveBlending
 
-    bulb: new THREE.MeshLambertMaterial 
+    bulb: new THREE.MeshLambertMaterial
         side:           THREE.FrontSide
         transparent:    true
         opacity:        0.7

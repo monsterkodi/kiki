@@ -11,12 +11,13 @@ Action = require './action'
 
 class Mutant extends Bot
     
-    @: () ->
+    @: ->
         super
         @health = 1
         @move = true
         
     die: ->
+        
         world.playSound 'BOT_DEATH'
         super()
         @setOpacity 0.6
@@ -27,6 +28,7 @@ class Mutant extends Bot
     bulletHitSound: -> @health > 0 and 'BULLET_HIT_MUTANT' or 'BULLET_HIT_OBJECT'
     
     actionFinished: (action) ->
+        
         if @health <= 0 and not @died
             @die() 
             if action.id != Action.PUSH and action.id != Action.FALL # dead player may only fall, nothing else
@@ -34,6 +36,7 @@ class Mutant extends Bot
         super action
     
     moveBot: ->
+        
         changeOrientation = Math.random() < 0.3
         changeJumpMode    = Math.random() < 0.3
         changeDirection   = Math.random() < 0.3

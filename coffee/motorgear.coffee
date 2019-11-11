@@ -16,6 +16,12 @@ class MotorGear extends Gear
     
     @: (@face) ->
         super @face
+
+    del: ->
+        
+        @mesh.geometry.dispose()
+        @gear.geometry.dispose()
+        super
         
     setPosition: (pos) ->
         super pos

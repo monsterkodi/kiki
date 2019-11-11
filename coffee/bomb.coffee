@@ -23,6 +23,7 @@ class Bomb extends Pushable
         geom2 = new THREE.DodecahedronGeometry 1
         geom2.rotateX Vector.DEG2RAD 90
         geom.merge geom2
+        geom2.dispose()
                 
         @mesh = new THREE.Mesh geom, Material.bomb
         @updateMesh()
@@ -30,12 +31,17 @@ class Bomb extends Pushable
     
         @addEventWithName 'explode'
         
-        @addAction new Action @, Action.ROTATE,  "rotation", 2000, Action.CONTINUOUS
-        @addAction new Action @, Action.IMPLODE, "implode", 100
-        @addAction new Action @, Action.EXPLODE, "explode", 100
+        @addAction new Action @, Action.ROTATE,  "rotation" 2000 Action.CONTINUOUS
+        @addAction new Action @, Action.IMPLODE, "implode" 100
+        @addAction new Action @, Action.EXPLODE, "explode" 100
         
         @startTimedAction @getActionWithId Action.ROTATE
 
+    del: ->
+        
+        @mesh.geometry.dispose()
+        super
+        
     updateMesh: -> 
         a = Vector.DEG2RAD @angle 
         @mesh.rotation.set a, a/2, a/4

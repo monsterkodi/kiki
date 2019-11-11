@@ -73,7 +73,8 @@ class Sound
         # Howler.Howler.orientation f.x, f.y, f.z, u.x, u.y, u.z
     
     @play: (sound, pos) ->
-        if @listen and pos or world.player
+        
+        if @listen and (pos or world.player)
             pos ?= world.player.current_position
             distance = pos.minus(@listen).length()
             distanceFactor = clamp 0.05, 1, 1-distance/6

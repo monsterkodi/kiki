@@ -13,7 +13,7 @@ Material   = require './material'
 
 class Switch extends Item
 
-    isSpaceEgoistic: -> false # true?
+    isSpaceEgoistic: -> false
     
     @: (active=false) ->
 
@@ -29,14 +29,17 @@ class Switch extends Item
         @SWITCH_ON_EVENT  = @addEventWithName "on"
         @SWITCHED_EVENT   = @addEventWithName "switched"
     
-        @addAction new Action @, Action.TOGGLE, "toggle", 0
-        @addAction new Action @, Action.ROTATE, "rotation", 2000, Action.CONTINUOUS
+        @addAction new Action @, Action.TOGGLE, "toggle" 0
+        @addAction new Action @, Action.ROTATE, "rotation" 2000 Action.CONTINUOUS
     
         @setActive active
 
     del: ->
-        super
+        
+        @mesh.geometry.dispose()
+        @tors.geometry.dispose()
         @light?.del()
+        super
 
     createMesh: ->
         
@@ -60,8 +63,9 @@ class Switch extends Item
     
     createLight: -> 
         
+        return if @light
         @light = new Light 
-            pos:    @position
+            pos: @position
             radius: 6.0
     
     toggle: -> @setActive not @active

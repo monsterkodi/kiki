@@ -4,6 +4,8 @@
 # 000      000  000   000  000   000     000   
 # 0000000  000   0000000   000   000     000   
 
+{ klog } = require 'kxk'
+
 Item     = require './item'
 Material = require './material'
 
@@ -25,17 +27,20 @@ class Light extends Item
         @point.shadow.darkness = 0.5
         @point.shadow.mapSize = new THREE.Vector2 2048 2048
         @point.shadow.bias = 0.01
-        geom = new THREE.SphereGeometry 0.3 16 16
         @point.shadow.camera.near = 0.1
         @point.shadow.camera.far = @radius*2
-            
-        @mesh = new THREE.Mesh geom, Material.bulb
+        
         world.scene.add @point
+        
+        geom = new THREE.SphereGeometry 0.3 16 16
+        @mesh = new THREE.Mesh geom, Material.bulb
 
     del: -> 
-        
-        world.removeLight @
+
+        @point.shadow.map?.dispose() if @shadow
+        @mesh.geometry.dispose()
         world.scene.remove @point
+        world.removeLight @
         super
         
     setPosition: (pos) ->

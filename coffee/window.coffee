@@ -59,38 +59,38 @@ class MainWin extends win
         down = (key) -> world.modKeyComboEventDown '' key, key
         up   = (key) -> world.modKeyComboEventUp '' key, key
 
-        if state.left.y < -0.2 and @last.left.y >= -0.2 then down 'down'
-        if state.left.y > -0.1 and @last.left.y <= -0.1 then up   'down'
-        if state.left.y <  0.1 and @last.left.y >=  0.1 then up   'up'
-        if state.left.y >  0.2 and @last.left.y <=  0.2 then down 'up'
+        if state.left.y < -0.20 and @last.left.y >= -0.20 then down 'down'
+        if state.left.y > -0.12 and @last.left.y <= -0.12 then up   'down'
+        if state.left.y <  0.12 and @last.left.y >=  0.12 then up   'up'
+        if state.left.y >  0.20 and @last.left.y <=  0.20 then down 'up'
 
-        if state.right.y < -0.2 and @last.right.y >= -0.2 then down 'down'
-        if state.right.y > -0.1 and @last.right.y <= -0.1 then up   'down'
-        if state.right.y <  0.1 and @last.right.y >=  0.1 then up   'up'
-        if state.right.y >  0.2 and @last.right.y <=  0.2 then down 'up'
+        if state.right.y < -0.20 and @last.right.y >= -0.20 then down 'down'
+        if state.right.y > -0.12 and @last.right.y <= -0.12 then up   'down'
+        if state.right.y <  0.12 and @last.right.y >=  0.12 then up   'up'
+        if state.right.y >  0.20 and @last.right.y <=  0.20 then down 'up'
   
-        if @inhibit.left and state.left.x >= -0.08 and state.right.x >= -0.08
+        if @inhibit.left and state.left.x >= -0.12 and state.right.x >= -0.12
             @inhibit.left = false
 
-        if @inhibit.right and state.left.x <= 0.08 and state.right.x <= 0.08
+        if @inhibit.right and state.left.x <= 0.12 and state.right.x <= 0.12
             @inhibit.right = false
             
-        if not @inhibit.left and state.left.x < -0.18 and @last.left.x >= -0.18 
+        if not @inhibit.left and state.left.x < -0.33 and @last.left.x >= -0.33 
             down 'left'
             up 'left'
             @inhibit.left = true
             
-        if not @inhibit.right and state.left.x > 0.18 and @last.left.x <= 0.18
+        if not @inhibit.right and state.left.x > 0.33 and @last.left.x <= 0.33
             down 'right'
             up 'right'
             @inhibit.right = true
 
-        if not @inhibit.left and state.right.x < -0.18 and @last.right.x >= -0.18
+        if not @inhibit.left and state.right.x < -0.33 and @last.right.x >= -0.33
             down 'left'
             up 'left'
             @inhibit.left = true
             
-        if not @inhibit.right and state.right.x > 0.18 and @last.right.x <= 0.18
+        if not @inhibit.right and state.right.x > 0.33 and @last.right.x <= 0.33
             down 'right'
             up 'right'
             @inhibit.right = true

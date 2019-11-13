@@ -5,6 +5,12 @@
      000     000        000     000    
 0000000      000        000     0000000
 */
+@font-face {
+  font-family: titlebarFont;
+  font-weight: normal;
+  font-style: normal;
+  src: url("../../node_modules/kxk/styl/Bahnschrift.woff");
+}
 * {
   outline-width: 0;
 }
@@ -34,7 +40,7 @@ body {
   height: 30px;
   box-sizing: border-box;
   font-size: 15px;
-  font-family: Bahnschrift Light, Helvetica Neue, Ebrima, Varela Round, Helvetica, Arial;
+  font-family: titlebarFont;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -45,7 +51,7 @@ body {
   padding-top: 7px;
   padding-left: 10px;
   padding-right: 10px;
-  font: Bahnschrift Light, Helvetica Neue, Ebrima, Varela Round, Helvetica, Arial;
+  font: titlebarFont;
 }
 .titlebar-dot {
   display: inline-block;
@@ -101,7 +107,7 @@ body {
   position: absolute;
   border-radius: 3px;
   font-size: 15px;
-  font-family: Bahnschrift Light, Helvetica Neue, Ebrima, Varela Round, Helvetica, Arial;
+  font-family: titlebarFont;
 }
 .popup.titlemenu {
   border-top-left-radius: 0;

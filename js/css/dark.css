@@ -10,13 +10,13 @@ body {
   color: #fff;
 }
 #main {
-  border-left: 6px solid #222;
-  border-right: 6px solid #222;
-  border-bottom: 6px solid #222;
+  border-left: 6px solid #111;
+  border-right: 6px solid #111;
+  border-bottom: 6px solid #111;
   background: #181818;
 }
 #titlebar {
-  background: #222;
+  background: #111;
 }
 .titlebar-name {
   color: #999;
@@ -54,7 +54,7 @@ body {
 }
 .menuItem {
   color: #666;
-  background-color: #222;
+  background-color: #111;
 }
 .menuItem.selected {
   color: #999;
@@ -63,16 +63,16 @@ body {
   color: #fff;
 }
 .popup {
-  background-color: #222;
+  background-color: #111;
 }
 .popupWindow {
-  background-color: #222;
+  background-color: #111;
 }
 .popupItem {
   color: #666;
 }
 .popupItem:not(:last-child) {
-  border-bottom: 1px solid #222;
+  border-bottom: 1px solid #111;
 }
 .popupItem.selected {
   color: #fff;
@@ -84,13 +84,13 @@ body {
   border-top: 1px solid #333;
 }
 .popupItem:not(:last-child) {
-  border-bottom: 1px solid #222;
+  border-bottom: 1px solid #111;
 }
 .popupCombo {
   color: #333;
 }
 ::-webkit-scrollbar-corner {
-  background-color: #222;
+  background-color: #111;
 }
 ::-webkit-scrollbar-thumb {
   background-color: #444;

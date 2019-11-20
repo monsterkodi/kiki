@@ -157,7 +157,7 @@ class Bot extends Pushable
     # 000   000  000            000  000          000   
     # 000   000  00000000  0000000   00000000     000   
     
-    reset: () ->
+    reset: ->
     
         @left_tire_rot   = 0.0
         @right_tire_rot  = 0.0

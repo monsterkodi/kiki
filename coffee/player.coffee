@@ -134,7 +134,11 @@ class Player extends Bot
     #   000   000  00000000     000   
         
     modKeyComboEventDown: (mod, key, combo, event) ->
-                    
+
+        switch mod
+            when 'ctrl' @key.push
+                @push = true
+        
         switch key
             when 'up' 'down' @key.forward, @key.backward
                 @move = true # try to move as long as the key is not released
@@ -191,11 +195,7 @@ class Player extends Bot
                     else if @move_action.id in [Action.JUMP, Action.JUMP_FORWARD]
                         @jump_once = false
                 return true
-            
-            when 'ctrl' @key.push
-                @push = true
-                return true
-            
+                        
             when 'f' @key.shoot
                 if not @shoot
                     @shoot = true
@@ -223,6 +223,10 @@ class Player extends Bot
     
     modKeyComboEventUp: (mod, key, combo, event) ->
 
+        switch mod
+            when 'ctrl' @key.push
+                @push = false
+        
         switch key    
             when 'f' @key.shoot
                 Timer.removeAction @getActionWithId Action.SHOOT
@@ -240,11 +244,7 @@ class Player extends Bot
             when 'left' 'right' @key.left, @key.right
                 @rotate = 0
                 return true
-            
-            when 'ctrl' @key.push
-                @push = false
-                return true
-            
+                        
             when @key.lookDown, @key.lookUp
                 if @look_action and @look_action.id != Action.LOOK_RESET
                     Timer.removeAction @look_action

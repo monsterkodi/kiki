@@ -68,6 +68,11 @@ class World extends Actor
 
         super
         
+        @objects = []
+        @lights  = []
+        @cells   = [] 
+        @size    = new Pos()
+        
         @noRotations = false
         
         @screenSize = new Size @view.clientWidth, @view.clientHeight
@@ -78,6 +83,8 @@ class World extends Actor
         @renderer.autoClear = false
         @renderer.sortObjects = true
         @renderer.shadowMap.type = THREE.PCFSoftShadowMap
+        @renderer.shadowMap.enabled = true
+        
         @view.appendChild @renderer.domElement
                         
         #    0000000   0000000  00000000  000   000  00000000
@@ -101,12 +108,7 @@ class World extends Actor
         @ambient = new THREE.AmbientLight 0x111111
         @scene.add @ambient
                  
-        @objects = []
-        @lights  = []
-        @cells   = [] 
-        @size    = new Pos()
-        @depth   = -Number.MAX_SAFE_INTEGER
-        
+        @depth = -Number.MAX_SAFE_INTEGER        
         @timer = new Timer @                        
      
     @init: (view) ->
@@ -118,13 +120,14 @@ class World extends Actor
         world = new World view
         world.name = 'world'
         index = prefs.get 'level' 0
+                
         world.create @levels.list[index]
         world
         
     @initGlobal: () ->
         
         return if @levels?
-          
+        
         ScreenText.init()
         Sound.init()
         
@@ -255,6 +258,8 @@ class World extends Actor
             @player.camera.setPosition @player.currentPos()
             @setCameraMode Camera.INSIDE if @dict.camera == 'inside'
         
+        @enableShadows prefs.get 'shadows' true            
+            
         @creating = false
     
     restart: => @create @dict
@@ -316,20 +321,24 @@ class World extends Actor
     addLight: (light) ->
         
         @lights.push light
-        @enableShadows true if light.shadow
+        # @enableShadows true if light.shadow
         
     removeLight: (light) ->
         
         _.pull @lights, light
         
-        for l in @lights
-            shadow = true if l.shadow
+        # for l in @lights
+            # shadow = true if l.shadow
             
-        @enableShadows shadow
+        # @enableShadows shadow
 
     enableShadows: (enable) ->
         
         @renderer.shadowMap.enabled = enable
+        
+        for item in @getObjectsOfType Gate
+            item.toggle()
+            item.toggle()
     
     #    0000000    0000000  000000000  000   0000000   000   000
     #   000   000  000          000     000  000   000  0000  000
@@ -454,7 +463,7 @@ class World extends Actor
     # 000   000  000   000  000   000  000       000          000          000
     #  0000000   0000000     0000000   00000000   0000000     000     0000000 
         
-    getObjectsOfType:      (clss)      -> @objects.filter (o) -> o instanceof clss
+    getObjectsOfType:      (clss)      -> @objects?.filter (o) -> o instanceof clss
     getObjectsOfTypeAtPos: (clss, pos) -> @getCellAtPos(pos)?.getObjectsOfType(clss) ? []
     getObjectOfTypeAtPos:  (clss, pos) -> @getCellAtPos(pos)?.getRealObjectOfType(clss)
     getOccupantAtPos:            (pos) -> @getCellAtPos(pos)?.getOccupant()
@@ -519,11 +528,13 @@ class World extends Actor
             @objects.push object
 
     removeObject: (object) ->
+        
         @unsetObject object
         _.pull @lights, object
         _.pull @objects, object
     
     toggle: (objectName) ->
+        
         object = @getObjectWithName objectName 
         object.getActionWithName("toggle").perform()
     
@@ -539,7 +550,7 @@ class World extends Actor
 
         # klog '+' @renderer.info.memory.geometries, @renderer.info.memory.textures, 'objects' @objects.length, @lights.length
 
-        @enableShadows false
+        # @enableShadows false
         
         if @player?
             @player.del()

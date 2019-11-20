@@ -39,11 +39,11 @@ class Event
 
     removeActionsOfObject: (object) ->
         for a in @actions
-            @removeAction a if a.object == object
+            @removeAction a if a?.object == object
 
     removeActionWithName: (actionName) ->
         for a in @actions
-            @removeAction a if a.name == actionName
+            @removeAction a if a?.name == actionName
 
     removeAction: (action) ->
         action.event = null

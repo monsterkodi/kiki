@@ -437,7 +437,7 @@ class Bot extends Pushable
             
             if world.getRealOccupantAtPos(@position.plus @getDown())?.isMutant?()
                 # keep action chain flowing in order to detect environment changes
-                klog 'bot.actionFinished mutant below: startTimedAction NOOP'
+                # klog 'bot.actionFinished mutant below: startTimedAction NOOP'
                 @startTimedAction @getActionWithId(Action.NOOP), 0
 
     # 00     00   0000000   000   000  00000000

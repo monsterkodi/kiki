@@ -34,12 +34,18 @@ class Config extends Menu
         fps = prefs.get('fps' 60) == 60 and 30 or 60
         prefs.set 'fps' fps
         global.world.fps = fps
+
+    onShadows: (d=1) =>
+        shadows = not prefs.get 'shadows' true
+        prefs.set 'shadows' shadows
+        global.world.enableShadows shadows
         
     addItems: ->
         
         @addItem "volume #{prefs.get 'volume' 3}" @onVolume
         @addItem "speed #{prefs.get 'speed' 3}"  @onSpeed
         @addItem "fps #{prefs.get 'fps' 60}"  @onFPS
+        @addItem "shadows #{prefs.get('shadows' true) and 'on' or 'off'}" @onShadows
         
     update: ->
         

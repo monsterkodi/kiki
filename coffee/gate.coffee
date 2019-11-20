@@ -27,19 +27,11 @@ class Gate extends Switch
     createLight: -> 
         
         return if @light 
-            
         @light = new Light 
             pos:    @position
             radius: 10.0
             shadow: true
-            
-    # del: ->
-#         
-        # @tors.geometry.dispose()
-        # @mesh.geometry.dispose()
-        # @light?.del()
-        # super
-            
+                        
     createMesh: -> 
         
         torusRadius = 0.05

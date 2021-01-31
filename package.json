@@ -25,14 +25,14 @@
     "url": "https://github.com/monsterkodi/kiki/issues"
   },
   "devDependencies": {
-    "konrad": "^0.169.0",
     "electron": "^7.1.2",
     "electron-packager": "^14.1.0",
-    "electron-rebuild": "^1.8.8"
+    "electron-rebuild": "^1.8.8",
+    "konrad": "^0.186.0"
   },
   "dependencies": {
-    "howler": "^2.1.2",
-    "kxk": "^0.370.0",
-    "three": "0.110.0"
+    "howler": "^2.2.1",
+    "kxk": "^0.397.0",
+    "three": "0.125.2"
   }
 }
